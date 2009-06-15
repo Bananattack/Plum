@@ -1,0 +1,42 @@
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Plum", "source\Plum\plum.vcproj", "{7F953593-93ED-4D49-88B8-37EEF5E399DF}"
+	ProjectSection(ProjectDependencies) = postProject
+		{DEFA9E48-98BC-4BC5-B4B5-40231DFDB938} = {DEFA9E48-98BC-4BC5-B4B5-40231DFDB938}
+		{9879234C-63E3-4EE3-9DA4-6CD88677A00A} = {9879234C-63E3-4EE3-9DA4-6CD88677A00A}
+		{9224B68E-4E98-429F-A15D-322F38BDF9C7} = {9224B68E-4E98-429F-A15D-322F38BDF9C7}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "corona", "source\corona\corona.vcproj", "{DEFA9E48-98BC-4BC5-B4B5-40231DFDB938}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zlib", "source\zlib\zlib.vcproj", "{9224B68E-4E98-429F-A15D-322F38BDF9C7}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lua", "source\lua\lua.vcproj", "{9879234C-63E3-4EE3-9DA4-6CD88677A00A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7F953593-93ED-4D49-88B8-37EEF5E399DF}.Debug|Win32.ActiveCfg = Debug|Win32
+		{7F953593-93ED-4D49-88B8-37EEF5E399DF}.Debug|Win32.Build.0 = Debug|Win32
+		{7F953593-93ED-4D49-88B8-37EEF5E399DF}.Release|Win32.ActiveCfg = Release|Win32
+		{7F953593-93ED-4D49-88B8-37EEF5E399DF}.Release|Win32.Build.0 = Release|Win32
+		{DEFA9E48-98BC-4BC5-B4B5-40231DFDB938}.Debug|Win32.ActiveCfg = Debug|Win32
+		{DEFA9E48-98BC-4BC5-B4B5-40231DFDB938}.Debug|Win32.Build.0 = Debug|Win32
+		{DEFA9E48-98BC-4BC5-B4B5-40231DFDB938}.Release|Win32.ActiveCfg = Release|Win32
+		{DEFA9E48-98BC-4BC5-B4B5-40231DFDB938}.Release|Win32.Build.0 = Release|Win32
+		{9224B68E-4E98-429F-A15D-322F38BDF9C7}.Debug|Win32.ActiveCfg = Debug|Win32
+		{9224B68E-4E98-429F-A15D-322F38BDF9C7}.Debug|Win32.Build.0 = Debug|Win32
+		{9224B68E-4E98-429F-A15D-322F38BDF9C7}.Release|Win32.ActiveCfg = Release|Win32
+		{9224B68E-4E98-429F-A15D-322F38BDF9C7}.Release|Win32.Build.0 = Release|Win32
+		{9879234C-63E3-4EE3-9DA4-6CD88677A00A}.Debug|Win32.ActiveCfg = Debug|Win32
+		{9879234C-63E3-4EE3-9DA4-6CD88677A00A}.Debug|Win32.Build.0 = Debug|Win32
+		{9879234C-63E3-4EE3-9DA4-6CD88677A00A}.Release|Win32.ActiveCfg = Release|Win32
+		{9879234C-63E3-4EE3-9DA4-6CD88677A00A}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

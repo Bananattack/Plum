@@ -1,0 +1,48 @@
+brockoly-sprite-00000101-mungo
+[ The hero sprite sheet ]
+* image_filename: "initial_hero.png"
+* frame_width: 48
+* frame_height: 64
+* frame_padding: 1
+* frame_columns: 6
+* hotspot_x: 16
+* hotspot_y: 20
+* hotspot_width: 14
+* hotspot_height: 45
+[
+        Animation Strands
+        Fxx: Frame
+        Wxx: Wait
+        B: Back to beginning (looping animation)
+]
+* animations
+        + idle
+                - left: f2w20b
+                - right: f0w20b
+        + walk
+                - left: f12w10f13w10f14w10f15w10b
+                - right: f6w10f7w10f8w10f9w10b
+        + run
+                - left: f2w20f3w20b
+                - right: f0w20f1w20b
+        + jump
+                - left: f2w20b
+                - right: f0w20b
+        + fall
+                - left: f2w20b
+                - right: f0w20b
+        + land
+                - left: f2w20f3w20b
+                - right: f0w20f1w20b
+        + death
+                - left: f2w20f3w20b
+                - right: f0w20f1w20b
+        + attack0
+                - left: f2w20f3w20b
+                - right: f0w20f1w20b
+        + attack1
+                - left: f2w20f3w20b
+                - right: f0w20f1w20b
+        + attack2
+                - left: f2w20f3w20b
+                - right: f0w20f1w20b
