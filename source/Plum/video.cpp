@@ -51,11 +51,18 @@ namespace Plum
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glEnable(GL_TEXTURE_2D);
-		glDisable(GL_DEPTH_TEST);
+
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
 		glOrtho(0, xres, yres, 0, -1, 1);
+
+		glDisable(GL_DEPTH_TEST);
+
+        glScissor(0, 0, xres, yres);
+        glEnable(GL_SCISSOR_TEST);
+
 		glClearColor(0.0, 0.0, 0.0, 1.0);
+
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
 	}
