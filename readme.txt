@@ -37,7 +37,6 @@ Release builds are compiled to the "test/" folder.
 Debug builds are compiled to a folder named "Debug/".
 If you're pushing changes to me, please use release mode.
 
-
 - To compile from git on Linux:
 
 I assume you already know how to use git. If not learn the basics, then come back.
