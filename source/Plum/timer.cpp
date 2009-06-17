@@ -45,7 +45,6 @@ namespace Plum
 			fps = updateCount;
 			updateCount = 0;
 			secondLast = time;
-			printf("FPS: %u\n", fps);
 		}
 		if(time - tickLast > 0)
 		{

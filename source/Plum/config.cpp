@@ -29,15 +29,16 @@ namespace Plum
 		length = zzip_tell(f);
 		zzip_seek(f, 0, SEEK_SET);
 
-		char* buf = new char[length + 8];
+		int bufsize = length + 8;
+		char* buf = new char[bufsize];
 		// By going 'return VALUE' there's no chance to inject while/if statements.
 		buf[0] = 'r'; buf[1] = 'e'; buf[2] = 't'; buf[3] = 'u'; buf[4] = 'r'; buf[5] = 'n'; buf[6] = ' ';
 		zzip_fread(buf + 7, length, 1, f);
-		buf[length + 7] = 0;
+		buf[bufsize - 1] = 0;
 		zzip_fclose(f);
 
 		// Load the config
-		if(luaL_dostring(lua, buf))
+		if(luaL_loadbuffer(lua, buf, strlen(buf), std::string("@" + filename).c_str()) || lua_pcall(lua, 0, LUA_MULTRET, 0))
 		{
 			// Bad stuff occurred, throw an exception.
 			std::string s = "Error while loading " + filename + ":\n" + std::string(lua_tostring(lua, -1));

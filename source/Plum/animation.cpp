@@ -66,7 +66,6 @@ namespace Plum
 		{
 			// Examine a character from the script string.
 			c = script[position];
-			printf("%c", c);
 			// Change frames.
 			if(c == 'F')
 			{
