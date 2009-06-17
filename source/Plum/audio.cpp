@@ -66,10 +66,66 @@ namespace Plum
 		return loadSound(filename.c_str());
 	}
 
+
+	FMOD_RESULT F_CALLBACK Audio::openSample(const char* name, int unicode, unsigned int* filesize, void** handle, void** userdata)
+	{
+		// Unicode support is TODO.
+		if(unicode)
+		{
+			return FMOD_ERR_FILE_NOTFOUND;
+		}
+
+		ZZIP_FILE* f = zzip_fopen_plum(name, "rb");
+		if(!f)
+		{
+			return FMOD_ERR_FILE_NOTFOUND;
+		}
+
+		zzip_seek(f, 0, SEEK_END);
+		*filesize = zzip_tell(f);
+		zzip_seek(f, 0, SEEK_SET);
+
+		*handle = f;
+
+		return FMOD_OK;
+	}
+
+	FMOD_RESULT F_CALLBACK Audio::closeSample(void* handle, void* userdata)
+	{
+		zzip_fclose((ZZIP_FILE*) handle);
+		return FMOD_OK;
+	}
+
+	FMOD_RESULT F_CALLBACK Audio::readSample(void* handle, void* buffer, unsigned int sizebytes, unsigned int* bytesread, void* userdata)
+	{
+		ZZIP_FILE* f = (ZZIP_FILE*) handle;
+
+		*bytesread = zzip_fread(buffer, 1, sizebytes, f);
+		return FMOD_OK;
+	}
+
+	FMOD_RESULT F_CALLBACK Audio::seekSample(void* handle, unsigned int pos, void* userdata)
+	{
+		ZZIP_FILE* f = (ZZIP_FILE*) handle;
+		
+		zzip_seek(f, pos, SEEK_SET);
+		return FMOD_OK;
+	}
+
+
 	Sound* Audio::loadSound(const char* filename)
 	{
 		FMOD::Sound* sample = NULL;
-		soundSystem->createSound(filename, FMOD_SOFTWARE | FMOD_LOOP_OFF | FMOD_2D, NULL, &sample);
+
+		FMOD_CREATESOUNDEXINFO info;
+		memset(&info, 0, sizeof(FMOD_CREATESOUNDEXINFO));
+		info.cbsize = sizeof(FMOD_CREATESOUNDEXINFO);
+		info.useropen = Audio::openSample;
+		info.userclose = Audio::closeSample;
+		info.userread = Audio::readSample;
+		info.userseek = Audio::seekSample;
+
+		soundSystem->createSound(filename, FMOD_SOFTWARE | FMOD_LOOP_OFF | FMOD_2D, &info, &sample);
 		return sample;
 	}
 
@@ -91,7 +147,15 @@ namespace Plum
 	{
 		FMOD::Sound* sample = NULL;
 		
-		soundSystem->createSound(filename, FMOD_SOFTWARE | FMOD_LOOP_NORMAL | FMOD_2D, NULL, &sample);
+		FMOD_CREATESOUNDEXINFO info;
+		memset(&info, 0, sizeof(FMOD_CREATESOUNDEXINFO));
+		info.cbsize = sizeof(FMOD_CREATESOUNDEXINFO);
+		info.useropen = Audio::openSample;
+		info.userclose = Audio::closeSample;
+		info.userread = Audio::readSample;
+		info.userseek = Audio::seekSample;
+
+		soundSystem->createSound(filename, FMOD_SOFTWARE | FMOD_LOOP_NORMAL | FMOD_2D, &info, &sample);
 
 		Song* song = new Song();
 		song->sample = sample;

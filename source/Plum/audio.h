@@ -135,6 +135,13 @@ namespace Plum
 
 		FMOD::System* soundSystem;
 
+	private:
+		static FMOD_RESULT F_CALLBACK openSample(const char* name, int unicode, unsigned int* filesize, void** handle, void** userdata);
+		static FMOD_RESULT F_CALLBACK closeSample(void* handle, void* userdata);
+		static FMOD_RESULT F_CALLBACK readSample(void* handle, void* buffer, unsigned int sizebytes, unsigned int* bytesread, void* userdata);
+		static FMOD_RESULT F_CALLBACK seekSample(void* handle, unsigned int pos, void* userdata);
+
+	public:
 		Audio()
 			: soundSystem(0)
 		{
