@@ -16,12 +16,8 @@ void RunGame(Plum::Engine& engine)
 	fnt->enableVariableWidth();
 	sprite->setAnimation("throb", "left");
 
-	FILE* f = fopen("plum.cfg", "r");
-	Plum::FormatTable* t = Plum::ReadFormat(f, "plum.cfg", "configuration", 0x00000101);
-	t->print();
-	song = engine.audio.loadSong(t->getString("song"));
-	delete t;
-	fclose(f);
+	printf("SONG = %s\n", engine.config.getStringValue("song").c_str());
+	song = engine.audio.loadSong(engine.config.getStringValue("song"));
 
 	engine.audio.playSong(song);
 
@@ -31,10 +27,14 @@ void RunGame(Plum::Engine& engine)
 		//tex->getImage()->scaleBlitRegion(16, 0, 16 + 15, 15, x, y, 64, 64, screen->getImage());
 		//tex->getImage()->scaleBlit(x, y, 128, 128, screen->getImage());
 		//tex->rotateScaleBlitRegion(16, 0, 16 + 15, 15, x, y, counter, 1);
-		sprite->x = x;
-		sprite->y = y;
-		sprite->blit();
 
+		for(i = 0; i < 9; i++)
+		{
+			sprite->x = x + i * 16;
+			sprite->y = y;
+			sprite->blit();
+		}
+		
 		fnt->print(5, 5, "FPS: " + Plum::integerToString(engine.timer.fps));
 		//screen->refresh();
 		//screen->blit(0, 0);

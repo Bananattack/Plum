@@ -186,6 +186,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\config.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\engine.cpp"
 				>
 			</File>
@@ -211,6 +215,10 @@
 			</File>
 			<File
 				RelativePath=".\plum.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\script.cpp"
 				>
 			</File>
 			<File
@@ -252,6 +260,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\config.h"
+				>
+			</File>
+			<File
 				RelativePath=".\engine.h"
 				>
 			</File>
@@ -285,6 +297,10 @@
 			</File>
 			<File
 				RelativePath=".\plum.h"
+				>
+			</File>
+			<File
+				RelativePath=".\script.h"
 				>
 			</File>
 			<File
@@ -392,6 +408,10 @@
 				</File>
 				<File
 					RelativePath="..\sdl_header\SDL_opengl.h"
+					>
+				</File>
+				<File
+					RelativePath="..\sdl_header\SDL_platform.h"
 					>
 				</File>
 				<File

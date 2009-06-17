@@ -80,6 +80,7 @@ namespace Plum
 		#include "../lua/lualib.h"
 		#include "../lua/lauxlib.h"
 	}
+	#include "config.h"
 #else
 	// zlib's for compression stuff!
 	#include <zlib.h>
@@ -106,5 +107,6 @@ namespace Plum
 #include "animation.h"
 #include "sprite.h"
 #include "engine.h"
+#include "script.h"
 
 #endif

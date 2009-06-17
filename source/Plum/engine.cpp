@@ -17,15 +17,18 @@ namespace Plum
 
 		printf(">> Initializing...\n");
 
-		// Temporarily fixed configuation settings.
-		xres = 320; yres = 240; windowed = true;
+		printf("    Loading config settings...");
+		config = Config("plum.cfg");
+
+		xres = config.hasValue("xres") ? config.getIntValue("xres") : 320;
+		yres = config.hasValue("yres") ? config.getIntValue("yres") : 240;
+		windowed = config.hasValue("windowed") ? config.getBoolValue("windowed") : true;
 
 		printf("    Initializing SDL...");
 		if(SDL_Init(SDL_INIT_TIMER | SDL_INIT_VIDEO | SDL_INIT_JOYSTICK | SDL_INIT_NOPARACHUTE) != 0)
 		{
 			throw Engine::Exception("Couldn't initialize SDL.\n");
 		}
-		atexit(SDL_Quit);
 		printf(" OK!\n");
 
 		printf("    Initializing video engine...");

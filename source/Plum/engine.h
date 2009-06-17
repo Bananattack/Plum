@@ -39,6 +39,7 @@ namespace Plum
 
 			SDL_Surface* frontSurface;
 		public:
+			Config config;
 			Video video;
 			Audio audio;
 			Timer timer;
