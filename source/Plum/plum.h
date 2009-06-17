@@ -62,38 +62,32 @@ namespace Plum
 
 #ifdef PLUM_WIN32
 	#include <windows.h>
-	// zlib's for compression stuff!
-	#include "../zlib/zlib.h"
-	// corona's for image loading!
-	#include "../corona/corona.h"
-	// fmod's for audio!
-	#include "../fmod_header/fmod.hpp"
-	#include "../fmod_header/fmod_errors.h"
-	// SDL's for video and input stuff!
-	#include "../sdl_header/SDL.h"
-	#include "../sdl_header/SDL_opengl.h"
-	#include "../sdl_header/SDL_syswm.h"
-	// Lua!
-	extern "C"
-	{
-		#include "../lua/lua.h"
-		#include "../lua/lualib.h"
-		#include "../lua/lauxlib.h"
-	}
-	#include "config.h"
-#else
-	// zlib's for compression stuff!
-	#include <zlib.h>
-	// corona's for image loading!
-	#include <corona.h>
-	// fmod's for audio!
-	#include <fmod.hpp>
-	#include <fmod_errors.h>
-	// SDL's for video and input stuff!
-	#include <SDL.h>
-	#include <SDL_opengl.h>
 #endif
 
+// zlib's for compression stuff!
+#include <zlib.h>
+// corona's for image loading!
+#include <corona.h>
+// fmod's for audio!
+#include <fmod.hpp>
+#include <fmod_errors.h>
+// SDL's for video and input stuff!
+#include <SDL.h>
+#include <SDL_opengl.h>
+#include <SDL_syswm.h>
+
+extern "C"
+{
+	// Lua!
+	#include <lua/lua.h>
+	#include <lua/lualib.h>
+	#include <lua/lauxlib.h>
+
+	// zziplib's for zip files!
+	#include <zzip/lib.h>
+}
+
+#include "pit.h"
 #include "color.h"
 #include "blending.h"
 #include "image.h"
@@ -106,6 +100,7 @@ namespace Plum
 #include "formats.h"
 #include "animation.h"
 #include "sprite.h"
+#include "config.h"
 #include "engine.h"
 #include "script.h"
 

@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="lua"
-	ProjectGUID="{9879234C-63E3-4EE3-9DA4-6CD88677A00A}"
-	RootNamespace="lua"
+	Name="zzip"
+	ProjectGUID="{87CEEBE8-4BE5-4C38-9082-93502B714CD4}"
+	RootNamespace="zzip"
 	TargetFrameworkVersion="196613"
 	>
 	<Platforms>
@@ -109,10 +109,13 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
+				AdditionalIncludeDirectories="../zlib;../"
+				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				WarningLevel="3"
 				DebugInformationFormat="3"
+				CompileAs="1"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -152,127 +155,51 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\lapi.c"
+				RelativePath=".\dir.c"
 				>
 			</File>
 			<File
-				RelativePath=".\lauxlib.c"
+				RelativePath=".\err.c"
 				>
 			</File>
 			<File
-				RelativePath=".\lbaselib.c"
+				RelativePath=".\fetch.c"
 				>
 			</File>
 			<File
-				RelativePath=".\lcode.c"
+				RelativePath=".\file.c"
 				>
 			</File>
 			<File
-				RelativePath=".\ldblib.c"
+				RelativePath=".\fseeko.c"
 				>
 			</File>
 			<File
-				RelativePath=".\ldebug.c"
+				RelativePath=".\info.c"
 				>
 			</File>
 			<File
-				RelativePath=".\ldo.c"
+				RelativePath=".\memdisk.c"
 				>
 			</File>
 			<File
-				RelativePath=".\ldump.c"
+				RelativePath=".\mmapped.c"
 				>
 			</File>
 			<File
-				RelativePath=".\lfunc.c"
+				RelativePath=".\plugin.c"
 				>
 			</File>
 			<File
-				RelativePath=".\lgc.c"
+				RelativePath=".\stat.c"
 				>
 			</File>
 			<File
-				RelativePath=".\linit.c"
+				RelativePath=".\write.c"
 				>
 			</File>
 			<File
-				RelativePath=".\liolib.c"
-				>
-			</File>
-			<File
-				RelativePath=".\llex.c"
-				>
-			</File>
-			<File
-				RelativePath=".\lmathlib.c"
-				>
-			</File>
-			<File
-				RelativePath=".\lmem.c"
-				>
-			</File>
-			<File
-				RelativePath=".\loadlib.c"
-				>
-			</File>
-			<File
-				RelativePath=".\lobject.c"
-				>
-			</File>
-			<File
-				RelativePath=".\lopcodes.c"
-				>
-			</File>
-			<File
-				RelativePath=".\loslib.c"
-				>
-			</File>
-			<File
-				RelativePath=".\lparser.c"
-				>
-			</File>
-			<File
-				RelativePath=".\lstate.c"
-				>
-			</File>
-			<File
-				RelativePath=".\lstring.c"
-				>
-			</File>
-			<File
-				RelativePath=".\lstrlib.c"
-				>
-			</File>
-			<File
-				RelativePath=".\ltable.c"
-				>
-			</File>
-			<File
-				RelativePath=".\ltablib.c"
-				>
-			</File>
-			<File
-				RelativePath=".\ltm.c"
-				>
-			</File>
-			<File
-				RelativePath=".\lua.c"
-				>
-			</File>
-			<File
-				RelativePath=".\lundump.c"
-				>
-			</File>
-			<File
-				RelativePath=".\lvm.c"
-				>
-			</File>
-			<File
-				RelativePath=".\lzio.c"
-				>
-			</File>
-			<File
-				RelativePath=".\print.c"
+				RelativePath=".\zip.c"
 				>
 			</File>
 		</Filter>
@@ -282,95 +209,91 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\lapi.h"
+				RelativePath=".\__debug.h"
 				>
 			</File>
 			<File
-				RelativePath=".\lauxlib.h"
+				RelativePath=".\__dirent.h"
 				>
 			</File>
 			<File
-				RelativePath=".\lcode.h"
+				RelativePath=".\__fnmatch.h"
 				>
 			</File>
 			<File
-				RelativePath=".\ldebug.h"
+				RelativePath=".\__hints.h"
 				>
 			</File>
 			<File
-				RelativePath=".\ldo.h"
+				RelativePath=".\__mmap.h"
 				>
 			</File>
 			<File
-				RelativePath=".\lfunc.h"
+				RelativePath=".\_config.h"
 				>
 			</File>
 			<File
-				RelativePath=".\lgc.h"
+				RelativePath=".\_msvc.h"
 				>
 			</File>
 			<File
-				RelativePath=".\llex.h"
+				RelativePath=".\autoconf.h"
 				>
 			</File>
 			<File
-				RelativePath=".\llimits.h"
+				RelativePath=".\conf.h"
 				>
 			</File>
 			<File
-				RelativePath=".\lmem.h"
+				RelativePath=".\fetch.h"
 				>
 			</File>
 			<File
-				RelativePath=".\lobject.h"
+				RelativePath=".\file.h"
 				>
 			</File>
 			<File
-				RelativePath=".\lopcodes.h"
+				RelativePath=".\format.h"
 				>
 			</File>
 			<File
-				RelativePath=".\lparser.h"
+				RelativePath=".\fseeko.h"
 				>
 			</File>
 			<File
-				RelativePath=".\lstate.h"
+				RelativePath=".\info.h"
 				>
 			</File>
 			<File
-				RelativePath=".\lstring.h"
+				RelativePath=".\lib.h"
 				>
 			</File>
 			<File
-				RelativePath=".\ltable.h"
+				RelativePath=".\memdisk.h"
 				>
 			</File>
 			<File
-				RelativePath=".\ltm.h"
+				RelativePath=".\mmapped.h"
 				>
 			</File>
 			<File
-				RelativePath=".\lua.h"
+				RelativePath=".\plugin.h"
 				>
 			</File>
 			<File
-				RelativePath=".\luaconf.h"
+				RelativePath=".\stdint.h"
 				>
 			</File>
 			<File
-				RelativePath=".\lualib.h"
+				RelativePath=".\types.h"
 				>
 			</File>
 			<File
-				RelativePath=".\lundump.h"
+				RelativePath=".\write.h"
 				>
 			</File>
 			<File
-				RelativePath=".\lvm.h"
-				>
-			</File>
-			<File
-				RelativePath=".\lzio.h"
+				RelativePath=".\zzip.h"
 				>
 			</File>
 		</Filter>

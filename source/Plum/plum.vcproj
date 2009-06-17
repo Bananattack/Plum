@@ -116,7 +116,7 @@
 				Optimization="3"
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories=""
+				AdditionalIncludeDirectories="../sdl_header;../zlib;../corona;../fmod_header;.."
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				WarningLevel="3"
@@ -214,6 +214,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\pit.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\plum.cpp"
 				>
 			</File>
@@ -293,6 +297,10 @@
 			</File>
 			<File
 				RelativePath=".\mungo.h"
+				>
+			</File>
+			<File
+				RelativePath=".\pit.h"
 				>
 			</File>
 			<File
