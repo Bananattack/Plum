@@ -2,10 +2,10 @@
 #define PLUM_BLENDMODE_H
 
 #ifndef GL_FUNC_REVERSE_SUBTRACT_EXT
-#define GL_FUNC_REVERSE_SUBTRACT_EXT 0x800B
+#	define GL_FUNC_REVERSE_SUBTRACT_EXT 0x800B
 #endif
 #ifndef GL_FUNC_ADD_EXT
-#define GL_FUNC_ADD_EXT 0x8006
+#	define GL_FUNC_ADD_EXT 0x8006
 #endif
 
 namespace Plum

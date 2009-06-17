@@ -12,7 +12,7 @@
 #include <algorithm>
 
 #if defined(WIN32) || defined(_WIN32)
-#define PLUM_WIN32
+#	define PLUM_WIN32
 #endif
 
 #ifdef PLUM_WIN32
@@ -22,7 +22,7 @@
 #endif
 
 #ifdef PLUM_WIN32
-	#include <windows.h>
+#	include <windows.h>
 #endif
 
 // zlib's for compression stuff!
@@ -59,7 +59,6 @@ extern "C"
 #include "input.h"
 #include "timer.h"
 #include "audio.h"
-#include "formats.h"
 #include "animation.h"
 #include "sprite.h"
 #include "config.h"

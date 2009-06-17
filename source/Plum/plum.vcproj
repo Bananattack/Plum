@@ -203,19 +203,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\formats.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\input.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\json.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\mungo.cpp"
 				>
 			</File>
 			<File
@@ -285,10 +273,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\formats.h"
-				>
-			</File>
-			<File
 				RelativePath=".\image.h"
 				>
 			</File>
@@ -297,15 +281,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\json.h"
-				>
-			</File>
-			<File
 				RelativePath=".\keyboard.h"
-				>
-			</File>
-			<File
-				RelativePath=".\mungo.h"
 				>
 			</File>
 			<File
