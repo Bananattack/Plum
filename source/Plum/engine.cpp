@@ -18,7 +18,7 @@ namespace Plum
 		printf(">> Initializing...\n");
 
 		printf("    Loading config settings...");
-		config = Config("plum.cfg");
+		config = Config("plum.cfg", "config");
 
 		xres = config.hasValue("xres") ? config.getIntValue("xres") : 320;
 		yres = config.hasValue("yres") ? config.getIntValue("yres") : 240;

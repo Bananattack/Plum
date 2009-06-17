@@ -5,13 +5,13 @@ namespace Plum
 {
 	class Config
 	{
-		private:
+		public:
 			lua_State* lua;
 			std::string filename;
-		public:
+
 			Config::Config()
 				: lua(0), filename("") {}
-			Config(std::string name);
+			Config(std::string name, std::string blockName);
 
 			void checkInitialized();
 			bool hasValue(std::string key);

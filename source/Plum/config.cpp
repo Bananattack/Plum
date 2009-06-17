@@ -2,7 +2,7 @@
 
 namespace Plum
 {
-	Config::Config(std::string name)
+	Config::Config(std::string name, std::string blockName)
 	{
 		filename = name;
 
@@ -11,13 +11,14 @@ namespace Plum
 		// Don't include any lua libraries, for good reason.
 		lua = lua_open();
 		
-		luaL_dostring(lua, "function config(t) return t end");
+		std::string func = "function " + blockName + "(t) return t end";
+		luaL_dostring(lua, func.c_str());
 		
 		// Load the file into a string.
 		FILE* f = fopen(filename.c_str(), "rb");
 		if(!f)
 		{
-			throw Engine::Exception("The config file was not found.");
+			throw Engine::Exception("The " + blockName + " file '" + filename + "' was not found.");
 		}
 		unsigned int length = 0;
 		fseek(f, 0, SEEK_END);
@@ -44,7 +45,7 @@ namespace Plum
 		// Ensure that the value on stack is a table.
 		if(!lua_istable(lua, -1))
 		{
-			throw Engine::Exception("Error while loading " + filename + ":\nConfig must be a table.");
+			throw Engine::Exception("Error while loading " + filename + ":\nThe " + blockName + " file must be a table.");
 		}
 	}
 

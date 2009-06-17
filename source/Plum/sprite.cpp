@@ -26,108 +26,63 @@ namespace Plum
 
 	void Sprite::init(double x, double y, std::string filename)
 	{
-		FILE* f = fopen(filename.c_str(), "r");
-		FormatTable* t = ReadFormat(f, filename, "sprite", SPRITE_VERSION);
-		fclose(f);
+		Config cfg = Config(filename, "sprite");
 
-		if(!t->hasNode("image_filename"))
-		{
-			throw FormatParseException(filename + ": Didn't find an 'image_filename' key.\n");
-		}
-		texture = new Texture(t->getString("image_filename"));
+		texture = new Texture(cfg.getStringValue("image_filename"));
 
-		if(!t->hasNode("frame_width") || !isStringNumeric(t->getString("frame_width")))
-		{
-			throw FormatParseException(filename
-				+ ": Didn't find an 'frame_width' key, or it was invalid.\n");
-		}
-		frameWidth = stringToInteger(t->getString("frame_width"));
+		frameWidth = cfg.getIntValue("frame_width");
+		frameHeight = cfg.getIntValue("frame_height");
 
-		if(!t->hasNode("frame_height") || !isStringNumeric(t->getString("frame_height")))
-		{
-			throw FormatParseException(filename
-				+ ": Didn't find an 'frame_height' key, or it was invalid.\n");
-		}
-		frameHeight = stringToInteger(t->getString("frame_height"));
+		frameColumns = cfg.getIntValue("frame_columns");
+		framePadding = cfg.hasValue("frame_padding") ? cfg.getIntValue("frame_padding") : 1;
 
-		if(!t->hasNode("frame_columns") || !isStringNumeric(t->getString("frame_columns")))
-		{
-			throw FormatParseException(filename
-				+ ": Didn't find an 'frame_columns' key, or it was invalid.\n");
-		}
-		frameColumns = stringToInteger(t->getString("frame_columns"));
+		hotspotX = cfg.getIntValue("hotspot_x");
+		hotspotY = cfg.getIntValue("hotspot_y");
+		hotspotWidth = cfg.getIntValue("hotspot_width");
+		hotspotHeight = cfg.getIntValue("hotspot_height");
 
-		if(t->hasNode("frame_padding"))
+		lua_pushstring(cfg.lua, "animations");
+		lua_rawget(cfg.lua, -2);
+		if(!lua_isnil(cfg.lua, -1))
 		{
-			if(!isStringNumeric(t->getString("frame_padding")))
+			if(!lua_istable(cfg.lua, -1))
 			{
-				throw FormatParseException(filename
-					+ ": 'frame_padding' key  was invalid.\n");
+				throw Engine::Exception("Error in '" + filename + "':\nKey 'animations' is defined, but is not a valid table value.");
 			}
-			framePadding = stringToInteger(t->getString("frame_padding"));
-		}
-		else
-		{
-			framePadding = 1;
-		}
-
-		if(!t->hasNode("hotspot_x") || !isStringNumeric(t->getString("hotspot_x")))
-		{
-			throw FormatParseException(filename
-				+ ": Didn't find an 'hotspot_x' key, or it was invalid.\n");
-		}
-		hotspotX = stringToInteger(t->getString("hotspot_x"));
-
-		if(!t->hasNode("hotspot_y") || !isStringNumeric(t->getString("hotspot_y")))
-		{
-			throw FormatParseException(filename
-				+ ": Didn't find an 'hotspot_y' key, or it was invalid.\n");
-		}
-		hotspotY = stringToInteger(t->getString("hotspot_y"));
-
-		if(!t->hasNode("hotspot_width") || !isStringNumeric(t->getString("hotspot_width")))
-		{
-			throw FormatParseException(filename
-				+ ": Didn't find an 'hotspot_width' key, or it was invalid.\n");
-		}
-		hotspotWidth = stringToInteger(t->getString("hotspot_width"));
-
-		if(!t->hasNode("hotspot_height") || !isStringNumeric(t->getString("hotspot_height")))
-		{
-			throw FormatParseException(filename
-				+ ": Didn't find an 'hotspot_height' key, or it was invalid.\n");
-		}
-		hotspotHeight = stringToInteger(t->getString("hotspot_height"));
-
-		if(t->hasNode("animations"))
-		{
-			FormatTable* animationTable = t->getTable("animations");
-			std::map<std::string, FormatNode*>::iterator i;
-			
-			for (i = animationTable->items.begin(); i != animationTable->items.end(); ++i)
+			else
 			{
-				FormatTable* strandTable = animationTable->getTable(i->first);
-				std::map<std::string, FormatNode*>::iterator j;
-				AnimationInfo* info = new AnimationInfo();
 
-				// Ignore 'private' table data.
-				if(i->first.find("__", 0) == 0)
+				lua_pushnil(cfg.lua);
+				while (lua_next(cfg.lua, -2) != 0)
 				{
-					continue;
-				}
-				for(j = strandTable->items.begin(); j != strandTable->items.end(); ++j)
-				{
-					// Ignore 'private' table data.
-					if(j->first.find("__", 0) == 0)
+					if(!lua_isstring(cfg.lua, -2) || !lua_istable(cfg.lua, -1))
 					{
-						continue;
+						throw Engine::Exception("Error in '" + filename + "':\nFound invalid animation group entry.");
 					}
-					info->scripts[j->first] = strandTable->getString(j->first);
+
+					AnimationInfo* info = new AnimationInfo();
+					lua_pushnil(cfg.lua);
+					while (lua_next(cfg.lua, -2) != 0)
+					{
+						if(!lua_isstring(cfg.lua, -2) || !lua_isstring(cfg.lua, -1))
+						{
+							throw Engine::Exception("Error in '" + filename + "':\nFound invalid animation strand entry.");
+						}
+						std::string strandName = lua_tostring(cfg.lua, -2);
+						std::string value = lua_tostring(cfg.lua, -1);
+						info->scripts[strandName] = value;
+
+						lua_pop(cfg.lua, 1);
+					}
+
+					std::string groupName = lua_tostring(cfg.lua, -2);
+					animationInfo[groupName] = info;
+
+					lua_pop(cfg.lua, 1);
 				}
-				animationInfo[i->first] = info;
 			}
 		}
-		delete t;
+		lua_pop(cfg.lua, 1);
 
 		parser = new AnimationParser();
 		
