@@ -28,7 +28,9 @@ namespace Plum
 	{
 		Config cfg = Config(filename, "sprite");
 
-		texture = new Texture(cfg.getStringValue("image_filename"));
+		printf("%s\n", filename.c_str());
+		printf("%s\n", Path::getDirectory(filename).c_str());
+		texture = new Texture(Path::getDirectory(filename) + cfg.getStringValue("image_filename"));
 
 		frameWidth = cfg.getIntValue("frame_width");
 		frameHeight = cfg.getIntValue("frame_height");

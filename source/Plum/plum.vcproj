@@ -186,6 +186,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\common.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\config.cpp"
 				>
 			</File>
@@ -261,6 +265,10 @@
 			</File>
 			<File
 				RelativePath=".\color.h"
+				>
+			</File>
+			<File
+				RelativePath=".\common.h"
 				>
 			</File>
 			<File
