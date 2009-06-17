@@ -9,10 +9,14 @@ namespace Plum
 		// Config files will have a general format:
 		// config { key = value; ... }
 		// Don't include any lua libraries, for good reason.
-		lua = lua_open();
+		lua = luaL_newstate();
 		
-		std::string func = "function " + blockName + "(t) return t end";
-		luaL_dostring(lua, func.c_str());
+		std::string setup = "called = 0;"
+			"function " + blockName + "(t)\n"
+			"    called = called + 1;\n"
+			"    return t\n"
+			"end";
+		luaL_dostring(lua, setup.c_str());
 		
 		// Load the file into a string.
 		FILE* f = fopen(filename.c_str(), "rb");
@@ -32,8 +36,6 @@ namespace Plum
 		buf[length + 7] = 0;
 		fclose(f);
 
-		printf("%s", buf);
-
 		// Load the config
 		if(luaL_dostring(lua, buf))
 		{
@@ -47,6 +49,15 @@ namespace Plum
 		{
 			throw Engine::Exception("Error while loading " + filename + ":\nThe " + blockName + " file must be a table.");
 		}
+
+		// Make sure they properly put the word "sprite"/"map" or whatever in the header, and don't call it more than once.
+		lua_getglobal(lua, "called");
+		if(!lua_isnumber(lua, -1) || lua_tonumber(lua, -1) != 1)
+		{
+			throw Engine::Exception("Error while loading " + filename + ":\nNot a valid " + blockName + " format.");
+		}
+		lua_pop(lua, 1);
+		delete [] buf;
 	}
 
 	void Config::checkInitialized()

@@ -4,7 +4,7 @@ namespace Plum
 {
 	void Script::startup()
 	{
-		lua = lua_open();
+		lua = luaL_newstate();
 		luaL_openlibs(lua);
 	}
 
