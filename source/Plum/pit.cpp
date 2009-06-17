@@ -57,8 +57,8 @@ ZZIP_FILE* zzip_fopen_plum(const char* filename, const char* mode)
 	return zzip_open_ext_io(filename, o_flags, o_modes, PLUM_PIT_EXT, 0);
 }
 
-corona::File* CorOpenZipFile(const char* filename, bool writeable)
+corona::File* OpenPitCoronaFile(const char* filename, bool writeable)
 {
 	ZZIP_FILE* file = zzip_fopen_plum(filename, (writeable ? "wb" : "rb"));
-	return (file ? new CoronaZipFile(file) : 0);
+	return (file ? new PitCoronaFile(file) : 0);
 }

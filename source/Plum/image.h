@@ -72,9 +72,14 @@ namespace Plum
 			void init(const char* filename)
 			{
 				int i;
-				corona::Image* image = corona::OpenImage(filename, corona::FF_AUTODETECT, corona::PF_R8G8B8A8);
+				corona::File* file = OpenPitCoronaFile(filename, false);
+				corona::Image* image = corona::OpenImage(file, corona::PF_R8G8B8A8, corona::FF_AUTODETECT);
 				if(image == NULL)
 				{
+					if(file)
+					{
+						delete file;
+					}
 					std::string s = "Couldn't open image '" + std::string(filename) + "'!\n";
 					throw ImageNotFoundException(s);
 				}
@@ -88,6 +93,7 @@ namespace Plum
 				}
 
 				delete image;
+				delete file;
 			}
 
 			void init(int width, int height)

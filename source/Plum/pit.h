@@ -3,13 +3,13 @@
 
 ZZIP_FILE* zzip_fopen_plum(const char* filename, const char* mode);
 
-class CoronaZipFile : public corona::DLLImplementation<corona::File>
+class PitCoronaFile : public corona::DLLImplementation<corona::File>
 {
 	private:
 		ZZIP_FILE* file;
 	public:
-		CoronaZipFile(ZZIP_FILE* f) : file(f) {}
-		~CoronaZipFile()
+		PitCoronaFile(ZZIP_FILE* f) : file(f) {}
+		~PitCoronaFile()
 		{
 			zzip_fclose(file);
 		}
@@ -46,7 +46,7 @@ class CoronaZipFile : public corona::DLLImplementation<corona::File>
 		}
 };
 
-corona::File* CorOpenZipFile(const char* filename, bool writeable);
+corona::File* OpenPitCoronaFile(const char* filename, bool writeable);
 
 
 #endif
