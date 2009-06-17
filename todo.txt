@@ -1,0 +1,1 @@
+* Make it so sprites reference images relative to the file's path.
