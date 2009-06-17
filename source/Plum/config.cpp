@@ -19,22 +19,22 @@ namespace Plum
 		luaL_dostring(lua, setup.c_str());
 		
 		// Load the file into a string.
-		FILE* f = fopen(filename.c_str(), "rb");
+		ZZIP_FILE* f = zzip_fopen_plum(filename.c_str(), "rb");
 		if(!f)
 		{
 			throw Engine::Exception("The " + blockName + " file '" + filename + "' was not found.");
 		}
 		unsigned int length = 0;
-		fseek(f, 0, SEEK_END);
-		length = ftell(f);
-		fseek(f, 0, SEEK_SET);
+		zzip_seek(f, 0, SEEK_END);
+		length = zzip_tell(f);
+		zzip_seek(f, 0, SEEK_SET);
 
 		char* buf = new char[length + 8];
 		// By going 'return VALUE' there's no chance to inject while/if statements.
 		buf[0] = 'r'; buf[1] = 'e'; buf[2] = 't'; buf[3] = 'u'; buf[4] = 'r'; buf[5] = 'n'; buf[6] = ' ';
-		fread(buf + 7, length, 1, f);
+		zzip_fread(buf + 7, length, 1, f);
 		buf[length + 7] = 0;
-		fclose(f);
+		zzip_fclose(f);
 
 		// Load the config
 		if(luaL_dostring(lua, buf))

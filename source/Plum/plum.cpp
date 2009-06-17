@@ -8,7 +8,7 @@ void RunGame(Plum::Engine& engine)
 	Plum::Sound* sound = engine.audio.loadSound("shot.wav");
 	Plum::Font* fnt = new Plum::Font("ccfont.png");
 	Plum::Song* song = NULL;
-	Plum::Sprite* sprite = new Plum::Sprite(0.0, 0.0, "heartsprite.sprite");
+	Plum::Sprite* sprite = new Plum::Sprite(0.0, 0.0, "sprites/heartsprite.sprite");
 	sprite->scale = 3.0;
 	double x = 0;
 	double y = 0;
