@@ -179,14 +179,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\audio.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\blending.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\common.cpp"
 				>
 			</File>
@@ -215,25 +207,45 @@
 				>
 			</File>
 			<File
-				RelativePath=".\script.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\sprite.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\texture.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\timer.cpp"
 				>
 			</File>
-			<File
-				RelativePath=".\video.cpp"
+			<Filter
+				Name="video"
 				>
-			</File>
+				<File
+					RelativePath=".\video\blending.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\video\texture.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\video\video.cpp"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="audio"
+				>
+				<File
+					RelativePath=".\audio\audio.cpp"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="script"
+				>
+				<File
+					RelativePath=".\script\script.cpp"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -242,18 +254,6 @@
 			>
 			<File
 				RelativePath=".\animation.h"
-				>
-			</File>
-			<File
-				RelativePath=".\audio.h"
-				>
-			</File>
-			<File
-				RelativePath=".\blending.h"
-				>
-			</File>
-			<File
-				RelativePath=".\color.h"
 				>
 			</File>
 			<File
@@ -273,10 +273,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\image.h"
-				>
-			</File>
-			<File
 				RelativePath=".\input.h"
 				>
 			</File>
@@ -293,10 +289,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\script.h"
-				>
-			</File>
-			<File
 				RelativePath=".\sprite.h"
 				>
 			</File>
@@ -308,167 +300,207 @@
 				RelativePath=".\timer.h"
 				>
 			</File>
-			<File
-				RelativePath=".\video.h"
-				>
-			</File>
 			<Filter
-				Name="sdl_header"
+				Name="3rd_party"
+				>
+				<Filter
+					Name="fmod_header"
+					>
+					<File
+						RelativePath="..\fmod_header\fmod.h"
+						>
+					</File>
+					<File
+						RelativePath="..\fmod_header\fmod.hpp"
+						>
+					</File>
+					<File
+						RelativePath="..\fmod_header\fmod_codec.h"
+						>
+					</File>
+					<File
+						RelativePath="..\fmod_header\fmod_dsp.h"
+						>
+					</File>
+					<File
+						RelativePath="..\fmod_header\fmod_errors.h"
+						>
+					</File>
+					<File
+						RelativePath="..\fmod_header\fmod_output.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="sdl_header"
+					>
+					<File
+						RelativePath="..\sdl_header\begin_code.h"
+						>
+					</File>
+					<File
+						RelativePath="..\sdl_header\close_code.h"
+						>
+					</File>
+					<File
+						RelativePath="..\sdl_header\SDL.h"
+						>
+					</File>
+					<File
+						RelativePath="..\sdl_header\SDL_active.h"
+						>
+					</File>
+					<File
+						RelativePath="..\sdl_header\SDL_audio.h"
+						>
+					</File>
+					<File
+						RelativePath="..\sdl_header\SDL_byteorder.h"
+						>
+					</File>
+					<File
+						RelativePath="..\sdl_header\SDL_cdrom.h"
+						>
+					</File>
+					<File
+						RelativePath="..\sdl_header\SDL_copying.h"
+						>
+					</File>
+					<File
+						RelativePath="..\sdl_header\SDL_cpuinfo.h"
+						>
+					</File>
+					<File
+						RelativePath="..\sdl_header\SDL_endian.h"
+						>
+					</File>
+					<File
+						RelativePath="..\sdl_header\SDL_error.h"
+						>
+					</File>
+					<File
+						RelativePath="..\sdl_header\SDL_events.h"
+						>
+					</File>
+					<File
+						RelativePath="..\sdl_header\SDL_getenv.h"
+						>
+					</File>
+					<File
+						RelativePath="..\sdl_header\SDL_joystick.h"
+						>
+					</File>
+					<File
+						RelativePath="..\sdl_header\SDL_keyboard.h"
+						>
+					</File>
+					<File
+						RelativePath="..\sdl_header\SDL_keysym.h"
+						>
+					</File>
+					<File
+						RelativePath="..\sdl_header\SDL_loadso.h"
+						>
+					</File>
+					<File
+						RelativePath="..\sdl_header\SDL_main.h"
+						>
+					</File>
+					<File
+						RelativePath="..\sdl_header\SDL_mouse.h"
+						>
+					</File>
+					<File
+						RelativePath="..\sdl_header\SDL_mutex.h"
+						>
+					</File>
+					<File
+						RelativePath="..\sdl_header\SDL_name.h"
+						>
+					</File>
+					<File
+						RelativePath="..\sdl_header\SDL_opengl.h"
+						>
+					</File>
+					<File
+						RelativePath="..\sdl_header\SDL_platform.h"
+						>
+					</File>
+					<File
+						RelativePath="..\sdl_header\SDL_quit.h"
+						>
+					</File>
+					<File
+						RelativePath="..\sdl_header\SDL_rwops.h"
+						>
+					</File>
+					<File
+						RelativePath="..\sdl_header\SDL_stdinc.h"
+						>
+					</File>
+					<File
+						RelativePath="..\sdl_header\SDL_syswm.h"
+						>
+					</File>
+					<File
+						RelativePath="..\sdl_header\SDL_thread.h"
+						>
+					</File>
+					<File
+						RelativePath="..\sdl_header\SDL_timer.h"
+						>
+					</File>
+					<File
+						RelativePath="..\sdl_header\SDL_types.h"
+						>
+					</File>
+					<File
+						RelativePath="..\sdl_header\SDL_version.h"
+						>
+					</File>
+					<File
+						RelativePath="..\sdl_header\SDL_video.h"
+						>
+					</File>
+				</Filter>
+			</Filter>
+			<Filter
+				Name="video"
 				>
 				<File
-					RelativePath="..\sdl_header\begin_code.h"
+					RelativePath=".\video\blending.h"
 					>
 				</File>
 				<File
-					RelativePath="..\sdl_header\close_code.h"
+					RelativePath=".\video\color.h"
 					>
 				</File>
 				<File
-					RelativePath="..\sdl_header\SDL.h"
+					RelativePath=".\video\image.h"
 					>
 				</File>
 				<File
-					RelativePath="..\sdl_header\SDL_active.h"
+					RelativePath=".\video\texture.h"
 					>
 				</File>
 				<File
-					RelativePath="..\sdl_header\SDL_audio.h"
-					>
-				</File>
-				<File
-					RelativePath="..\sdl_header\SDL_byteorder.h"
-					>
-				</File>
-				<File
-					RelativePath="..\sdl_header\SDL_cdrom.h"
-					>
-				</File>
-				<File
-					RelativePath="..\sdl_header\SDL_copying.h"
-					>
-				</File>
-				<File
-					RelativePath="..\sdl_header\SDL_cpuinfo.h"
-					>
-				</File>
-				<File
-					RelativePath="..\sdl_header\SDL_endian.h"
-					>
-				</File>
-				<File
-					RelativePath="..\sdl_header\SDL_error.h"
-					>
-				</File>
-				<File
-					RelativePath="..\sdl_header\SDL_events.h"
-					>
-				</File>
-				<File
-					RelativePath="..\sdl_header\SDL_getenv.h"
-					>
-				</File>
-				<File
-					RelativePath="..\sdl_header\SDL_joystick.h"
-					>
-				</File>
-				<File
-					RelativePath="..\sdl_header\SDL_keyboard.h"
-					>
-				</File>
-				<File
-					RelativePath="..\sdl_header\SDL_keysym.h"
-					>
-				</File>
-				<File
-					RelativePath="..\sdl_header\SDL_loadso.h"
-					>
-				</File>
-				<File
-					RelativePath="..\sdl_header\SDL_main.h"
-					>
-				</File>
-				<File
-					RelativePath="..\sdl_header\SDL_mouse.h"
-					>
-				</File>
-				<File
-					RelativePath="..\sdl_header\SDL_mutex.h"
-					>
-				</File>
-				<File
-					RelativePath="..\sdl_header\SDL_name.h"
-					>
-				</File>
-				<File
-					RelativePath="..\sdl_header\SDL_opengl.h"
-					>
-				</File>
-				<File
-					RelativePath="..\sdl_header\SDL_platform.h"
-					>
-				</File>
-				<File
-					RelativePath="..\sdl_header\SDL_quit.h"
-					>
-				</File>
-				<File
-					RelativePath="..\sdl_header\SDL_rwops.h"
-					>
-				</File>
-				<File
-					RelativePath="..\sdl_header\SDL_stdinc.h"
-					>
-				</File>
-				<File
-					RelativePath="..\sdl_header\SDL_syswm.h"
-					>
-				</File>
-				<File
-					RelativePath="..\sdl_header\SDL_thread.h"
-					>
-				</File>
-				<File
-					RelativePath="..\sdl_header\SDL_timer.h"
-					>
-				</File>
-				<File
-					RelativePath="..\sdl_header\SDL_types.h"
-					>
-				</File>
-				<File
-					RelativePath="..\sdl_header\SDL_version.h"
-					>
-				</File>
-				<File
-					RelativePath="..\sdl_header\SDL_video.h"
+					RelativePath=".\video\video.h"
 					>
 				</File>
 			</Filter>
 			<Filter
-				Name="fmod_header"
+				Name="audio"
 				>
 				<File
-					RelativePath="..\fmod_header\fmod.h"
+					RelativePath=".\audio\audio.h"
 					>
 				</File>
+			</Filter>
+			<Filter
+				Name="script"
+				>
 				<File
-					RelativePath="..\fmod_header\fmod.hpp"
-					>
-				</File>
-				<File
-					RelativePath="..\fmod_header\fmod_codec.h"
-					>
-				</File>
-				<File
-					RelativePath="..\fmod_header\fmod_dsp.h"
-					>
-				</File>
-				<File
-					RelativePath="..\fmod_header\fmod_errors.h"
-					>
-				</File>
-				<File
-					RelativePath="..\fmod_header\fmod_output.h"
+					RelativePath=".\script\script.h"
 					>
 				</File>
 			</Filter>

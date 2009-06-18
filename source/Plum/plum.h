@@ -50,19 +50,22 @@ extern "C"
 
 #include "common.h"
 #include "pit.h"
-#include "color.h"
-#include "blending.h"
-#include "image.h"
-#include "texture.h"
+
+#include "video/color.h"
+#include "video/blending.h"
+#include "video/image.h"
+#include "video/texture.h"
+#include "video/video.h"
+
+#include "audio/audio.h"
+
 #include "font.h"
-#include "video.h"
 #include "input.h"
 #include "timer.h"
-#include "audio.h"
 #include "animation.h"
 #include "sprite.h"
 #include "config.h"
 #include "engine.h"
-#include "script.h"
+#include "script/script.h"
 
 #endif
