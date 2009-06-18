@@ -1,4 +1,4 @@
-#include "plum.h"
+#include "../plum.h"
 
 namespace Plum
 {

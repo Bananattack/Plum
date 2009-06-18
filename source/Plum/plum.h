@@ -48,8 +48,9 @@ extern "C"
 	#include <zzip/lib.h>
 }
 
-#include "common.h"
-#include "pit.h"
+#include "common/common.h"
+#include "common/pit.h"
+#include "common/config.h"
 
 #include "video/color.h"
 #include "video/blending.h"
@@ -59,13 +60,14 @@ extern "C"
 
 #include "audio/audio.h"
 
-#include "font.h"
-#include "input.h"
-#include "timer.h"
-#include "animation.h"
-#include "sprite.h"
-#include "config.h"
-#include "engine.h"
+#include "common/font.h"
+#include "common/animation.h"
+
+#include "engine/input.h"
+#include "engine/timer.h"
+#include "engine/sprite.h"
+#include "engine/engine.h"
+
 #include "script/script.h"
 
 #endif
