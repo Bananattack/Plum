@@ -41,7 +41,6 @@ namespace Plum
 			printf("FMOD error! (%d) %s\n", result, FMOD_ErrorString(result));
 			throw Audio::Exception("Couldn't initialize sound engine.\n");
 		}
-		printf(" OK!\n");
 	}
 
 	void Audio::shutdown()

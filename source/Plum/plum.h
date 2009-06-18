@@ -49,6 +49,7 @@ extern "C"
 }
 
 #include "common/common.h"
+#include "common/path.h"
 #include "common/pit.h"
 #include "common/config.h"
 
@@ -69,5 +70,12 @@ extern "C"
 #include "engine/engine.h"
 
 #include "script/script.h"
+#include "script/font_object.h"
+#include "script/image_object.h"
+#include "script/song_object.h"
+#include "script/sound_object.h"
+#include "script/texture_object.h"
+#include "script/video_object.h"
+#include "script/plum_module.h"
 
 #endif

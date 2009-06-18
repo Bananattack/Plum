@@ -3,14 +3,15 @@
 
 namespace Plum
 {
-	class Script
+	namespace Script
 	{
-		private:
-			lua_State* lua;
-		public:
-			void startup();
-			void shutdown();
-	};
+		extern lua_State* lua;
+		extern Engine* engine;
+
+		void startup(Engine* eng);
+		void runScript();
+		void shutdown();
+	}
 }
 
 #endif

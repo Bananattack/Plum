@@ -206,7 +206,35 @@
 				Name="script"
 				>
 				<File
+					RelativePath=".\script\font_object.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\script\image_object.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\script\plum_module.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\script\script.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\script\song_object.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\script\sound_object.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\script\texture_object.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\script\video_object.cpp"
 					>
 				</File>
 			</Filter>
@@ -227,6 +255,10 @@
 				</File>
 				<File
 					RelativePath=".\common\font.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\common\path.cpp"
 					>
 				</File>
 				<File
@@ -464,7 +496,35 @@
 				Name="script"
 				>
 				<File
+					RelativePath=".\script\font_object.h"
+					>
+				</File>
+				<File
+					RelativePath=".\script\image_object.h"
+					>
+				</File>
+				<File
+					RelativePath=".\script\plum_module.h"
+					>
+				</File>
+				<File
 					RelativePath=".\script\script.h"
+					>
+				</File>
+				<File
+					RelativePath=".\script\song_object.h"
+					>
+				</File>
+				<File
+					RelativePath=".\script\sound_object.h"
+					>
+				</File>
+				<File
+					RelativePath=".\script\texture_object.h"
+					>
+				</File>
+				<File
+					RelativePath=".\script\video_object.h"
 					>
 				</File>
 			</Filter>
@@ -485,6 +545,10 @@
 				</File>
 				<File
 					RelativePath=".\common\font.h"
+					>
+				</File>
+				<File
+					RelativePath=".\common\path.h"
 					>
 				</File>
 				<File

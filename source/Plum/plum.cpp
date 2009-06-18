@@ -70,7 +70,7 @@ int main(int argc, char** argv)
 {
 	Plum::Engine engine;
 
-//	freopen("stdout.log", "w", stdout);
+	freopen("stdout.log", "w", stdout);
 	freopen("stderr.log", "w", stderr);
 	try
 	{
@@ -95,11 +95,12 @@ int main(int argc, char** argv)
 
 	try
 	{
-		RunGame(engine);
+		//RunGame(engine);
+		Plum::Script::runScript();
 	}
 	catch(std::exception& e)
 	{
-		engine.quit(e.what());
+		engine.quit("Error " + std::string(e.what()));
 	}
 	engine.quit();
 

@@ -24,6 +24,9 @@ namespace Plum
 		yres = config.hasValue("yres") ? config.getIntValue("yres") : 240;
 		windowed = config.hasValue("windowed") ? config.getBoolValue("windowed") : true;
 
+		printf(" OK!\n");
+		printf("    (Settings: %dx%d resolution, %s mode)\n\n", xres, yres, windowed ? "windowed" : "fullscreen");
+
 		printf("    Initializing SDL...");
 		if(SDL_Init(SDL_INIT_TIMER | SDL_INIT_VIDEO | SDL_INIT_JOYSTICK | SDL_INIT_NOPARACHUTE) != 0)
 		{
@@ -33,21 +36,22 @@ namespace Plum
 
 		printf("    Initializing video engine...");
 		setTitle("Plum");
-
 		video.startup();
 		video.setResolution(xres, yres, windowed);
-
 		printf(" OK!\n");
 
 		printf("    Initializing sound engine...");
-
 		audio.startup();
+		printf(" OK!\n");
 
+		printf("    Initializing scripting engine...");
+		Script::startup(this);
 		printf(" OK!\n");
 
 		destroyed = false;
 		initialized = true;
 		printf(">> Initialization complete!\n\n");
+
 	}
 
 	void Engine::shutdown()
@@ -57,6 +61,10 @@ namespace Plum
 			return;
 		}
 		printf("\n>> Destroying...\n");
+
+		printf("    Destroying scripting engine...");
+		Script::shutdown();
+		printf(" OK!\n");
 
 		printf("    Destroying sound engine...");
 		audio.shutdown();
