@@ -171,8 +171,10 @@ namespace Plum
 		double regionS2 = ((double) sourceX2 + 1) / textureWidth;
 		double regionT2 = ((double) sourceY2 + 1) / textureHeight;
 
+		printf("MODE BEFORE %d\n", mode);
 		mode = (mode == BlendUnspecified) ? getBlendMode() : mode;
 		useHardwareBlender(mode);
+		printf("MODE AFTER %d\n", mode);
 
 		glEnable(GL_TEXTURE_2D);
 		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE,  GL_MODULATE);

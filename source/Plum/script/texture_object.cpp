@@ -53,7 +53,7 @@ namespace Plum
 			return 0;
 		}
 
-		static int texture_getwidth(lua_State* L)
+		static int texture_getWidth(lua_State* L)
 		{
 			Texture** t = CheckValidTextureObject(L, 1);
 			lua_pushnumber(L, (*t)->getImageWidth());
@@ -61,7 +61,7 @@ namespace Plum
 			return 1;
 		}
 
-		static int texture_getheight(lua_State* L)
+		static int texture_getHeight(lua_State* L)
 		{
 			Texture** t = CheckValidTextureObject(L, 1);
 			lua_pushnumber(L, (*t)->getImageHeight());
@@ -75,8 +75,8 @@ namespace Plum
 			{ "__tostring",	texture_toString },
 			{ "__gc", texture_gc },
 			{ "blit", texture_blit },
-			{ "getwidth", texture_getwidth },
-			{ "getheight", texture_getheight },
+			{ "getwidth", texture_getWidth },
+			{ "getheight", texture_getHeight },
 			{ NULL, NULL }
 		};
 

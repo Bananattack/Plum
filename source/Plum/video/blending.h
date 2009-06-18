@@ -97,25 +97,10 @@ namespace Plum
 	extern void (PLUM_CALLBACK *glBlendEquationEXT)(int);
 	void PLUM_CALLBACK NoBlendExtension(int);
 
-	inline BlendMode getBlendMode()
-	{
-		return _blendMode;
-	}
-
-	inline void setBlendMode(BlendMode mode)
-	{
-		_blendMode = mode;
-	}
-
-	inline int getOpacity()
-	{
-		return _globalAlpha;
-	}
-
-	inline void setOpacity(int alpha)
-	{
-		_globalAlpha = alpha;
-	}
+	BlendMode getBlendMode();
+	void setBlendMode(BlendMode mode);
+	int getOpacity();
+	void setOpacity(int alpha);
 
 	inline void useHardwareBlender(BlendMode mode)
 	{
