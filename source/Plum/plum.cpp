@@ -96,7 +96,7 @@ int main(int argc, char** argv)
 	try
 	{
 		//RunGame(engine);
-		Plum::Script::runScript();
+		Plum::Script::runScript("system.lua");
 	}
 	catch(std::exception& e)
 	{

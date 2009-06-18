@@ -30,35 +30,8 @@ namespace Plum
 			return 0;
 		}
 
-		static int texture_getField(lua_State* L)
-		{
-			Texture** t = CheckValidTextureObject(L, 1);
-			std::string fieldName = luaL_checkstring(L, 2);
-			
-			if(luaL_getmetafield(L, -2, std::string("get" + fieldName).c_str()))
-			{
-				lua_pushvalue(L, -3);
-				lua_call(L, 1, 1);
-				return 1;
-			}
-			return luaL_getmetafield(L, -2, fieldName.c_str());
-		}
-
-		static int texture_setField(lua_State* L)
-		{
-			Texture** t = CheckValidTextureObject(L, 1);
-			std::string fieldName = luaL_checkstring(L, 2);
-			// L, 3 is the value to set.
-			
-			if(luaL_getmetafield(L, -3, std::string("set" + fieldName).c_str()))
-			{
-				lua_pushvalue(L, -4);
-				lua_pushvalue(L, -2);
-				lua_call(L, 2, 0);
-				return 0;
-			}
-			return 0;
-		}
+		SCRIPT_OBJ_GETTER(texture_getField, Texture**, "plum_texture")
+		SCRIPT_OBJ_SETTER(texture_setField, Texture**, "plum_texture")
 
 		static int texture_toString(lua_State* L)
 		{
@@ -72,10 +45,10 @@ namespace Plum
 			Texture** t = CheckValidTextureObject(L, 1);
 			int x = lua_tointeger(L, 2);
 			int y = lua_tointeger(L, 3);
-			int mode = lua_tointeger(L, 4);
-			Color tint = (unsigned int) lua_tointeger(L, 5);
+			BlendMode mode = (BlendMode) luaL_optint(L, 4, BlendUnspecified);
+			Color tint = luaL_optint(L, 5, Color::White);
 
-			(*t)->blit(x, y, (Plum::BlendMode) mode, tint);
+			(*t)->blit(x, y, mode, tint);
 
 			return 0;
 		}
@@ -95,7 +68,6 @@ namespace Plum
 
 			return 1;
 		}
-
 
 		const luaL_Reg textureMembers[] = {
 			{ "__index", texture_getField },
