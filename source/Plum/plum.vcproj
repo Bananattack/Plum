@@ -234,6 +234,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\script\timer_object.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\script\video_object.cpp"
 					>
 				</File>
@@ -521,6 +525,10 @@
 				</File>
 				<File
 					RelativePath=".\script\texture_object.h"
+					>
+				</File>
+				<File
+					RelativePath=".\script\timer_object.h"
 					>
 				</File>
 				<File

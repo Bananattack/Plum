@@ -32,6 +32,7 @@ namespace Plum
 		{
 			throw Engine::Exception("Couldn't initialize SDL.\n");
 		}
+		timer = Timer();
 		printf(" OK!\n");
 
 		printf("    Initializing video engine...");
@@ -165,7 +166,7 @@ namespace Plum
 		audio.update();
 		timer.update();
 
-		//std::string cap = titlePrefix + " - FPS: " + IntegerToString(timer.fps);
+		//std::string cap = titlePrefix + " - FPS: " + integerToString(timer.fps);
 		//SDL_WM_SetCaption(cap.c_str(), cap.c_str());
 
 		if((key[KEY_LALT].isPressed() || key[KEY_RALT].isPressed()) && (key[KEY_F4].isPressed() || key[KEY_X].isPressed()))
