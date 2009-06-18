@@ -41,6 +41,13 @@ namespace Plum
 			lua_call(L, 2, 0); \
 			return 0; \
 		} \
+		if(luaL_getmetafield(L, 1, std::string("get" + fieldName).c_str())) \
+		{ \
+			luaL_error(L, "Attempt to modify readonly field '%s' on " metaname " instance.", fieldName.c_str()); \
+			lua_pop(L, 1); \
+			return 0; \
+		} \
+		luaL_error(L, "Attempt to modify unknown field '%s' on " metaname " instance.", fieldName.c_str()); \
 		return 0; \
 	}
 }

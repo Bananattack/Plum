@@ -27,6 +27,13 @@ namespace Plum
 				lua_call(L, 2, 0);
 				return 0;
 			}
+			if(luaL_getmetafield(L, 1, std::string("get" + fieldName).c_str()))
+			{
+				luaL_error(L, "Attempt to modify readonly field '%s' on plum_video.", fieldName.c_str());
+				lua_pop(L, 1);
+				return 0;
+			}
+			luaL_error(L, "Attempt to modify unknown field '%s' on plum_video.", fieldName.c_str());
 			return 0;
 		}
 
@@ -106,8 +113,8 @@ namespace Plum
 			{ "getscreenHeight", video_getScreenHeight },
 			{ "getblendMode", video_getBlendMode },
 			{ "setblendMode", video_setBlendMode },
-			{ "getOpacity", video_getOpacity },
-			{ "setOpacity", video_setOpacity },
+			{ "getopacity", video_getOpacity },
+			{ "setopacity", video_setOpacity },
 
 			{ NULL, NULL }
 		};

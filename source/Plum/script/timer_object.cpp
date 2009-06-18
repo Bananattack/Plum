@@ -16,6 +16,19 @@ namespace Plum
 			return luaL_getmetafield(L, 1, fieldName.c_str());
 		}
 
+		static int timer_setField(lua_State* L)
+		{
+			std::string fieldName = luaL_checkstring(L, 2);
+			if(luaL_getmetafield(L, 1, std::string("get" + fieldName).c_str()))
+			{
+				luaL_error(L, "Attempt to modify readonly field '%s' on plum_timer.", fieldName.c_str());
+				lua_pop(L, 1);
+				return 0;
+			}
+			luaL_error(L, "Attempt to modify unknown field '%s' on plum_timer.", fieldName.c_str());
+			return 0;
+		}
+
 		static int timer_toString(lua_State* L)
 		{
 			lua_pushstring(L, "(plum.timer singleton)");
@@ -42,6 +55,7 @@ namespace Plum
 
 		const luaL_Reg timerMembers[] = {
 			{ "__index", timer_getField },
+			{ "__newindex", timer_setField },
 			{ "__tostring",	timer_toString },
 			{ "gettime", timer_getTime },
 			{ "getgap", timer_getGap },

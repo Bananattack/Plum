@@ -32,8 +32,8 @@ namespace Plum
 			bool isColumnEmpty(int cell, int column);
 		public:
 			void enableVariableWidth();
-			void printChar(int x, int y, char c, BlendMode mode);
-			void print(int x, int y, const std::string s, BlendMode mode = BlendUnspecified);
+			void printChar(int x, int y, char c, BlendMode mode, Color tint);
+			void print(int x, int y, const std::string s, BlendMode mode = BlendUnspecified, Color tint = Color::White);
 			
 	};
 }

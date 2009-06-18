@@ -71,7 +71,7 @@ namespace Plum
 		}
 	}
 
-	void Font::printChar(int x, int y, char c, BlendMode mode)
+	void Font::printChar(int x, int y, char c, BlendMode mode, Color tint)
 	{
 		// Only allow printable characters.
 		// Don't need to check for >= 128 because that would make c negative.
@@ -81,10 +81,10 @@ namespace Plum
 		int fx = ((c - 32) % FONT_COLUMNS) * (width + 1) + 1;
 		int fy = ((c - 32) / FONT_COLUMNS) * (height + 1) + 1;
 
-		texture->blitRegion(fx, fy, fx + width - 1, fy + height - 1, x, y, mode, Color::White);
+		texture->blitRegion(fx, fy, fx + width - 1, fy + height - 1, x, y, mode, tint);
 	}
 
-	void Font::print(int x, int y, std::string s, BlendMode mode)
+	void Font::print(int x, int y, std::string s, BlendMode mode, Color tint)
 	{
 		mode = (mode == BlendUnspecified) ? getBlendMode() : mode;
 		for (unsigned int i = 0; i < s.length(); i++)
@@ -93,7 +93,7 @@ namespace Plum
 			{
 				continue;
 			}
-			printChar(x, y, s[i], mode);
+			printChar(x, y, s[i], mode, tint);
 			x += glyphWidth[s[i]] + letterSpacing;
 		}
 	}

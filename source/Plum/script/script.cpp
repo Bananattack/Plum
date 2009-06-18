@@ -17,6 +17,7 @@ namespace Plum
 			initPlumModule(lua);
 			initTextureClass(lua);
 			initVideoClass(lua);
+			initFontClass(lua);
 			initTimerClass(lua);
 		}
 
