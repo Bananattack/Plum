@@ -70,14 +70,5 @@ extern "C"
 #include "engine/engine.h"
 
 #include "script/script.h"
-#include "script/plum_module.h"
-#include "script/texture_object.h"
-#include "script/video_object.h"
-#include "script/timer_object.h"
-#include "script/font_object.h"
-#include "script/image_object.h"
-#include "script/song_object.h"
-#include "script/sound_object.h"
-
 
 #endif

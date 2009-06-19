@@ -3,15 +3,6 @@
 
 namespace Plum
 {
-	namespace Script
-	{
-		extern lua_State* lua;
-		extern Engine* engine;
-
-		void startup(Engine* eng);
-		void runScript(std::string filename);
-		void shutdown();
-	}
 
 #define SCRIPT_OBJ_GETTER(funcname, udtype, metaname) \
 	static int funcname(lua_State* L) \
@@ -49,6 +40,25 @@ namespace Plum
 		} \
 		luaL_error(L, "Attempt to modify unknown field '%s' on " metaname " instance.", fieldName.c_str()); \
 		return 0; \
+	}
+
+	namespace Script
+	{
+		extern lua_State* lua;
+		extern Engine* engine;
+
+		void startup(Engine* eng);
+		void runScript(std::string filename);
+		void shutdown();
+
+		void initPlumModule(lua_State* lua);
+		void initTextureClass(lua_State* lua);
+		void initVideoClass(lua_State* lua);
+		void initFontClass(lua_State* lua);
+		void initTimerClass(lua_State* lua);
+
+		void initInputClass(lua_State* lua);
+		void initKeyboardClass(lua_State* lua);
 	}
 }
 #endif

@@ -94,7 +94,7 @@ namespace Plum
 				continue;
 			}
 			printChar(x, y, s[i], mode, tint);
-			x += glyphWidth[s[i]] + letterSpacing;
+			x += glyphWidth[s[i] - 32] + letterSpacing;
 		}
 	}
 }

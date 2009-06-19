@@ -87,10 +87,10 @@ namespace Plum
 			lua_setmetatable(L, -2);
 
 			// Pop timer namespace.
-			lua_pop(L, -1);
+			lua_pop(L, 1);
 
 			// Pop plum namespace.
-			lua_pop(L, -1);
+			lua_pop(L, 1);
 		}
 	}
 }

@@ -7,11 +7,17 @@ namespace Plum
 		lua_State* lua = NULL;
 		Engine* engine = NULL;
 
+		static int panic(lua_State *L)
+		{
+			__asm int 3;
+		}
+
 		void startup(Engine* eng)
 		{
 			engine = eng;
 
 			lua = luaL_newstate();
+			//lua_atpanic(lua, panic);
 			luaL_openlibs(lua);
 
 			initPlumModule(lua);
@@ -19,6 +25,8 @@ namespace Plum
 			initVideoClass(lua);
 			initFontClass(lua);
 			initTimerClass(lua);
+			initInputClass(lua);
+			initKeyboardClass(lua);
 		}
 
 		void shutdown()

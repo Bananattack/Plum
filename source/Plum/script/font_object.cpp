@@ -106,7 +106,7 @@ namespace Plum
 			lua_settable(L, -3);
 
 			// Pop plum namespace.
-			lua_pop(L, -1);
+			lua_pop(L, 1);
 		}
 	}
 }

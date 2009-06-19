@@ -508,47 +508,7 @@
 				Name="script"
 				>
 				<File
-					RelativePath=".\script\font_object.h"
-					>
-				</File>
-				<File
-					RelativePath=".\script\image_object.h"
-					>
-				</File>
-				<File
-					RelativePath=".\script\input_object.h"
-					>
-				</File>
-				<File
-					RelativePath=".\script\keyboard_object.h"
-					>
-				</File>
-				<File
-					RelativePath=".\script\plum_module.h"
-					>
-				</File>
-				<File
 					RelativePath=".\script\script.h"
-					>
-				</File>
-				<File
-					RelativePath=".\script\song_object.h"
-					>
-				</File>
-				<File
-					RelativePath=".\script\sound_object.h"
-					>
-				</File>
-				<File
-					RelativePath=".\script\texture_object.h"
-					>
-				</File>
-				<File
-					RelativePath=".\script\timer_object.h"
-					>
-				</File>
-				<File
-					RelativePath=".\script\video_object.h"
 					>
 				</File>
 			</Filter>

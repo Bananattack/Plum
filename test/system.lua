@@ -11,7 +11,8 @@ while true do
     plum.video.verticalGradientRect(0, 0, plum.video.screenWidth, plum.video.screenHeight, plum.color.rgb(0x33, 0x66, 0xcc), plum.color.Magenta)
     tex:blit(50, 50)
     
-    fnt:print(5, 5, "FPS: " .. plum.timer.fps);
+    fnt:print(5, 5, "FPS: " .. plum.timer.fps .. " " .. tostring(plum.key.Enter.pressed))
     
     plum.refresh()
 end
+
