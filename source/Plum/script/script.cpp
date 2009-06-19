@@ -27,6 +27,8 @@ namespace Plum
 			initTimerClass(lua);
 			initInputClass(lua);
 			initKeyboardClass(lua);
+			initSoundClass(lua);
+			initSongClass(lua);
 		}
 
 		void shutdown()

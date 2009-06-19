@@ -52,13 +52,22 @@ namespace Plum
 		void shutdown();
 
 		void initPlumModule(lua_State* lua);
+
 		void initTextureClass(lua_State* lua);
+		void initImageClass(lua_State* lua);
+		void initSpriteClass(lua_State* lua);
 		void initVideoClass(lua_State* lua);
 		void initFontClass(lua_State* lua);
+
 		void initTimerClass(lua_State* lua);
 
 		void initInputClass(lua_State* lua);
 		void initKeyboardClass(lua_State* lua);
+
+		void initSoundClass(lua_State* lua);
+		void initSongClass(lua_State* lua);
+		
+		
 	}
 }
 #endif

@@ -1,9 +1,15 @@
 plum.setTitle('Giraffes IN SPACE')
+
 tex = plum.Texture('resources/sprites/heartsprite.png')
 fnt = plum.Font('resources/fonts/ccfont.png')
 fnt:enableVariableWidth()
 
+snd = plum.Sound('resources/sounds/shot.wav');
+
 print("width = " .. tex.width .. "; height = " .. tex.height)
+
+song = plum.Song('resources/songs/zk-sf-09-boss2.xm');
+song:play()
 
 time = plum.timer.time
 
@@ -17,6 +23,12 @@ while not plum.key.Escape.pressed do
     fnt:print(5, 5, "FPS: " .. plum.timer.fps .. " " .. tostring(plum.key.Enter.pressed))
     for i = 1, plum.timer.gap do
         angle = angle + 0.5
+        
+        if plum.key.Enter.pressed then
+            snd:play()
+            plum.key.Enter.pressed = false
+        end
+        
         if plum.key.Left.pressed then
             x = x - 1
         elseif plum.key.Right.pressed then
