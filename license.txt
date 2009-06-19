@@ -25,3 +25,31 @@ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
 ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+The following are acknowledgements of the essential third party software used,
+along with some URLs to relevant license information.
+
+* FMOD is free for non-commercial use.
+  Commercial works must follow a different license.
+    See: http://www.fmod.org/index.php/sales
+* SDL uses the GNU LGPL License.
+    See: http://www.libsdl.org/license.php
+* Lua uses an MIT License:
+    See: http://www.lua.org/license.html
+* zziplib is released under a dual MPL/LGPL License.
+    See: http://zziplib.sourceforge.net/copying.html
+* zlib is released under the ZLIB License.
+    See: http://www.gzip.org/zlib/zlib_license.html
+* corona is released under the ZLIB License.
+    See: http://www.gzip.org/zlib/zlib_license.html
+
+
+The following are acknowledgements of third party software
+which were used as references for this project,
+along with some URLs to relevant license information.
+
+* ika is released under the GNU GPL2 license
+    See: http://www.gnu.org/licenses/gpl-2.0.html
+* Verge uses a 3-clause BSD License.
+    See: http://verge-rpg.com/docs/view.php?libid=1&section=336
