@@ -13,14 +13,12 @@ namespace Plum
 
 	BlendMode getBlendMode()
 	{
-		printf("Getting mode (_bM = %d)", _blendMode);
 		return _blendMode;
 	}
 
 	void setBlendMode(BlendMode mode)
 	{
 		_blendMode = mode;
-		printf("Setting mode (_bM = %d, m = %d)", _blendMode, mode);
 	}
 
 	int getOpacity()

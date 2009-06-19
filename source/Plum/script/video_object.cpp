@@ -52,6 +52,19 @@ namespace Plum
 			return 0;
 		}
 
+		static int video_rect(lua_State* L)
+		{
+			int x = luaL_checkint(L, 1);
+			int y = luaL_checkint(L, 2);
+			int x2 = luaL_checkint(L, 3);
+			int y2 = luaL_checkint(L, 4);
+			Color color = luaL_checkint(L, 5);
+			BlendMode mode = (BlendMode) luaL_optint(L, 6, BlendUnspecified);
+
+			(*engine).video.rect(x, y, x2, y2, color, mode);
+			return 0;
+		}
+
 		static int video_solidRect(lua_State* L)
 		{
 			int x = luaL_checkint(L, 1);
@@ -62,6 +75,76 @@ namespace Plum
 			BlendMode mode = (BlendMode) luaL_optint(L, 6, BlendUnspecified);
 
 			(*engine).video.solidRect(x, y, x2, y2, color, mode);
+			return 0;
+		}
+
+		static int video_line(lua_State* L)
+		{
+			int x = luaL_checkint(L, 1);
+			int y = luaL_checkint(L, 2);
+			int x2 = luaL_checkint(L, 3);
+			int y2 = luaL_checkint(L, 4);
+			Color color = luaL_checkint(L, 5);
+			BlendMode mode = (BlendMode) luaL_optint(L, 6, BlendUnspecified);
+
+			(*engine).video.line(x, y, x2, y2, color, mode);
+			return 0;
+		}
+
+		static int video_horizontalGradientRect(lua_State* L)
+		{
+			int x = luaL_checkint(L, 1);
+			int y = luaL_checkint(L, 2);
+			int x2 = luaL_checkint(L, 3);
+			int y2 = luaL_checkint(L, 4);
+			Color color = luaL_checkint(L, 5);
+			Color color2 = luaL_checkint(L, 6);
+			BlendMode mode = (BlendMode) luaL_optint(L, 7, BlendUnspecified);
+
+			(*engine).video.horizontalGradientRect(x, y, x2, y2, color, color2, mode);
+			return 0;
+		}
+
+		static int video_verticalGradientRect(lua_State* L)
+		{
+			int x = luaL_checkint(L, 1);
+			int y = luaL_checkint(L, 2);
+			int x2 = luaL_checkint(L, 3);
+			int y2 = luaL_checkint(L, 4);
+			Color color = luaL_checkint(L, 5);
+			Color color2 = luaL_checkint(L, 6);
+			BlendMode mode = (BlendMode) luaL_optint(L, 7, BlendUnspecified);
+
+			(*engine).video.verticalGradientRect(x, y, x2, y2, color, color2, mode);
+			return 0;
+		}
+
+
+		static int video_circle(lua_State* L)
+		{
+			int x = luaL_checkint(L, 1);
+			int y = luaL_checkint(L, 2);
+			int xrad = luaL_checkint(L, 3);
+			int yrad = luaL_checkint(L, 4);
+			Color color = luaL_checkint(L, 5);
+			Color color2 = luaL_checkint(L, 6);
+			BlendMode mode = (BlendMode) luaL_optint(L, 6, BlendUnspecified);
+
+			(*engine).video.circle(x, y, xrad, yrad, color, mode);
+			return 0;
+		}
+
+		static int video_solidCircle(lua_State* L)
+		{
+			int x = luaL_checkint(L, 1);
+			int y = luaL_checkint(L, 2);
+			int xrad = luaL_checkint(L, 3);
+			int yrad = luaL_checkint(L, 4);
+			Color color = luaL_checkint(L, 5);
+			Color color2 = luaL_checkint(L, 6);
+			BlendMode mode = (BlendMode) luaL_optint(L, 6, BlendUnspecified);
+
+			(*engine).video.solidCircle(x, y, xrad, yrad, color, mode);
 			return 0;
 		}
 
@@ -107,8 +190,15 @@ namespace Plum
 			{ "__index", video_getField },
 			{ "__newindex", video_setField },
 			{ "__tostring",	video_toString },
+
 			{ "clear", video_clear },
+			{ "rect", video_rect },
 			{ "solidRect", video_solidRect },
+			{ "circle", video_circle },
+			{ "solidCircle", video_solidCircle },
+			{ "horizontalGradientRect", video_horizontalGradientRect },
+			{ "verticalGradientRect", video_verticalGradientRect },
+
 			{ "getscreenWidth", video_getScreenWidth },
 			{ "getscreenHeight", video_getScreenHeight },
 			{ "getblendMode", video_getBlendMode },
@@ -134,7 +224,7 @@ namespace Plum
 			// Push plum namespace.
 			lua_getglobal(L, "plum");
 
-			// Create video namespace
+			// Create video
 			lua_newtable(L);
 			lua_pushvalue(L, -1);
 			lua_setfield(L, -3, "video");
@@ -142,7 +232,7 @@ namespace Plum
 			luaL_getmetatable(L, "plum_video");
 			lua_setmetatable(L, -2);
 
-			// Pop timer namespace.
+			// Pop video.
 			lua_pop(L, -1);
 
 

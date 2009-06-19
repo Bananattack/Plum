@@ -100,7 +100,7 @@ namespace Plum
 			// Push plum namespace.
 			lua_getglobal(L, "plum");
 
-			// plum.texture = <function font_new>
+			// plum.font = <function font_new>
 			lua_pushstring(L, "Font");
 			lua_pushcfunction(L, font_new);
 			lua_settable(L, -3);

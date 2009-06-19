@@ -79,7 +79,9 @@ namespace Plum
 			lua_setfield(lua, -2, "Cyan");
 			lua_pushinteger(lua, Color::Yellow);
 			lua_setfield(lua, -2, "Yellow");
-			
+			lua_pushinteger(lua, Color::Black);
+			lua_setfield(lua, -2, "Black");
+
 			lua_pushcfunction(lua, plum_rgb);
 			lua_setfield(lua, -2, "rgb");
 

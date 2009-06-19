@@ -137,7 +137,7 @@
 				AdditionalDependencies="../SDLmain.lib ../SDL.lib OpenGL32.lib ../fmodex_vc.lib"
 				OutputFile="$(SolutionDir)\test\$(ProjectName).exe"
 				GenerateDebugInformation="true"
-				SubSystem="1"
+				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				EntryPointSymbol="SDL_main"
