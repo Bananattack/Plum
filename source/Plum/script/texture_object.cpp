@@ -53,6 +53,23 @@ namespace Plum
 			return 0;
 		}
 
+		static int texture_blitRegion(lua_State* L)
+		{
+			Texture** t = CheckValidTextureObject(L, 1);
+			int sx = luaL_checkint(L, 2);
+			int sy = luaL_checkint(L, 3);
+			int sx2 = luaL_checkint(L, 4);
+			int sy2 = luaL_checkint(L, 5);
+			int dx = luaL_checkint(L, 6);
+			int dy = luaL_checkint(L, 7);
+			BlendMode mode = (BlendMode) luaL_optint(L, 8, BlendUnspecified);
+			Color tint = luaL_optint(L, 9, Color::White);
+
+			(*t)->blitRegion(sx, sy, sx2, sy2, dx, dy, mode, tint);
+
+			return 0;
+		}
+
 		static int texture_scaleBlit(lua_State* L)
 		{
 			Texture** t = CheckValidTextureObject(L, 1);
@@ -64,6 +81,25 @@ namespace Plum
 			Color tint = luaL_optint(L, 7, Color::White);
 
 			(*t)->scaleBlit(x, y, width, height, mode, tint);
+
+			return 0;
+		}
+
+		static int texture_scaleBlitRegion(lua_State* L)
+		{
+			Texture** t = CheckValidTextureObject(L, 1);
+			int sx = luaL_checkint(L, 2);
+			int sy = luaL_checkint(L, 3);
+			int sx2 = luaL_checkint(L, 4);
+			int sy2 = luaL_checkint(L, 5);
+			int dx = luaL_checkint(L, 6);
+			int dy = luaL_checkint(L, 7);
+			int scaledWidth = luaL_checkint(L, 8);
+			int scaledHeight = luaL_checkint(L, 9);
+			BlendMode mode = (BlendMode) luaL_optint(L, 10, BlendUnspecified);
+			Color tint = luaL_optint(L, 11, Color::White);
+
+			(*t)->scaleBlitRegion(sx, sy, sx2, sy2, dx, dy, scaledWidth, scaledHeight, mode, tint);
 
 			return 0;
 		}
@@ -82,6 +118,24 @@ namespace Plum
 			return 0;
 		}
 
+
+		static int texture_rotateBlitRegion(lua_State* L)
+		{
+			Texture** t = CheckValidTextureObject(L, 1);
+			int sx = luaL_checkint(L, 2);
+			int sy = luaL_checkint(L, 3);
+			int sx2 = luaL_checkint(L, 4);
+			int sy2 = luaL_checkint(L, 5);
+			int dx = luaL_checkint(L, 6);
+			int dy = luaL_checkint(L, 7);
+			double angle = luaL_checknumber(L, 8);
+			BlendMode mode = (BlendMode) luaL_optint(L, 9, BlendUnspecified);
+			Color tint = luaL_optint(L, 10, Color::White);
+
+			(*t)->rotateBlitRegion(sx, sy, sx2, sy2, dx, dy, angle, mode, tint);
+			return 0;
+		}
+
 		static int texture_rotateScaleBlit(lua_State* L)
 		{
 			Texture** t = CheckValidTextureObject(L, 1);
@@ -94,6 +148,24 @@ namespace Plum
 
 			(*t)->rotateScaleBlit(x, y, angle, scale, mode, tint);
 
+			return 0;
+		}
+
+		static int texture_rotateScaleBlitRegion(lua_State* L)
+		{
+			Texture** t = CheckValidTextureObject(L, 1);
+			int sx = luaL_checkint(L, 2);
+			int sy = luaL_checkint(L, 3);
+			int sx2 = luaL_checkint(L, 4);
+			int sy2 = luaL_checkint(L, 5);
+			int dx = luaL_checkint(L, 6);
+			int dy = luaL_checkint(L, 7);
+			double angle = luaL_checknumber(L, 8);
+			double scale = luaL_checknumber(L, 9);
+			BlendMode mode = (BlendMode) luaL_optint(L, 10, BlendUnspecified);
+			Color tint = luaL_optint(L, 11, Color::White);
+
+			(*t)->rotateScaleBlitRegion(sx, sy, sx2, sy2, dx, dy, angle, scale, mode, tint);
 			return 0;
 		}
 
@@ -119,9 +191,13 @@ namespace Plum
 			{ "__tostring",	texture_toString },
 			{ "__gc", texture_gc },
 			{ "blit", texture_blit },
+			{ "blitRegion", texture_blitRegion },
 			{ "scaleBlit", texture_scaleBlit },
+			{ "scaleBlitRegion", texture_scaleBlitRegion },
 			{ "rotateBlit", texture_rotateBlit },
+			{ "rotateBlitRegion", texture_rotateBlitRegion },
 			{ "rotateScaleBlit", texture_rotateScaleBlit },
+			{ "rotateScaleBlitRegion", texture_rotateScaleBlitRegion },
 			{ "getwidth", texture_getWidth },
 			{ "getheight", texture_getHeight },
 			{ NULL, NULL }
