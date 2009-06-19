@@ -147,13 +147,12 @@ namespace Plum
 			BIND_KEY(KEY_NUMLOCK, "NumLock");
 			BIND_KEY(KEY_CAPSLOCK, "CapsLock");
 			BIND_KEY(KEY_SCROLLOCK, "ScrollLock");
-			BIND_KEY(KEY_SCROLLOCK, "ScrollLock");
 			BIND_KEY(KEY_RSHIFT, "RightShift");
 			BIND_KEY(KEY_LSHIFT, "LeftShift");
-			BIND_KEY(KEY_RSHIFT, "RightCtrl");
-			BIND_KEY(KEY_LSHIFT, "LeftCtrl");
-			BIND_KEY(KEY_RSHIFT, "RightAlt");
-			BIND_KEY(KEY_LSHIFT, "LeftAlt");
+			BIND_KEY(KEY_RCTRL, "RightCtrl");
+			BIND_KEY(KEY_LCTRL, "LeftCtrl");
+			BIND_KEY(KEY_RALT, "RightAlt");
+			BIND_KEY(KEY_LALT, "LeftAlt");
 			BIND_KEY(KEY_BREAK, "Break");
 
 			// Pop plum.key table. (Whew.)

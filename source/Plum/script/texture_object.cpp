@@ -43,12 +43,56 @@ namespace Plum
 		static int texture_blit(lua_State* L)
 		{
 			Texture** t = CheckValidTextureObject(L, 1);
-			int x = lua_tointeger(L, 2);
-			int y = lua_tointeger(L, 3);
+			int x = luaL_checkint(L, 2);
+			int y = luaL_checkint(L, 3);
 			BlendMode mode = (BlendMode) luaL_optint(L, 4, BlendUnspecified);
 			Color tint = luaL_optint(L, 5, Color::White);
 
 			(*t)->blit(x, y, mode, tint);
+
+			return 0;
+		}
+
+		static int texture_scaleBlit(lua_State* L)
+		{
+			Texture** t = CheckValidTextureObject(L, 1);
+			int x = luaL_checkint(L, 2);
+			int y = luaL_checkint(L, 3);
+			int width = luaL_checkint(L, 4);
+			int height = luaL_checkint(L, 5);
+			BlendMode mode = (BlendMode) luaL_optint(L, 6, BlendUnspecified);
+			Color tint = luaL_optint(L, 7, Color::White);
+
+			(*t)->scaleBlit(x, y, width, height, mode, tint);
+
+			return 0;
+		}
+
+		static int texture_rotateBlit(lua_State* L)
+		{
+			Texture** t = CheckValidTextureObject(L, 1);
+			int x = luaL_checkint(L, 2);
+			int y = luaL_checkint(L, 3);
+			double angle = luaL_checknumber(L, 4);
+			BlendMode mode = (BlendMode) luaL_optint(L, 5, BlendUnspecified);
+			Color tint = luaL_optint(L, 6, Color::White);
+
+			(*t)->rotateBlit(x, y, angle, mode, tint);
+
+			return 0;
+		}
+
+		static int texture_rotateScaleBlit(lua_State* L)
+		{
+			Texture** t = CheckValidTextureObject(L, 1);
+			int x = luaL_checkint(L, 2);
+			int y = luaL_checkint(L, 3);
+			double angle = luaL_checknumber(L, 4);
+			double scale = luaL_checknumber(L, 5);
+			BlendMode mode = (BlendMode) luaL_optint(L, 6, BlendUnspecified);
+			Color tint = luaL_optint(L, 7, Color::White);
+
+			(*t)->rotateScaleBlit(x, y, angle, scale, mode, tint);
 
 			return 0;
 		}
@@ -75,6 +119,9 @@ namespace Plum
 			{ "__tostring",	texture_toString },
 			{ "__gc", texture_gc },
 			{ "blit", texture_blit },
+			{ "scaleBlit", texture_scaleBlit },
+			{ "rotateBlit", texture_rotateBlit },
+			{ "rotateScaleBlit", texture_rotateScaleBlit },
 			{ "getwidth", texture_getWidth },
 			{ "getheight", texture_getHeight },
 			{ NULL, NULL }

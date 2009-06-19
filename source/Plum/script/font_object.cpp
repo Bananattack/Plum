@@ -43,8 +43,8 @@ namespace Plum
 		static int font_print(lua_State* L)
 		{
 			Font** f = CheckValidFontObject(L, 1);
-			int x = lua_tointeger(L, 2);
-			int y = lua_tointeger(L, 3);
+			int x = luaL_checkint(L, 2);
+			int y = luaL_checkint(L, 3);
 			const char* message = lua_tostring(L, 4);
 			BlendMode mode = (BlendMode) luaL_optint(L, 5, BlendUnspecified);
 			Color tint = luaL_optint(L, 6, Color::White);
