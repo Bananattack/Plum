@@ -206,6 +206,10 @@
 				Name="script"
 				>
 				<File
+					RelativePath=".\script\file_object.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\script\font_object.cpp"
 					>
 				</File>

@@ -64,6 +64,7 @@ namespace Plum
 		void initMouseClass(lua_State* lua);
 		void initSoundClass(lua_State* lua);
 		void initSongClass(lua_State* lua);
+		void initFileClass(lua_State* lua);
 		
 		void image_pushForTexture(lua_State* L, Texture* tex);
 		

@@ -16,6 +16,17 @@ time = plum.timer.time
 x = 160; y = 120;
 angle = 0;
 
+do
+    local file = plum.File('resources/sprites/heartsprite.sprite', 'r')
+    while true do
+        local line = file:readLine()
+        if not line then
+            break
+        end
+        print(line)
+    end
+end
+
 while not plum.key.Escape.pressed do
     plum.video.verticalGradientRect(0, 0, plum.video.screenWidth, plum.video.screenHeight, plum.color.rgb(0x33, 0x66, 0xcc), plum.color.Magenta)
 

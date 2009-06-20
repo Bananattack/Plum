@@ -31,6 +31,7 @@ namespace Plum
 			initMouseClass(lua);
 			initSoundClass(lua);
 			initSongClass(lua);
+			initFileClass(lua);
 		}
 
 		void shutdown()
@@ -57,7 +58,7 @@ namespace Plum
 
 			if(luaL_loadbuffer(lua, buf, strlen(buf), std::string("@" + filename).c_str()) || lua_pcall(lua, 0, LUA_MULTRET, 0))
 			{
-				engine->quit("Error found in script:\n" + std::string(lua_tostring(lua, -1)));
+				throw Engine::Exception("Error found in script:\n" + std::string(lua_tostring(lua, -1)));
 			}
 		}
 	}
