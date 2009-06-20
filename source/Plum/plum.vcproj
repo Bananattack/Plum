@@ -222,6 +222,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\script\mouse_object.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\script\plum_module.cpp"
 					>
 				</File>

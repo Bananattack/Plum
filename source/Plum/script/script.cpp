@@ -28,6 +28,7 @@ namespace Plum
 			initTimerClass(lua);
 			initInputClass(lua);
 			initKeyboardClass(lua);
+			initMouseClass(lua);
 			initSoundClass(lua);
 			initSongClass(lua);
 		}

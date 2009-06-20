@@ -23,17 +23,22 @@ while not plum.key.Escape.pressed do
     tex:rotateScaleBlitRegion(1, 1, 16, 16, x, y, angle, 3 + math.sin(math.rad(plum.timer.time)) * 0.25 )
     
     fnt:print(5, 5, "FPS: " .. plum.timer.fps .. " " .. tostring(plum.key.Enter.pressed))
+    fnt:print(5, 5 + fnt.height, "Mouse: (" .. plum.mouse.x .. ", " .. plum.mouse.y .. ")")
     for i = 1, plum.timer.gap do
         angle = angle + 0.5
         
-        if plum.key.Enter.pressed then
+        if plum.key.Enter.pressed or plum.mouse.left.pressed then
             img = plum.Image('explosiveavatar96.png')
             img:blit(96 - math.random() * 192, 96 - math.random() * 192, tex.image, plum.blend.Opaque)
             tex:refresh()
         
             snd:play()
             plum.key.Enter.pressed = false
+            plum.mouse.left.pressed = false
         end
+        
+        y = y + (plum.mouse.wheelPosition * 3)
+        plum.mouse.wheelPosition = 0
         
         if plum.key.Left.pressed then
             x = x - 1

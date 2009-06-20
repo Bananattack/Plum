@@ -61,6 +61,7 @@ namespace Plum
 		void initTimerClass(lua_State* lua);
 		void initInputClass(lua_State* lua);
 		void initKeyboardClass(lua_State* lua);
+		void initMouseClass(lua_State* lua);
 		void initSoundClass(lua_State* lua);
 		void initSongClass(lua_State* lua);
 		
