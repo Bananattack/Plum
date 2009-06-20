@@ -52,6 +52,16 @@ namespace Plum
 				return yres;
 			}
 
+			int getWindowWidth()
+			{
+				return windowWidth;
+			}
+
+			int getWindowHeight()
+			{
+				return windowHeight;
+			}
+
 			void clear(Color color);
 			void setPixel(int x, int y, Color color, BlendMode mode = BlendUnspecified);
 			void line(int x, int y, int x2, int y2, Color color, BlendMode mode = BlendUnspecified);

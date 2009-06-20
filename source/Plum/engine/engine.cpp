@@ -4,7 +4,6 @@ namespace Plum
 {
 	Engine::Engine()
 	{
-		frontSurface = NULL;
 		initialized = false;
 	}
 
@@ -20,9 +19,9 @@ namespace Plum
 		printf("    Loading config settings...");
 		config = Config("plum.cfg", "config");
 
-		xres = config.hasValue("xres") ? config.getIntValue("xres") : 320;
-		yres = config.hasValue("yres") ? config.getIntValue("yres") : 240;
-		windowed = config.hasValue("windowed") ? config.getBoolValue("windowed") : true;
+		int xres = config.hasValue("xres") ? config.getIntValue("xres") : 320;
+		int yres = config.hasValue("yres") ? config.getIntValue("yres") : 240;
+		bool windowed = config.hasValue("windowed") ? config.getBoolValue("windowed") : true;
 
 		printf(" OK!\n");
 		printf("    (Settings: %dx%d resolution, %s mode)\n\n", xres, yres, windowed ? "windowed" : "fullscreen");
@@ -138,6 +137,36 @@ namespace Plum
 		::exit(0);
 	}
 
+	void Engine::handleMouseButtonEvent(SDL_MouseButtonEvent e)
+	{
+		bool state = (e.type == SDL_MOUSEBUTTONDOWN ? true : false);
+		// do something with event.button;
+		switch(e.button)
+		{
+			case SDL_BUTTON_LEFT:
+				mouse.button[MOUSE_LEFT].setPressed(state);
+				break;
+			case SDL_BUTTON_MIDDLE:
+				mouse.button[MOUSE_MIDDLE].setPressed(state);
+				break;
+			case SDL_BUTTON_RIGHT:
+				mouse.button[MOUSE_RIGHT].setPressed(state);
+				break;
+			case SDL_BUTTON_WHEELUP:
+				if(state)
+				{
+					mouse.wheelPosition--;
+				}
+				break;
+			case SDL_BUTTON_WHEELDOWN:
+				if(state)
+				{
+					mouse.wheelPosition++;
+				}
+				break;
+		}
+	}
+
 	void Engine::poll()
 	{
 		SDL_Event event;
@@ -147,14 +176,18 @@ namespace Plum
 			switch (event.type)
 			{
 				/*case SDL_VIDEORESIZE:
+					// I hate you SDL. Why do you nuke the GL context on resize events. You're a terrible person.
 					if(windowed)
 					{
 						adjustSize(event.resize.w, event.resize.h, windowed);
 					}
 					break;*/
+				case SDL_MOUSEMOTION:
+					mouse.x = (double) event.motion.x * (double) video.getScreenWidth() / (double) video.getWindowWidth();
+					mouse.y = (double) event.motion.y * (double) video.getScreenHeight() / (double) video.getWindowHeight();
 				case SDL_MOUSEBUTTONDOWN:
 				case SDL_MOUSEBUTTONUP:
-					// do something with event.button;
+					handleMouseButtonEvent(event.button);
 					break;
 				case SDL_KEYDOWN:
 					key[event.key.keysym.sym].setPressed(true);

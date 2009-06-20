@@ -15,5 +15,6 @@ namespace Plum
 }
 
 #include "keyboard.h"
+#include "mouse.h"
 
 #endif

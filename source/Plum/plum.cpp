@@ -34,7 +34,7 @@ void RunGame(Plum::Engine& engine)
 
 		engine.refresh();
 		engine.video.clear(Plum::rgb(0, 102, 255));
-		engine.video.solidRect(0, 0, engine.getScreenWidth(), engine.getScreenHeight(), Plum::rgb(0x33, 0x66, 0xcc));
+		engine.video.solidRect(0, 0, engine.video.getScreenWidth(), engine.video.getScreenHeight(), Plum::rgb(0x33, 0x66, 0xcc));
 
 		for(i = 0; i < engine.timer.gap; i++)
 		{

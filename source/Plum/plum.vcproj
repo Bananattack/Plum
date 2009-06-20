@@ -556,6 +556,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\engine\mouse.h"
+					>
+				</File>
+				<File
 					RelativePath=".\engine\sprite.h"
 					>
 				</File>
