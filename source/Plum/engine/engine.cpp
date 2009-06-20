@@ -185,6 +185,7 @@ namespace Plum
 				case SDL_MOUSEMOTION:
 					mouse.x = (double) event.motion.x * (double) video.getScreenWidth() / (double) video.getWindowWidth();
 					mouse.y = (double) event.motion.y * (double) video.getScreenHeight() / (double) video.getWindowHeight();
+					break;
 				case SDL_MOUSEBUTTONDOWN:
 				case SDL_MOUSEBUTTONUP:
 					handleMouseButtonEvent(event.button);
