@@ -38,6 +38,7 @@ namespace Plum
 			bool destroyed;
 
 			SDL_Surface* frontSurface;
+			SDL_Cursor* mouseCursor;
 		public:
 			Config config;
 			Video video;

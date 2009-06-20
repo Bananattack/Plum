@@ -1,7 +1,5 @@
 plum.setTitle('Giraffes IN SPACE')
 
-
-img = plum.Image('explosiveavatar96.png')
 tex = plum.Texture('resources/sprites/heartsprite.png')
 fnt = plum.Font('resources/fonts/ccfont.png')
 fnt:enableVariableWidth()
@@ -21,8 +19,7 @@ angle = 0;
 while not plum.key.Escape.pressed do
     plum.video.verticalGradientRect(0, 0, plum.video.screenWidth, plum.video.screenHeight, plum.color.rgb(0x33, 0x66, 0xcc), plum.color.Magenta)
 
-    img:blit(96 - math.random() * 192, 96 - math.random() * 192, tex.image, plum.blend.Opaque)
-    tex:refresh()
+
     tex:rotateScaleBlitRegion(1, 1, 16, 16, x, y, angle, 3 + math.sin(math.rad(plum.timer.time)) * 0.25 )
     
     fnt:print(5, 5, "FPS: " .. plum.timer.fps .. " " .. tostring(plum.key.Enter.pressed))
@@ -30,6 +27,10 @@ while not plum.key.Escape.pressed do
         angle = angle + 0.5
         
         if plum.key.Enter.pressed then
+            img = plum.Image('explosiveavatar96.png')
+            img:blit(96 - math.random() * 192, 96 - math.random() * 192, tex.image, plum.blend.Opaque)
+            tex:refresh()
+        
             snd:play()
             plum.key.Enter.pressed = false
         end

@@ -40,8 +40,6 @@ namespace Plum
 		windowWidth = frontSurface->w;
 		windowHeight = frontSurface->h;
 
-		SDL_ShowCursor(SDL_DISABLE);
-
 		glBlendEquationEXT = (void (PLUM_CALLBACK *)(int)) SDL_GL_GetProcAddress("glBlendEquationEXT");
 		if(!glBlendEquationEXT)
 		{

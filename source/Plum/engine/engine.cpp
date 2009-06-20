@@ -32,6 +32,33 @@ namespace Plum
 		{
 			throw Engine::Exception("Couldn't initialize SDL.\n");
 		}
+
+		SDL_ShowCursor((config.hasValue("hide_cursor") && config.getBoolValue("hide_cursor")) ? SDL_DISABLE : SDL_ENABLE);
+
+		// Create a nice *white* cursor, by inverting the data of each masked pixel.
+		// Technically still not correct, if you actually HAD a black cursor before :/
+		// I really wish SDL just let you get the system's "normal" cursor, instead of using this non-native UI shit.
+		{
+			SDL_Cursor* cursor = SDL_GetCursor();
+			int size = cursor->area.w * cursor->area.h / 8;
+			Uint8* data = new Uint8[size];
+			Uint8* mask = new Uint8[size];
+
+			for(int i = 0; i < size; i++)
+			{
+				// Copy default cursor!
+				mask[i] = cursor->mask[i];
+				data[i] = cursor->data[i];
+				// Invert things with a mask!
+				data[i] ^= (mask[i] & 1) | (mask[i] & 2) | (mask[i] & 4) | (mask[i] & 8)
+							| (mask[i] & 16) | (mask[i] & 32) | (mask[i] & 64) | (mask[i] & 128);
+			}
+
+			mouseCursor = SDL_CreateCursor(data, mask, cursor->area.w, cursor->area.h, cursor->hot_x, cursor->hot_y);
+			SDL_SetCursor(mouseCursor);
+		}
+
+
 		timer = Timer();
 		printf(" OK!\n");
 
@@ -76,6 +103,7 @@ namespace Plum
 		printf(" OK!\n");
 
 		printf("    Destroying SDL...");
+		SDL_FreeCursor(mouseCursor);
 		SDL_Quit();
 		printf(" OK!\n");
 
