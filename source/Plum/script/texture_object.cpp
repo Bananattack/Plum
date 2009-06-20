@@ -169,6 +169,14 @@ namespace Plum
 			return 0;
 		}
 
+		static int texture_refresh(lua_State* L)
+		{
+			Texture** t = CheckValidTextureObject(L, 1);
+			(*t)->refresh();
+
+			return 1;
+		}
+
 		static int texture_getWidth(lua_State* L)
 		{
 			Texture** t = CheckValidTextureObject(L, 1);
@@ -185,6 +193,13 @@ namespace Plum
 			return 1;
 		}
 
+		static int texture_getImage(lua_State* L)
+		{
+			Texture** t = CheckValidTextureObject(L, 1); 
+			image_pushForTexture(L, *t);
+			return 1;
+		}
+
 		const luaL_Reg textureMembers[] = {
 			{ "__index", texture_getField },
 			{ "__newindex",	texture_setField },
@@ -198,8 +213,10 @@ namespace Plum
 			{ "rotateBlitRegion", texture_rotateBlitRegion },
 			{ "rotateScaleBlit", texture_rotateScaleBlit },
 			{ "rotateScaleBlitRegion", texture_rotateScaleBlitRegion },
+			{ "refresh", texture_refresh },
 			{ "getwidth", texture_getWidth },
 			{ "getheight", texture_getHeight },
+			{ "getimage", texture_getImage },
 			{ NULL, NULL }
 		};
 

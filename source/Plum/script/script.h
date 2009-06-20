@@ -58,15 +58,13 @@ namespace Plum
 		void initSpriteClass(lua_State* lua);
 		void initVideoClass(lua_State* lua);
 		void initFontClass(lua_State* lua);
-
 		void initTimerClass(lua_State* lua);
-
 		void initInputClass(lua_State* lua);
 		void initKeyboardClass(lua_State* lua);
-
 		void initSoundClass(lua_State* lua);
 		void initSongClass(lua_State* lua);
 		
+		void image_pushForTexture(lua_State* L, Texture* tex);
 		
 	}
 }
