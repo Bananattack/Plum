@@ -4,9 +4,9 @@ namespace Plum
 {
 	namespace Script
 	{
-		static ImageHolder* CheckValidImageObject(lua_State* L, int index)
+		static ImageWrapper* checkValidImageObject(lua_State* L, int index)
 		{
-			return (ImageHolder*) luaL_checkudata(L, index, "plum_image");
+			return (ImageWrapper*) luaL_checkudata(L, index, "plum_image");
 		}
 
 		static int image_new(lua_State* L)
@@ -15,7 +15,7 @@ namespace Plum
 			{
 				const char* filename = lua_tostring(L, 1);
 
-				ImageHolder* img = (ImageHolder*) lua_newuserdata(L, sizeof(ImageHolder));
+				ImageWrapper* img = (ImageWrapper*) lua_newuserdata(L, sizeof(ImageWrapper));
 				luaL_getmetatable(L, "plum_image");
 				lua_setmetatable(L, -2);
 
@@ -29,7 +29,7 @@ namespace Plum
 				int w = lua_tointeger(L, 1);
 				int h = lua_tointeger(L, 2);
 
-				ImageHolder* img = (ImageHolder*) lua_newuserdata(L, sizeof(ImageHolder));
+				ImageWrapper* img = (ImageWrapper*) lua_newuserdata(L, sizeof(ImageWrapper));
 				luaL_getmetatable(L, "plum_image");
 				lua_setmetatable(L, -2);
 
@@ -47,7 +47,7 @@ namespace Plum
 
 		void image_pushForTexture(lua_State* L, Texture* tex)
 		{
-			ImageHolder* img = (ImageHolder*) lua_newuserdata(L, sizeof(ImageHolder));
+			ImageWrapper* img = (ImageWrapper*) lua_newuserdata(L, sizeof(ImageWrapper));
 			luaL_getmetatable(L, "plum_image");
 			lua_setmetatable(L, -2);
 
@@ -57,7 +57,7 @@ namespace Plum
 
 		static int image_gc(lua_State* L)
 		{
-			ImageHolder* img = CheckValidImageObject(L, 1);
+			ImageWrapper* img = checkValidImageObject(L, 1);
 
 			// Only delete if it doesn't belong to a texture of some sort.
 			if(img->canDelete)
@@ -68,22 +68,22 @@ namespace Plum
 			return 0;
 		}
 
-		SCRIPT_OBJ_GETTER(image_getField, ImageHolder*, "plum_image")
-		SCRIPT_OBJ_SETTER(image_setField, ImageHolder*, "plum_image")
+		SCRIPT_OBJ_GETTER(image_getField, ImageWrapper*, "plum_image")
+		SCRIPT_OBJ_SETTER(image_setField, ImageWrapper*, "plum_image")
 
 		static int image_toString(lua_State* L)
 		{
-			CheckValidImageObject(L, 1);
+			checkValidImageObject(L, 1);
 			lua_pushstring(L, "(plum.Image object)");
 			return 1;
 		}
 
 		static int image_blit(lua_State* L)
 		{
-			ImageHolder* img = CheckValidImageObject(L, 1);
+			ImageWrapper* img = checkValidImageObject(L, 1);
 			int x = luaL_checkint(L, 2);
 			int y = luaL_checkint(L, 3);
-			ImageHolder* dest = CheckValidImageObject(L, 4);
+			ImageWrapper* dest = checkValidImageObject(L, 4);
 			BlendMode mode = (BlendMode) luaL_optint(L, 5, getBlendMode());
 			
 			switch(mode)
@@ -109,7 +109,7 @@ namespace Plum
 
 		static int image_getWidth(lua_State* L)
 		{
-			ImageHolder* img = CheckValidImageObject(L, 1);
+			ImageWrapper* img = checkValidImageObject(L, 1);
 			lua_pushnumber(L, img->image->width);
 
 			return 1;
@@ -117,7 +117,7 @@ namespace Plum
 
 		static int image_getHeight(lua_State* L)
 		{
-			ImageHolder* img = CheckValidImageObject(L, 1);
+			ImageWrapper* img = checkValidImageObject(L, 1);
 			lua_pushnumber(L, img->image->height);
 
 			return 1;

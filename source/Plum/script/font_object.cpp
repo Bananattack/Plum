@@ -4,7 +4,7 @@ namespace Plum
 {
 	namespace Script
 	{
-		static Font** CheckValidFontObject(lua_State* L, int index)
+		static Font** checkValidFontObject(lua_State* L, int index)
 		{
 			return (Font**) luaL_checkudata(L, index, "plum_font");
 		}
@@ -24,7 +24,7 @@ namespace Plum
 
 		static int font_gc(lua_State* L)
 		{
-			Font** f = CheckValidFontObject(L, 1);
+			Font** f = checkValidFontObject(L, 1);
 			delete *f;
 
 			return 0;
@@ -35,14 +35,14 @@ namespace Plum
 
 		static int font_toString(lua_State* L)
 		{
-			CheckValidFontObject(L, 1);
+			checkValidFontObject(L, 1);
 			lua_pushstring(L, "(plum.Font object)");
 			return 1;
 		}
 
 		static int font_print(lua_State* L)
 		{
-			Font** f = CheckValidFontObject(L, 1);
+			Font** f = checkValidFontObject(L, 1);
 			int x = luaL_checkint(L, 2);
 			int y = luaL_checkint(L, 3);
 			const char* message = lua_tostring(L, 4);
@@ -55,21 +55,21 @@ namespace Plum
 
 		static int font_enableVariableWidth(lua_State* L)
 		{
-			Font** f = CheckValidFontObject(L, 1);
+			Font** f = checkValidFontObject(L, 1);
 			(*f)->enableVariableWidth();
 			return 1;
 		}
 
 		static int font_getWidth(lua_State* L)
 		{
-			Font** f = CheckValidFontObject(L, 1);
+			Font** f = checkValidFontObject(L, 1);
 			lua_pushnumber(L, (*f)->width);
 			return 1;
 		}
 
 		static int font_getHeight(lua_State* L)
 		{
-			Font** f = CheckValidFontObject(L, 1);
+			Font** f = checkValidFontObject(L, 1);
 			lua_pushnumber(L, (*f)->height);
 			return 1;
 		}

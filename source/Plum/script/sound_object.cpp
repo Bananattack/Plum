@@ -4,7 +4,7 @@ namespace Plum
 {
 	namespace Script
 	{
-		static Sound** CheckValidSoundObject(lua_State* L, int index)
+		static Sound** checkValidSoundObject(lua_State* L, int index)
 		{
 			return (Sound**) luaL_checkudata(L, index, "plum_sound");
 		}
@@ -24,7 +24,7 @@ namespace Plum
 
 		static int sound_gc(lua_State* L)
 		{
-			Sound** s = CheckValidSoundObject(L, 1);
+			Sound** s = checkValidSoundObject(L, 1);
 			delete *s;
 
 			return 0;
@@ -35,14 +35,14 @@ namespace Plum
 
 		static int sound_toString(lua_State* L)
 		{
-			CheckValidSoundObject(L, 1);
+			checkValidSoundObject(L, 1);
 			lua_pushstring(L, "(plum.Sound object)");
 			return 1;
 		}
 
 		static int sound_play(lua_State* L)
 		{
-			Sound** s = CheckValidSoundObject(L, 1);
+			Sound** s = checkValidSoundObject(L, 1);
 			int volume = luaL_optint(L, 2, 100);
 			lua_pushinteger(L, (*engine).audio.playSound(*s, volume));
 			return 1;

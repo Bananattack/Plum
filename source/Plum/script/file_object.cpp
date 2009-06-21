@@ -17,7 +17,7 @@ namespace Plum
 			} storage;
 		};
 
-		static FileWrapper* CheckValidFileWrapperObject(lua_State* L, int index)
+		static FileWrapper* checkValidFileObject(lua_State* L, int index)
 		{
 			return (FileWrapper*) luaL_checkudata(L, index, "plum_file");
 		}
@@ -75,7 +75,7 @@ namespace Plum
 
 		static int file_close(lua_State* L)
 		{
-			FileWrapper* f = CheckValidFileWrapperObject(L, 1);
+			FileWrapper* f = checkValidFileObject(L, 1);
 			if(!f->closed)
 			{
 				if(f->write)
@@ -96,7 +96,7 @@ namespace Plum
 
 		static int file_toString(lua_State* L)
 		{
-			CheckValidFileWrapperObject(L, 1);
+			checkValidFileObject(L, 1);
 			lua_pushstring(L, "(plum.File object)");
 			return 1;
 		}
@@ -132,7 +132,7 @@ namespace Plum
 
 		static int file_readByte(lua_State* L)
 		{
-			FileWrapper* f = CheckValidFileWrapperObject(L, 1);
+			FileWrapper* f = checkValidFileObject(L, 1);
 			// Can't access in write mode. Shoo.
 			if(f->write)
 			{
@@ -155,7 +155,7 @@ namespace Plum
 		// TODO: endian flips.
 		static int file_readInt(lua_State* L)
 		{
-			FileWrapper* f = CheckValidFileWrapperObject(L, 1);
+			FileWrapper* f = checkValidFileObject(L, 1);
 			// Can't access in write mode. Shoo.
 			if(f->write)
 			{
@@ -177,7 +177,7 @@ namespace Plum
 
 		static int file_readLine(lua_State* L)
 		{
-			FileWrapper* f = CheckValidFileWrapperObject(L, 1);
+			FileWrapper* f = checkValidFileObject(L, 1);
 			// Can't access in write mode. Shoo.
 			if(f->write)
 			{
@@ -225,7 +225,7 @@ namespace Plum
 
 		static int file_writeLine(lua_State* L)
 		{
-			FileWrapper* f = CheckValidFileWrapperObject(L, 1);
+			FileWrapper* f = checkValidFileObject(L, 1);
 			// Can't do this in read mode. Shoo.
 			if(!f->write)
 			{

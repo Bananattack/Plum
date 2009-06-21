@@ -4,9 +4,15 @@ namespace Plum
 {
 	namespace Script
 	{
-		static Texture** CheckValidTextureObject(lua_State* L, int index)
+		struct TextureWrapper
 		{
-			return (Texture**) luaL_checkudata(L, index, "plum_texture");
+			bool canDelete;
+			Texture* texture;	
+		};
+
+		static TextureWrapper* checkValidTextureObject(lua_State* L, int index)
+		{
+			return (TextureWrapper*) luaL_checkudata(L, index, "plum_texture");
 		}
 
 		static int texture_new(lua_State* L)
@@ -15,11 +21,13 @@ namespace Plum
 			{
 				const char* filename = lua_tostring(L, 1);
 
-				Texture** t = (Texture**) lua_newuserdata(L, sizeof(Texture*));
+				TextureWrapper* t = (TextureWrapper*) lua_newuserdata(L, sizeof(Texture*));
 				luaL_getmetatable(L, "plum_texture");
 				lua_setmetatable(L, -2);
 
-				*t = new Texture(filename);
+				t->canDelete = false;
+				t->texture = new Texture(filename);
+
 				return 1;
 			}
 			else if (lua_isuserdata(L, 1))
@@ -33,11 +41,12 @@ namespace Plum
 					{
 						lua_pop(L, 2);
 
-						Texture** t = (Texture**) lua_newuserdata(L, sizeof(Texture*));
+						TextureWrapper* t = (TextureWrapper*) lua_newuserdata(L, sizeof(Texture*));
 						luaL_getmetatable(L, "plum_texture");
 						lua_setmetatable(L, -2);
 
-						*t = new Texture(((ImageHolder*) data)->image);
+						t->canDelete = false;
+						t->texture = new Texture(((ImageWrapper*) data)->image);
 
 						return 1;
 					}
@@ -49,38 +58,41 @@ namespace Plum
 
 		static int texture_gc(lua_State* L)
 		{
-			Texture** t = CheckValidTextureObject(L, 1);
-			delete *t;
+			TextureWrapper* t = checkValidTextureObject(L, 1);
+			if(t->canDelete)
+			{
+				delete t->texture;
+			}
 
 			return 0;
 		}
 
-		SCRIPT_OBJ_GETTER(texture_getField, Texture**, "plum_texture")
-		SCRIPT_OBJ_SETTER(texture_setField, Texture**, "plum_texture")
+		SCRIPT_OBJ_GETTER(texture_getField, TextureWrapper*, "plum_texture")
+		SCRIPT_OBJ_SETTER(texture_setField, TextureWrapper*, "plum_texture")
 
 		static int texture_toString(lua_State* L)
 		{
-			CheckValidTextureObject(L, 1);
+			checkValidTextureObject(L, 1);
 			lua_pushstring(L, "(plum.Texture object)");
 			return 1;
 		}
 
 		static int texture_blit(lua_State* L)
 		{
-			Texture** t = CheckValidTextureObject(L, 1);
+			TextureWrapper* t = checkValidTextureObject(L, 1);
 			int x = luaL_checkint(L, 2);
 			int y = luaL_checkint(L, 3);
 			BlendMode mode = (BlendMode) luaL_optint(L, 4, BlendUnspecified);
 			Color tint = luaL_optint(L, 5, Color::White);
 
-			(*t)->blit(x, y, mode, tint);
+			t->texture->blit(x, y, mode, tint);
 
 			return 0;
 		}
 
 		static int texture_blitRegion(lua_State* L)
 		{
-			Texture** t = CheckValidTextureObject(L, 1);
+			TextureWrapper* t = checkValidTextureObject(L, 1);
 			int sx = luaL_checkint(L, 2);
 			int sy = luaL_checkint(L, 3);
 			int sx2 = luaL_checkint(L, 4);
@@ -90,14 +102,14 @@ namespace Plum
 			BlendMode mode = (BlendMode) luaL_optint(L, 8, BlendUnspecified);
 			Color tint = luaL_optint(L, 9, Color::White);
 
-			(*t)->blitRegion(sx, sy, sx2, sy2, dx, dy, mode, tint);
+			t->texture->blitRegion(sx, sy, sx2, sy2, dx, dy, mode, tint);
 
 			return 0;
 		}
 
 		static int texture_scaleBlit(lua_State* L)
 		{
-			Texture** t = CheckValidTextureObject(L, 1);
+			TextureWrapper* t = checkValidTextureObject(L, 1);
 			int x = luaL_checkint(L, 2);
 			int y = luaL_checkint(L, 3);
 			int width = luaL_checkint(L, 4);
@@ -105,14 +117,14 @@ namespace Plum
 			BlendMode mode = (BlendMode) luaL_optint(L, 6, BlendUnspecified);
 			Color tint = luaL_optint(L, 7, Color::White);
 
-			(*t)->scaleBlit(x, y, width, height, mode, tint);
+			t->texture->scaleBlit(x, y, width, height, mode, tint);
 
 			return 0;
 		}
 
 		static int texture_scaleBlitRegion(lua_State* L)
 		{
-			Texture** t = CheckValidTextureObject(L, 1);
+			TextureWrapper* t = checkValidTextureObject(L, 1);
 			int sx = luaL_checkint(L, 2);
 			int sy = luaL_checkint(L, 3);
 			int sx2 = luaL_checkint(L, 4);
@@ -124,21 +136,21 @@ namespace Plum
 			BlendMode mode = (BlendMode) luaL_optint(L, 10, BlendUnspecified);
 			Color tint = luaL_optint(L, 11, Color::White);
 
-			(*t)->scaleBlitRegion(sx, sy, sx2, sy2, dx, dy, scaledWidth, scaledHeight, mode, tint);
+			t->texture->scaleBlitRegion(sx, sy, sx2, sy2, dx, dy, scaledWidth, scaledHeight, mode, tint);
 
 			return 0;
 		}
 
 		static int texture_rotateBlit(lua_State* L)
 		{
-			Texture** t = CheckValidTextureObject(L, 1);
+			TextureWrapper* t = checkValidTextureObject(L, 1);
 			int x = luaL_checkint(L, 2);
 			int y = luaL_checkint(L, 3);
 			double angle = luaL_checknumber(L, 4);
 			BlendMode mode = (BlendMode) luaL_optint(L, 5, BlendUnspecified);
 			Color tint = luaL_optint(L, 6, Color::White);
 
-			(*t)->rotateBlit(x, y, angle, mode, tint);
+			t->texture->rotateBlit(x, y, angle, mode, tint);
 
 			return 0;
 		}
@@ -146,7 +158,7 @@ namespace Plum
 
 		static int texture_rotateBlitRegion(lua_State* L)
 		{
-			Texture** t = CheckValidTextureObject(L, 1);
+			TextureWrapper* t = checkValidTextureObject(L, 1);
 			int sx = luaL_checkint(L, 2);
 			int sy = luaL_checkint(L, 3);
 			int sx2 = luaL_checkint(L, 4);
@@ -157,13 +169,13 @@ namespace Plum
 			BlendMode mode = (BlendMode) luaL_optint(L, 9, BlendUnspecified);
 			Color tint = luaL_optint(L, 10, Color::White);
 
-			(*t)->rotateBlitRegion(sx, sy, sx2, sy2, dx, dy, angle, mode, tint);
+			t->texture->rotateBlitRegion(sx, sy, sx2, sy2, dx, dy, angle, mode, tint);
 			return 0;
 		}
 
 		static int texture_rotateScaleBlit(lua_State* L)
 		{
-			Texture** t = CheckValidTextureObject(L, 1);
+			TextureWrapper* t = checkValidTextureObject(L, 1);
 			int x = luaL_checkint(L, 2);
 			int y = luaL_checkint(L, 3);
 			double angle = luaL_checknumber(L, 4);
@@ -171,14 +183,14 @@ namespace Plum
 			BlendMode mode = (BlendMode) luaL_optint(L, 6, BlendUnspecified);
 			Color tint = luaL_optint(L, 7, Color::White);
 
-			(*t)->rotateScaleBlit(x, y, angle, scale, mode, tint);
+			t->texture->rotateScaleBlit(x, y, angle, scale, mode, tint);
 
 			return 0;
 		}
 
 		static int texture_rotateScaleBlitRegion(lua_State* L)
 		{
-			Texture** t = CheckValidTextureObject(L, 1);
+			TextureWrapper* t = checkValidTextureObject(L, 1);
 			int sx = luaL_checkint(L, 2);
 			int sy = luaL_checkint(L, 3);
 			int sx2 = luaL_checkint(L, 4);
@@ -190,38 +202,38 @@ namespace Plum
 			BlendMode mode = (BlendMode) luaL_optint(L, 10, BlendUnspecified);
 			Color tint = luaL_optint(L, 11, Color::White);
 
-			(*t)->rotateScaleBlitRegion(sx, sy, sx2, sy2, dx, dy, angle, scale, mode, tint);
+			t->texture->rotateScaleBlitRegion(sx, sy, sx2, sy2, dx, dy, angle, scale, mode, tint);
 			return 0;
 		}
 
 		static int texture_refresh(lua_State* L)
 		{
-			Texture** t = CheckValidTextureObject(L, 1);
-			(*t)->refresh();
+			TextureWrapper* t = checkValidTextureObject(L, 1);
+			t->texture->refresh();
 
 			return 1;
 		}
 
 		static int texture_getWidth(lua_State* L)
 		{
-			Texture** t = CheckValidTextureObject(L, 1);
-			lua_pushnumber(L, (*t)->getImageWidth());
+			TextureWrapper* t = checkValidTextureObject(L, 1);
+			lua_pushnumber(L, t->texture->getImageWidth());
 
 			return 1;
 		}
 
 		static int texture_getHeight(lua_State* L)
 		{
-			Texture** t = CheckValidTextureObject(L, 1);
-			lua_pushnumber(L, (*t)->getImageHeight());
+			TextureWrapper* t = checkValidTextureObject(L, 1);
+			lua_pushnumber(L, t->texture->getImageHeight());
 
 			return 1;
 		}
 
 		static int texture_getImage(lua_State* L)
 		{
-			Texture** t = CheckValidTextureObject(L, 1); 
-			image_pushForTexture(L, *t);
+			TextureWrapper* t = checkValidTextureObject(L, 1); 
+			image_pushForTexture(L, t->texture);
 			return 1;
 		}
 

@@ -4,7 +4,7 @@ namespace Plum
 {
 	namespace Script
 	{
-		static Input** CheckValidInputObject(lua_State* L, int index)
+		static Input** checkValidInputObject(lua_State* L, int index)
 		{
 			return (Input**) luaL_checkudata(L, index, "plum_input");
 		}
@@ -27,21 +27,21 @@ namespace Plum
 
 		static int input_toString(lua_State* L)
 		{
-			CheckValidInputObject(L, 1);
+			checkValidInputObject(L, 1);
 			lua_pushstring(L, "(plum.Input object)");
 			return 1;
 		}
 
 		static int input_getPressed(lua_State* L)
 		{
-			Input** inp = CheckValidInputObject(L, 1);
+			Input** inp = checkValidInputObject(L, 1);
 			lua_pushboolean(L, (*inp)->isPressed());
 			return 1;
 		}
 
 		static int input_setPressed(lua_State* L)
 		{
-			Input** inp = CheckValidInputObject(L, 1);
+			Input** inp = checkValidInputObject(L, 1);
 			(*inp)->setPressed(lua_toboolean(L, 2) != 0);
 			return 0;
 		}

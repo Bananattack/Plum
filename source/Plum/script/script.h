@@ -66,7 +66,7 @@ namespace Plum
 		void initSongClass(lua_State* lua);
 		void initFileClass(lua_State* lua);
 
-		struct ImageHolder
+		struct ImageWrapper
 		{
 			Image* image;
 			bool canDelete;
