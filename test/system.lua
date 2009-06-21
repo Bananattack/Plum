@@ -1,6 +1,6 @@
 plum.setTitle('Giraffes IN SPACE')
 
-tex = plum.Texture('resources/sprites/heartsprite.png')
+tex = plum.Texture(plum.Image('resources/sprites/heartsprite.png'))
 fnt = plum.Font('resources/fonts/ccfont.png')
 fnt:enableVariableWidth()
 

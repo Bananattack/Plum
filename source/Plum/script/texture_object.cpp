@@ -11,15 +11,40 @@ namespace Plum
 
 		static int texture_new(lua_State* L)
 		{
-			const char* filename = lua_tostring(L, 1);
+			if(lua_isstring(L, 1))
+			{
+				const char* filename = lua_tostring(L, 1);
 
-			Texture** t = (Texture**) lua_newuserdata(L, sizeof(Texture*));
-			luaL_getmetatable(L, "plum_texture");
-			lua_setmetatable(L, -2);
+				Texture** t = (Texture**) lua_newuserdata(L, sizeof(Texture*));
+				luaL_getmetatable(L, "plum_texture");
+				lua_setmetatable(L, -2);
 
-			*t = new Texture(filename);
-			
-			return 1;
+				*t = new Texture(filename);
+				return 1;
+			}
+			else if (lua_isuserdata(L, 1))
+			{
+				void* data = lua_touserdata(L, 1);
+				if(lua_getmetatable(L, 1))
+				{
+					lua_getfield(L, LUA_REGISTRYINDEX, "plum_image");
+					// Creating a texture from an image?
+					if (lua_rawequal(L, -1, -2))
+					{
+						lua_pop(L, 2);
+
+						Texture** t = (Texture**) lua_newuserdata(L, sizeof(Texture*));
+						luaL_getmetatable(L, "plum_texture");
+						lua_setmetatable(L, -2);
+
+						*t = new Texture(((ImageHolder*) data)->image);
+
+						return 1;
+					}
+				}
+			}
+			luaL_error(L, "Attempt to call plum.Texture constructor with invalid argument types.\nMust be (string filename) or (plum.Image image).");
+			return 0;
 		}
 
 		static int texture_gc(lua_State* L)

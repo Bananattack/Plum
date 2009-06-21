@@ -235,6 +235,7 @@ namespace Plum
 			const char* message = lua_tostring(L, 2);
 
 			fwrite(message, strlen(message), 1, f->storage.physicalFile);
+			return 0;
 		}
 
 		const luaL_Reg fileMembers[] = {

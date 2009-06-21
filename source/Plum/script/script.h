@@ -65,6 +65,12 @@ namespace Plum
 		void initSoundClass(lua_State* lua);
 		void initSongClass(lua_State* lua);
 		void initFileClass(lua_State* lua);
+
+		struct ImageHolder
+		{
+			Image* image;
+			bool canDelete;
+		};
 		
 		void image_pushForTexture(lua_State* L, Texture* tex);
 		
