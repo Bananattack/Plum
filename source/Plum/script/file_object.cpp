@@ -4,19 +4,22 @@ namespace Plum
 {
 	namespace Script
 	{
-		/*struct FileWrapper
+		struct FileWrapper
 		{
-			bool physical;
+			// Write mode uses physical files, read mode uses a zzip wrapped file.
+			bool write;
+			// So we don't double close.
+			bool closed;
 			union
 			{
 				FILE* physicalFile;
-				ZZIP* zzipFile;
-			} f;
-		};*/
+				ZZIP_FILE* zzipFile;
+			} storage;
+		};
 
-		static ZZIP_FILE** CheckValidZZIP_FILEObject(lua_State* L, int index)
+		static FileWrapper* CheckValidFileWrapperObject(lua_State* L, int index)
 		{
-			return (ZZIP_FILE**) luaL_checkudata(L, index, "plum_file");
+			return (FileWrapper*) luaL_checkudata(L, index, "plum_file");
 		}
 
 		static int file_new(lua_State* L)
@@ -24,33 +27,76 @@ namespace Plum
 			const char* filename = lua_tostring(L, 1);
 			const char* mode = lua_tostring(L, 2);
 
-			ZZIP_FILE* file = zzip_fopen_plum(filename, mode);
-			if(file)
+			bool write;
+			FILE* physicalFile = NULL;
+			ZZIP_FILE* zzipFile = NULL;
+
+			if(mode[0] == 'r')
 			{
-				ZZIP_FILE** f = (ZZIP_FILE**) lua_newuserdata(L, sizeof(ZZIP_FILE*));
+				write = false;
+				zzipFile = zzip_fopen_plum(filename, "rb");
+			}
+			else if(mode[0] == 'w')
+			{
+				write = true;
+				physicalFile = fopen(filename, "wb");
+			}
+			else if(mode[0] == 'a')
+			{
+				write = true;
+				physicalFile = fopen(filename, "ab");
+			}
+			else
+			{
+				return 0;
+			}
+			
+			if(zzipFile || physicalFile)
+			{
+				FileWrapper* f = (FileWrapper*) lua_newuserdata(L, sizeof(FileWrapper));
 				luaL_getmetatable(L, "plum_file");
 				lua_setmetatable(L, -2);
 
-				*f = file;
+				f->write = write;
+				f->closed = false;
+				if(!write)
+				{
+					f->storage.zzipFile = zzipFile;
+				}
+				else
+				{
+					f->storage.physicalFile = physicalFile;
+				}
+
 				return 1;
 			}
 			return 0;
 		}
 
-		static int file_gc(lua_State* L)
+		static int file_close(lua_State* L)
 		{
-			ZZIP_FILE** f = CheckValidZZIP_FILEObject(L, 1);
-			zzip_close(*f);
-
+			FileWrapper* f = CheckValidFileWrapperObject(L, 1);
+			if(!f->closed)
+			{
+				if(f->write)
+				{
+					fclose(f->storage.physicalFile);
+				}
+				else
+				{
+					zzip_close(f->storage.zzipFile);
+				}
+				f->closed = true;
+			}
 			return 0;
 		}
 
-		SCRIPT_OBJ_GETTER(file_getField, ZZIP_FILE**, "plum_file")
-		SCRIPT_OBJ_SETTER(file_setField, ZZIP_FILE**, "plum_file")
+		SCRIPT_OBJ_GETTER(file_getField, FileWrapper*, "plum_file")
+		SCRIPT_OBJ_SETTER(file_setField, FileWrapper*, "plum_file")
 
 		static int file_toString(lua_State* L)
 		{
-			CheckValidZZIP_FILEObject(L, 1);
+			CheckValidFileWrapperObject(L, 1);
 			lua_pushstring(L, "(plum.File object)");
 			return 1;
 		}
@@ -86,9 +132,16 @@ namespace Plum
 
 		static int file_readByte(lua_State* L)
 		{
-			ZZIP_FILE** f = CheckValidZZIP_FILEObject(L, 1);
+			FileWrapper* f = CheckValidFileWrapperObject(L, 1);
+			// Can't access in write mode. Shoo.
+			if(f->write)
+			{
+				luaL_error(L, "Attempt to read from file which was opened for writing.");
+				return 0;
+			}
+
 			unsigned char v;
-			if(zzip_fread(&v, sizeof(unsigned char), 1, *f) == 0)
+			if(zzip_fread(&v, sizeof(unsigned char), 1,  f->storage.zzipFile) == 0)
 			{
 				return 0;
 			}
@@ -102,9 +155,16 @@ namespace Plum
 		// TODO: endian flips.
 		static int file_readInt(lua_State* L)
 		{
-			ZZIP_FILE** f = CheckValidZZIP_FILEObject(L, 1);
+			FileWrapper* f = CheckValidFileWrapperObject(L, 1);
+			// Can't access in write mode. Shoo.
+			if(f->write)
+			{
+				luaL_error(L, "Attempt to read from file which was opened for writing.");
+				return 0;
+			}
+
 			int v;
-			if(zzip_fread(&v, sizeof(int), 1, *f) == 0)
+			if(zzip_fread(&v, sizeof(int), 1, f->storage.zzipFile) == 0)
 			{
 				return 0;
 			}
@@ -117,7 +177,13 @@ namespace Plum
 
 		static int file_readLine(lua_State* L)
 		{
-			ZZIP_FILE** f = CheckValidZZIP_FILEObject(L, 1);
+			FileWrapper* f = CheckValidFileWrapperObject(L, 1);
+			// Can't access in write mode. Shoo.
+			if(f->write)
+			{
+				luaL_error(L, "Attempt to read from file which was opened for writing.");
+				return 0;
+			}
 
 			// Adapted from FileReadLn in Verge, with modifications to make it fit nicer.
 			char buffer[256];
@@ -126,7 +192,7 @@ namespace Plum
 			int eol = 0;
 			do
 			{
-				zzip_fgets(buffer, 255, *f);
+				zzip_fgets(buffer, 255,  f->storage.zzipFile);
 
 				// we didn't read anything, this is eof
 				if(buffer[0] == '\0')
@@ -157,14 +223,30 @@ namespace Plum
 			}
 		}
 
+		static int file_writeLine(lua_State* L)
+		{
+			FileWrapper* f = CheckValidFileWrapperObject(L, 1);
+			// Can't do this in read mode. Shoo.
+			if(!f->write)
+			{
+				luaL_error(L, "Attempt to write to file which was opened for reading.");
+				return 0;
+			}
+			const char* message = lua_tostring(L, 2);
+
+			fwrite(message, strlen(message), 1, f->storage.physicalFile);
+		}
+
 		const luaL_Reg fileMembers[] = {
 			{ "__index", file_getField },
 			{ "__newindex",	file_setField },
 			{ "__tostring",	file_toString },
-			{ "__gc", file_gc },
+			{ "__gc", file_close }, // For the lazy.
+			{ "close", file_close }, // For the wise.
 			{ "readByte", file_readByte },
 			{ "readInt", file_readInt },
 			{ "readLine", file_readLine },
+			{ "writeLine", file_writeLine },
 			{ NULL, NULL }
 		};
 

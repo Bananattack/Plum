@@ -8,13 +8,19 @@ snd = plum.Sound('resources/sounds/shot.wav');
 
 print("width = " .. tex.width .. "; height = " .. tex.height)
 
-song = plum.Song('resources/songs/zk-sf-09-boss2.xm');
-song:play()
+--song = plum.Song('resources/songs/zk-sf-09-boss2.xm');
+--song:play()
 
 time = plum.timer.time
 
 x = 160; y = 120;
 angle = 0;
+
+do
+    local file = plum.File('test.txt', 'w')
+    file:writeLine("Hey there son.");
+    file:close()
+end
 
 do
     local file = plum.File('resources/sprites/heartsprite.sprite', 'r')
@@ -25,6 +31,7 @@ do
         end
         print(line)
     end
+    file:close()
 end
 
 while not plum.key.Escape.pressed do
