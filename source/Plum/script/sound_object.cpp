@@ -9,7 +9,7 @@ namespace Plum
 			return (Sound**) luaL_checkudata(L, index, "plum_sound");
 		}
 
-		static int sound_new(lua_State* L)
+		static int soundNew(lua_State* L)
 		{
 			const char* filename = lua_tostring(L, 1);
 
@@ -22,7 +22,7 @@ namespace Plum
 			return 1;
 		}
 
-		static int sound_gc(lua_State* L)
+		static int soundGC(lua_State* L)
 		{
 			Sound** s = checkValidSoundObject(L, 1);
 			delete *s;
@@ -30,17 +30,17 @@ namespace Plum
 			return 0;
 		}
 
-		SCRIPT_OBJ_GETTER(sound_getField, Sound**, "plum_sound")
-		SCRIPT_OBJ_SETTER(sound_setField, Sound**, "plum_sound")
+		SCRIPT_OBJ_GETTER(soundGetField, Sound**, "plum_sound")
+		SCRIPT_OBJ_SETTER(soundSetField, Sound**, "plum_sound")
 
-		static int sound_toString(lua_State* L)
+		static int soundToString(lua_State* L)
 		{
 			checkValidSoundObject(L, 1);
 			lua_pushstring(L, "(plum.Sound object)");
 			return 1;
 		}
 
-		static int sound_play(lua_State* L)
+		static int soundPlay(lua_State* L)
 		{
 			Sound** s = checkValidSoundObject(L, 1);
 			int volume = luaL_optint(L, 2, 100);
@@ -49,11 +49,11 @@ namespace Plum
 		}
 
 		const luaL_Reg soundMembers[] = {
-			{ "__index", sound_getField },
-			{ "__newindex",	sound_setField },
-			{ "__tostring",	sound_toString },
-			{ "__gc", sound_gc },
-			{ "play", sound_play },
+			{ "__index", soundGetField },
+			{ "__newindex",	soundSetField },
+			{ "__tostring",	soundToString },
+			{ "__gc", soundGC },
+			{ "play", soundPlay },
 			{ NULL, NULL }
 		};
 
@@ -71,9 +71,9 @@ namespace Plum
 			// Push plum namespace.
 			lua_getglobal(L, "plum");
 
-			// plum.sound = <function sound_new>
+			// plum.sound = <function soundNew>
 			lua_pushstring(L, "Sound");
-			lua_pushcfunction(L, sound_new);
+			lua_pushcfunction(L, soundNew);
 			lua_settable(L, -3);
 
 			// Pop plum namespace.

@@ -4,7 +4,7 @@ namespace Plum
 {
 	namespace Script
 	{
-		static int mouse_getField(lua_State* L)
+		static int mouseGetField(lua_State* L)
 		{
 			std::string fieldName = luaL_checkstring(L, 2);
 			if(luaL_getmetafield(L, 1, std::string("get" + fieldName).c_str()))
@@ -16,7 +16,7 @@ namespace Plum
 			return luaL_getmetafield(L, 1, fieldName.c_str());
 		}
 
-		static int mouse_setField(lua_State* L)
+		static int mouseSetField(lua_State* L)
 		{
 			std::string fieldName = luaL_checkstring(L, 2);
 			/* L, 3 is the value to set. */
@@ -37,38 +37,38 @@ namespace Plum
 			return 0;
 		}
 
-		static int mouse_toString(lua_State* L)
+		static int mouseToString(lua_State* L)
 		{
 			lua_pushstring(L, "(plum.mouse singleton)");
 			return 1;
 		}
 
-		static int mouse_getX(lua_State* L)
+		static int mouseGetX(lua_State* L)
 		{
 			lua_pushnumber(L, (*engine).mouse.x);
 			return 1;
 		}
 
-		static int mouse_getY(lua_State* L)
+		static int mouseGetY(lua_State* L)
 		{
 			lua_pushnumber(L, (*engine).mouse.y);
 			return 1;
 		}
 
-		static int mouse_getWheelPosition(lua_State* L)
+		static int mouseGetWheelPosition(lua_State* L)
 		{
 			lua_pushinteger(L, (*engine).mouse.wheelPosition);
 			return 1;
 		}
 
-		static int mouse_setWheelPosition(lua_State* L)
+		static int mouseSetWheelPosition(lua_State* L)
 		{
 			int value = luaL_checkint(L, 2);
 			(*engine).mouse.wheelPosition = value;
 			return 0;
 		}
 
-		static int mouse_getLeft(lua_State* L)
+		static int mouseGetLeft(lua_State* L)
 		{
 			lua_getglobal(L, "plum");
 			lua_getfield(L, -1, "_Input");
@@ -86,7 +86,7 @@ namespace Plum
 			return 0;
 		}
 
-		static int mouse_getMiddle(lua_State* L)
+		static int mouseGetMiddle(lua_State* L)
 		{
 			lua_getglobal(L, "plum");
 			lua_getfield(L, -1, "_Input");
@@ -104,7 +104,7 @@ namespace Plum
 			return 0;
 		}
 
-		static int mouse_getRight(lua_State* L)
+		static int mouseGetRight(lua_State* L)
 		{
 			lua_getglobal(L, "plum");
 			lua_getfield(L, -1, "_Input");
@@ -123,16 +123,16 @@ namespace Plum
 		}
 
 		const luaL_Reg mouseMembers[] = {
-			{ "__index", mouse_getField },
-			{ "__newindex",	mouse_setField },
-			{ "__tostring",	mouse_toString },
-			{ "getx", mouse_getX },
-			{ "gety", mouse_getY },
-			{ "getwheelPosition", mouse_getWheelPosition },
-			{ "setwheelPosition", mouse_setWheelPosition },
-			{ "getleft", mouse_getLeft },
-			{ "getmiddle", mouse_getMiddle },
-			{ "getright", mouse_getRight },
+			{ "__index", mouseGetField },
+			{ "__newindex",	mouseSetField },
+			{ "__tostring",	mouseToString },
+			{ "getx", mouseGetX },
+			{ "gety", mouseGetY },
+			{ "getwheelPosition", mouseGetWheelPosition },
+			{ "setwheelPosition", mouseSetWheelPosition },
+			{ "getleft", mouseGetLeft },
+			{ "getmiddle", mouseGetMiddle },
+			{ "getright", mouseGetRight },
 			{ NULL, NULL }
 		};
 

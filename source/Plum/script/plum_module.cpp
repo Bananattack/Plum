@@ -5,7 +5,7 @@ namespace Plum
 {
 	namespace Script
 	{
-		static int plum_exit(lua_State* lua)
+		static int plumExit(lua_State* lua)
 		{
 			int argumentCount = lua_gettop(lua);
 
@@ -21,13 +21,13 @@ namespace Plum
 			return 0;
 		}
 
-		static int plum_refresh(lua_State* lua)
+		static int plumRefresh(lua_State* lua)
 		{
 			engine->refresh();
 			return 0;
 		}
 
-		static int plum_setTitle(lua_State* lua)
+		static int plumSetTitle(lua_State* lua)
 		{
 			int argumentCount = lua_gettop(lua);
 
@@ -39,7 +39,7 @@ namespace Plum
 			return 0;
 		}
 
-		static int plum_rgb(lua_State* lua)
+		static int plumRGB(lua_State* lua)
 		{
 			int r = luaL_checkint(lua, 1);
 			int g = luaL_checkint(lua, 2);
@@ -50,9 +50,9 @@ namespace Plum
 		}
 
 		const luaL_Reg plumFunctions[] = {
-			{ "exit", plum_exit },
-			{ "refresh", plum_refresh },
-			{ "setTitle", plum_setTitle },
+			{ "exit", plumExit },
+			{ "refresh", plumRefresh },
+			{ "setTitle", plumSetTitle },
 			{ NULL, NULL }
 		};
 
@@ -82,7 +82,7 @@ namespace Plum
 			lua_pushinteger(lua, Color::Black);
 			lua_setfield(lua, -2, "Black");
 
-			lua_pushcfunction(lua, plum_rgb);
+			lua_pushcfunction(lua, plumRGB);
 			lua_setfield(lua, -2, "rgb");
 
 			// Done with 'color' now.

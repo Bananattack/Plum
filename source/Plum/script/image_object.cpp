@@ -9,7 +9,7 @@ namespace Plum
 			return (ImageWrapper*) luaL_checkudata(L, index, "plum_image");
 		}
 
-		static int image_new(lua_State* L)
+		static int imageNew(lua_State* L)
 		{
 			if(lua_isstring(L, 1))
 			{
@@ -45,7 +45,7 @@ namespace Plum
 			}
 		}
 
-		void image_pushForTexture(lua_State* L, Texture* tex)
+		void imagePushForTexture(lua_State* L, Texture* tex)
 		{
 			ImageWrapper* img = (ImageWrapper*) lua_newuserdata(L, sizeof(ImageWrapper));
 			luaL_getmetatable(L, "plum_image");
@@ -55,7 +55,7 @@ namespace Plum
 			img->canDelete = false;
 		}
 
-		static int image_gc(lua_State* L)
+		static int imageGC(lua_State* L)
 		{
 			ImageWrapper* img = checkValidImageObject(L, 1);
 
@@ -68,17 +68,17 @@ namespace Plum
 			return 0;
 		}
 
-		SCRIPT_OBJ_GETTER(image_getField, ImageWrapper*, "plum_image")
-		SCRIPT_OBJ_SETTER(image_setField, ImageWrapper*, "plum_image")
+		SCRIPT_OBJ_GETTER(imageGetField, ImageWrapper*, "plum_image")
+		SCRIPT_OBJ_SETTER(imageSetField, ImageWrapper*, "plum_image")
 
-		static int image_toString(lua_State* L)
+		static int imageToString(lua_State* L)
 		{
 			checkValidImageObject(L, 1);
 			lua_pushstring(L, "(plum.Image object)");
 			return 1;
 		}
 
-		static int image_blit(lua_State* L)
+		static int imageBlit(lua_State* L)
 		{
 			ImageWrapper* img = checkValidImageObject(L, 1);
 			int x = luaL_checkint(L, 2);
@@ -107,7 +107,7 @@ namespace Plum
 			return 0;
 		}
 
-		static int image_getWidth(lua_State* L)
+		static int imageGetWidth(lua_State* L)
 		{
 			ImageWrapper* img = checkValidImageObject(L, 1);
 			lua_pushnumber(L, img->image->width);
@@ -115,7 +115,7 @@ namespace Plum
 			return 1;
 		}
 
-		static int image_getHeight(lua_State* L)
+		static int imageGetHeight(lua_State* L)
 		{
 			ImageWrapper* img = checkValidImageObject(L, 1);
 			lua_pushnumber(L, img->image->height);
@@ -124,13 +124,13 @@ namespace Plum
 		}
 
 		const luaL_Reg imageMembers[] = {
-			{ "__index", image_getField },
-			{ "__newindex",	image_setField },
-			{ "__tostring",	image_toString },
-			{ "__gc", image_gc },
-			{ "blit", image_blit },
-			{ "getwidth", image_getWidth },
-			{ "getheight", image_getHeight },
+			{ "__index", imageGetField },
+			{ "__newindex",	imageSetField },
+			{ "__tostring",	imageToString },
+			{ "__gc", imageGC },
+			{ "blit", imageBlit },
+			{ "getwidth", imageGetWidth },
+			{ "getheight", imageGetHeight },
 			{ NULL, NULL }
 		};
 
@@ -148,9 +148,9 @@ namespace Plum
 			// Push plum namespace.
 			lua_getglobal(L, "plum");
 
-			// plum.image = <function image_new>
+			// plum.image = <function imageNew>
 			lua_pushstring(L, "Image");
-			lua_pushcfunction(L, image_new);
+			lua_pushcfunction(L, imageNew);
 			lua_settable(L, -3);
 
 			// Pop plum namespace.

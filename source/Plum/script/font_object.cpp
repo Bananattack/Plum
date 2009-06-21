@@ -9,7 +9,7 @@ namespace Plum
 			return (Font**) luaL_checkudata(L, index, "plum_font");
 		}
 
-		static int font_new(lua_State* L)
+		static int fontNew(lua_State* L)
 		{
 			const char* filename = lua_tostring(L, 1);
 
@@ -22,7 +22,7 @@ namespace Plum
 			return 1;
 		}
 
-		static int font_gc(lua_State* L)
+		static int fontGC(lua_State* L)
 		{
 			Font** f = checkValidFontObject(L, 1);
 			delete *f;
@@ -30,17 +30,17 @@ namespace Plum
 			return 0;
 		}
 
-		SCRIPT_OBJ_GETTER(font_getField, Font**, "plum_font")
-		SCRIPT_OBJ_SETTER(font_setField, Font**, "plum_font")
+		SCRIPT_OBJ_GETTER(fontGetField, Font**, "plum_font")
+		SCRIPT_OBJ_SETTER(fontSetField, Font**, "plum_font")
 
-		static int font_toString(lua_State* L)
+		static int fontToString(lua_State* L)
 		{
 			checkValidFontObject(L, 1);
 			lua_pushstring(L, "(plum.Font object)");
 			return 1;
 		}
 
-		static int font_print(lua_State* L)
+		static int fontPrint(lua_State* L)
 		{
 			Font** f = checkValidFontObject(L, 1);
 			int x = luaL_checkint(L, 2);
@@ -53,21 +53,21 @@ namespace Plum
 			return 0;
 		}
 
-		static int font_enableVariableWidth(lua_State* L)
+		static int fontEnableVariableWidth(lua_State* L)
 		{
 			Font** f = checkValidFontObject(L, 1);
 			(*f)->enableVariableWidth();
 			return 1;
 		}
 
-		static int font_getWidth(lua_State* L)
+		static int fontGetWidth(lua_State* L)
 		{
 			Font** f = checkValidFontObject(L, 1);
 			lua_pushnumber(L, (*f)->width);
 			return 1;
 		}
 
-		static int font_getHeight(lua_State* L)
+		static int fontGetHeight(lua_State* L)
 		{
 			Font** f = checkValidFontObject(L, 1);
 			lua_pushnumber(L, (*f)->height);
@@ -75,14 +75,14 @@ namespace Plum
 		}
 
 		const luaL_Reg fontMembers[] = {
-			{ "__index", font_getField },
-			{ "__newindex",	font_setField },
-			{ "__tostring",	font_toString },
-			{ "__gc", font_gc },
-			{ "print", font_print },
-			{ "enableVariableWidth", font_enableVariableWidth },
-			{ "getwidth", font_getWidth },
-			{ "getheight", font_getHeight },
+			{ "__index", fontGetField },
+			{ "__newindex",	fontSetField },
+			{ "__tostring",	fontToString },
+			{ "__gc", fontGC },
+			{ "print", fontPrint },
+			{ "enableVariableWidth", fontEnableVariableWidth },
+			{ "getwidth", fontGetWidth },
+			{ "getheight", fontGetHeight },
 			{ NULL, NULL }
 		};
 
@@ -100,9 +100,9 @@ namespace Plum
 			// Push plum namespace.
 			lua_getglobal(L, "plum");
 
-			// plum.font = <function font_new>
+			// plum.font = <function fontNew>
 			lua_pushstring(L, "Font");
-			lua_pushcfunction(L, font_new);
+			lua_pushcfunction(L, fontNew);
 			lua_settable(L, -3);
 
 			// Pop plum namespace.

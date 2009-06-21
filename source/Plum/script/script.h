@@ -72,7 +72,7 @@ namespace Plum
 			bool canDelete;
 		};
 		
-		void image_pushForTexture(lua_State* L, Texture* tex);
+		void imagePushForTexture(lua_State* L, Texture* tex);
 		
 	}
 }

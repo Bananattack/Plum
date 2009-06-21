@@ -4,7 +4,7 @@ namespace Plum
 {
 	namespace Script
 	{
-		static int timer_getField(lua_State* L)
+		static int timerGetField(lua_State* L)
 		{
 			std::string fieldName = luaL_checkstring(L, 2);
 			if(luaL_getmetafield(L, 1, std::string("get" + fieldName).c_str()))
@@ -16,7 +16,7 @@ namespace Plum
 			return luaL_getmetafield(L, 1, fieldName.c_str());
 		}
 
-		static int timer_setField(lua_State* L)
+		static int timerSetField(lua_State* L)
 		{
 			std::string fieldName = luaL_checkstring(L, 2);
 			if(luaL_getmetafield(L, 1, std::string("get" + fieldName).c_str()))
@@ -29,37 +29,37 @@ namespace Plum
 			return 0;
 		}
 
-		static int timer_toString(lua_State* L)
+		static int timerToString(lua_State* L)
 		{
 			lua_pushstring(L, "(plum.timer singleton)");
 			return 1;
 		}
 
-		static int timer_getTime(lua_State* L)
+		static int timerGetTime(lua_State* L)
 		{
 			lua_pushinteger(L, (*engine).timer.time / 10);
 			return 1;
 		}
 
-		static int timer_getGap(lua_State* L)
+		static int timerGetGap(lua_State* L)
 		{
 			lua_pushinteger(L, (*engine).timer.gap);
 			return 1;
 		}
 
-		static int timer_getFPS(lua_State* L)
+		static int timerGetFPS(lua_State* L)
 		{
 			lua_pushinteger(L, (*engine).timer.fps);
 			return 1;
 		}
 
 		const luaL_Reg timerMembers[] = {
-			{ "__index", timer_getField },
-			{ "__newindex", timer_setField },
-			{ "__tostring",	timer_toString },
-			{ "gettime", timer_getTime },
-			{ "getgap", timer_getGap },
-			{ "getfps", timer_getFPS },
+			{ "__index", timerGetField },
+			{ "__newindex", timerSetField },
+			{ "__tostring",	timerToString },
+			{ "gettime", timerGetTime },
+			{ "getgap", timerGetGap },
+			{ "getfps", timerGetFPS },
 			{ NULL, NULL }
 		};
 

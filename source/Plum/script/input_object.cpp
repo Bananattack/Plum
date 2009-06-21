@@ -9,7 +9,7 @@ namespace Plum
 			return (Input**) luaL_checkudata(L, index, "plum_input");
 		}
 
-		static int input_new(lua_State* L)
+		static int inputNew(lua_State* L)
 		{
 			Input* input = (Input*) lua_touserdata(L, 1);
 
@@ -22,24 +22,24 @@ namespace Plum
 			return 1;
 		}
 
-		SCRIPT_OBJ_GETTER(input_getField, Input**, "plum_input")
-		SCRIPT_OBJ_SETTER(input_setField, Input**, "plum_input")
+		SCRIPT_OBJ_GETTER(inputGetField, Input**, "plum_input")
+		SCRIPT_OBJ_SETTER(inputSetField, Input**, "plum_input")
 
-		static int input_toString(lua_State* L)
+		static int inputToString(lua_State* L)
 		{
 			checkValidInputObject(L, 1);
 			lua_pushstring(L, "(plum.Input object)");
 			return 1;
 		}
 
-		static int input_getPressed(lua_State* L)
+		static int inputGetPressed(lua_State* L)
 		{
 			Input** inp = checkValidInputObject(L, 1);
 			lua_pushboolean(L, (*inp)->isPressed());
 			return 1;
 		}
 
-		static int input_setPressed(lua_State* L)
+		static int inputSetPressed(lua_State* L)
 		{
 			Input** inp = checkValidInputObject(L, 1);
 			(*inp)->setPressed(lua_toboolean(L, 2) != 0);
@@ -47,11 +47,11 @@ namespace Plum
 		}
 
 		const luaL_Reg inputMembers[] = {
-			{ "__index", input_getField },
-			{ "__newindex",	input_setField },
-			{ "__tostring",	input_toString },
-			{ "getpressed", input_getPressed },
-			{ "setpressed", input_setPressed },
+			{ "__index", inputGetField },
+			{ "__newindex",	inputSetField },
+			{ "__tostring",	inputToString },
+			{ "getpressed", inputGetPressed },
+			{ "setpressed", inputSetPressed },
 			{ NULL, NULL }
 		};
 
@@ -69,9 +69,9 @@ namespace Plum
 			// Push plum namespace.
 			lua_getglobal(L, "plum");
 
-			// plum.input = <function input_new>
+			// plum.input = <function inputNew>
 			lua_pushstring(L, "_Input");
-			lua_pushcfunction(L, input_new);
+			lua_pushcfunction(L, inputNew);
 			lua_settable(L, -3);
 
 			// Pop plum namespace.

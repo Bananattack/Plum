@@ -9,7 +9,7 @@ namespace Plum
 			return (Song**) luaL_checkudata(L, index, "plum_song");
 		}
 
-		static int song_new(lua_State* L)
+		static int songNew(lua_State* L)
 		{
 			const char* filename = lua_tostring(L, 1);
 
@@ -22,7 +22,7 @@ namespace Plum
 			return 1;
 		}
 
-		static int song_gc(lua_State* L)
+		static int songGC(lua_State* L)
 		{
 			Song** s = checkValidSongObject(L, 1);
 			delete *s;
@@ -30,17 +30,17 @@ namespace Plum
 			return 0;
 		}
 
-		SCRIPT_OBJ_GETTER(song_getField, Song**, "plum_song")
-		SCRIPT_OBJ_SETTER(song_setField, Song**, "plum_song")
+		SCRIPT_OBJ_GETTER(songGetField, Song**, "plum_song")
+		SCRIPT_OBJ_SETTER(songSetField, Song**, "plum_song")
 
-		static int song_toString(lua_State* L)
+		static int songToString(lua_State* L)
 		{
 			checkValidSongObject(L, 1);
 			lua_pushstring(L, "(plum.Song object)");
 			return 1;
 		}
 
-		static int song_play(lua_State* L)
+		static int songPlay(lua_State* L)
 		{
 			Song** s = checkValidSongObject(L, 1);
 			int volume = luaL_optint(L, 2, 100);
@@ -48,21 +48,21 @@ namespace Plum
 			return 0;
 		}
 
-		static int song_stop(lua_State* L)
+		static int songStop(lua_State* L)
 		{
 			Song** s = checkValidSongObject(L, 1);
 			(*s)->stop();
 			return 0;
 		}
 
-		static int song_isPlaying(lua_State* L)
+		static int songIsPlaying(lua_State* L)
 		{
 			Song** s = checkValidSongObject(L, 1);
 			lua_pushboolean(L, (*s)->isPlaying());
 			return 1;
 		}
 
-		static int song_setPlaying(lua_State* L)
+		static int songSetPlaying(lua_State* L)
 		{
 			Song** s = checkValidSongObject(L, 1);
 			bool playing = lua_toboolean(L, 2) != 0;
@@ -77,14 +77,14 @@ namespace Plum
 			return 0;
 		}
 
-		static int song_getVolume(lua_State* L)
+		static int songGetVolume(lua_State* L)
 		{
 			Song** s = checkValidSongObject(L, 1);
 			lua_pushnumber(L, (*s)->getVolume());
 			return 1;
 		}
 
-		static int song_setVolume(lua_State* L)
+		static int songSetVolume(lua_State* L)
 		{
 			Song** s = checkValidSongObject(L, 1);
 			double value = luaL_checknumber(L, 2);
@@ -93,16 +93,16 @@ namespace Plum
 		}
 
 		const luaL_Reg songMembers[] = {
-			{ "__index", song_getField },
-			{ "__newindex",	song_setField },
-			{ "__tostring",	song_toString },
-			{ "__gc", song_gc },
-			{ "play", song_play },
-			{ "stop", song_stop },
-			{ "getplaying", song_isPlaying },
-			{ "setplaying", song_setPlaying },
-			{ "getvolume", song_getVolume },
-			{ "setvolume", song_setVolume },
+			{ "__index", songGetField },
+			{ "__newindex",	songSetField },
+			{ "__tostring",	songToString },
+			{ "__gc", songGC },
+			{ "play", songPlay },
+			{ "stop", songStop },
+			{ "getplaying", songIsPlaying },
+			{ "setplaying", songSetPlaying },
+			{ "getvolume", songGetVolume },
+			{ "setvolume", songSetVolume },
 			{ NULL, NULL }
 		};
 
@@ -120,9 +120,9 @@ namespace Plum
 			// Push plum namespace.
 			lua_getglobal(L, "plum");
 
-			// plum.song = <function song_new>
+			// plum.song = <function songNew>
 			lua_pushstring(L, "Song");
-			lua_pushcfunction(L, song_new);
+			lua_pushcfunction(L, songNew);
 			lua_settable(L, -3);
 
 			// Pop plum namespace.

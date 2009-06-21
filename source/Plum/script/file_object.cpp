@@ -22,7 +22,7 @@ namespace Plum
 			return (FileWrapper*) luaL_checkudata(L, index, "plum_file");
 		}
 
-		static int file_new(lua_State* L)
+		static int fileNew(lua_State* L)
 		{
 			const char* filename = lua_tostring(L, 1);
 			const char* mode = lua_tostring(L, 2);
@@ -73,7 +73,7 @@ namespace Plum
 			return 0;
 		}
 
-		static int file_close(lua_State* L)
+		static int fileClose(lua_State* L)
 		{
 			FileWrapper* f = checkValidFileObject(L, 1);
 			if(!f->closed)
@@ -91,10 +91,10 @@ namespace Plum
 			return 0;
 		}
 
-		SCRIPT_OBJ_GETTER(file_getField, FileWrapper*, "plum_file")
-		SCRIPT_OBJ_SETTER(file_setField, FileWrapper*, "plum_file")
+		SCRIPT_OBJ_GETTER(fileGetField, FileWrapper*, "plum_file")
+		SCRIPT_OBJ_SETTER(fileSetField, FileWrapper*, "plum_file")
 
-		static int file_toString(lua_State* L)
+		static int fileToString(lua_State* L)
 		{
 			checkValidFileObject(L, 1);
 			lua_pushstring(L, "(plum.File object)");
@@ -130,7 +130,7 @@ namespace Plum
 			return str;
 		}
 
-		static int file_readByte(lua_State* L)
+		static int fileReadByte(lua_State* L)
 		{
 			FileWrapper* f = checkValidFileObject(L, 1);
 			// Can't access in write mode. Shoo.
@@ -153,7 +153,7 @@ namespace Plum
 		}
 
 		// TODO: endian flips.
-		static int file_readInt(lua_State* L)
+		static int fileReadInt(lua_State* L)
 		{
 			FileWrapper* f = checkValidFileObject(L, 1);
 			// Can't access in write mode. Shoo.
@@ -175,7 +175,7 @@ namespace Plum
 			}
 		}
 
-		static int file_readLine(lua_State* L)
+		static int fileReadLine(lua_State* L)
 		{
 			FileWrapper* f = checkValidFileObject(L, 1);
 			// Can't access in write mode. Shoo.
@@ -223,7 +223,7 @@ namespace Plum
 			}
 		}
 
-		static int file_writeLine(lua_State* L)
+		static int fileWriteLine(lua_State* L)
 		{
 			FileWrapper* f = checkValidFileObject(L, 1);
 			// Can't do this in read mode. Shoo.
@@ -239,15 +239,15 @@ namespace Plum
 		}
 
 		const luaL_Reg fileMembers[] = {
-			{ "__index", file_getField },
-			{ "__newindex",	file_setField },
-			{ "__tostring",	file_toString },
-			{ "__gc", file_close }, // For the lazy.
-			{ "close", file_close }, // For the wise.
-			{ "readByte", file_readByte },
-			{ "readInt", file_readInt },
-			{ "readLine", file_readLine },
-			{ "writeLine", file_writeLine },
+			{ "__index", fileGetField },
+			{ "__newindex",	fileSetField },
+			{ "__tostring",	fileToString },
+			{ "__gc", fileClose }, // For the lazy.
+			{ "close", fileClose }, // For the wise.
+			{ "readByte", fileReadByte },
+			{ "readInt", fileReadInt },
+			{ "readLine", fileReadLine },
+			{ "writeLine", fileWriteLine },
 			{ NULL, NULL }
 		};
 
@@ -265,9 +265,9 @@ namespace Plum
 			// Push plum namespace.
 			lua_getglobal(L, "plum");
 
-			// plum.file = <function file_new>
+			// plum.file = <function fileNew>
 			lua_pushstring(L, "File");
-			lua_pushcfunction(L, file_new);
+			lua_pushcfunction(L, fileNew);
 			lua_settable(L, -3);
 
 			// Pop plum namespace.

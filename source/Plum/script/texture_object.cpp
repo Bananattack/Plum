@@ -15,7 +15,7 @@ namespace Plum
 			return (TextureWrapper*) luaL_checkudata(L, index, "plum_texture");
 		}
 
-		static int texture_new(lua_State* L)
+		static int textureNew(lua_State* L)
 		{
 			if(lua_isstring(L, 1))
 			{
@@ -56,7 +56,7 @@ namespace Plum
 			return 0;
 		}
 
-		static int texture_gc(lua_State* L)
+		static int textureGC(lua_State* L)
 		{
 			TextureWrapper* t = checkValidTextureObject(L, 1);
 			if(t->canDelete)
@@ -67,17 +67,17 @@ namespace Plum
 			return 0;
 		}
 
-		SCRIPT_OBJ_GETTER(texture_getField, TextureWrapper*, "plum_texture")
-		SCRIPT_OBJ_SETTER(texture_setField, TextureWrapper*, "plum_texture")
+		SCRIPT_OBJ_GETTER(textureGetField, TextureWrapper*, "plum_texture")
+		SCRIPT_OBJ_SETTER(textureSetField, TextureWrapper*, "plum_texture")
 
-		static int texture_toString(lua_State* L)
+		static int textureToString(lua_State* L)
 		{
 			checkValidTextureObject(L, 1);
 			lua_pushstring(L, "(plum.Texture object)");
 			return 1;
 		}
 
-		static int texture_blit(lua_State* L)
+		static int textureBlit(lua_State* L)
 		{
 			TextureWrapper* t = checkValidTextureObject(L, 1);
 			int x = luaL_checkint(L, 2);
@@ -90,7 +90,7 @@ namespace Plum
 			return 0;
 		}
 
-		static int texture_blitRegion(lua_State* L)
+		static int textureBlitRegion(lua_State* L)
 		{
 			TextureWrapper* t = checkValidTextureObject(L, 1);
 			int sx = luaL_checkint(L, 2);
@@ -107,7 +107,7 @@ namespace Plum
 			return 0;
 		}
 
-		static int texture_scaleBlit(lua_State* L)
+		static int textureScaleBlit(lua_State* L)
 		{
 			TextureWrapper* t = checkValidTextureObject(L, 1);
 			int x = luaL_checkint(L, 2);
@@ -122,7 +122,7 @@ namespace Plum
 			return 0;
 		}
 
-		static int texture_scaleBlitRegion(lua_State* L)
+		static int textureScaleBlitRegion(lua_State* L)
 		{
 			TextureWrapper* t = checkValidTextureObject(L, 1);
 			int sx = luaL_checkint(L, 2);
@@ -141,7 +141,7 @@ namespace Plum
 			return 0;
 		}
 
-		static int texture_rotateBlit(lua_State* L)
+		static int textureRotateBlit(lua_State* L)
 		{
 			TextureWrapper* t = checkValidTextureObject(L, 1);
 			int x = luaL_checkint(L, 2);
@@ -156,7 +156,7 @@ namespace Plum
 		}
 
 
-		static int texture_rotateBlitRegion(lua_State* L)
+		static int textureRotateBlitRegion(lua_State* L)
 		{
 			TextureWrapper* t = checkValidTextureObject(L, 1);
 			int sx = luaL_checkint(L, 2);
@@ -173,7 +173,7 @@ namespace Plum
 			return 0;
 		}
 
-		static int texture_rotateScaleBlit(lua_State* L)
+		static int textureRotateScaleBlit(lua_State* L)
 		{
 			TextureWrapper* t = checkValidTextureObject(L, 1);
 			int x = luaL_checkint(L, 2);
@@ -188,7 +188,7 @@ namespace Plum
 			return 0;
 		}
 
-		static int texture_rotateScaleBlitRegion(lua_State* L)
+		static int textureRotateScaleBlitRegion(lua_State* L)
 		{
 			TextureWrapper* t = checkValidTextureObject(L, 1);
 			int sx = luaL_checkint(L, 2);
@@ -206,7 +206,7 @@ namespace Plum
 			return 0;
 		}
 
-		static int texture_refresh(lua_State* L)
+		static int textureRefresh(lua_State* L)
 		{
 			TextureWrapper* t = checkValidTextureObject(L, 1);
 			t->texture->refresh();
@@ -214,7 +214,7 @@ namespace Plum
 			return 1;
 		}
 
-		static int texture_getWidth(lua_State* L)
+		static int textureGetWidth(lua_State* L)
 		{
 			TextureWrapper* t = checkValidTextureObject(L, 1);
 			lua_pushnumber(L, t->texture->getImageWidth());
@@ -222,7 +222,7 @@ namespace Plum
 			return 1;
 		}
 
-		static int texture_getHeight(lua_State* L)
+		static int textureGetHeight(lua_State* L)
 		{
 			TextureWrapper* t = checkValidTextureObject(L, 1);
 			lua_pushnumber(L, t->texture->getImageHeight());
@@ -230,30 +230,30 @@ namespace Plum
 			return 1;
 		}
 
-		static int texture_getImage(lua_State* L)
+		static int textureGetImage(lua_State* L)
 		{
 			TextureWrapper* t = checkValidTextureObject(L, 1); 
-			image_pushForTexture(L, t->texture);
+			imagePushForTexture(L, t->texture);
 			return 1;
 		}
 
 		const luaL_Reg textureMembers[] = {
-			{ "__index", texture_getField },
-			{ "__newindex",	texture_setField },
-			{ "__tostring",	texture_toString },
-			{ "__gc", texture_gc },
-			{ "blit", texture_blit },
-			{ "blitRegion", texture_blitRegion },
-			{ "scaleBlit", texture_scaleBlit },
-			{ "scaleBlitRegion", texture_scaleBlitRegion },
-			{ "rotateBlit", texture_rotateBlit },
-			{ "rotateBlitRegion", texture_rotateBlitRegion },
-			{ "rotateScaleBlit", texture_rotateScaleBlit },
-			{ "rotateScaleBlitRegion", texture_rotateScaleBlitRegion },
-			{ "refresh", texture_refresh },
-			{ "getwidth", texture_getWidth },
-			{ "getheight", texture_getHeight },
-			{ "getimage", texture_getImage },
+			{ "__index", textureGetField },
+			{ "__newindex",	textureSetField },
+			{ "__tostring",	textureToString },
+			{ "__gc", textureGC },
+			{ "blit", textureBlit },
+			{ "blitRegion", textureBlitRegion },
+			{ "scaleBlit", textureScaleBlit },
+			{ "scaleBlitRegion", textureScaleBlitRegion },
+			{ "rotateBlit", textureRotateBlit },
+			{ "rotateBlitRegion", textureRotateBlitRegion },
+			{ "rotateScaleBlit", textureRotateScaleBlit },
+			{ "rotateScaleBlitRegion", textureRotateScaleBlitRegion },
+			{ "refresh", textureRefresh },
+			{ "getwidth", textureGetWidth },
+			{ "getheight", textureGetHeight },
+			{ "getimage", textureGetImage },
 			{ NULL, NULL }
 		};
 
@@ -271,9 +271,9 @@ namespace Plum
 			// Push plum namespace.
 			lua_getglobal(L, "plum");
 
-			// plum.texture = <function texture_new>
+			// plum.texture = <function textureNew>
 			lua_pushstring(L, "Texture");
-			lua_pushcfunction(L, texture_new);
+			lua_pushcfunction(L, textureNew);
 			lua_settable(L, -3);
 
 			// Pop plum namespace.
