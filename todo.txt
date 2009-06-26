@@ -1,11 +1,9 @@
 * Make it so Plum compiles on Linux again
 * Try and get Plum compiling on a Mac.
-* Add Lua scripting.
 * Painstakingly bind Plum's API to Lua.
 * Get Lua working with .pit files.
 * Make a 'condensed' sprite format, that'll keep image data embedded as base64'd slib string.
 * Make map and tileset formats.
 * Make a tool to edit maps, or (faster for now) convert from existing format.
-* Mouse support
 * Advanced audio support
 * Networking support
