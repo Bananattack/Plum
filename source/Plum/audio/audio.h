@@ -3,12 +3,25 @@
 
 namespace Plum
 {
-	typedef FMOD::Sound Sound;
+
+	struct Sound
+	{
+		FMOD::Sound* sample;
+		Sound() : sample(0)
+		{
+		}
+
+		~Sound()
+		{
+			if(sample)
+				sample->release();
+		}
+	};
 
 	struct Channel
 	{
 		FMOD::Channel* channel;
-		Channel(unsigned int channel)
+		Channel(ptrdiff_t channel)
 		{
 			this->channel = (FMOD::Channel*) channel;
 		}
@@ -63,6 +76,12 @@ namespace Plum
 
 		Song() : sample(0), channel(0), volume(1.0)
 		{
+		}
+
+		~Song()
+		{
+			if(sample)
+				sample->release();
 		}
 
 		void resume()
@@ -154,7 +173,7 @@ namespace Plum
 
 		Sound* loadSound(std::string filename);
 		Sound* loadSound(const char* filename);
-		unsigned int playSound(Sound* sound, double volume = 1.0);
+		ptrdiff_t playSound(Sound* sound, double volume = 1.0);
 
 		Song* loadSong(std::string filename);
 		Song* loadSong(const char* filename);

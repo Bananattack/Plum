@@ -196,7 +196,7 @@ namespace Plum
 	int Font::lineCount(std::string s)
 	{
 		int c = 1;
-		for (int i = 0; i < s.length(); i++)
+		for (unsigned int i = 0; i < s.length(); i++)
 		{
 			if(s[i] == '\n')
 			{

@@ -125,16 +125,19 @@ namespace Plum
 		info.userseek = Audio::seekSample;
 
 		soundSystem->createSound(filename, FMOD_SOFTWARE | FMOD_LOOP_OFF | FMOD_2D, &info, &sample);
-		return sample;
+
+		Sound* sound = new Sound();
+		sound->sample = sample;
+		return sound;
 	}
 
-	unsigned int Audio::playSound(Sound* sound, double volume)
+	ptrdiff_t Audio::playSound(Sound* sound, double volume)
 	{
 		FMOD::Channel* channel = NULL;
-		soundSystem->playSound(FMOD_CHANNEL_FREE, sound, true, &channel);
+		soundSystem->playSound(FMOD_CHANNEL_FREE, sound->sample, true, &channel);
 		channel->setVolume((float) volume);
 		channel->setPaused(false);
-		return (unsigned int) channel;
+		return (ptrdiff_t) channel;
 	}
 
 	Song* Audio::loadSong(std::string filename)
