@@ -2,8 +2,8 @@
 * Try and get Plum compiling on a Mac.
 * Painstakingly bind Plum's API to Lua.
 * Get Lua working with .pit files.
-* Make a 'condensed' sprite format, that'll keep image data embedded as base64'd slib string.
-* Make map and tileset formats.
+* Make a 'condensed' sprite format, that'll keep image data embedded as Base64 (Ascii85?) encoded ZLIB string.
+* Make map and tileset formats, which will also need plaintext compression eventually.
 * Make a tool to edit maps, or (faster for now) convert from existing format.
 * Advanced audio support
 * Networking support
