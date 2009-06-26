@@ -91,7 +91,7 @@ namespace Plum
 		{
 			Font** f = checkValidFontObject(L, 1);
 			const char* message = luaL_checkstring(L, 2);
-			int lineIndex = luaL_checkstring(L, 3);
+			int lineIndex = luaL_checkint(L, 3);
 			lua_pushinteger(L, (*f)->lineWidth(message, lineIndex));
 			return 1;
 		}

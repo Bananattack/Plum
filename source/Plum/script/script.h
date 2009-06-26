@@ -50,6 +50,7 @@ namespace Plum
 		void startup(Engine* eng);
 		void runScript(std::string filename);
 		void shutdown();
+		void stepGarbageCollector();
 
 		void initPlumModule(lua_State* lua);
 

@@ -228,6 +228,8 @@ namespace Plum
 		audio.update();
 		timer.update();
 
+
+		Script::stepGarbageCollector();
 		//std::string cap = titlePrefix + " - FPS: " + integerToString(timer.fps);
 		//SDL_WM_SetCaption(cap.c_str(), cap.c_str());
 

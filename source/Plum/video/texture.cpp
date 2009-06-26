@@ -17,6 +17,12 @@ namespace Plum
 		init(image);
 	}
 
+	Texture::~Texture()
+	{
+		glDeleteTextures(1, &textureID);
+		delete textureImage;
+	}
+
 	void Texture::init(const char* filename)
 	{
 		Image* image = new Image(filename);

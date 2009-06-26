@@ -49,6 +49,8 @@ namespace Plum
 			Texture(const char* filename);
 			Texture(Image* image);
 
+			~Texture();
+
 			void init(const char* filename);
 			void init(Image* image);
 

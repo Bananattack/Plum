@@ -902,6 +902,12 @@ LUA_API int lua_gc (lua_State *L, int what, int data) {
   lua_lock(L);
   g = G(L);
   switch (what) {
+    /* A special patch from http://lua-users.org/lists/lua-l/2007-06/msg00088.html */
+    /* Prevents inaccurate memory counting for script allocated wrappers like Textures and Sprites and whatnot. */
+    /* case LUA_GCUDATA: {
+       g->totalbytes += data;
+       break;
+     }*/
     case LUA_GCSTOP: {
       g->GCthreshold = MAX_LUMEM;
       break;

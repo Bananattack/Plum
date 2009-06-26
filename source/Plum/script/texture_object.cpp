@@ -25,7 +25,7 @@ namespace Plum
 				luaL_getmetatable(L, "plum_texture");
 				lua_setmetatable(L, -2);
 
-				t->canDelete = false;
+				t->canDelete = true;
 				t->texture = new Texture(filename);
 
 				return 1;
@@ -45,7 +45,7 @@ namespace Plum
 						luaL_getmetatable(L, "plum_texture");
 						lua_setmetatable(L, -2);
 
-						t->canDelete = false;
+						t->canDelete = true;
 						t->texture = new Texture(((ImageWrapper*) data)->image);
 
 						return 1;
@@ -62,6 +62,7 @@ namespace Plum
 			if(t->canDelete)
 			{
 				delete t->texture;
+				printf("DELETED A TEXTURE MANG");
 			}
 
 			return 0;

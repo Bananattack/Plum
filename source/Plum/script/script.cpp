@@ -20,6 +20,8 @@ namespace Plum
 			//lua_atpanic(lua, panic);
 			luaL_openlibs(lua);
 
+			lua_gc(lua, LUA_GCSETSTEPMUL, 400);
+
 			initPlumModule(lua);
 			initTextureClass(lua);
 			initVideoClass(lua);
@@ -60,6 +62,11 @@ namespace Plum
 			{
 				throw Engine::Exception("Error found in script:\n" + std::string(lua_tostring(lua, -1)));
 			}
+		}
+
+		void stepGarbageCollector()
+		{
+			lua_gc(lua, LUA_GCSTEP, 1);
 		}
 	}
 }
