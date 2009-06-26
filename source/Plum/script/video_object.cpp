@@ -127,7 +127,6 @@ namespace Plum
 			int xrad = luaL_checkint(L, 3);
 			int yrad = luaL_checkint(L, 4);
 			Color color = luaL_checkint(L, 5);
-			Color color2 = luaL_checkint(L, 6);
 			BlendMode mode = (BlendMode) luaL_optint(L, 6, BlendUnspecified);
 
 			(*engine).video.circle(x, y, xrad, yrad, color, mode);
@@ -141,7 +140,6 @@ namespace Plum
 			int xrad = luaL_checkint(L, 3);
 			int yrad = luaL_checkint(L, 4);
 			Color color = luaL_checkint(L, 5);
-			Color color2 = luaL_checkint(L, 6);
 			BlendMode mode = (BlendMode) luaL_optint(L, 6, BlendUnspecified);
 
 			(*engine).video.solidCircle(x, y, xrad, yrad, color, mode);

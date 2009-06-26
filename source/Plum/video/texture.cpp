@@ -28,10 +28,10 @@ namespace Plum
 	{
 		target = GL_TEXTURE_2D;
 
-		textureImage = new Image(nearestPowerOfTwo(image->width), nearestPowerOfTwo(image->height));
+		textureImage = new Image(nearestPowerOfTwo(image->occupiedWidth), nearestPowerOfTwo(image->occupiedHeight));
 		textureImage->clear(0);
 		image->blit<SoftOpaqueBlender>(0, 0, textureImage, SoftOpaqueBlender());
-		textureImage->setClipRegion(0, 0, image->width - 1, image->height - 1);
+		textureImage->setClipRegion(0, 0, image->occupiedWidth - 1, image->occupiedHeight - 1);
 
 		glGenTextures(1, &textureID);
 		bind();
@@ -40,8 +40,8 @@ namespace Plum
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
 
 
-		setImageWidth(image->width);
-		setImageHeight(image->height);
+		setImageWidth(image->occupiedWidth);
+		setImageHeight(image->occupiedHeight);
 		setTextureWidth(textureImage->width);
 		setTextureHeight(textureImage->height);
 

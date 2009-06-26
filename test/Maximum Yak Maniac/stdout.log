@@ -1,0 +1,19 @@
+>> Initializing...
+    Loading config settings... OK!
+    (Settings: 320x240 resolution, windowed mode)
+
+    Initializing SDL... OK!
+    Initializing video engine... OK!
+    Initializing sound engine... OK!
+    Initializing scripting engine... OK!
+>> Initialization complete!
+
+
+>> Shutdown requested.
+
+>> Destroying...
+    Destroying scripting engine... OK!
+    Destroying sound engine... OK!
+    Destroying video engine... OK!
+    Destroying SDL... OK!
+>> Destroyed!

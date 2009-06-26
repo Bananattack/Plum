@@ -162,6 +162,36 @@ namespace Plum
 				}
 			}
 
+			void flip(bool horizontal, bool vertical)
+			{
+				Color t;
+				int x, y;
+				if(horizontal)
+				{
+					for(x = 0; x < occupiedWidth / 2; x++)
+					{
+						for(y = 0; y < occupiedHeight; y++)
+						{
+							t = data[y * width + x];
+							data[y * width + x] = data[y * width + (occupiedWidth - x - 1)];
+							data[y * width + (occupiedWidth - x - 1)] = t;
+						}
+					}
+				}
+				if(vertical)
+				{
+					for(x = 0; x < occupiedWidth; x++)
+					{
+						for(y = 0; y < occupiedHeight / 2; y++)
+						{
+							t = data[y * width + x];
+							data[y * width + x] = data[(occupiedHeight - y - 1) * width + x];
+							data[(occupiedHeight - y - 1) * width + x] = t;
+						}
+					}
+				}
+			}
+
 			template <typename BlendCallback> void line(int x, int y, int x2, int y2, Color color, const BlendCallback& blend)
 			{
 				// Now we'll clip the line using Cohen-Sutherland clipping

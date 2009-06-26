@@ -5,7 +5,7 @@ namespace Plum
 	void Font::init(const char* filename)
 	{
 		texture = new Texture(filename);
-		letterSpacing = 2;
+		letterSpacing = 1;
 
 		Image* image = texture->getImage();
 
@@ -84,17 +84,141 @@ namespace Plum
 		texture->blitRegion(fx, fy, fx + width - 1, fy + height - 1, x, y, mode, tint);
 	}
 
-	void Font::print(int x, int y, std::string s, BlendMode mode, Color tint)
+	void Font::print(int x1, int y, std::string s, BlendMode mode, Color tint)
 	{
 		mode = (mode == BlendUnspecified) ? getBlendMode() : mode;
+		int x = x1;
 		for (unsigned int i = 0; i < s.length(); i++)
 		{
-			if (s[i] < 32)
+			if(s[i] == '\n')
 			{
-				continue;
+				x = x1;
+				y += height;
 			}
-			printChar(x, y, s[i], mode, tint);
-			x += glyphWidth[s[i] - 32] + letterSpacing;
+			else if(s[i] == '\t')
+			{
+				x += glyphWidth[0] * 4;
+			}
+			else if (s[i] >= 32)
+			{
+				printChar(x, y, s[i], mode, tint);
+				x += glyphWidth[s[i] - 32] + letterSpacing;
+			}
 		}
+	}
+
+	void Font::printCenter(int x1, int y, std::string s, BlendMode mode, Color tint)
+	{
+		mode = (mode == BlendUnspecified) ? getBlendMode() : mode;
+		int x = x1;
+		int lineIndex = 0;
+		int ofs = lineWidth(s, 0) / 2;
+		for (unsigned int i = 0; i < s.length(); i++)
+		{
+			if(s[i] == '\n')
+			{
+				x = x1;
+				y += height;
+
+				lineIndex++;
+				ofs = lineWidth(s, lineIndex) / 2;
+			}
+			else if(s[i] == '\t')
+			{
+				x += glyphWidth[0] * 4;
+			}
+			else if (s[i] >= 32)
+			{
+				printChar(x - ofs, y, s[i], mode, tint);
+				x += glyphWidth[s[i] - 32] + letterSpacing;
+			}
+		}
+	}
+
+	void Font::printRight(int x1, int y, std::string s, BlendMode mode, Color tint)
+	{
+		mode = (mode == BlendUnspecified) ? getBlendMode() : mode;
+		int x = x1;
+		int lineIndex = 0;
+		int ofs = lineWidth(s, 0);
+		for (unsigned int i = 0; i < s.length(); i++)
+		{
+			if(s[i] == '\n')
+			{
+				x = x1;
+				y += height;
+
+				lineIndex++;
+				ofs = lineWidth(s, lineIndex);
+			}
+			else if(s[i] == '\t')
+			{
+				x += glyphWidth[0] * 4;
+			}
+			else if (s[i] >= 32)
+			{
+				printChar(x - ofs, y, s[i], mode, tint);
+				x += glyphWidth[s[i] - 32] + letterSpacing;
+			}
+		}
+	}
+
+	int Font::lineWidth(std::string s, int lineIndex)
+	{
+		unsigned int i;
+		int w = 0;
+		int lineOffset = 0;
+		for (i = 0; i < s.length(); i++)
+		{
+			char c = s[i];
+			
+			if (c == '\n')
+			{
+				if (lineOffset == lineIndex)
+				{
+					return w;
+				}
+				lineOffset++;
+				w = 0;
+			}
+			else if (c == '\t')
+			{
+				w += glyphWidth[0] * 4;
+			}
+			else if (c >= 32)
+			{
+				w += glyphWidth[s[i] - 32] + letterSpacing;
+			}
+		}
+		return w;
+	}
+
+	int Font::lineCount(std::string s)
+	{
+		int c = 1;
+		for (int i = 0; i < s.length(); i++)
+		{
+			if(s[i] == '\n')
+			{
+				c++;
+			}
+		}
+		return c;
+	}
+
+	int Font::textWidth(std::string s)
+	{
+		int c = lineCount(s);
+		int w = 0;
+		for(int i = 0; i < c; i++)
+		{
+			w = PLUM_MAX(w, lineWidth(s, i));
+		}
+		return w;
+	}
+
+	int Font::textHeight(std::string s)
+	{
+		return lineCount(s) * height;
 	}
 }

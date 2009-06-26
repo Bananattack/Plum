@@ -122,6 +122,15 @@ namespace Plum
 		mode = (mode == BlendUnspecified) ? getBlendMode() : mode;
 		useHardwareBlender(mode);
 
+		if(x > x2)
+		{
+			PLUM_SWAP(x, x2);
+		}
+		if(y > y2)
+		{
+			PLUM_SWAP(y, y2);
+		}
+
 		glDisable(GL_TEXTURE_2D);
 		glPushMatrix();
 		glBegin(GL_LINES);
@@ -148,6 +157,15 @@ namespace Plum
 		mode = (mode == BlendUnspecified) ? getBlendMode() : mode;
 		useHardwareBlender(mode);
 
+		if(x > x2)
+		{
+			PLUM_SWAP(x, x2);
+		}
+		if(y > y2)
+		{
+			PLUM_SWAP(y, y2);
+		}
+
 		glDisable(GL_TEXTURE_2D);
 		glPushMatrix();
 		glBegin(GL_QUADS);
@@ -168,6 +186,15 @@ namespace Plum
 
 		mode = (mode == BlendUnspecified) ? getBlendMode() : mode;
 		useHardwareBlender(mode);
+
+		if(x > x2)
+		{
+			PLUM_SWAP(x, x2);
+		}
+		if(y > y2)
+		{
+			PLUM_SWAP(y, y2);
+		}
 
 		glDisable(GL_TEXTURE_2D);
 		glPushMatrix();
@@ -195,6 +222,15 @@ namespace Plum
 
 		mode = (mode == BlendUnspecified) ? getBlendMode() : mode;
 		useHardwareBlender(mode);
+
+		if(x > x2)
+		{
+			PLUM_SWAP(x, x2);
+		}
+		if(y > y2)
+		{
+			PLUM_SWAP(y, y2);
+		}
 
 		glDisable(GL_TEXTURE_2D);
 		glPushMatrix();

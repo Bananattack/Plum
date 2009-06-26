@@ -53,10 +53,62 @@ namespace Plum
 			return 0;
 		}
 
+		static int fontPrintCenter(lua_State* L)
+		{
+			Font** f = checkValidFontObject(L, 1);
+			int x = luaL_checkint(L, 2);
+			int y = luaL_checkint(L, 3);
+			const char* message = lua_tostring(L, 4);
+			BlendMode mode = (BlendMode) luaL_optint(L, 5, BlendUnspecified);
+			Color tint = luaL_optint(L, 6, Color::White);
+
+			(*f)->printCenter(x, y, message, mode, tint);
+			return 0;
+		}
+
+		static int fontPrintRight(lua_State* L)
+		{
+			Font** f = checkValidFontObject(L, 1);
+			int x = luaL_checkint(L, 2);
+			int y = luaL_checkint(L, 3);
+			const char* message = lua_tostring(L, 4);
+			BlendMode mode = (BlendMode) luaL_optint(L, 5, BlendUnspecified);
+			Color tint = luaL_optint(L, 6, Color::White);
+
+			(*f)->printRight(x, y, message, mode, tint);
+			return 0;
+		}
+
+
 		static int fontEnableVariableWidth(lua_State* L)
 		{
 			Font** f = checkValidFontObject(L, 1);
 			(*f)->enableVariableWidth();
+			return 0;
+		}
+
+		static int fontLineWidth(lua_State* L)
+		{
+			Font** f = checkValidFontObject(L, 1);
+			const char* message = luaL_checkstring(L, 2);
+			int lineIndex = luaL_checkstring(L, 3);
+			lua_pushinteger(L, (*f)->lineWidth(message, lineIndex));
+			return 1;
+		}
+
+		static int fontTextWidth(lua_State* L)
+		{
+			Font** f = checkValidFontObject(L, 1);
+			const char* message = luaL_checkstring(L, 2);
+			lua_pushinteger(L, (*f)->textWidth(message));
+			return 1;
+		}
+
+		static int fontTextHeight(lua_State* L)
+		{
+			Font** f = checkValidFontObject(L, 1);
+			const char* message = luaL_checkstring(L, 2);
+			lua_pushinteger(L, (*f)->textHeight(message));
 			return 1;
 		}
 
@@ -80,7 +132,12 @@ namespace Plum
 			{ "__tostring",	fontToString },
 			{ "__gc", fontGC },
 			{ "print", fontPrint },
+			{ "printCenter", fontPrintCenter },
+			{ "printRight", fontPrintRight },
 			{ "enableVariableWidth", fontEnableVariableWidth },
+			{ "lineWidth", fontLineWidth },
+			{ "textWidth", fontTextWidth },
+			{ "textHeight", fontTextHeight },
 			{ "getwidth", fontGetWidth },
 			{ "getheight", fontGetHeight },
 			{ NULL, NULL }

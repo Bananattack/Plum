@@ -48,6 +48,16 @@ namespace Plum
 			lua_pushinteger(lua, rgba(r, g, b, a).value);
 			return 1;
 		}
+		
+		static int plumHSV(lua_State* lua)
+		{
+			int h = luaL_checkint(lua, 1);
+			int s = luaL_checkint(lua, 2);
+			int v = luaL_checkint(lua, 3);
+			int a = luaL_optint(lua, 4, 255);
+			lua_pushinteger(lua, hsv(h, s, v, a).value);
+			return 1;
+		}
 
 		const luaL_Reg plumFunctions[] = {
 			{ "exit", plumExit },
@@ -73,6 +83,8 @@ namespace Plum
 			lua_setfield(lua, -2, "Red");
 			lua_pushinteger(lua, Color::Green);
 			lua_setfield(lua, -2, "Green");
+			lua_pushinteger(lua, Color::Blue);
+			lua_setfield(lua, -2, "Blue");
 			lua_pushinteger(lua, Color::Magenta);
 			lua_setfield(lua, -2, "Magenta");
 			lua_pushinteger(lua, Color::Cyan);
@@ -84,6 +96,9 @@ namespace Plum
 
 			lua_pushcfunction(lua, plumRGB);
 			lua_setfield(lua, -2, "rgb");
+
+			lua_pushcfunction(lua, plumHSV);
+			lua_setfield(lua, -2, "hsv");
 
 			// Done with 'color' now.
 			lua_pop(lua, 1);

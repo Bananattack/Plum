@@ -107,6 +107,24 @@ namespace Plum
 			return 0;
 		}
 
+		static int imageReplaceColor(lua_State* L)
+		{
+			ImageWrapper* img = checkValidImageObject(L, 1);
+			int find = luaL_checkint(L, 2);
+			int replace = luaL_checkint(L, 3);
+			img->image->replaceColor(find, replace);
+			return 0;
+		}
+
+		static int imageFlip(lua_State* L)
+		{
+			ImageWrapper* img = checkValidImageObject(L, 1);
+			bool h = lua_toboolean(L, 2) != 0;
+			bool v = lua_toboolean(L, 3) != 0;
+			img->image->flip(h, v);
+			return 0;
+		}
+
 		static int imageGetWidth(lua_State* L)
 		{
 			ImageWrapper* img = checkValidImageObject(L, 1);
@@ -129,6 +147,8 @@ namespace Plum
 			{ "__tostring",	imageToString },
 			{ "__gc", imageGC },
 			{ "blit", imageBlit },
+			{ "replaceColor", imageReplaceColor },
+			{ "flip", imageFlip },
 			{ "getwidth", imageGetWidth },
 			{ "getheight", imageGetHeight },
 			{ NULL, NULL }
