@@ -23,6 +23,7 @@
 
 #ifdef PLUM_WIN32
 #	include <windows.h>
+#	include <delayimp.h>
 #endif
 
 // zlib's for compression stuff!

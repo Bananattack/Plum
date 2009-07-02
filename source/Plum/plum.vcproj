@@ -134,8 +134,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="../SDLmain.lib ../SDL.lib OpenGL32.lib ../fmodex_vc.lib"
+				AdditionalDependencies="../SDLmain.lib ../SDL.lib OpenGL32.lib ../fmodex_vc.lib delayimp.lib"
 				OutputFile="$(SolutionDir)\test\$(ProjectName).exe"
+				DelayLoadDLLs="fmodex.dll"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				OptimizeReferences="2"

@@ -2,6 +2,7 @@
 
 namespace Plum
 {
+
 	void Audio::startup()
 	{
 		FMOD_RESULT result;
@@ -10,6 +11,7 @@ namespace Plum
 		char name[256];
 
 		FMOD::System_Create(&soundSystem);
+		printf("Got here\n");
 
 		#ifdef __linux__
 			soundSystem->setOutput(FMOD_OUTPUTTYPE_ALSA);

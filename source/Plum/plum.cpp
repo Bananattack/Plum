@@ -66,8 +66,22 @@ void RunGame(Plum::Engine& engine)
 	delete sprite;
 }
 
+#ifdef PLUM_WIN32
+	static FARPROC WINAPI failHook(unsigned /* dliNotify */, PDelayLoadInfo pdli)
+	{
+		throw Plum::Engine::Exception("Error encountered in Plum.\n"
+				"Seems like '" + std::string(pdli->szDll) + "' might be missing or corrupted.\n"
+				+ "Please get a working version, and try again.\n");
+		return 0;
+	}
+#endif
+
 int main(int argc, char** argv)
 {
+#ifdef PLUM_WIN32
+	__pfnDliFailureHook2 = failHook;
+#endif
+
 	Plum::Engine engine;
 
 	freopen("stdout.log", "w", stdout);

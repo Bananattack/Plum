@@ -85,6 +85,7 @@ namespace Plum
 	{
 		if(!initialized)
 		{
+			printf("\n>> Shutdown before program was fully initialized, probably means fatal errors. Uh oh!\n");
 			return;
 		}
 		printf("\n>> Destroying...\n");
