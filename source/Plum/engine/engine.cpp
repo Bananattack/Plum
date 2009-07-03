@@ -57,7 +57,6 @@ namespace Plum
 			SDL_SetCursor(mouseCursor);
 		}
 
-
 		timer = Timer();
 		printf(" OK!\n");
 
@@ -66,6 +65,27 @@ namespace Plum
 		video.startup();
 		video.setResolution(xres, yres, windowed);
 		printf(" OK!\n");
+
+#ifdef PLUM_WIN32
+        {
+			printf(" Icon... ");
+            SDL_SysWMinfo info;
+            SDL_VERSION(&info.version);
+            HWND hWnd = SDL_GetWMInfo(&info) ? info.window : 0;
+            if (hWnd)
+			{
+                DWORD successful = SetClassLong(hWnd, GCL_HICON, (long)LoadIcon(GetModuleHandle(0), "APPICON"));
+				if(!successful)
+				{
+					printf(" Failed with error code #%d.", GetLastError());
+				}
+				else
+				{
+					printf(" OK!\n");
+				}
+			}
+        }
+#endif
 
 		printf("    Initializing sound engine...");
 		audio.startup();
