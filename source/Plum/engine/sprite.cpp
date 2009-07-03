@@ -47,7 +47,7 @@ namespace Plum
 		{
 			if(!lua_istable(cfg.lua, -1))
 			{
-				throw Engine::Exception("Error in '" + filename + "':\nKey 'animations' is defined, but is not a valid table value.");
+				throw Engine::Exception("Error in '" + filename + "':\r\nKey 'animations' is defined, but is not a valid table value.");
 			}
 			else
 			{
@@ -57,7 +57,7 @@ namespace Plum
 				{
 					if(!lua_isstring(cfg.lua, -2) || !lua_istable(cfg.lua, -1))
 					{
-						throw Engine::Exception("Error in '" + filename + "':\nFound invalid animation group entry.");
+						throw Engine::Exception("Error in '" + filename + "':\r\nFound invalid animation group entry.");
 					}
 
 					AnimationInfo* info = new AnimationInfo();
@@ -66,7 +66,7 @@ namespace Plum
 					{
 						if(!lua_isstring(cfg.lua, -2) || !lua_isstring(cfg.lua, -1))
 						{
-							throw Engine::Exception("Error in '" + filename + "':\nFound invalid animation strand entry.");
+							throw Engine::Exception("Error in '" + filename + "':\r\nFound invalid animation strand entry.");
 						}
 						std::string strandName = lua_tostring(cfg.lua, -2);
 						std::string value = lua_tostring(cfg.lua, -1);

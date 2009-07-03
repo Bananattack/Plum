@@ -35,7 +35,7 @@ namespace Plum
 		frontSurface = SDL_SetVideoMode(width, height, 32, (windowed ? 0 : SDL_FULLSCREEN) | SDL_OPENGL);
 		if(!frontSurface)
 		{
-			throw Video::Exception("Video settings were not compatible your graphics card.\n");
+			throw Video::Exception("Video settings were not compatible your graphics card.\r\n");
 		}
 		windowWidth = frontSurface->w;
 		windowHeight = frontSurface->h;

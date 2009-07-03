@@ -14,22 +14,22 @@ namespace Plum
 			return;
 		}
 
-		printf(">> Initializing...\n");
+		logFormat(">> Initializing...\r\n");
 
-		printf("    Loading config settings...");
+		logFormat("    Loading config settings...");
 		config.init("plum.cfg", "config");
 
 		int xres = config.hasValue("xres") ? config.getIntValue("xres") : 320;
 		int yres = config.hasValue("yres") ? config.getIntValue("yres") : 240;
 		bool windowed = config.hasValue("windowed") ? config.getBoolValue("windowed") : true;
 
-		printf(" OK!\n");
-		printf("    (Settings: %dx%d resolution, %s mode)\n\n", xres, yres, windowed ? "windowed" : "fullscreen");
+		logFormat(" OK!\r\n");
+		logFormat("    (Settings: %dx%d resolution, %s mode)\r\n\r\n", xres, yres, windowed ? "windowed" : "fullscreen");
 
-		printf("    Initializing SDL...");
+		logFormat("    Initializing SDL...");
 		if(SDL_Init(SDL_INIT_TIMER | SDL_INIT_VIDEO | SDL_INIT_JOYSTICK | SDL_INIT_NOPARACHUTE) != 0)
 		{
-			throw Engine::Exception("Couldn't initialize SDL.\n");
+			throw Engine::Exception("Couldn't initialize SDL.\r\n");
 		}
 
 		SDL_ShowCursor((config.hasValue("hide_cursor") && config.getBoolValue("hide_cursor")) ? SDL_DISABLE : SDL_ENABLE);
@@ -58,46 +58,37 @@ namespace Plum
 		}
 
 		timer = Timer();
-		printf(" OK!\n");
+		logFormat(" OK!\r\n");
 
-		printf("    Initializing video engine...");
+		logFormat("    Initializing video engine...");
 		setTitle("Plum");
 		video.startup();
 		video.setResolution(xres, yres, windowed);
-		printf(" OK!\n");
+		logFormat(" OK!\r\n");
 
 #ifdef PLUM_WIN32
         {
-			printf(" Icon... ");
             SDL_SysWMinfo info;
             SDL_VERSION(&info.version);
             HWND hWnd = SDL_GetWMInfo(&info) ? info.window : 0;
             if (hWnd)
 			{
                 DWORD successful = SetClassLong(hWnd, GCL_HICON, (long)LoadIcon(GetModuleHandle(0), "APPICON"));
-				if(!successful)
-				{
-					printf(" Failed with error code #%d.", GetLastError());
-				}
-				else
-				{
-					printf(" OK!\n");
-				}
 			}
         }
 #endif
 
-		printf("    Initializing sound engine...");
+		logFormat("    Initializing sound engine...");
 		audio.startup();
-		printf(" OK!\n");
+		logFormat(" OK!\r\n");
 
-		printf("    Initializing scripting engine...");
+		logFormat("    Initializing scripting engine...");
 		script.startup(this);
-		printf(" OK!\n");
+		logFormat(" OK!\r\n");
 
 		destroyed = false;
 		initialized = true;
-		printf(">> Initialization complete!\n\n");
+		logFormat(">> Initialization complete!\r\n\r\n");
 
 	}
 
@@ -105,35 +96,35 @@ namespace Plum
 	{
 		if(!initialized)
 		{
-			printf("\n>> Shutdown before program was fully initialized, probably means fatal errors. Uh oh!\n");
+			logFormat("\r\n>> Shutdown before program was fully initialized, probably means fatal errors. Uh oh!\r\n");
 			return;
 		}
-		printf("\n>> Destroying...\n");
+		logFormat("\r\n>> Destroying...\r\n");
 
-		printf("    Destroying scripting engine...");
+		logFormat("    Destroying scripting engine...");
 		script.shutdown();
-		printf(" OK!\n");
+		logFormat(" OK!\r\n");
 
-		printf("    Destroying sound engine...");
+		logFormat("    Destroying sound engine...");
 		audio.shutdown();
-		printf(" OK!\n");
+		logFormat(" OK!\r\n");
 
-		printf("    Destroying video engine...");
+		logFormat("    Destroying video engine...");
 		video.shutdown();
-		printf(" OK!\n");
+		logFormat(" OK!\r\n");
 
-		printf("    Destroying SDL...");
+		logFormat("    Destroying SDL...");
 		SDL_FreeCursor(mouseCursor);
 		SDL_Quit();
-		printf(" OK!\n");
+		logFormat(" OK!\r\n");
 
-		printf(">> Destroyed!\n");
+		logFormat(">> Destroyed!\r\n");
 		initialized = false;
 	}
 
 	void Engine::quit(std::string message) 
 	{
-		printf("\n>> Shutdown requested");
+		logFormat("\r\n>> Shutdown requested");
 		if(message.length())
 		{
 			// If we're initialized enough, we can draw the error on-screen!
@@ -141,7 +132,7 @@ namespace Plum
 			{
 			}
 
-			printf(", with quit message:\n%s", message.c_str());
+			logFormat(", with quit message:\r\n%s", message.c_str());
 			fprintf(stderr, "%s", message.c_str());
 #ifdef PLUM_WIN32
 			SDL_SysWMinfo info;
@@ -153,7 +144,7 @@ namespace Plum
 			shutdown();
 			::exit(-1);
 		}
-		printf(".\n");
+		logFormat(".\r\n");
 		shutdown();
 		::exit(0);
 	}

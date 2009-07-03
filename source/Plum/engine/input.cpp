@@ -44,12 +44,12 @@ namespace Plum
 	{
 		if(event.type == SDL_KEYDOWN && event.key.keysym.sym == keyboardButton)
 		{
-			printf("PRESSED %d\n", event.key.keysym.sym);
+			logFormat("PRESSED %d\r\n", event.key.keysym.sym);
 			pressed = true;
 		}
 		if(event.type == SDL_KEYUP && event.key.keysym.sym == keyboardButton)
 		{
-			printf("UNPRESSED %d\n", event.key.keysym.sym);
+			logFormat("UNPRESSED %d\r\n", event.key.keysym.sym);
 			pressed = false;
 		}
 	}*/

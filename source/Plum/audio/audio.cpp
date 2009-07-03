@@ -11,7 +11,6 @@ namespace Plum
 		char name[256];
 
 		FMOD::System_Create(&soundSystem);
-		printf("Got here\n");
 
 		#ifdef __linux__
 			soundSystem->setOutput(FMOD_OUTPUTTYPE_ALSA);
@@ -21,7 +20,7 @@ namespace Plum
 
 		if(caps & FMOD_CAPS_HARDWARE_EMULATED)
 		{
-			printf("\n    Your sound hardware settings are crap, resorting to emulated hardware.\n");
+			logFormat("\r\n    Your sound hardware settings are crap, resorting to emulated hardware.\n");
 			soundSystem->setDSPBufferSize(1024, 10);
 		}
 		soundSystem->getDriverInfo(0, name, 256, 0);
@@ -40,8 +39,8 @@ namespace Plum
 		}
 		if(result != FMOD_OK)
 		{
-			printf("FMOD error! (%d) %s\n", result, FMOD_ErrorString(result));
-			throw Audio::Exception("Couldn't initialize sound engine.\n");
+			logFormat("FMOD error! (%d) %s\r\n", result, FMOD_ErrorString(result));
+			throw Audio::Exception("Couldn't initialize sound engine.\r\n");
 		}
 	}
 

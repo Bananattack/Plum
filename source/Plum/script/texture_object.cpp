@@ -50,7 +50,7 @@ namespace Plum
 				}
 			}
 		}
-		luaL_error(L, "Attempt to call plum.Texture constructor with invalid argument types.\nMust be (string filename) or (plum.Image image).");
+		luaL_error(L, "Attempt to call plum.Texture constructor with invalid argument types.\r\nMust be (string filename) or (plum.Image image).");
 		return 0;
 	}
 

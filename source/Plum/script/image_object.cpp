@@ -38,7 +38,7 @@ namespace Plum
 		}
 		else
 		{
-			luaL_error(L, "Attempt to call plum.Image constructor with invalid argument types.\nMust be (string filename) or (int w, int h).");
+			luaL_error(L, "Attempt to call plum.Image constructor with invalid argument types.\r\nMust be (string filename) or (int w, int h).");
 			return 0;
 		}
 	}

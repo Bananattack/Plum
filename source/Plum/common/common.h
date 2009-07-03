@@ -40,6 +40,9 @@ namespace Plum
 		return o.str();
 	}
 
+	void clearLog();
+	void logFormat(const char* format, ...);
+
 	std::string toLower(const std::string& s);
 	std::string toUpper(const std::string& s);
 }

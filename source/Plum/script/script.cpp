@@ -67,7 +67,7 @@ namespace Plum
 
 		if(luaL_loadbuffer(L, buf, strlen(buf), std::string("@" + filename).c_str()) || lua_pcall(L, 0, LUA_MULTRET, 0))
 		{
-			throw Engine::Exception("Error found in script:\n" + std::string(lua_tostring(L, -1)));
+			throw Engine::Exception("Error found in script:\r\n" + std::string(lua_tostring(L, -1)));
 		}
 	}
 

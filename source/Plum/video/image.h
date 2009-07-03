@@ -80,7 +80,7 @@ namespace Plum
 					{
 						delete file;
 					}
-					std::string s = "Couldn't open image '" + std::string(filename) + "'!\n";
+					std::string s = "Couldn't open image '" + std::string(filename) + "'!\r\n";
 					throw ImageNotFoundException(s);
 				}
 

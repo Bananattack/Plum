@@ -33,9 +33,9 @@ namespace Plum
 		}
 		
 		std::string setup = "called = 0;"
-			"function " + blockName + "(t)\n"
-			"    called = called + 1;\n"
-			"    return t\n"
+			"function " + blockName + "(t)\r\n"
+			"    called = called + 1;\r\n"
+			"    return t\r\n"
 			"end";
 		luaL_dostring(lua, setup.c_str());
 		
@@ -62,7 +62,7 @@ namespace Plum
 		if(luaL_loadbuffer(lua, buf, strlen(buf), std::string("@" + filename).c_str()))
 		{
 			// Bad stuff occurred, throw an exception.
-			std::string s = "Error while loading " + filename + ":\n" + std::string(lua_tostring(lua, -1));
+			std::string s = "Error while loading " + filename + ":\r\n" + std::string(lua_tostring(lua, -1));
 			throw Engine::Exception(s);
 		}
 		
@@ -70,28 +70,28 @@ namespace Plum
 		if(!parentThread && lua_pcall(lua, 0, LUA_MULTRET, 0))
 		{
 			// Bad stuff occurred, throw an exception.
-			std::string s = "Error while loading " + filename + ":\n" + std::string(lua_tostring(lua, -1));
+			std::string s = "Error while loading " + filename + ":\r\n" + std::string(lua_tostring(lua, -1));
 			throw Engine::Exception(s);
 		}
 		// Attempt to call the config (threaded).
 		else if(parentThread && lua_resume(lua, 0))
 		{
 			// Bad stuff occurred, throw an exception.
-			std::string s = "Error while loading " + filename + ":\n" + std::string(lua_tostring(lua, -1));
+			std::string s = "Error while loading " + filename + ":\r\n" + std::string(lua_tostring(lua, -1));
 			throw Engine::Exception(s);
 		}
 
 		// Ensure that the value on stack is a table.
 		if(!lua_istable(lua, -1))
 		{
-			throw Engine::Exception("Error while loading " + filename + ":\nThe " + blockName + " file must be a table.");
+			throw Engine::Exception("Error while loading " + filename + ":\r\nThe " + blockName + " file must be a table.");
 		}
 
 		// Make sure they properly put the word "sprite"/"map" or whatever in the header, and don't call it more than once.
 		lua_getglobal(lua, "called");
 		if(!lua_isnumber(lua, -1) || lua_tonumber(lua, -1) != 1)
 		{
-			throw Engine::Exception("Error while loading " + filename + ":\nNot a valid " + blockName + " format.");
+			throw Engine::Exception("Error while loading " + filename + ":\r\nNot a valid " + blockName + " format.");
 		}
 		lua_pop(lua, 1);
 		delete [] buf;
@@ -141,11 +141,11 @@ namespace Plum
 		lua_rawget(lua, -2);
 		if(lua_isnil(lua, -1))
 		{
-			throw Engine::Exception("Error while parsing " + filename + ":\nAn entry for '" + key + "' was not found.");
+			throw Engine::Exception("Error while parsing " + filename + ":\r\nAn entry for '" + key + "' was not found.");
 		}
 		if(!lua_isboolean(lua, -1))
 		{
-			throw Engine::Exception("Error while parsing " + filename + ":\nEntry '" + key + "' must be a valid number.");
+			throw Engine::Exception("Error while parsing " + filename + ":\r\nEntry '" + key + "' must be a valid number.");
 		}
 		bool result = lua_toboolean(lua, -1) != 0;
 		lua_pop(lua, 1);
@@ -160,11 +160,11 @@ namespace Plum
 		lua_rawget(lua, -2);
 		if(lua_isnil(lua, -1))
 		{
-			throw Engine::Exception("Error while parsing " + filename + ":\nAn entry for '" + key + "' was not found.");
+			throw Engine::Exception("Error while parsing " + filename + ":\r\nAn entry for '" + key + "' was not found.");
 		}
 		if(!lua_isnumber(lua, -1))
 		{
-			throw Engine::Exception("Error while parsing " + filename + ":\nEntry '" + key + "' must be a valid number.");
+			throw Engine::Exception("Error while parsing " + filename + ":\r\nEntry '" + key + "' must be a valid number.");
 		}
 		int result = lua_tointeger(lua, -1);
 		lua_pop(lua, 1);
@@ -179,11 +179,11 @@ namespace Plum
 		lua_rawget(lua, -2);
 		if(lua_isnil(lua, -1))
 		{
-			throw Engine::Exception("Error while parsing " + filename + ":\nAn entry for '" + key + "' was not found.");
+			throw Engine::Exception("Error while parsing " + filename + ":\r\nAn entry for '" + key + "' was not found.");
 		}
 		if(!lua_isstring(lua, -1))
 		{
-			throw Engine::Exception("Error while parsing " + filename + ":\nEntry '" + key + "' must be a valid string.");
+			throw Engine::Exception("Error while parsing " + filename + ":\r\nEntry '" + key + "' must be a valid string.");
 		}
 		std::string result = lua_tostring(lua, -1);
 		lua_pop(lua, 1);

@@ -1,77 +1,13 @@
 #include "plum.h"
 
-void RunGame(Plum::Engine& engine)
-{
-	unsigned int i;
-	Plum::Sound* sound = engine.audio.loadSound("resources/sounds/shot.wav");
-	Plum::Font* fnt = new Plum::Font("resources/fonts/ccfont.png");
-	Plum::Song* song = NULL;
-
-	double x = 0;
-	double y = 0;
-	Plum::Sprite* sprite = new Plum::Sprite(x, y, "resources/sprites/heartsprite.sprite");
-	sprite->scale = 3.0;
-
-
-	fnt->enableVariableWidth();
-	sprite->setAnimation("throb", "left");
-
-	//printf("SONG = %s\n", engine.config.getStringValue("song").c_str());
-	song = engine.audio.loadSong(engine.config.getStringValue("song"));
-
-	engine.audio.playSong(song);
-
-	while(!engine.key[Plum::KEY_ESCAPE].isPressed())
-	{
-		for(i = 0; i < 9; i++)
-		{
-			sprite->x = x + i * 16;
-			sprite->y = y;
-			sprite->blit();
-		}
-		
-		fnt->print(5, 5, "FPS: " + Plum::integerToString(engine.timer.fps));
-
-		engine.refresh();
-		engine.video.clear(Plum::rgb(0, 102, 255));
-		engine.video.solidRect(0, 0, engine.video.getScreenWidth(), engine.video.getScreenHeight(), Plum::rgb(0x33, 0x66, 0xcc));
-
-		for(i = 0; i < engine.timer.gap; i++)
-		{
-			sprite->angle += 0.2;
-			if(engine.key[Plum::KEY_LEFT].isPressed())
-			{
-				x -= 0.5;
-			}
-			if(engine.key[Plum::KEY_RIGHT].isPressed())
-			{
-				x += 0.5;
-			}
-			if(engine.key[Plum::KEY_UP].isPressed())
-			{
-				y -= 0.5;
-			}
-			if(engine.key[Plum::KEY_DOWN].isPressed())
-			{
-				y += 0.5;
-			}
-			if(engine.key[Plum::KEY_ENTER].isPressed())
-			{
-				engine.audio.playSound(sound);
-				engine.key[Plum::KEY_ENTER].setPressed(false);
-			}
-			sprite->update();
-		}
-	}
-	delete sprite;
-}
+using namespace Plum;
 
 #ifdef PLUM_WIN32
 	static FARPROC WINAPI failHook(unsigned /* dliNotify */, PDelayLoadInfo pdli)
 	{
-		throw Plum::Engine::Exception("Error encountered in Plum.\n"
-				"Seems like '" + std::string(pdli->szDll) + "' might be missing or corrupted.\n"
-				+ "Please get a working version, and try again.\n");
+		throw Plum::Engine::Exception("Error encountered in Plum.\r\n"
+				"Seems like '" + std::string(pdli->szDll) + "' might be missing or corrupted.\r\n"
+				+ "Please get a working version, and try again.\r\n");
 		return 0;
 	}
 #endif
@@ -82,26 +18,26 @@ int main(int argc, char** argv)
 	__pfnDliFailureHook2 = failHook;
 #endif
 
-	Plum::ScriptInstanceMap map;
-	Plum::Engine engine;
+	ScriptInstanceMap map;
+	Engine engine;
 
-
+	clearLog();
 	freopen("stdout.log", "w", stdout);
 	freopen("stderr.log", "w", stderr);
 	try
 	{
-		Plum::scriptInstanceMap = &map;
+		scriptInstanceMap = &map;
 		engine.startup();
 	}
-	catch(Plum::Audio::Exception& e)
+	catch(Audio::Exception& e)
 	{
 		engine.quit("Failure during audio system startup: " + std::string(e.what()));
 	}
-	catch(Plum::Video::Exception& e)
+	catch(Video::Exception& e)
 	{
 		engine.quit("Failure during video system startup: " + std::string(e.what()));
 	}
-	catch(Plum::Engine::Exception& e)
+	catch(Engine::Exception& e)
 	{
 		engine.quit("Failure during internal startup: " + std::string(e.what()));
 	}
@@ -112,7 +48,6 @@ int main(int argc, char** argv)
 
 	try
 	{
-		//RunGame(engine);
 		engine.script.runScript("system.lua");
 	}
 	catch(std::exception& e)
