@@ -95,10 +95,6 @@ namespace Plum
 		}
 		lua_pop(lua, 1);
 		delete [] buf;
-
-		FILE* fl = fopen("loggy.log", "a");
-		fprintf(fl, "CREATING STUFF 0x%x\n", lua);
-		fclose(fl);
 	}
 
 	Config::~Config()
@@ -111,9 +107,6 @@ namespace Plum
 		{
 			if(lua)
 			{
-				FILE* f = fopen("loggy.log", "a");
-				fprintf(f, "CLOSING STUFF 0x%x\n", lua);
-				fclose(f);
 				lua_close(lua);
 			}
 		}
@@ -131,19 +124,11 @@ namespace Plum
 	{
 		checkInitialized();
 
-		FILE* f = fopen("loggy.log", "a");
-		fprintf(f, "USING STUFF 0x%x\n", lua);
-		fclose(f);
-
 		lua_pushstring(lua, key.c_str());
 		lua_rawget(lua, -2);
 
 		bool result = !lua_isnil(lua, -1);
 		lua_pop(lua, 1);
-
-		f = fopen("loggy.log", "a");
-		fprintf(f, "I WIN\n");
-		fclose(f);
 
 		return result;
 	}
