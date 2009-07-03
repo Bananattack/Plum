@@ -54,6 +54,16 @@ namespace Plum
 		return 0;
 	}
 
+	void Script::texturePushForSprite(lua_State* L, Sprite* spr)
+	{
+		TextureWrapper* t = (TextureWrapper*) lua_newuserdata(L, sizeof(TextureWrapper));
+		luaL_getmetatable(L, "plum_texture");
+		lua_setmetatable(L, -2);
+
+		t->texture = spr->getTexture();
+		t->canDelete = false;
+	}
+
 	static int textureGC(lua_State* L)
 	{
 		TextureWrapper* t = checkValidTextureObject(L, 1);

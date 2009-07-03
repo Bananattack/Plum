@@ -2,14 +2,14 @@
 
 namespace Plum
 {
-	Sprite::Sprite(double x, double y, const char* filename)
+	Sprite::Sprite(double x, double y, const char* filename, lua_State* state)
 	{
-		init(x, y, filename);
+		init(x, y, filename, state);
 	}
 
-	Sprite::Sprite(double x, double y, std::string filename)
+	Sprite::Sprite(double x, double y, std::string filename, lua_State* state)
 	{
-		init(x, y, filename);
+		init(x, y, filename, state);
 	}
 
 	Sprite::~Sprite()
@@ -26,7 +26,7 @@ namespace Plum
 
 	void Sprite::init(double x, double y, std::string filename, lua_State* state)
 	{
-		Config cfg = Config(filename, "sprite", state);
+		cfg.init(filename, "sprite", state);
 
 		texture = new Texture(Path::getDirectory(filename) + cfg.getStringValue("image_filename"));
 
@@ -101,6 +101,10 @@ namespace Plum
 
 	void Sprite::blit()
 	{
+		if(!visible)
+		{
+			return;
+		}
 		int f = parser->getFrame();
 		int fx = (f % frameColumns) * (frameWidth + framePadding) + framePadding;
 		int fy = (f / frameColumns) * (frameHeight + framePadding) + framePadding;

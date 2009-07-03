@@ -11,6 +11,8 @@ namespace Plum
 			AnimationParser* parser;
 			std::map<std::string, AnimationInfo*> animationInfo;
 		public:
+			Config cfg;
+
 			int frameWidth, frameHeight;
 			int frameColumns;
 			int framePadding;
@@ -28,13 +30,16 @@ namespace Plum
 			BlendMode blendMode;
 			Color tint;
 
-			Sprite(double x, double y, const char* filename);
-			Sprite(double x, double y, std::string filename);
+			Sprite(double x, double y, const char* filename, lua_State* state = 0);
+			Sprite(double x, double y, std::string filename, lua_State* state = 0);
 			~Sprite();
 		private:
 			void init(double x, double y, std::string filename, lua_State* state = 0);
 		public:
-			Texture* getTexture();
+			Texture* getTexture()
+			{
+				return texture;
+			}
 
 			void blit();
 			void setAnimation(std::string strand, std::string direction);

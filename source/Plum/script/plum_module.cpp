@@ -59,7 +59,8 @@ namespace Plum
 
 	static int plumLoadConfig(lua_State* L)
 	{
-		Config cfg = Config("plum.cfg", "config", L);
+		Config cfg;
+		cfg.init("plum.cfg", "config", L);
 		lua_pushvalue(cfg.lua, -1);
 		lua_xmove(cfg.lua, L, 1);
 		return 1;

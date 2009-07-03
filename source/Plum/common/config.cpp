@@ -2,7 +2,7 @@
 
 namespace Plum
 {
-	Config::Config(std::string name, std::string blockName, lua_State* state)
+	void Config::init(std::string name, std::string blockName, lua_State* state)
 	{
 		filename = name;
 
@@ -13,6 +13,7 @@ namespace Plum
 		{
 			lua = luaL_newstate();
 			ref = LUA_NOREF;
+			parentThread = NULL;
 		}
 		else
 		{
@@ -28,7 +29,7 @@ namespace Plum
 			lua_pushvalue(lua, LUA_GLOBALSINDEX);  
 			lua_settable(lua, -3);  
 			lua_setmetatable(lua, -2);  
-			lua_replace(lua, LUA_GLOBALSINDEX);  
+			lua_replace(lua, LUA_GLOBALSINDEX); 
 		}
 		
 		std::string setup = "called = 0;"
@@ -65,8 +66,15 @@ namespace Plum
 			throw Engine::Exception(s);
 		}
 		
-		// Attempt to call the config.
-		if((!state && lua_pcall(lua, 0, LUA_MULTRET, 0)) || (state && lua_resume(lua, 0)))
+		// Attempt to call the config (unthreaded).
+		if(!parentThread && lua_pcall(lua, 0, LUA_MULTRET, 0))
+		{
+			// Bad stuff occurred, throw an exception.
+			std::string s = "Error while loading " + filename + ":\n" + std::string(lua_tostring(lua, -1));
+			throw Engine::Exception(s);
+		}
+		// Attempt to call the config (threaded).
+		else if(parentThread && lua_resume(lua, 0))
 		{
 			// Bad stuff occurred, throw an exception.
 			std::string s = "Error while loading " + filename + ":\n" + std::string(lua_tostring(lua, -1));
@@ -87,13 +95,27 @@ namespace Plum
 		}
 		lua_pop(lua, 1);
 		delete [] buf;
+
+		FILE* fl = fopen("loggy.log", "a");
+		fprintf(fl, "CREATING STUFF 0x%x\n", lua);
+		fclose(fl);
 	}
 
 	Config::~Config()
 	{
-		if(ref != LUA_NOREF)
+		if(parentThread)
 		{
-			luaL_unref(lua, LUA_REGISTRYINDEX, ref);
+			luaL_unref(parentThread, LUA_REGISTRYINDEX, ref);
+		}
+		else
+		{
+			if(lua)
+			{
+				FILE* f = fopen("loggy.log", "a");
+				fprintf(f, "CLOSING STUFF 0x%x\n", lua);
+				fclose(f);
+				lua_close(lua);
+			}
 		}
 	}
 
@@ -109,11 +131,20 @@ namespace Plum
 	{
 		checkInitialized();
 
+		FILE* f = fopen("loggy.log", "a");
+		fprintf(f, "USING STUFF 0x%x\n", lua);
+		fclose(f);
+
 		lua_pushstring(lua, key.c_str());
 		lua_rawget(lua, -2);
 
 		bool result = !lua_isnil(lua, -1);
 		lua_pop(lua, 1);
+
+		f = fopen("loggy.log", "a");
+		fprintf(f, "I WIN\n");
+		fclose(f);
+
 		return result;
 	}
 

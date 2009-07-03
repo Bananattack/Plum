@@ -248,6 +248,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\script\sprite_object.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\script\texture_object.cpp"
 					>
 				</File>

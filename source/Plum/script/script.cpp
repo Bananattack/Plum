@@ -39,7 +39,7 @@ namespace Plum
 		initSoundClass(L);
 		initSongClass(L);
 		initFileClass(L);
-		//initSpriteClass(L);
+		initSpriteClass(L);
 	}
 
 	void Script::shutdown()

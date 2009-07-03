@@ -83,6 +83,7 @@ namespace Plum
 		};
 		
 		static void imagePushForTexture(lua_State* L, Texture* tex);
+		static void texturePushForSprite(lua_State* L, Sprite* spr);
 	};
 
 	typedef std::map<lua_State*, Script*> ScriptInstanceMap;
