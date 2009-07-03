@@ -165,6 +165,8 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
+				Description="Compressing executable with UPX."
+				CommandLine="&quot;$(SolutionDir)\upx\upx.exe&quot; -v --mono --no-progress &quot;$(TargetPath)&quot;"
 			/>
 		</Configuration>
 	</Configurations>
