@@ -17,6 +17,12 @@ x = 160; y = 120;
 angle = 0;
 
 do
+    t = plum.loadConfig();
+    for k, v in pairs(t) do
+        print(tostring(k) .. " " .. tostring(v));
+    end
+end
+do
     local file = plum.File('test.txt', 'w')
     file:writeLine("Hey there son.");
     file:close()

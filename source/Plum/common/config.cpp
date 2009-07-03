@@ -2,14 +2,34 @@
 
 namespace Plum
 {
-	Config::Config(std::string name, std::string blockName)
+	Config::Config(std::string name, std::string blockName, lua_State* state)
 	{
 		filename = name;
 
 		// Config files will have a general format:
 		// config { key = value; ... }
 		// Don't include any lua libraries, for good reason.
-		lua = luaL_newstate();
+		if(!state)
+		{
+			lua = luaL_newstate();
+			ref = LUA_NOREF;
+		}
+		else
+		{
+			lua = lua_newthread(state);
+			parentThread = state;
+			ref = luaL_ref(state, LUA_REGISTRYINDEX);
+			
+			// Setup a unique global table for the this thread.
+			// This way it is isolated from the main thread, and can't overwrite any variables.
+			lua_newtable(lua);  
+			lua_newtable(lua);  
+			lua_pushliteral(lua, "__index");  
+			lua_pushvalue(lua, LUA_GLOBALSINDEX);  
+			lua_settable(lua, -3);  
+			lua_setmetatable(lua, -2);  
+			lua_replace(lua, LUA_GLOBALSINDEX);  
+		}
 		
 		std::string setup = "called = 0;"
 			"function " + blockName + "(t)\n"
@@ -38,7 +58,15 @@ namespace Plum
 		zzip_fclose(f);
 
 		// Load the config
-		if(luaL_loadbuffer(lua, buf, strlen(buf), std::string("@" + filename).c_str()) || lua_pcall(lua, 0, LUA_MULTRET, 0))
+		if(luaL_loadbuffer(lua, buf, strlen(buf), std::string("@" + filename).c_str()))
+		{
+			// Bad stuff occurred, throw an exception.
+			std::string s = "Error while loading " + filename + ":\n" + std::string(lua_tostring(lua, -1));
+			throw Engine::Exception(s);
+		}
+		
+		// Attempt to call the config.
+		if((!state && lua_pcall(lua, 0, LUA_MULTRET, 0)) || (state && lua_resume(lua, 0)))
 		{
 			// Bad stuff occurred, throw an exception.
 			std::string s = "Error while loading " + filename + ":\n" + std::string(lua_tostring(lua, -1));
@@ -59,6 +87,14 @@ namespace Plum
 		}
 		lua_pop(lua, 1);
 		delete [] buf;
+	}
+
+	Config::~Config()
+	{
+		if(ref != LUA_NOREF)
+		{
+			luaL_unref(lua, LUA_REGISTRYINDEX, ref);
+		}
 	}
 
 	void Config::checkInitialized()

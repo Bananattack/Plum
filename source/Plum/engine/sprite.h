@@ -32,7 +32,7 @@ namespace Plum
 			Sprite(double x, double y, std::string filename);
 			~Sprite();
 		private:
-			void init(double x, double y, std::string filename);
+			void init(double x, double y, std::string filename, lua_State* state = 0);
 		public:
 			Texture* getTexture();
 

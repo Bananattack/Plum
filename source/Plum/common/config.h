@@ -7,11 +7,14 @@ namespace Plum
 	{
 		public:
 			lua_State* lua;
+			lua_State* parentThread;
+			int ref;
 			std::string filename;
 
 			Config::Config()
 				: lua(0), filename("") {}
-			Config(std::string name, std::string blockName);
+			Config(std::string name, std::string blockName, lua_State* state = 0);
+			~Config();
 
 			void checkInitialized();
 			bool hasValue(std::string key);

@@ -35,6 +35,7 @@ namespace Plum
 
 			SDL_Cursor* mouseCursor;
 		public:
+			Script script;
 			Config config;
 			Video video;
 			Audio audio;

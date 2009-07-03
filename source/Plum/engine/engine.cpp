@@ -72,7 +72,7 @@ namespace Plum
 		printf(" OK!\n");
 
 		printf("    Initializing scripting engine...");
-		Script::startup(this);
+		script.startup(this);
 		printf(" OK!\n");
 
 		destroyed = false;
@@ -91,7 +91,7 @@ namespace Plum
 		printf("\n>> Destroying...\n");
 
 		printf("    Destroying scripting engine...");
-		Script::shutdown();
+		script.shutdown();
 		printf(" OK!\n");
 
 		printf("    Destroying sound engine...");
@@ -230,7 +230,7 @@ namespace Plum
 		timer.update();
 
 
-		Script::stepGarbageCollector();
+		script.stepGarbageCollector();
 		//std::string cap = titlePrefix + " - FPS: " + integerToString(timer.fps);
 		//SDL_WM_SetCaption(cap.c_str(), cap.c_str());
 

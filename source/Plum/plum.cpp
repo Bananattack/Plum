@@ -82,12 +82,15 @@ int main(int argc, char** argv)
 	__pfnDliFailureHook2 = failHook;
 #endif
 
+	Plum::ScriptInstanceMap map;
 	Plum::Engine engine;
+
 
 	freopen("stdout.log", "w", stdout);
 	freopen("stderr.log", "w", stderr);
 	try
 	{
+		Plum::scriptInstanceMap = &map;
 		engine.startup();
 	}
 	catch(Plum::Audio::Exception& e)
@@ -110,7 +113,7 @@ int main(int argc, char** argv)
 	try
 	{
 		//RunGame(engine);
-		Plum::Script::runScript("system.lua");
+		engine.script.runScript("system.lua");
 	}
 	catch(std::exception& e)
 	{

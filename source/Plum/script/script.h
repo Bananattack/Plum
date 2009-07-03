@@ -42,30 +42,39 @@ namespace Plum
 		return 0; \
 	}
 
-	namespace Script
-	{
-		extern lua_State* lua;
-		extern Engine* engine;
+	class Engine;
 
-		void startup(Engine* eng);
+	struct Script
+	{
+		static Script* getInstance(lua_State* L);
+
+		lua_State* L;
+		Engine* engine;
+
+		Script()
+			: L(0), engine(0)
+		{
+		}
+
+		void startup(Engine* engine);
 		void runScript(std::string filename);
 		void shutdown();
 		void stepGarbageCollector();
 
-		void initPlumModule(lua_State* lua);
+		static void initPlumModule(lua_State* L);
 
-		void initTextureClass(lua_State* lua);
-		void initImageClass(lua_State* lua);
-		void initSpriteClass(lua_State* lua);
-		void initVideoClass(lua_State* lua);
-		void initFontClass(lua_State* lua);
-		void initTimerClass(lua_State* lua);
-		void initInputClass(lua_State* lua);
-		void initKeyboardClass(lua_State* lua);
-		void initMouseClass(lua_State* lua);
-		void initSoundClass(lua_State* lua);
-		void initSongClass(lua_State* lua);
-		void initFileClass(lua_State* lua);
+		static void initTextureClass(lua_State* L);
+		static void initImageClass(lua_State* L);
+		static void initSpriteClass(lua_State* L);
+		static void initVideoClass(lua_State* L);
+		static void initFontClass(lua_State* L);
+		static void initTimerClass(lua_State* L);
+		static void initInputClass(lua_State* L);
+		static void initKeyboardClass(lua_State* L);
+		static void initMouseClass(lua_State* L);
+		static void initSoundClass(lua_State* L);
+		static void initSongClass(lua_State* L);
+		static void initFileClass(lua_State* L);
 
 		struct ImageWrapper
 		{
@@ -73,8 +82,10 @@ namespace Plum
 			bool canDelete;
 		};
 		
-		void imagePushForTexture(lua_State* L, Texture* tex);
-		
-	}
+		static void imagePushForTexture(lua_State* L, Texture* tex);
+	};
+
+	typedef std::map<lua_State*, Script*> ScriptInstanceMap;
+	extern ScriptInstanceMap* scriptInstanceMap;
 }
 #endif

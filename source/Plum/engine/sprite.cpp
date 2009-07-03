@@ -24,9 +24,9 @@ namespace Plum
 		}
 	}
 
-	void Sprite::init(double x, double y, std::string filename)
+	void Sprite::init(double x, double y, std::string filename, lua_State* state)
 	{
-		Config cfg = Config(filename, "sprite");
+		Config cfg = Config(filename, "sprite", state);
 
 		texture = new Texture(Path::getDirectory(filename) + cfg.getStringValue("image_filename"));
 

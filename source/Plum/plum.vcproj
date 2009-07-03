@@ -59,9 +59,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="../SDL.lib ../SDLmain.lib OpenGL32.lib ../corona/output/Debug/corona.lib ../zlib/Debug/zlib.lib ../fmodex_vc.lib"
+				AdditionalDependencies="../SDLmain.lib ../SDL.lib OpenGL32.lib ../fmodex_vc.lib delayimp.lib"
 				LinkIncremental="2"
 				IgnoreAllDefaultLibraries="false"
+				DelayLoadDLLs="fmodex.dll"
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				EntryPointSymbol="SDL_main"

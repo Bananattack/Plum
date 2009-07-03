@@ -68,8 +68,7 @@ extern "C"
 #include "engine/input.h"
 #include "engine/timer.h"
 #include "engine/sprite.h"
-#include "engine/engine.h"
-
 #include "script/script.h"
+#include "engine/engine.h"
 
 #endif

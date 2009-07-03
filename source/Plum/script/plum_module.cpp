@@ -3,131 +3,135 @@
 
 namespace Plum
 {
-	namespace Script
+	static int plumExit(lua_State* L)
 	{
-		static int plumExit(lua_State* lua)
-		{
-			int argumentCount = lua_gettop(lua);
+		int argumentCount = lua_gettop(L);
 
-			if(argumentCount >= 1)
-			{
-				engine->quit(lua_tostring(lua, 1));
-			}
-			else
-			{
-				engine->quit();
-			}
-			
-			return 0;
+		if(argumentCount >= 1)
+		{
+			Script::getInstance(L)->engine->quit(lua_tostring(L, 1));
 		}
-
-		static int plumRefresh(lua_State* lua)
+		else
 		{
-			engine->refresh();
-			return 0;
-		}
-
-		static int plumSetTitle(lua_State* lua)
-		{
-			int argumentCount = lua_gettop(lua);
-
-			if(argumentCount >= 1)
-			{
-				engine->setTitle(lua_tostring(lua, 1));
-			}
-			
-			return 0;
-		}
-
-		static int plumRGB(lua_State* lua)
-		{
-			int r = luaL_checkint(lua, 1);
-			int g = luaL_checkint(lua, 2);
-			int b = luaL_checkint(lua, 3);
-			int a = luaL_optint(lua, 4, 255);
-			lua_pushinteger(lua, rgba(r, g, b, a).value);
-			return 1;
+			Script::getInstance(L)->engine->quit();
 		}
 		
-		static int plumHSV(lua_State* lua)
+		return 0;
+	}
+
+	static int plumRefresh(lua_State* L)
+	{
+		Script::getInstance(L)->engine->refresh();
+		return 0;
+	}
+
+	static int plumSetTitle(lua_State* L)
+	{
+		int argumentCount = lua_gettop(L);
+
+		if(argumentCount >= 1)
 		{
-			int h = luaL_checkint(lua, 1);
-			int s = luaL_checkint(lua, 2);
-			int v = luaL_checkint(lua, 3);
-			int a = luaL_optint(lua, 4, 255);
-			lua_pushinteger(lua, hsv(h, s, v, a).value);
-			return 1;
+			Script::getInstance(L)->engine->setTitle(lua_tostring(L, 1));
 		}
+		
+		return 0;
+	}
 
-		const luaL_Reg plumFunctions[] = {
-			{ "exit", plumExit },
-			{ "refresh", plumRefresh },
-			{ "setTitle", plumSetTitle },
-			{ NULL, NULL }
-		};
+	static int plumRGB(lua_State* L)
+	{
+		int r = luaL_checkint(L, 1);
+		int g = luaL_checkint(L, 2);
+		int b = luaL_checkint(L, 3);
+		int a = luaL_optint(L, 4, 255);
+		lua_pushinteger(L, rgba(r, g, b, a).value);
+		return 1;
+	}
+	
+	static int plumHSV(lua_State* L)
+	{
+		int h = luaL_checkint(L, 1);
+		int s = luaL_checkint(L, 2);
+		int v = luaL_checkint(L, 3);
+		int a = luaL_optint(L, 4, 255);
+		lua_pushinteger(L, hsv(h, s, v, a).value);
+		return 1;
+	}
 
-		void initPlumModule(lua_State* lua)
-		{
-			// Shove a bunch of functions into a global table "plum"
-			// It will now serve as a namespace for all other script bindings
-			luaL_register(lua, "plum", plumFunctions);
+	static int plumLoadConfig(lua_State* L)
+	{
+		Config cfg = Config("plum.cfg", "config", L);
+		lua_pushvalue(cfg.lua, -1);
+		lua_xmove(cfg.lua, L, 1);
+		return 1;
+	}
 
-			// Create the 'color' table.
-			lua_newtable(lua);
-			lua_pushvalue(lua, -1);
-			lua_setfield(lua, -3, "color");
+	static const luaL_Reg plumFunctions[] = {
+		{ "exit", plumExit },
+		{ "refresh", plumRefresh },
+		{ "setTitle", plumSetTitle },
+		{ "loadConfig", plumLoadConfig },
+		{ NULL, NULL }
+	};
 
-			lua_pushinteger(lua, Color::White);
-			lua_setfield(lua, -2, "White");
-			lua_pushinteger(lua, Color::Red);
-			lua_setfield(lua, -2, "Red");
-			lua_pushinteger(lua, Color::Green);
-			lua_setfield(lua, -2, "Green");
-			lua_pushinteger(lua, Color::Blue);
-			lua_setfield(lua, -2, "Blue");
-			lua_pushinteger(lua, Color::Magenta);
-			lua_setfield(lua, -2, "Magenta");
-			lua_pushinteger(lua, Color::Cyan);
-			lua_setfield(lua, -2, "Cyan");
-			lua_pushinteger(lua, Color::Yellow);
-			lua_setfield(lua, -2, "Yellow");
-			lua_pushinteger(lua, Color::Black);
-			lua_setfield(lua, -2, "Black");
+	void Script::initPlumModule(lua_State* L)
+	{
+		// Shove a bunch of functions into a global table "plum"
+		// It will now serve as a namespace for all other script bindings
+		luaL_register(L, "plum", plumFunctions);
 
-			lua_pushcfunction(lua, plumRGB);
-			lua_setfield(lua, -2, "rgb");
+		// Create the 'color' table.
+		lua_newtable(L);
+		lua_pushvalue(L, -1);
+		lua_setfield(L, -3, "color");
 
-			lua_pushcfunction(lua, plumHSV);
-			lua_setfield(lua, -2, "hsv");
+		lua_pushinteger(L, Color::White);
+		lua_setfield(L, -2, "White");
+		lua_pushinteger(L, Color::Red);
+		lua_setfield(L, -2, "Red");
+		lua_pushinteger(L, Color::Green);
+		lua_setfield(L, -2, "Green");
+		lua_pushinteger(L, Color::Blue);
+		lua_setfield(L, -2, "Blue");
+		lua_pushinteger(L, Color::Magenta);
+		lua_setfield(L, -2, "Magenta");
+		lua_pushinteger(L, Color::Cyan);
+		lua_setfield(L, -2, "Cyan");
+		lua_pushinteger(L, Color::Yellow);
+		lua_setfield(L, -2, "Yellow");
+		lua_pushinteger(L, Color::Black);
+		lua_setfield(L, -2, "Black");
 
-			// Done with 'color' now.
-			lua_pop(lua, 1);
+		lua_pushcfunction(L, plumRGB);
+		lua_setfield(L, -2, "rgb");
 
-			// Create the 'blend' table.
-			lua_newtable(lua);
-			lua_pushvalue(lua, -1);
-			lua_setfield(lua, -3, "blend");
+		lua_pushcfunction(L, plumHSV);
+		lua_setfield(L, -2, "hsv");
 
-			lua_pushinteger(lua, BlendOpaque);
-			lua_setfield(lua, -2, "Opaque");
-			lua_pushinteger(lua, BlendMerge);
-			lua_setfield(lua, -2, "Merge");
-			lua_pushinteger(lua, BlendMerge);
-			lua_setfield(lua, -2, "Alpha");
-			lua_pushinteger(lua, BlendPreserve);
-			lua_setfield(lua, -2, "Preserve");
-			lua_pushinteger(lua, BlendAdd);
-			lua_setfield(lua, -2, "Add");
-			lua_pushinteger(lua, BlendSubtract);
-			lua_setfield(lua, -2, "Subtract");
+		// Done with 'color' now.
+		lua_pop(L, 1);
 
-			// Done with 'blend' now.
-			lua_pop(lua, 1);
+		// Create the 'blend' table.
+		lua_newtable(L);
+		lua_pushvalue(L, -1);
+		lua_setfield(L, -3, "blend");
 
+		lua_pushinteger(L, BlendOpaque);
+		lua_setfield(L, -2, "Opaque");
+		lua_pushinteger(L, BlendMerge);
+		lua_setfield(L, -2, "Merge");
+		lua_pushinteger(L, BlendMerge);
+		lua_setfield(L, -2, "Alpha");
+		lua_pushinteger(L, BlendPreserve);
+		lua_setfield(L, -2, "Preserve");
+		lua_pushinteger(L, BlendAdd);
+		lua_setfield(L, -2, "Add");
+		lua_pushinteger(L, BlendSubtract);
+		lua_setfield(L, -2, "Subtract");
 
+		// Done with 'blend' now.
+		lua_pop(L, 1);
 
-			// Pop the plum namespace.
-			lua_pop(lua, 1);
-		}
+		// Pop the plum namespace.
+		lua_pop(L, 1);
 	}
 }
