@@ -87,6 +87,7 @@ namespace Plum
 	};
 
 	typedef std::map<lua_State*, Script*> ScriptInstanceMap;
-	extern ScriptInstanceMap* scriptInstanceMap;
+	extern ScriptInstanceMap* scriptInstances;
+	void initScriptInstances(ScriptInstanceMap* map);
 }
 #endif

@@ -1,32 +1,9 @@
-function testConfig()
-    t = plum.loadConfig();
-    for k, v in pairs(t) do
-        print(tostring(k) .. " " .. tostring(v));
-    end
-end
-
-function testFileWrite()
-    local file = plum.File('test.txt', 'w')
-    file:writeLine("Hey there son.");
-    file:close()
-end
-
-function testFileRead()
-    local file = plum.File('resources/sprites/heartsprite.sprite', 'r')
-    while true do
-        local line = file:readLine()
-        if not line then
-            break
-        end
-        print(line)
-    end
-    file:close()
-end
-
+require 'tests'
 
 testConfig()
 testFileWrite()
 testFileRead()
+testFileReadFully()
 
 
 plum.setTitle('Giraffes IN SPACE')

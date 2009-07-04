@@ -221,6 +221,36 @@ namespace Plum
 		}
 	}
 
+	static int fileReadFully(lua_State* L)
+	{
+		FileWrapper* f = checkValidFileObject(L, 1);
+		// Can't access in write mode. Shoo.
+		if(f->write)
+		{
+			luaL_error(L, "Attempt to read from file which was opened for writing.");
+			return 0;
+		}
+
+		// Get current position.
+		unsigned int pos = zzip_tell(f->storage.zzipFile);
+
+		// Length to read = position of end - current.
+		unsigned int length = 0;
+		zzip_seek(f->storage.zzipFile, 0, SEEK_END);
+		length = zzip_tell(f->storage.zzipFile) - pos;
+		zzip_seek(f->storage.zzipFile, pos, SEEK_SET);
+
+		// Read the string, making sure to terminate with null byte.
+		char* buf = new char[length + 1];
+		zzip_fread(buf, length, 1, f->storage.zzipFile);
+		buf[length] = 0;
+		lua_pushstring(L, buf);
+
+		delete [] buf;
+
+		return 1;
+	}
+
 	static int fileWriteLine(lua_State* L)
 	{
 		FileWrapper* f = checkValidFileObject(L, 1);
@@ -245,6 +275,7 @@ namespace Plum
 		{ "readByte", fileReadByte },
 		{ "readInt", fileReadInt },
 		{ "readLine", fileReadLine },
+		{ "readFully", fileReadFully },
 		{ "writeLine", fileWriteLine },
 		{ NULL, NULL }
 	};

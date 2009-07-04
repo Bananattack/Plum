@@ -2,10 +2,15 @@
 
 namespace Plum
 {
-	ScriptInstanceMap* scriptInstanceMap;
+	ScriptInstanceMap* scriptInstances;
 	Script* Script::getInstance(lua_State* L)
 	{
-		return (*scriptInstanceMap)[L];
+		return (*scriptInstances)[L];
+	}
+
+	void initScriptInstances(ScriptInstanceMap* map)
+	{
+		scriptInstances = map;
 	}
 
 	static int panic(lua_State *L)
@@ -25,7 +30,7 @@ namespace Plum
 
 		// Allow the static script methods to be able to use instance variables,
 		// by looking up with the lua_State.
-		(*scriptInstanceMap).insert(ScriptInstanceMap::value_type(L, this));
+		(*scriptInstances).insert(ScriptInstanceMap::value_type(L, this));
 
 		initPlumModule(L);
 		initTextureClass(L);
@@ -40,11 +45,37 @@ namespace Plum
 		initSongClass(L);
 		initFileClass(L);
 		initSpriteClass(L);
+
+		luaL_dostring(L,
+			"function plum.RequireModuleFromPit(modulename)\r\n"
+				// Find the source in a .pit file.
+			"	local modulepath = string.gsub(modulename, '%.', '/')\r\n"
+			"	for path in string.gmatch(package.path, '([^;]+)') do\r\n"
+			"		local filename = string.gsub(path, '%?', modulepath)\r\n"
+			"		local f = plum.File(filename, 'r')\r\n"
+			"		if f then\r\n"
+						// Read and compile the chunk.
+			"			local chunk = assert(loadstring(f:readFully(), '@' .. filename))\r\n"
+			"			f:close()\r\n"
+						// Success!
+			"			return chunk\r\n"
+			"		end\n"
+			"	end\n"
+				// Failed to open it.
+			"	return '\\r\\n\\tno pit module \\'' .. modulename .. '\\''\r\n"
+			"end\r\n"
+			"\r\n"
+
+			// Add a few more package path rules that agree with our loader a lot more.
+			"package.path = package.path .. ';?.lua;?/init.lua;?\\\\init.lua'\r\n"
+			// Install the loader so that it's called just before the DLL loader
+			"table.insert(package.loaders, 3, plum.RequireModuleFromPit)\r\n"
+		);
 	}
 
 	void Script::shutdown()
 	{
-		(*scriptInstanceMap).erase(L);
+		(*scriptInstances).erase(L);
 		lua_close(L);
 	}
 

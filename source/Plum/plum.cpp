@@ -26,7 +26,8 @@ int main(int argc, char** argv)
 	freopen("stderr.log", "w", stderr);
 	try
 	{
-		scriptInstanceMap = &map;
+		initScriptInstances(&map);
+
 		engine.startup();
 	}
 	catch(Audio::Exception& e)
