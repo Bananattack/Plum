@@ -251,7 +251,22 @@ namespace Plum
 		return 1;
 	}
 
-	static int fileWriteLine(lua_State* L)
+	static int fileWriteInt(lua_State* L)
+	{
+		FileWrapper* f = checkValidFileObject(L, 1);
+		// Can't do this in read mode. Shoo.
+		if(!f->write)
+		{
+			luaL_error(L, "Attempt to write to file which was opened for reading.");
+			return 0;
+		}
+		int v = luaL_checkinteger(L, 2);
+
+		fwrite(&v, sizeof(int), 1, f->storage.physicalFile);
+		return 0;
+	}
+
+	static int fileWriteString(lua_State* L)
 	{
 		FileWrapper* f = checkValidFileObject(L, 1);
 		// Can't do this in read mode. Shoo.
@@ -266,6 +281,22 @@ namespace Plum
 		return 0;
 	}
 
+	static int fileWriteLine(lua_State* L)
+	{
+		FileWrapper* f = checkValidFileObject(L, 1);
+		// Can't do this in read mode. Shoo.
+		if(!f->write)
+		{
+			luaL_error(L, "Attempt to write to file which was opened for reading.");
+			return 0;
+		}
+		const char* message = lua_tostring(L, 2);
+
+		fwrite(message, strlen(message), 1, f->storage.physicalFile);
+		fputs("\r\n", f->storage.physicalFile);
+		return 0;
+	}
+
 	static const luaL_Reg fileMembers[] = {
 		{ "__index", fileGetField },
 		{ "__newindex",	fileSetField },
@@ -276,6 +307,8 @@ namespace Plum
 		{ "readInt", fileReadInt },
 		{ "readLine", fileReadLine },
 		{ "readFully", fileReadFully },
+		{ "writeInt", fileWriteInt },
+		{ "writeString", fileWriteString },
 		{ "writeLine", fileWriteLine },
 		{ NULL, NULL }
 	};
