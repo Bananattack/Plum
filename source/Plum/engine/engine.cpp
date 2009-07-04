@@ -32,6 +32,18 @@ namespace Plum
 			throw Engine::Exception("Couldn't initialize SDL.\r\n");
 		}
 
+#ifdef PLUM_WIN32
+        {
+            SDL_SysWMinfo info;
+            SDL_VERSION(&info.version);
+            HWND hWnd = SDL_GetWMInfo(&info) ? info.window : 0;
+            if (hWnd)
+			{
+                DWORD successful = SetClassLong(hWnd, GCL_HICON, (long)LoadIcon(GetModuleHandle(0), "APPICON"));
+			}
+        }
+#endif
+
 		SDL_ShowCursor((config.hasValue("hide_cursor") && config.getBoolValue("hide_cursor")) ? SDL_DISABLE : SDL_ENABLE);
 
 		// Create a nice *white* cursor, by inverting the data of each masked pixel.
@@ -65,18 +77,6 @@ namespace Plum
 		video.startup();
 		video.setResolution(xres, yres, windowed);
 		logFormat(" OK!\r\n");
-
-#ifdef PLUM_WIN32
-        {
-            SDL_SysWMinfo info;
-            SDL_VERSION(&info.version);
-            HWND hWnd = SDL_GetWMInfo(&info) ? info.window : 0;
-            if (hWnd)
-			{
-                DWORD successful = SetClassLong(hWnd, GCL_HICON, (long)LoadIcon(GetModuleHandle(0), "APPICON"));
-			}
-        }
-#endif
 
 		logFormat("    Initializing sound engine...");
 		audio.startup();

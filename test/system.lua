@@ -28,7 +28,6 @@ time = plum.timer.time
 while not plum.key.Escape.pressed do
     plum.video.verticalGradientRect(0, 0, plum.video.screenWidth, plum.video.screenHeight, plum.color.rgb(0x33, 0x66, 0xcc), plum.color.Magenta)
 
-
     --tex:rotateScaleBlitRegion(1, 1, 16, 16, x, y, angle, 3 + math.sin(math.rad(plum.timer.time)) * 0.25 )
     spr.scale = 3 + math.sin(math.rad(plum.timer.time)) * 0.25
     spr:blit()
