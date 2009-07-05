@@ -476,7 +476,7 @@ namespace Plum
 			// "A Fast Bresenham Type Algorithm For Drawing Ellipses"
 			// by John Kennedy
 			// rkennedy@ix.netcom.com
-			template <typename BlendCallback> void circle(int x, int y, int horizontalRadius, int verticalRadius, Color color, const BlendCallback& blend)
+			template <typename BlendCallback> void circle(int cx, int cy, int xRadius, int yRadius, Color color, const BlendCallback& blend)
 			{
 				int x, y, plotX, plotY;
 				int xChange, yChange;
@@ -619,7 +619,7 @@ namespace Plum
 			// "A Fast Bresenham Type Algorithm For Drawing Ellipses"
 			// by John Kennedy
 			// rkennedy@ix.netcom.com
-			template <typename BlendCallback> void solidCircle(int x, int y, int horizontalRadius, int verticalRadius, Color color, const BlendCallback& blend)
+			template <typename BlendCallback> void solidCircle(int cx, int cy, int xRadius, int yRadius, Color color, const BlendCallback& blend)
 			{
 				int i, plotX, plotX2, plotY;
 				int x, y;
@@ -771,21 +771,21 @@ namespace Plum
 
 			template <typename BlendCallback> void scaleBlit(int x, int y, int scaledWidth, int scaledHeight, Image* dest, const BlendCallback& blend)
 			{
-				scaleBlitRegion(0, 0, occupiedWidth, occupiedHeight, x, y, scaledWidth, scaledHeight, dest, mode);
+				scaleBlitRegion(0, 0, occupiedWidth, occupiedHeight, x, y, scaledWidth, scaledHeight, dest, blend);
 			}
 
 			template <typename BlendCallback> void rotateBlit(int x, int y, double angle, Image* dest, const BlendCallback& blend)
 			{
-				rotateScaleBlitRegion(0, 0, occupiedWidth, occupiedHeight, x, y, angle, 1, dest, mode);
+				rotateScaleBlitRegion(0, 0, occupiedWidth, occupiedHeight, x, y, angle, 1, dest, blend);
 			}
 
 			template <typename BlendCallback> void rotateScaleBlit(int x, int y, double angle, double scale, Image* dest, const BlendCallback& blend)
 			{
-				rotateScaleBlitRegion(0, 0, occupiedWidth, occupiedHeight, x, y, angle, scale, dest, mode);
+				rotateScaleBlitRegion(0, 0, occupiedWidth, occupiedHeight, x, y, angle, scale, dest, blend);
 			}
 
-			template <typename BlendCallback> void blitRegion(int sourceX, int sourceY, int sourceX2, int sourceY2,
-					int destX, int destY, Image* dest, const BlendCallback& blend)
+			template <typename BlendCallback> void blitRegion(int sx, int sy, int sx2, int sy2,
+					int dx, int dy, Image* dest, const BlendCallback& blend)
 			{
 				int cx = dest->clipX;
 				int cy = dest->clipY;
@@ -802,12 +802,12 @@ namespace Plum
 				}
 
 				dest->setClipRegion(dx, dy, dx + (sx2 - sx), dy + (sy2 - sy));
-				blit(dx - sx, dy - sy, dest, mode);
+				blit(dx - sx, dy - sy, dest, blend);
 				dest->setClipRegion(cx, cy, cx2, cy2);
 			}
 
-			template <typename BlendCallback> void scaleBlitRegion(int sourceX, int sourceY, int sourceX2, int sourceY2,
-					int destX, int destY, int scaledWidth, int scaledHeight, Image* dest, const BlendCallback& blend)
+			template <typename BlendCallback> void scaleBlitRegion(int sx, int sy, int sx2, int sy2,
+					int dx, int dy, int scw, int sch, Image* dest, const BlendCallback& blend)
 			{
 				if (sx > sx2)
 				{
@@ -864,14 +864,14 @@ namespace Plum
 				}		
 			}
 
-			template <typename BlendCallback> void rotateBlitRegion(int sourceX, int sourceY, int sourceX2, int sourceY2,
-					int destX, int destY, double angle, Image* dest, const BlendCallback& blend)
+			template <typename BlendCallback> void rotateBlitRegion(int sx, int sy, int sx2, int sy2,
+					int dx, int dy, double angle, Image* dest, const BlendCallback& blend)
 			{
-				rotateScaleBlitRegion(sx, sy, sx2, sy2, dx, dy, angle, 1.0, dest, mode);
+				rotateScaleBlitRegion(sx, sy, sx2, sy2, dx, dy, angle, 1.0, dest, blend);
 			}
 
-			template <typename BlendCallback> void rotateScaleBlitRegion(int sourceX, int sourceY, int sourceX2, int sourceY2,
-					int destX, int destY, double angle, double scale, Image* dest, const BlendCallback& blend)
+			template <typename BlendCallback> void rotateScaleBlitRegion(int sx, int sy, int sx2, int sy2,
+					int dx, int dy, double angle, double scale, Image* dest, const BlendCallback& blend)
 			{
 				int minX, minY;
 				int maxX, maxY;

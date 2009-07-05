@@ -11,8 +11,8 @@ namespace Plum
 			int ref;
 			std::string filename;
 
-			Config::Config()
-				: lua(0), parentThread(0), filename(""), ref(LUA_NOREF) {}
+			Config()
+				: lua(0), parentThread(0), ref(LUA_NOREF), filename("") {}
 			~Config();
 
 			void init(std::string name, std::string blockName, lua_State* state = 0);

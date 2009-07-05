@@ -13,6 +13,8 @@
 
 #if defined(WIN32) || defined(_WIN32)
 #	define PLUM_WIN32
+#elif defined(__linux__)
+#	define PLUM_LINUX
 #endif
 
 #ifdef PLUM_WIN32
