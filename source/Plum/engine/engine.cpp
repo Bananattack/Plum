@@ -249,6 +249,10 @@ namespace Plum
 		{
 			quit();
 		}
+		if(timer.gap == 0)
+		{
+			SDL_Delay(10);
+		}
 	}
 
 	void Engine::setTitle(std::string title)
