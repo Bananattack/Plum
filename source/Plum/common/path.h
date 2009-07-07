@@ -1,5 +1,4 @@
-#ifndef PLUM_COMMON_PATH_H
-#define PLUM_COMMON_PATH_H
+#pragma once
 
 namespace Plum
 {
@@ -23,5 +22,3 @@ namespace Plum
 		bool equals(const std::string& s, const std::string& t); // returns true if the two paths are the same.  Disregards case in win32.
 	}
 }
-
-#endif

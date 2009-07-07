@@ -1,5 +1,4 @@
-#ifndef PLUM_COLOR_H
-#define PLUM_COLOR_H
+#pragma once
 
 namespace Plum
 {
@@ -32,6 +31,11 @@ namespace Plum
 
 
 			int value;
+
+			inline operator int() const
+			{
+				return value;
+			}
 
 			inline bool operator != (Color& rhs)
 			{
@@ -146,4 +150,3 @@ namespace Plum
 		return Color(r, g, b, a);
 	}
 }
-#endif

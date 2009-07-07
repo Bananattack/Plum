@@ -1,5 +1,4 @@
-#ifndef PLUM_TIMER_H
-#define PLUM_TIMER_H
+#pragma once
 
 namespace Plum
 {
@@ -16,14 +15,14 @@ namespace Plum
 	struct Timer
 	{
 		TimerSpeed speed;
-		Uint32 maxFrameGap;
-		Uint32 tickLast;
-		Uint32 secondLast;
-		Uint32 fractionalGap;
-		Uint32 gap;
-		Uint32 fps;
-		Uint32 time;
-		Uint32 updateCount;
+		u32 maxFrameGap;
+		u32 tickLast;
+		u32 secondLast;
+		u32 fractionalGap;
+		u32 gap;
+		u32 fps;
+		u32 time;
+		u32 updateCount;
 
 		Timer();
 		void reset();
@@ -31,5 +30,3 @@ namespace Plum
 		void update();
 	};
 }
-
-#endif

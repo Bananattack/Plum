@@ -1,5 +1,4 @@
-#ifndef PLUM_ANIMATION_H
-#define PLUM_ANIMATION_H
+#pragma once
 
 namespace Plum
 {
@@ -36,4 +35,3 @@ namespace Plum
 			}
 	};
 }
-#endif

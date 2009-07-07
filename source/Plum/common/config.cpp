@@ -2,7 +2,7 @@
 
 namespace Plum
 {
-	void Config::init(std::string name, std::string blockName, lua_State* state)
+	void Config::init(const std::string& name, const std::string& blockName, lua_State* state)
 	{
 		filename = name;
 
@@ -120,7 +120,7 @@ namespace Plum
 		}
 	}
 
-	bool Config::hasValue(std::string key)
+	bool Config::hasValue(const std::string& key)
 	{
 		checkInitialized();
 
@@ -133,7 +133,7 @@ namespace Plum
 		return result;
 	}
 
-	bool Config::getBoolValue(std::string key)
+	bool Config::getBoolValue(const std::string& key)
 	{
 		checkInitialized();
 
@@ -152,7 +152,7 @@ namespace Plum
 		return result;
 	}
 
-	int Config::getIntValue(std::string key)
+	int Config::getIntValue(const std::string& key)
 	{
 		checkInitialized();
 
@@ -171,7 +171,7 @@ namespace Plum
 		return result;
 	}
 
-	std::string Config::getStringValue(std::string key)
+	std::string Config::getStringValue(const std::string& key)
 	{
 		checkInitialized();
 

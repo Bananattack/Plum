@@ -1,5 +1,4 @@
-#ifndef PLUM_ENGINE_H
-#define PLUM_ENGINE_H
+#pragma once
 
 namespace Plum
 {
@@ -57,5 +56,3 @@ namespace Plum
 			void setResolution(int width, int height, bool windowed);
 	};
 }
-
-#endif

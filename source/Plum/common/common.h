@@ -1,5 +1,4 @@
-#ifndef PLUM_COMMON_H
-#define PLUM_COMMON_H
+#pragma once
 
 // Mmm... plum pie.
 const double PLUM_PI = 3.14159265358;
@@ -46,5 +45,3 @@ namespace Plum
 	std::string toLower(const std::string& s);
 	std::string toUpper(const std::string& s);
 }
-
-#endif

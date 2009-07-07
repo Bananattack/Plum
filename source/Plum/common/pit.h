@@ -1,5 +1,4 @@
-#ifndef PLUM_PIT_H
-#define PLUM_PIT_H
+#pragma once
 
 namespace Plum
 {
@@ -50,5 +49,3 @@ namespace Plum
 
 	corona::File* OpenPitCoronaFile(const char* filename, bool writeable);
 }
-
-#endif

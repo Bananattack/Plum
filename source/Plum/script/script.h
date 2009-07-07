@@ -1,6 +1,4 @@
-#ifndef PLUM_SCRIPT_H
-#define PLUM_SCRIPT_H
-
+#pragma once
 namespace Plum
 {
 
@@ -90,4 +88,3 @@ namespace Plum
 	extern ScriptInstanceMap* scriptInstances;
 	void initScriptInstances(ScriptInstanceMap* map);
 }
-#endif

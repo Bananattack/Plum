@@ -2,7 +2,7 @@
 
 namespace Plum
 {
-	Texture::Texture(std::string filename)
+	Texture::Texture(const std::string& filename)
 	{
 		init(filename.c_str());
 	}

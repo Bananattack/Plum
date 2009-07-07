@@ -1,5 +1,5 @@
-#ifndef PLUM_H
-#define PLUM_H
+#pragma once
+
 #include <string>
 #include <sstream>
 #include <iomanip>
@@ -52,9 +52,12 @@ extern "C"
 }
 
 #include "common/common.h"
+#include "common/types.h"
 #include "common/path.h"
 #include "common/pit.h"
 #include "common/config.h"
+#include "common/base64.h"
+#include "common/compression.h"
 
 #include "video/color.h"
 #include "video/blending.h"
@@ -64,13 +67,13 @@ extern "C"
 
 #include "audio/audio.h"
 
-#include "common/font.h"
 #include "common/animation.h"
 
 #include "engine/input.h"
 #include "engine/timer.h"
 #include "engine/sprite.h"
+#include "engine/font.h"
+#include "engine/tileset.h"
+
 #include "script/script.h"
 #include "engine/engine.h"
-
-#endif

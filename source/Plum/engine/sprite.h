@@ -1,5 +1,4 @@
-#ifndef PLUM_SPRITE_H
-#define PLUM_SPRITE_H
+#pragma once
 
 namespace Plum
 {
@@ -31,10 +30,10 @@ namespace Plum
 			Color tint;
 
 			Sprite(double x, double y, const char* filename, lua_State* state = 0);
-			Sprite(double x, double y, std::string filename, lua_State* state = 0);
+			Sprite(double x, double y, const std::string& filename, lua_State* state = 0);
 			~Sprite();
 		private:
-			void init(double x, double y, std::string filename, lua_State* state = 0);
+			void init(double x, double y, const std::string& filename, lua_State* state = 0);
 		public:
 			Texture* getTexture()
 			{
@@ -49,5 +48,3 @@ namespace Plum
 			void saveAs(const char* filename);
 	};
 }
-
-#endif

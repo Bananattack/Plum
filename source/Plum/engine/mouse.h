@@ -1,5 +1,4 @@
-#ifndef PLUM_MOUSE_H
-#define PLUM_MOUSE_H
+#pragma once
 
 namespace Plum
 {
@@ -29,5 +28,3 @@ namespace Plum
 		}
 	};
 }
-
-#endif

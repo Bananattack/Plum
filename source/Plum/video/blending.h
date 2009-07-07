@@ -1,5 +1,4 @@
-#ifndef PLUM_BLENDMODE_H
-#define PLUM_BLENDMODE_H
+#pragma once
 
 #ifndef GL_FUNC_REVERSE_SUBTRACT_EXT
 #	define GL_FUNC_REVERSE_SUBTRACT_EXT 0x800B
@@ -133,5 +132,3 @@ namespace Plum
 		return glColor4ub(r, g, b, a * _globalAlpha / 255);
 	}
 }
-
-#endif

@@ -1,5 +1,4 @@
-#ifndef PLUM_KEYBOARD_H
-#define PLUM_KEYBOARD_H
+#pragma once
 
 namespace Plum
 {
@@ -138,5 +137,3 @@ namespace Plum
 	const int KEY_LALT = SDLK_LALT;
 	const int KEY_BREAK = SDLK_BREAK;
 }
-
-#endif

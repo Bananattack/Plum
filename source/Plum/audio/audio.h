@@ -1,5 +1,4 @@
-#ifndef PLUM_AUDIO_H
-#define PLUM_AUDIO_H
+#pragma once
 
 namespace Plum
 {
@@ -180,5 +179,3 @@ namespace Plum
 		void playSong(Song* song);
 	};
 }
-
-#endif

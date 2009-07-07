@@ -1,6 +1,4 @@
-#ifndef PLUM_TEXTURE_H
-#define PLUM_TEXTURE_H
-
+#pragma once
 namespace Plum
 {
 	class Texture
@@ -45,7 +43,7 @@ namespace Plum
 			void setTextureWidth(int width);
 			void setTextureHeight(int height);
 		public:
-			Texture(std::string filename);
+			Texture(const std::string& filename);
 			Texture(const char* filename);
 			Texture(Image* image);
 
@@ -82,5 +80,3 @@ namespace Plum
 					int destX, int destY, double angle, double scale, BlendMode mode = BlendUnspecified, Color tint = Color::White);
 	};
 }
-
-#endif

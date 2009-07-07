@@ -7,7 +7,7 @@ namespace Plum
 		init(x, y, filename, state);
 	}
 
-	Sprite::Sprite(double x, double y, std::string filename, lua_State* state)
+	Sprite::Sprite(double x, double y, const std::string& filename, lua_State* state)
 	{
 		init(x, y, filename, state);
 	}
@@ -24,7 +24,7 @@ namespace Plum
 		}
 	}
 
-	void Sprite::init(double x, double y, std::string filename, lua_State* state)
+	void Sprite::init(double x, double y, const std::string& filename, lua_State* state)
 	{
 		cfg.init(filename, "sprite", state);
 

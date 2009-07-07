@@ -47,6 +47,15 @@ int main(int argc, char** argv)
 		engine.quit("Very unexpected error during startup: " + std::string(e.what()));
 	}
 
+	Plum::Image* image = new Plum::Image("tileset.png");
+	Plum::Image* obs = new Plum::Image("obstile.png");
+	Plum::Tileset* tileset = new Plum::Tileset(16, image, obs);
+	tileset->save("test.tileset");
+
+	delete tileset;
+	delete image;
+	delete obs;
+
 	try
 	{
 		engine.script.runScript("system.lua");

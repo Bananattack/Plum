@@ -1,5 +1,5 @@
-#ifndef PLUM_FONT_H
-#define PLUM_FONT_H
+#pragma once
+
 namespace Plum
 {
 	class Font
@@ -43,4 +43,3 @@ namespace Plum
 			
 	};
 }
-#endif

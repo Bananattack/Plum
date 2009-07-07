@@ -1,6 +1,4 @@
-#ifndef PLUM_IMAGE_H
-#define PLUM_IMAGE_H
-
+#pragma once
 namespace Plum
 {
 	class ImageNotFoundException : public std::exception
@@ -43,7 +41,7 @@ namespace Plum
 				replaceColor(Color::Magenta, 0);
 			}
 
-			Image(std::string filename)
+			Image(const std::string& filename)
 			{
 				init(filename.c_str());
 				replaceColor(Color::Magenta, 0);
@@ -976,5 +974,3 @@ namespace Plum
 			}
 	};
 }
-
-#endif

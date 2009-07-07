@@ -1,5 +1,4 @@
-#ifndef PLUM_VIDEO_H
-#define PLUM_VIDEO_H
+#pragma once
 
 namespace Plum
 {
@@ -74,4 +73,3 @@ namespace Plum
 	};
 }
 
-#endif
