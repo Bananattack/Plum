@@ -1,3 +1,4 @@
+* FIX THE ENGINE. The entry point for the project is just SCREWED and it's making static/global STL containers crash cause they don't initialize properly. Needs to be fixed.
 * Make it so Plum compiles on Linux again
 * Try and get Plum compiling on a Mac.
 * Painstakingly bind Plum's API to Lua.
