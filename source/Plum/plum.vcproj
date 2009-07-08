@@ -59,13 +59,14 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="../SDLmain.lib ../SDL.lib OpenGL32.lib ../fmodex_vc.lib delayimp.lib"
+				AdditionalDependencies="../SDLmain.lib ../SDL.lib OpenGL32.lib ../fmodex_vc.lib delayimp.lib winmm.lib dxguid.lib"
 				LinkIncremental="2"
+				AdditionalLibraryDirectories="..\directx"
 				IgnoreAllDefaultLibraries="false"
 				DelayLoadDLLs="fmodex.dll"
 				GenerateDebugInformation="true"
 				SubSystem="1"
-				EntryPointSymbol="SDL_main"
+				EntryPointSymbol=""
 				TargetMachine="1"
 			/>
 			<Tool
@@ -135,8 +136,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="../SDLmain.lib ../SDL.lib OpenGL32.lib ../fmodex_vc.lib delayimp.lib"
+				AdditionalDependencies="../SDLmain.lib ../SDL.lib OpenGL32.lib ../fmodex_vc.lib delayimp.lib winmm.lib dxguid.lib"
 				OutputFile="$(SolutionDir)\test\$(ProjectName).exe"
+				AdditionalLibraryDirectories="..\directx"
 				EnableUAC="false"
 				IgnoreDefaultLibraryNames="libc.lib"
 				DelayLoadDLLs="fmodex.dll"
