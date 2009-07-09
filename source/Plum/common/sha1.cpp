@@ -228,7 +228,7 @@ namespace Plum
 
 	bool SHA1::digestFile(const std::string& str, u8 hash[20])
 	{
-		static const int BUFFER_SIZE = 4096;
+		static const u32 BUFFER_SIZE = 4096;
 		u8 buffer[BUFFER_SIZE];
 		
 		ZZIP_FILE* f = zzip_fopen_plum(str.c_str(), "rb");
@@ -242,11 +242,10 @@ namespace Plum
 		SHA1Init(&ctx);
 		while(true)
 		{
-			int bytes = zzip_fread(buffer, BUFFER_SIZE, 1, f);
+			u32 bytes = zzip_fread(buffer, 1, BUFFER_SIZE, f);
 			if(bytes)
 			{
 				SHA1Update(&ctx, buffer, bytes);
-				printf("moar bytes\n");
 			}
 			else
 			{
