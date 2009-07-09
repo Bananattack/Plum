@@ -303,6 +303,10 @@
 					RelativePath=".\common\pit.cpp"
 					>
 				</File>
+				<File
+					RelativePath=".\common\sha1.cpp"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="engine"
@@ -579,6 +583,10 @@
 				</File>
 				<File
 					RelativePath=".\common\pit.h"
+					>
+				</File>
+				<File
+					RelativePath=".\common\sha1.h"
 					>
 				</File>
 				<File

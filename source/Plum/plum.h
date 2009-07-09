@@ -57,6 +57,7 @@ extern "C"
 #include "common/pit.h"
 #include "common/config.h"
 #include "common/base64.h"
+#include "common/sha1.h"
 #include "common/compression.h"
 
 #include "video/color.h"
