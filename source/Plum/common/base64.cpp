@@ -34,9 +34,6 @@ namespace Plum
 		std::string::size_type  len = data.length();
 		std::string             ret;
 
-		logFormat("lawl '%c'", cvt[0]);
-		logFormat("lawl '%s'", cvt.c_str());
-
 		for (i = 0; i < len; ++i)
 		{
 			c = (data[i] >> 2) & 0x3f;
