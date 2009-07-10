@@ -47,33 +47,18 @@ int main(int argc, char** argv)
 		engine.quit("Very unexpected error during startup: " + std::string(e.what()));
 	}
 
-	Image* image = new Image("tileset.png");
+	/*Image* image = new Image("tileset.png");
 	Image* obs = new Image("obstile.png");
 	Tileset* tileset = new Tileset(16, image, obs);
 	tileset->save("test.tileset");
 
 	delete tileset;
 	delete image;
-	delete obs;
-
-	tileset = new Tileset("test.tileset");
-	u8 hash[20];
-
-	if(!SHA1::digestFile("tileset.png", hash))
-	{
-		engine.quit("Fail at digest.");
-	}
-    printf("SHA1=");
-    for(int i = 0; i < 20; i++)
-	{
-		printf("%02x", hash[i]);
-	}
-	//SHA1=905d8f4042e6f48e861130041cf5a9ba09cc4d4c
-	//SHA1=905d8f4042e6f48e861130041cf5a9ba09cc4d4c
-    printf("\n");
+	delete obs;*/
 
 	try
 	{
+		Tileset* tileset = new Tileset("test.tileset");
 		while(!engine.key[KEY_ENTER].isPressed())
 		{
 			engine.video.clear(Color::Black);

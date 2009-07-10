@@ -12,6 +12,7 @@ namespace Plum
 
 	Tileset::Tileset(const std::string& filename)
 	{
+		bool modified = false;
 		// NOTE: Needs to take lua_State* at some point so it can spawn a thread for config instead of full-on state.
 		config.init(filename, "tileset");
 
@@ -19,6 +20,8 @@ namespace Plum
 		
 		lua_pushstring(config.lua, "tiles");
 		lua_rawget(config.lua, -2);
+
+		logFormat("Loading tileset '%s'...\r\n", filename.c_str());
 		if(lua_istable(config.lua, -1))
 		{
 			// Texture Width
@@ -62,32 +65,75 @@ namespace Plum
 			int occupiedHeight = lua_tointeger(config.lua, -1);
 			lua_pop(config.lua, 1);
 
-
-			// Data. The funky stuff.
-			lua_pushstring(config.lua, "data");
+			// (Optional) externalFile is an attribute that allows tilesets to automatically be
+			// re-imported on engine staturp.
+			bool update = false;
+			lua_pushstring(config.lua, "externalFile");
 			lua_rawget(config.lua, -2);
-			if(!lua_isstring(config.lua, -1))
+			if(lua_isstring(config.lua, -1))
 			{
-				throw Engine::Exception("Error while loading " + filename + ":\r\nTileset's 'tiles' block has no 'data' attribute.");
+				std::string externalFile = lua_tostring(config.lua, -1);
+				lua_pop(config.lua, 1);
+
+				// Get the last hash value of the external file, so we can compare changes.
+				lua_pushstring(config.lua, "lastHash");
+				lua_rawget(config.lua, -2);
+				std::string lastHash = lua_isstring(config.lua, -1) ? Base64::decode(lua_tostring(config.lua, -1)) : "";
+
+
+				externalTileFile = externalFile;
+				externalTileHash = lastHash;
+				// Try to calculate the SHA1 hash of the external image resource.
+				// If the image file doesn't exist, just stop.
+				std::string hash;
+				if(SHA1::digestFile(externalFile, hash))
+				{
+					logFormat("Comparing tile hashes...\r\n");
+					// Compare the difference with the last stored hash.
+					// And if they don't match, then update the images being used.
+					if(lastHash.length() != 20 || hash.compare(0, 20, lastHash, 0, 20) != 0)
+					{
+						logFormat("Out of date. Reloading external file.\r\n");
+						this->tiles = new Texture(externalFile);
+						modified = true;
+						update = true;
+						externalTileHash = hash;
+					}
+				}
 			}
-			// Decode.
-			std::string blob = Base64::decode(lua_tostring(config.lua, -1));
-			// Pop.
 			lua_pop(config.lua, 1);
-			// Allocate temporary image.
-			Image* img = new Image(width, height);
-			img->occupiedWidth = occupiedWidth;
-			img->occupiedHeight = occupiedHeight;
-			// Decompress.
-			Compression::decompressData((u8*) blob.data(), blob.length(), (u8*)(img->data), width * height * sizeof(Color));
-			// Make texture.
-			tiles = new Texture(img);
-			// Destroy temporary image.
-			delete img;
+
+			// If we didn't update from an external source,
+			// Use the data stored in the file instead.
+			if(!update)
+			{
+				logFormat("Using most recent tile copy available.\r\n");
+				// Data. The funky stuff.
+				lua_pushstring(config.lua, "data");
+				lua_rawget(config.lua, -2);
+				if(!lua_isstring(config.lua, -1))
+				{
+					throw Engine::Exception("Error while loading " + filename + ":\r\nTileset's 'tiles' block has no 'data' attribute.");
+				}
+				// Decode.
+				std::string blob = Base64::decode(lua_tostring(config.lua, -1));
+				// Pop.
+				lua_pop(config.lua, 1);
+				// Allocate temporary image.
+				Image* img = new Image(width, height);
+				img->occupiedWidth = occupiedWidth;
+				img->occupiedHeight = occupiedHeight;
+				// Decompress.
+				Compression::decompressData((u8*) blob.data(), blob.length(), (u8*)(img->data), width * height * sizeof(Color));
+				// Make texture.
+				tiles = new Texture(img);
+				// Destroy temporary image.
+				delete img;
+			}
 		}
 		else
 		{
-			throw Engine::Exception("Error while loading " + filename + ":\r\nTileset's doesn't have a valid 'tiles' block.");
+			throw Engine::Exception("Error while loading " + filename + ":\r\nTileset doesn't have a valid 'tiles' block.");
 		}
 		lua_pop(config.lua, 1);
 
@@ -137,33 +183,88 @@ namespace Plum
 			lua_pop(config.lua, 1);
 
 
-			// Data. The funky stuff.
-			lua_pushstring(config.lua, "data");
+			// (Optional) externalFile is an attribute that allows tilesets to automatically be
+			// re-imported on engine staturp.
+			bool update = false;
+			lua_pushstring(config.lua, "externalFile");
 			lua_rawget(config.lua, -2);
-			if(!lua_isstring(config.lua, -1))
+			if(lua_isstring(config.lua, -1))
 			{
-				throw Engine::Exception("Error while loading " + filename + ":\r\nTileset's 'obs' block has no 'data' attribute.");
+				std::string externalFile = lua_tostring(config.lua, -1);
+				lua_pop(config.lua, 1);
+
+				// Get the last hash value of the external file, so we can compare changes.
+				lua_pushstring(config.lua, "lastHash");
+				lua_rawget(config.lua, -2);
+				std::string lastHash = lua_isstring(config.lua, -1) ? Base64::decode(lua_tostring(config.lua, -1)) : "";
+
+				externalObsFile = externalFile;
+				externalObsHash = lastHash;
+				// Try to calculate the SHA1 hash of the external image resource.
+				// If the image file doesn't exist, just stop.
+				std::string hash;
+				if(SHA1::digestFile(externalFile, hash))
+				{
+					logFormat("Comparing obs hashes...\r\n");
+					// Compare the difference with the last stored hash.
+					// And if they don't match, then update the images being used.
+					if(lastHash.length() != 20 || hash.compare(0, 20, lastHash, 0, 20) != 0)
+					{
+						logFormat("Out of date. Reloading external file.\r\n");
+						this->obs = new Texture(externalFile);
+						modified = true;
+						update = true;
+
+						externalObsHash = hash;
+					}
+				}
 			}
-			// Decode.
-			std::string blob = Base64::decode(lua_tostring(config.lua, -1));
-			// Pop.
 			lua_pop(config.lua, 1);
-			// Allocate temporary image.
-			Image* img = new Image(width, height);
-			img->occupiedWidth = occupiedWidth;
-			img->occupiedHeight = occupiedHeight;
-			// Decompress.
-			Compression::decompressData((u8*) blob.data(), blob.length(), (u8*)(img->data), width * height * sizeof(Color));
-			// Make texture.
-			obs = new Texture(img);
-			// Destroy temporary image.
-			delete img;
+
+			// If we didn't update from an external source,
+			// Use the data stored in the file instead.
+			if(!update)
+			{
+				logFormat("Using most recent obs copy available.\r\n");
+
+				// Data. The funky stuff.
+				lua_pushstring(config.lua, "data");
+				lua_rawget(config.lua, -2);
+				if(!lua_isstring(config.lua, -1))
+				{
+					throw Engine::Exception("Error while loading " + filename + ":\r\nTileset's 'obs' block has no 'data' attribute.");
+				}
+				// Decode.
+				std::string blob = Base64::decode(lua_tostring(config.lua, -1));
+				// Pop.
+				lua_pop(config.lua, 1);
+				// Allocate temporary image.
+				Image* img = new Image(width, height);
+				img->occupiedWidth = occupiedWidth;
+				img->occupiedHeight = occupiedHeight;
+				// Decompress.
+				Compression::decompressData((u8*) blob.data(), blob.length(), (u8*)(img->data), width * height * sizeof(Color));
+				// Make texture.
+				obs = new Texture(img);
+				// Destroy temporary image.
+				delete img;
+			}
 		}
 		else
 		{
-			throw Engine::Exception("Error while loading " + filename + ":\r\nTileset's doesn't have a valid 'obs' block.");
+			throw Engine::Exception("Error while loading " + filename + ":\r\nTileset doesn't have a valid 'obs' block.");
 		}
 		lua_pop(config.lua, 1);
+
+		logFormat("Done loading.\r\n");
+
+
+		if(modified)
+		{
+			logFormat("Saving tileset modifications...\r\n");
+			save(filename);
+			logFormat("Saved.\r\n");
+		}
 	}
 
 	Tileset::~Tileset()
@@ -219,6 +320,13 @@ namespace Plum
 			// Actually occupied width of image being stored, so it knows how much of it was actually used later.
 			fprintf(f, "        occupiedHeight = %d;\n", img->occupiedHeight);
 
+			// If we have loaded from an external file, we can store that in the tileset, so the engine can autoupdate.
+			if(externalTileFile.length() > 0)
+			{
+				fprintf(f, "        externalFile = '%s';\n", externalTileFile.c_str());
+				fprintf(f, "        lastHash = '%s';\n", Base64::encode(externalTileHash).c_str());
+			}
+
 			// Allocate buffer.
 			u8* buffer = new u8[img->width * img->height * sizeof(Color)];
 			// Compress.
@@ -263,6 +371,13 @@ namespace Plum
 
 			// Actually occupied width of image being stored, so it knows how much of it was actually used later.
 			fprintf(f, "        occupiedHeight = %d;\n", img->occupiedHeight);
+
+			// If we have loaded from an external file, we can store that in the tileset, so the engine can autoupdate.
+			if(externalObsFile.length() > 0)
+			{
+				fprintf(f, "        externalFile = '%s';\n", externalObsFile.c_str());
+				fprintf(f, "        lastHash = '%s';\n", Base64::encode(externalObsHash).c_str());
+			}
 
 			// Allocate buffer.
 			u8* buffer = new u8[img->width * img->height * sizeof(Color)];

@@ -4,6 +4,9 @@ namespace Plum
 	class Tileset
 	{
 		public:
+			std::string externalTileFile, externalTileHash;
+			std::string externalObsFile, externalObsHash;
+
 			int tileSize;
 			Texture* tiles;
 			Texture* obs;

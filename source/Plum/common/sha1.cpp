@@ -218,23 +218,27 @@ namespace Plum
 
 
 
-	void SHA1::digestString(const std::string& str, u8 hash[20])
+	void SHA1::digestString(const std::string& str, std::string& hash)
 	{
+		u8 digest[20];
 		SHA1_CTX ctx;
 		SHA1Init(&ctx);
 		SHA1Update(&ctx, (u8*) str.data(), str.length());
-		SHA1Final(hash, &ctx);
+		SHA1Final(digest, &ctx);
+		hash = std::string(digest, digest + 20);
 	}
 
-	bool SHA1::digestFile(const std::string& str, u8 hash[20])
+	bool SHA1::digestFile(const std::string& str, std::string& hash)
 	{
 		static const u32 BUFFER_SIZE = 4096;
+		u8 digest[20];
 		u8 buffer[BUFFER_SIZE];
 		
 		ZZIP_FILE* f = zzip_fopen_plum(str.c_str(), "rb");
 
 		if(!f)
 		{
+			hash = "";
 			return false;
 		}
 
@@ -249,7 +253,9 @@ namespace Plum
 			}
 			else
 			{
-				SHA1Final(hash, &ctx);
+				SHA1Final(digest, &ctx);
+
+				hash = std::string(digest, digest + 20);
 				zzip_fclose(f);
 				return true;
 			}
