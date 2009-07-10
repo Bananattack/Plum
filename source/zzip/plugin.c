@@ -44,8 +44,13 @@ zzip_filesize(int fd)
 }
 
 static const struct zzip_plugin_io default_io = {
-    &open,
-    &close,
+#ifdef _MSC_VER
+    &_open,
+	&_close,
+#else
+	&open,
+	&close,
+#endif
     &_zzip_read,
     &_zzip_lseek,
     &zzip_filesize,

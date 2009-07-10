@@ -58,13 +58,14 @@ int main(int argc, char** argv)
 
 	try
 	{
-		Tileset* tileset = new Tileset("test.tileset");
+		/*Tileset* tileset = new Tileset("test.tileset");
 		while(!engine.key[KEY_ENTER].isPressed())
 		{
 			engine.video.clear(Color::Black);
 			tileset->tiles->blit(0, 0);
 			engine.refresh();
 		}
+		delete tileset;*/
 		engine.script.runScript("system.lua");
 	}
 	catch(std::exception& e)

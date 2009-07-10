@@ -1,3 +1,20 @@
+--[[require 'tests'
+
+
+testConfig()
+testFileWrite()
+testFileRead()
+testFileReadFully()
+
+plum.setTitle('Giraffes IN SPACE')
+f = plum.File('resources/sprites/heartsprite.png', 'r')
+f:close()
+
+while not plum.key.Escape.pressed do
+    plum.video.verticalGradientRect(0, 0, plum.video.screenWidth, plum.video.screenHeight, plum.color.rgb(0x33, 0x66, 0xcc), plum.color.Magenta)
+    plum.refresh()
+end]]
+
 require 'tests'
 
 testConfig()
@@ -16,7 +33,7 @@ spr:setAnimation("throb", "left")
 fnt = plum.Font('resources/fonts/ccfont.png')
 fnt:enableVariableWidth()
 
-snd = plum.Sound('resources/sounds/shot.wav');
+--snd = plum.Sound('resources/sounds/shot.wav');
 
 --print("width = " .. tex.width .. "; height = " .. tex.height)
 
@@ -65,4 +82,3 @@ while not plum.key.Escape.pressed do
     end
     plum.refresh()
 end
-
