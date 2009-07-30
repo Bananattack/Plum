@@ -69,7 +69,8 @@ namespace Plum
 	static int spriteGetTexture(lua_State* L)
 	{
 		Sprite** s = checkValidSpriteObject(L, 1); 
-		Script::texturePushForSprite(L, *s);
+		//Script::texturePushForSprite(L, *s);
+		Script::pushTextureRef(L, (*s)->getTexture());
 		return 1;
 	}
 

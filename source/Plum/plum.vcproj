@@ -265,6 +265,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\script\tileset_object.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\script\timer_object.cpp"
 					>
 				</File>

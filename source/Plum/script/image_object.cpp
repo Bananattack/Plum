@@ -43,13 +43,13 @@ namespace Plum
 		}
 	}
 
-	void Script::imagePushForTexture(lua_State* L, Texture* tex)
+	void Script::pushImageRef(lua_State* L, Image* image)
 	{
 		Script::ImageWrapper* img = (Script::ImageWrapper*) lua_newuserdata(L, sizeof(Script::ImageWrapper));
 		luaL_getmetatable(L, "plum_image");
 		lua_setmetatable(L, -2);
 
-		img->image = tex->getImage();
+		img->image = image;
 		img->canDelete = false;
 	}
 

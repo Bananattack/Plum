@@ -245,6 +245,13 @@ namespace Plum
 		//std::string cap = titlePrefix + " - FPS: " + integerToString(timer.fps);
 		//SDL_WM_SetCaption(cap.c_str(), cap.c_str());
 
+		// Update the input hooks, one by one.
+		// The input hook wrapper stuff makes me sick inside somewhat.
+		for(u32 i = 0; i < script.inputHooks.size(); i++)
+		{
+			script.processInputHook(script.inputHooks[i]);
+		}
+
 		if((key[KEY_LALT].isPressed() || key[KEY_RALT].isPressed()) && (key[KEY_F4].isPressed() || key[KEY_X].isPressed()))
 		{
 			quit();

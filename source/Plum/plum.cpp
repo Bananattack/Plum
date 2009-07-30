@@ -44,25 +44,8 @@ int main(int argc, char** argv)
 		engine.quit("Very unexpected error during startup: " + std::string(e.what()));
 	}
 
-	/*Image* image = new Image("tileset.png");
-	Image* obs = new Image("obstile.png");
-	Tileset* tileset = new Tileset(16, image, obs);
-	tileset->save("test.tileset");
-
-	delete tileset;
-	delete image;
-	delete obs;*/
-
 	try
 	{
-		/*Tileset* tileset = new Tileset("test.tileset");
-		while(!engine.key[KEY_ENTER].isPressed())
-		{
-			engine.video.clear(Color::Black);
-			tileset->tiles->blit(0, 0);
-			engine.refresh();
-		}
-		delete tileset;*/
 		engine.script.runScript("system.lua");
 	}
 	catch(std::exception& e)
