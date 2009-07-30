@@ -2,15 +2,10 @@
 
 namespace Plum
 {
-	ScriptInstanceMap* scriptInstances;
+	Script::ScriptInstanceMap Script::scriptInstances;
 	Script* Script::getInstance(lua_State* L)
 	{
-		return (*scriptInstances)[L];
-	}
-
-	void initScriptInstances(ScriptInstanceMap* map)
-	{
-		scriptInstances = map;
+		return scriptInstances[L];
 	}
 
 	static int panic(lua_State *L)
@@ -30,7 +25,7 @@ namespace Plum
 
 		// Allow the static script methods to be able to use instance variables,
 		// by looking up with the lua_State.
-		(*scriptInstances).insert(ScriptInstanceMap::value_type(L, this));
+		scriptInstances.insert(ScriptInstanceMap::value_type(L, this));
 
 		initPlumModule(L);
 		initTextureClass(L);
@@ -75,7 +70,7 @@ namespace Plum
 
 	void Script::shutdown()
 	{
-		(*scriptInstances).erase(L);
+		scriptInstances.erase(L);
 		lua_close(L);
 	}
 

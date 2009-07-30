@@ -18,7 +18,6 @@ int main(int argc, char** argv)
 	__pfnDliFailureHook2 = failHook;
 #endif
 
-	ScriptInstanceMap map;
 	Engine engine;
 
 	clearLog();
@@ -26,8 +25,6 @@ int main(int argc, char** argv)
 	freopen("stderr.log", "w", stderr);
 	try
 	{
-		initScriptInstances(&map);
-
 		engine.startup();
 	}
 	catch(Audio::Exception& e)

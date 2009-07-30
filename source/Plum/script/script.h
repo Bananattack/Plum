@@ -44,6 +44,9 @@ namespace Plum
 
 	struct Script
 	{
+		typedef std::map<lua_State*, Script*> ScriptInstanceMap;
+		static ScriptInstanceMap scriptInstances;
+
 		static Script* getInstance(lua_State* L);
 
 		lua_State* L;
@@ -83,8 +86,4 @@ namespace Plum
 		static void imagePushForTexture(lua_State* L, Texture* tex);
 		static void texturePushForSprite(lua_State* L, Sprite* spr);
 	};
-
-	typedef std::map<lua_State*, Script*> ScriptInstanceMap;
-	extern ScriptInstanceMap* scriptInstances;
-	void initScriptInstances(ScriptInstanceMap* map);
 }
