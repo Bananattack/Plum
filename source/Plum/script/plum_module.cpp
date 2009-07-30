@@ -66,11 +66,84 @@ namespace Plum
 		return 1;
 	}
 
+	static int plumHookInput(lua_State* L)
+	{
+		Script* script = Script::getInstance(L);
+
+		// Check that first argument is an input object.
+		// If so, happily grab the pointer.
+		Input** inp = (Input**) luaL_checkudata(L, 1, "plum_input");
+
+		// Get that function on the stack!
+		if(!lua_isfunction(L, 2) && !lua_isnil(L, 2))
+		{
+			luaL_error(L, "Invalid argument #2 to plum.hookInput. Must be a valid function, or nil.");
+			return 0;
+		}
+
+		// Nuke old callback reference (if any)
+		{
+			std::vector<Script::InputHook>& hooks = script->inputHooks;
+			int ref = LUA_NOREF;
+			for(u32 i = 0; i < hooks.size(); i++)
+			{
+				// Okay, convert our reference number input to userdata.
+				Script::InputHook& hook = hooks[i];
+				lua_rawgeti(L, LUA_REGISTRYINDEX, hook.inputRef);
+				Input** p = (Input**) luaL_checkudata(L, -1, "plum_input");
+
+				// If the passed argument is the same input object,
+				// Then discard that old references.
+				if(*p == *inp)
+				{
+					hooks.erase(hooks.begin() + i);
+
+					luaL_unref(L, LUA_REGISTRYINDEX, hook.inputRef);
+					luaL_unref(L, LUA_REGISTRYINDEX, hook.callbackRef);
+					break;
+				}
+			}
+		}
+
+		// Store new callback reference stuff.
+		// Unless nil, in which case we just remove old entries.
+		// argh.
+		if(!lua_isnil(L, 2))
+		{
+			Script::InputHook hook;
+
+			lua_pushvalue(L, 1);
+			hook.inputRef = luaL_ref(L, LUA_REGISTRYINDEX);
+
+			lua_pushvalue(L, 2);
+			hook.callbackRef = luaL_ref(L, LUA_REGISTRYINDEX);
+
+			script->inputHooks.push_back(hook);
+		}
+		return 0;
+	}
+
+	static int plumUnhookAllInput(lua_State* L)
+	{
+		Script* script = Script::getInstance(L);
+		std::vector<Script::InputHook>& hooks = script->inputHooks;
+		for(u32 i = 0; i < hooks.size(); i++)
+		{
+			Script::InputHook& hook = hooks[i];
+			luaL_unref(L, LUA_REGISTRYINDEX, hook.inputRef);
+			luaL_unref(L, LUA_REGISTRYINDEX, hook.callbackRef);
+		}
+		hooks.clear();
+		return 0;
+	}
+	
 	static const luaL_Reg plumFunctions[] = {
 		{ "exit", plumExit },
 		{ "refresh", plumRefresh },
 		{ "setTitle", plumSetTitle },
 		{ "loadConfig", plumLoadConfig },
+		{ "hookInput", plumHookInput },
+		{ "unhookAllInput", plumUnhookAllInput },
 		{ NULL, NULL }
 	};
 

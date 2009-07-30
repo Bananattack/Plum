@@ -49,6 +49,18 @@ namespace Plum
 		lua_State* L;
 		Engine* engine;
 
+		// A mapping of type: input reference -> function index
+		// Oh, and the function needs to be of form:
+		// void f(keyIndex);
+		// This way callbacks can be potentially used across several keys
+		// and determine which is pressed by the name passed
+		struct InputHook
+		{
+			int inputRef;
+			int callbackRef;
+		};
+		std::vector<InputHook> inputHooks;
+
 		Script()
 			: L(0), engine(0)
 		{
@@ -58,6 +70,7 @@ namespace Plum
 		void runScript(std::string filename);
 		void shutdown();
 		void stepGarbageCollector();
+		void processInputHook(InputHook& hook);
 
 		static void initPlumModule(lua_State* L);
 
@@ -73,15 +86,24 @@ namespace Plum
 		static void initSoundClass(lua_State* L);
 		static void initSongClass(lua_State* L);
 		static void initFileClass(lua_State* L);
+		static void initTilesetClass(lua_State* L);
 
 		struct ImageWrapper
 		{
 			Image* image;
 			bool canDelete;
 		};
+
+		struct TextureWrapper
+		{
+			bool canDelete;
+			Texture* texture;	
+		};
 		
-		static void imagePushForTexture(lua_State* L, Texture* tex);
-		static void texturePushForSprite(lua_State* L, Sprite* spr);
+		static Script::TextureWrapper* checkValidTextureObject(lua_State* L, int index);
+
+		static void pushImageRef(lua_State* L, Image* image);
+		static void pushTextureRef(lua_State* L, Texture* texture);
 	};
 
 	typedef std::map<lua_State*, Script*> ScriptInstanceMap;

@@ -120,6 +120,18 @@ namespace Plum
 		return 0;
 	}
 
+	static int mouseGetHide(lua_State* L)
+	{
+		lua_pushboolean(L, SDL_ShowCursor(SDL_QUERY) == SDL_DISABLE);
+		return 1;
+	}
+
+	static int mouseSetHide(lua_State* L)
+	{
+		SDL_ShowCursor((lua_toboolean(L, 2) != 0) ? SDL_DISABLE : SDL_ENABLE);
+		return 0;
+	}
+
 	static const luaL_Reg mouseMembers[] = {
 		{ "__index", mouseGetField },
 		{ "__newindex",	mouseSetField },
@@ -131,6 +143,8 @@ namespace Plum
 		{ "getleft", mouseGetLeft },
 		{ "getmiddle", mouseGetMiddle },
 		{ "getright", mouseGetRight },
+		{ "gethide", mouseGetHide },
+		{ "sethide", mouseSetHide },
 		{ NULL, NULL }
 	};
 

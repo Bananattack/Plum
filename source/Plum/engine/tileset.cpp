@@ -10,11 +10,11 @@ namespace Plum
 		this->obs = new Texture(obs);
 	}
 
-	Tileset::Tileset(const std::string& filename)
+	Tileset::Tileset(const std::string& filename, lua_State* state)
 	{
 		bool modified = false;
 		// NOTE: Needs to take lua_State* at some point so it can spawn a thread for config instead of full-on state.
-		config.init(filename, "tileset");
+		config.init(filename, "tileset", state);
 
 		tileSize = config.getIntValue("tileSize");
 		

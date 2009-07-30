@@ -15,7 +15,7 @@ namespace Plum
 			// For importing purposes.
 			Tileset(int tileSize, Image* tiles, Image* obs);
 			// For normal stuff.
-			Tileset(const std::string& filename);
+			Tileset(const std::string& filename, lua_State* state = 0);
 			~Tileset();
 
 			void save(const std::string& filename);

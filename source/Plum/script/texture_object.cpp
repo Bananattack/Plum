@@ -2,15 +2,9 @@
 
 namespace Plum
 {
-	struct TextureWrapper
+	Script::TextureWrapper* Script::checkValidTextureObject(lua_State* L, int index)
 	{
-		bool canDelete;
-		Texture* texture;	
-	};
-
-	static TextureWrapper* checkValidTextureObject(lua_State* L, int index)
-	{
-		return (TextureWrapper*) luaL_checkudata(L, index, "plum_texture");
+		return (Script::TextureWrapper*) luaL_checkudata(L, index, "plum_texture");
 	}
 
 	static int textureNew(lua_State* L)
@@ -19,7 +13,7 @@ namespace Plum
 		{
 			const char* filename = lua_tostring(L, 1);
 
-			TextureWrapper* t = (TextureWrapper*) lua_newuserdata(L, sizeof(Texture*));
+			Script::TextureWrapper* t = (Script::TextureWrapper*) lua_newuserdata(L, sizeof(Texture*));
 			luaL_getmetatable(L, "plum_texture");
 			lua_setmetatable(L, -2);
 
@@ -39,7 +33,7 @@ namespace Plum
 				{
 					lua_pop(L, 2);
 
-					TextureWrapper* t = (TextureWrapper*) lua_newuserdata(L, sizeof(Texture*));
+					Script::TextureWrapper* t = (Script::TextureWrapper*) lua_newuserdata(L, sizeof(Texture*));
 					luaL_getmetatable(L, "plum_texture");
 					lua_setmetatable(L, -2);
 
@@ -54,19 +48,19 @@ namespace Plum
 		return 0;
 	}
 
-	void Script::texturePushForSprite(lua_State* L, Sprite* spr)
+	void Script::pushTextureRef(lua_State* L, Texture* tex)
 	{
-		TextureWrapper* t = (TextureWrapper*) lua_newuserdata(L, sizeof(TextureWrapper));
+		Script::TextureWrapper* t = (Script::TextureWrapper*) lua_newuserdata(L, sizeof(Script::TextureWrapper));
 		luaL_getmetatable(L, "plum_texture");
 		lua_setmetatable(L, -2);
 
-		t->texture = spr->getTexture();
+		t->texture = tex;
 		t->canDelete = false;
 	}
 
 	static int textureGC(lua_State* L)
 	{
-		TextureWrapper* t = checkValidTextureObject(L, 1);
+		Script::TextureWrapper* t = Script::checkValidTextureObject(L, 1);
 		if(t->canDelete)
 		{
 			delete t->texture;
@@ -75,19 +69,19 @@ namespace Plum
 		return 0;
 	}
 
-	SCRIPT_OBJ_GETTER(textureGetField, TextureWrapper*, "plum_texture")
-	SCRIPT_OBJ_SETTER(textureSetField, TextureWrapper*, "plum_texture")
+	SCRIPT_OBJ_GETTER(textureGetField, Script::TextureWrapper*, "plum_texture")
+	SCRIPT_OBJ_SETTER(textureSetField, Script::TextureWrapper*, "plum_texture")
 
 	static int textureToString(lua_State* L)
 	{
-		checkValidTextureObject(L, 1);
+		Script::checkValidTextureObject(L, 1);
 		lua_pushstring(L, "(plum.Texture object)");
 		return 1;
 	}
 
 	static int textureBlit(lua_State* L)
 	{
-		TextureWrapper* t = checkValidTextureObject(L, 1);
+		Script::TextureWrapper* t = Script::checkValidTextureObject(L, 1);
 		int x = luaL_checkint(L, 2);
 		int y = luaL_checkint(L, 3);
 		BlendMode mode = (BlendMode) luaL_optint(L, 4, BlendUnspecified);
@@ -100,7 +94,7 @@ namespace Plum
 
 	static int textureBlitRegion(lua_State* L)
 	{
-		TextureWrapper* t = checkValidTextureObject(L, 1);
+		Script::TextureWrapper* t = Script::checkValidTextureObject(L, 1);
 		int sx = luaL_checkint(L, 2);
 		int sy = luaL_checkint(L, 3);
 		int sx2 = luaL_checkint(L, 4);
@@ -117,7 +111,7 @@ namespace Plum
 
 	static int textureScaleBlit(lua_State* L)
 	{
-		TextureWrapper* t = checkValidTextureObject(L, 1);
+		Script::TextureWrapper* t = Script::checkValidTextureObject(L, 1);
 		int x = luaL_checkint(L, 2);
 		int y = luaL_checkint(L, 3);
 		int width = luaL_checkint(L, 4);
@@ -132,7 +126,7 @@ namespace Plum
 
 	static int textureScaleBlitRegion(lua_State* L)
 	{
-		TextureWrapper* t = checkValidTextureObject(L, 1);
+		Script::TextureWrapper* t = Script::checkValidTextureObject(L, 1);
 		int sx = luaL_checkint(L, 2);
 		int sy = luaL_checkint(L, 3);
 		int sx2 = luaL_checkint(L, 4);
@@ -151,7 +145,7 @@ namespace Plum
 
 	static int textureRotateBlit(lua_State* L)
 	{
-		TextureWrapper* t = checkValidTextureObject(L, 1);
+		Script::TextureWrapper* t = Script::checkValidTextureObject(L, 1);
 		int x = luaL_checkint(L, 2);
 		int y = luaL_checkint(L, 3);
 		double angle = luaL_checknumber(L, 4);
@@ -166,7 +160,7 @@ namespace Plum
 
 	static int textureRotateBlitRegion(lua_State* L)
 	{
-		TextureWrapper* t = checkValidTextureObject(L, 1);
+		Script::TextureWrapper* t = Script::checkValidTextureObject(L, 1);
 		int sx = luaL_checkint(L, 2);
 		int sy = luaL_checkint(L, 3);
 		int sx2 = luaL_checkint(L, 4);
@@ -183,7 +177,7 @@ namespace Plum
 
 	static int textureRotateScaleBlit(lua_State* L)
 	{
-		TextureWrapper* t = checkValidTextureObject(L, 1);
+		Script::TextureWrapper* t = Script::checkValidTextureObject(L, 1);
 		int x = luaL_checkint(L, 2);
 		int y = luaL_checkint(L, 3);
 		double angle = luaL_checknumber(L, 4);
@@ -198,7 +192,7 @@ namespace Plum
 
 	static int textureRotateScaleBlitRegion(lua_State* L)
 	{
-		TextureWrapper* t = checkValidTextureObject(L, 1);
+		Script::TextureWrapper* t = Script::checkValidTextureObject(L, 1);
 		int sx = luaL_checkint(L, 2);
 		int sy = luaL_checkint(L, 3);
 		int sx2 = luaL_checkint(L, 4);
@@ -216,7 +210,7 @@ namespace Plum
 
 	static int textureRefresh(lua_State* L)
 	{
-		TextureWrapper* t = checkValidTextureObject(L, 1);
+		Script::TextureWrapper* t = Script::checkValidTextureObject(L, 1);
 		t->texture->refresh();
 
 		return 1;
@@ -224,7 +218,7 @@ namespace Plum
 
 	static int textureGetWidth(lua_State* L)
 	{
-		TextureWrapper* t = checkValidTextureObject(L, 1);
+		Script::TextureWrapper* t = Script::checkValidTextureObject(L, 1);
 		lua_pushnumber(L, t->texture->getImageWidth());
 
 		return 1;
@@ -232,7 +226,7 @@ namespace Plum
 
 	static int textureGetHeight(lua_State* L)
 	{
-		TextureWrapper* t = checkValidTextureObject(L, 1);
+		Script::TextureWrapper* t = Script::checkValidTextureObject(L, 1);
 		lua_pushnumber(L, t->texture->getImageHeight());
 
 		return 1;
@@ -240,8 +234,8 @@ namespace Plum
 
 	static int textureGetImage(lua_State* L)
 	{
-		TextureWrapper* t = checkValidTextureObject(L, 1); 
-		Script::imagePushForTexture(L, t->texture);
+		Script::TextureWrapper* t = Script::checkValidTextureObject(L, 1); 
+		Script::pushImageRef(L, t->texture->getImage());
 		return 1;
 	}
 

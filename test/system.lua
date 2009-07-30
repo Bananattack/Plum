@@ -1,27 +1,11 @@
---[[require 'tests'
-
-
-testConfig()
-testFileWrite()
-testFileRead()
-testFileReadFully()
-
-plum.setTitle('Giraffes IN SPACE')
-f = plum.File('resources/sprites/heartsprite.png', 'r')
-f:close()
-
-while not plum.key.Escape.pressed do
-    plum.video.verticalGradientRect(0, 0, plum.video.screenWidth, plum.video.screenHeight, plum.color.rgb(0x33, 0x66, 0xcc), plum.color.Magenta)
-    plum.refresh()
-end]]
-
 require 'tests'
 
+require 'plumed'
+
 testConfig()
 testFileWrite()
 testFileRead()
 testFileReadFully()
-
 
 plum.setTitle('Giraffes IN SPACE')
 
@@ -33,7 +17,40 @@ spr:setAnimation("throb", "left")
 fnt = plum.Font('resources/fonts/ccfont.png')
 fnt:enableVariableWidth()
 
---snd = plum.Sound('resources/sounds/shot.wav');
+tileset = plum.Tileset("test.tileset")
+showTiles = false
+
+function initHooks()
+    -- Plumed hook.
+    plumed.hookLaunch(plum.key.F10)
+    plumed.hookExit(initHooks)
+
+    plum.hookInput(plum.key['1'], 
+            function(input)
+                showTiles = not showTiles
+                input.pressed = false
+            end
+        )
+    plum.hookInput(plum.key['2'], 
+            function(input)
+                -- Replace tiles.
+                tileset:replaceTiles(spr.texture)
+                input.pressed = false
+            end
+        )    
+    plum.hookInput(plum.key['S'], 
+            function(input)
+                -- Replace tiles.
+                tileset:save("save.tileset")
+                input.pressed = false
+            end
+        )
+    
+end
+initHooks()
+
+
+snd = plum.Sound('resources/sounds/shot.wav');
 
 --print("width = " .. tex.width .. "; height = " .. tex.height)
 
@@ -46,9 +63,12 @@ while not plum.key.Escape.pressed do
     plum.video.verticalGradientRect(0, 0, plum.video.screenWidth, plum.video.screenHeight, plum.color.rgb(0x33, 0x66, 0xcc), plum.color.Magenta)
 
     --tex:rotateScaleBlitRegion(1, 1, 16, 16, x, y, angle, 3 + math.sin(math.rad(plum.timer.time)) * 0.25 )
+    if showTiles then
+        tileset.tiles:blit(0, 0)
+    end
     spr.scale = 3 + math.sin(math.rad(plum.timer.time)) * 0.25
     spr:blit()
-    
+
     fnt:print(5, 5, "FPS: " .. plum.timer.fps .. " " .. tostring(plum.key.Enter.pressed))
     fnt:print(5, 5 + fnt.height, "Mouse: (" .. plum.mouse.x .. ", " .. plum.mouse.y .. ")")
     for i = 1, plum.timer.gap do

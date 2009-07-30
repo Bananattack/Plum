@@ -45,6 +45,7 @@ namespace Plum
 		initSongClass(L);
 		initFileClass(L);
 		initSpriteClass(L);
+		initTilesetClass(L);
 
 		luaL_dostring(L,
 			"function plum.RequireModuleFromPit(modulename)\r\n"
@@ -105,5 +106,20 @@ namespace Plum
 	void Script::stepGarbageCollector()
 	{
 		lua_gc(L, LUA_GCSTEP, 1);
+	}
+
+	void Script::processInputHook(Script::InputHook& hook)
+	{
+		// Okay, convert our reference number input to userdata.
+		lua_rawgeti(L, LUA_REGISTRYINDEX, hook.inputRef);
+		Input** inp = (Input**) luaL_checkudata(L, -1, "plum_input");
+
+		// If the button's presed, we can call the hook callback.
+		if((*inp)->isPressed())
+		{
+			lua_rawgeti(L, LUA_REGISTRYINDEX, hook.callbackRef);
+			lua_rawgeti(L, LUA_REGISTRYINDEX, hook.inputRef);
+			lua_call(L, 1, 0);
+		}
 	}
 }
