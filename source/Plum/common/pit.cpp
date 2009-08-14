@@ -64,4 +64,10 @@ namespace Plum
 		ZZIP_FILE* file = zzip_fopen_plum(filename, (writeable ? "wb" : "rb"));
 		return (file ? new PitCoronaFile(file) : 0);
 	}
+
+	audiere::File* OpenPitAudiereFile(const char* filename, bool writeable)
+	{
+		ZZIP_FILE* file = zzip_fopen_plum(filename, (writeable ? "wb" : "rb"));
+		return (file ? new PitAudiereFile(file) : 0);
+	}
 }

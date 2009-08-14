@@ -6,11 +6,13 @@ namespace Plum
 
 	class PitCoronaFile : public corona::DLLImplementation<corona::File>
 	{
-		private:
-			ZZIP_FILE* file;
 		public:
-			PitCoronaFile(ZZIP_FILE* f) : file(f) {}
-			~PitCoronaFile()
+			PitCoronaFile(ZZIP_FILE* f)
+			{
+				file = f;
+			}
+
+			virtual ~PitCoronaFile()
 			{
 				zzip_fclose(file);
 			}
@@ -28,7 +30,7 @@ namespace Plum
 				return 0;
 			}
 
-			virtual bool COR_CALL seek(int position, SeekMode mode)
+			virtual bool COR_CALL seek(int position, corona::File::SeekMode mode)
 			{
 				int m;
 				switch (mode)
@@ -38,14 +40,60 @@ namespace Plum
 					case END:     m = SEEK_END; break;
 					default: return false;
 				}
-				return zzip_seek(file, position, m) == 0;
+				return zzip_seek(file, position, m) != -1;
 			}
 
 			virtual int COR_CALL tell()
 			{
 				return zzip_tell(file);
 			}
+		private:
+			ZZIP_FILE* file;
+	};
+
+	class PitAudiereFile : public audiere::RefImplementation<audiere::File>
+	{
+		public:
+			PitAudiereFile(ZZIP_FILE* f) 
+			{
+				file = f;
+			}
+
+			virtual ~PitAudiereFile()
+			{
+				zzip_fclose(file);
+			}
+
+			virtual int ADR_CALL read(void* buffer, int size)
+			{
+				int result = zzip_fread(buffer, 1, size, file);
+				/*printf("Read %d/%d bytes:", result, size);
+				fwrite(buffer, 1, result, stdout);
+				printf("\n");*/
+				return result;
+			}
+
+			virtual bool ADR_CALL seek(int position, audiere::File::SeekMode mode)
+			{
+				int m;
+				switch (mode)
+				{
+					case BEGIN:   m = SEEK_SET; break;
+					case CURRENT: m = SEEK_CUR; break;
+					case END:     m = SEEK_END; break;
+					default: return false;
+				}
+				return zzip_seek(file, position, m) != -1;
+			}
+
+			virtual int ADR_CALL tell()
+			{
+				return zzip_tell(file);
+			}
+		private:
+			ZZIP_FILE* file;
 	};
 
 	corona::File* OpenPitCoronaFile(const char* filename, bool writeable);
+	audiere::File* OpenPitAudiereFile(const char* filename, bool writeable);
 }

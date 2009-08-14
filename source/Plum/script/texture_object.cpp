@@ -13,7 +13,7 @@ namespace Plum
 		{
 			const char* filename = lua_tostring(L, 1);
 
-			Script::TextureWrapper* t = (Script::TextureWrapper*) lua_newuserdata(L, sizeof(Texture*));
+			Script::TextureWrapper* t = (Script::TextureWrapper*) lua_newuserdata(L, sizeof(Script::TextureWrapper));
 			luaL_getmetatable(L, "plum_texture");
 			lua_setmetatable(L, -2);
 
@@ -33,7 +33,7 @@ namespace Plum
 				{
 					lua_pop(L, 2);
 
-					Script::TextureWrapper* t = (Script::TextureWrapper*) lua_newuserdata(L, sizeof(Texture*));
+					Script::TextureWrapper* t = (Script::TextureWrapper*) lua_newuserdata(L, sizeof(Script::TextureWrapper*));
 					luaL_getmetatable(L, "plum_texture");
 					lua_setmetatable(L, -2);
 
@@ -61,9 +61,12 @@ namespace Plum
 	static int textureGC(lua_State* L)
 	{
 		Script::TextureWrapper* t = Script::checkValidTextureObject(L, 1);
+
 		if(t->canDelete)
 		{
 			delete t->texture;
+			t->texture = NULL;
+			t->canDelete = false;
 		}
 
 		return 0;

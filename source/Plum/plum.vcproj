@@ -40,7 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../sdl_header;../zlib;../corona;../fmod_header;.."
+				AdditionalIncludeDirectories="../sdl_header;../zlib;../corona;../fmod_header;../audiere/src;.."
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -120,7 +120,7 @@
 				Optimization="3"
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories="../sdl_header;../zlib;../corona;../fmod_header;.."
+				AdditionalIncludeDirectories="../sdl_header;../zlib;../corona;../fmod_header;../audiere/src;.."
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				WarningLevel="3"
@@ -137,7 +137,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="../SDLmain.lib ../SDL.lib OpenGL32.lib ../fmodex_vc.lib delayimp.lib winmm.lib dxguid.lib"
+				AdditionalDependencies="../SDLmain.lib ../SDL.lib OpenGL32.lib ../fmodex_vc.lib delayimp.lib winmm.lib dxguid.lib ../audiere/vc7/bin/$(ConfigurationName)/audiere.lib"
 				OutputFile="$(SolutionDir)\test\$(ProjectName).exe"
 				AdditionalLibraryDirectories="..\directx"
 				EnableUAC="false"
@@ -209,7 +209,7 @@
 				Name="audio"
 				>
 				<File
-					RelativePath=".\audio\audio.cpp"
+					RelativePath=".\audio\audio_audiere.cpp"
 					>
 				</File>
 			</Filter>
@@ -547,7 +547,11 @@
 				Name="audio"
 				>
 				<File
-					RelativePath=".\audio\audio.h"
+					RelativePath=".\audio\audio_audiere.h"
+					>
+				</File>
+				<File
+					RelativePath=".\audio\audio_fmod.h"
 					>
 				</File>
 			</Filter>

@@ -23,7 +23,10 @@ namespace Plum
 	static int soundGC(lua_State* L)
 	{
 		Sound** s = checkValidSoundObject(L, 1);
-		delete *s;
+		if(*s)
+		{
+			delete *s;
+		}
 
 		return 0;
 	}
@@ -41,6 +44,12 @@ namespace Plum
 	static int soundPlay(lua_State* L)
 	{
 		Sound** s = checkValidSoundObject(L, 1);
+		if(!*s)
+		{
+			lua_pushinteger(L, 0);	
+			return 1;
+		}
+
 		int volume = luaL_optint(L, 2, 100);
 		lua_pushinteger(L, Script::getInstance(L)->engine->audio.playSound(*s, volume));
 		return 1;

@@ -71,8 +71,8 @@ namespace Plum
 
 	void Script::shutdown()
 	{
-		scriptInstances.erase(L);
 		lua_close(L);
+		scriptInstances.erase(L);
 	}
 
 	void Script::runScript(std::string filename)

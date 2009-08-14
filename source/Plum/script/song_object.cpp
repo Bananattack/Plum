@@ -16,14 +16,16 @@ namespace Plum
 		lua_setmetatable(L, -2);
 
 		*s = Script::getInstance(L)->engine->audio.loadSong(filename);
-		
 		return 1;
 	}
 
 	static int songGC(lua_State* L)
 	{
 		Song** s = checkValidSongObject(L, 1);
-		delete *s;
+		if(*s)
+		{
+			delete *s;
+		}
 
 		return 0;
 	}
@@ -41,6 +43,11 @@ namespace Plum
 	static int songPlay(lua_State* L)
 	{
 		Song** s = checkValidSongObject(L, 1);
+		if(!*s)
+		{
+			return 0;
+		}
+
 		int volume = luaL_optint(L, 2, 100);
 		Script::getInstance(L)->engine->audio.playSong(*s);
 		return 0;
@@ -49,6 +56,10 @@ namespace Plum
 	static int songStop(lua_State* L)
 	{
 		Song** s = checkValidSongObject(L, 1);
+		if(!*s)
+		{
+			return 0;
+		}
 		(*s)->stop();
 		return 0;
 	}
@@ -56,6 +67,12 @@ namespace Plum
 	static int songIsPlaying(lua_State* L)
 	{
 		Song** s = checkValidSongObject(L, 1);
+		if(!*s)
+		{
+			lua_pushboolean(L, false);
+			return 1;
+		}
+
 		lua_pushboolean(L, (*s)->isPlaying());
 		return 1;
 	}
@@ -63,6 +80,11 @@ namespace Plum
 	static int songSetPlaying(lua_State* L)
 	{
 		Song** s = checkValidSongObject(L, 1);
+		if(!*s)
+		{
+			return 0;
+		}
+
 		bool playing = lua_toboolean(L, 2) != 0;
 		if(!playing && (*s)->isPlaying())
 		{
@@ -78,6 +100,12 @@ namespace Plum
 	static int songGetVolume(lua_State* L)
 	{
 		Song** s = checkValidSongObject(L, 1);
+		if(!*s)
+		{
+			lua_pushnumber(L, 0);
+			return 1;
+		}
+
 		lua_pushnumber(L, (*s)->getVolume());
 		return 1;
 	}
@@ -85,6 +113,11 @@ namespace Plum
 	static int songSetVolume(lua_State* L)
 	{
 		Song** s = checkValidSongObject(L, 1);
+		if(!*s)
+		{
+			return 0;
+		}
+
 		double value = luaL_checknumber(L, 2);
 		(*s)->setVolume(value);
 		return 0;

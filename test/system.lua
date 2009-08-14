@@ -17,8 +17,8 @@ spr:setAnimation("throb", "left")
 fnt = plum.Font('resources/fonts/ccfont.png')
 fnt:enableVariableWidth()
 
-tileset = plum.Tileset("test.tileset")
-showTiles = false
+--tileset = plum.Tileset("test.tileset")
+--showTiles = false
 
 function initHooks()
     -- Plumed hook.
@@ -54,8 +54,8 @@ snd = plum.Sound('resources/sounds/shot.wav');
 
 --print("width = " .. tex.width .. "; height = " .. tex.height)
 
---song = plum.Song('resources/songs/zk-sf-09-boss2.xm');
---song:play()
+song = plum.Song('ambienttest.it');
+song:play()
 
 time = plum.timer.time
 

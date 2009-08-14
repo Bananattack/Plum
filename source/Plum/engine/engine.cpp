@@ -79,7 +79,7 @@ namespace Plum
 		logFormat(" OK!\r\n");
 
 		logFormat("    Initializing sound engine...");
-		audio.startup();
+		audio.startup((config.hasValue("no_sound") && config.getBoolValue("no_sound")));
 		logFormat(" OK!\r\n");
 
 		logFormat("    Initializing scripting engine...");

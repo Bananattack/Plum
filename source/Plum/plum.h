@@ -26,6 +26,11 @@
 #ifdef PLUM_WIN32
 #	include <windows.h>
 #	include <delayimp.h>
+#	ifdef _DEBUG
+#		define CRTDBG_MAP_ALLOC
+#		include <stdlib.h>
+#		include <crtdbg.h>
+#	endif
 #endif
 
 // zlib's for compression stuff!
@@ -33,8 +38,9 @@
 // corona's for image loading!
 #include <corona.h>
 // fmod's for audio!
-#include <fmod.hpp>
-#include <fmod_errors.h>
+//#include <fmod.hpp>
+//#include <fmod_errors.h>
+#include <audiere.h>
 // SDL's for video and input stuff!
 #include <SDL.h>
 #include <SDL_opengl.h>
@@ -66,7 +72,7 @@ extern "C"
 #include "video/texture.h"
 #include "video/video.h"
 
-#include "audio/audio.h"
+#include "audio/audio_audiere.h"
 
 #include "common/animation.h"
 
