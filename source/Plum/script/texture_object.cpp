@@ -33,7 +33,7 @@ namespace Plum
 				{
 					lua_pop(L, 2);
 
-					Script::TextureWrapper* t = (Script::TextureWrapper*) lua_newuserdata(L, sizeof(Script::TextureWrapper*));
+					Script::TextureWrapper* t = (Script::TextureWrapper*) lua_newuserdata(L, sizeof(Script::TextureWrapper));
 					luaL_getmetatable(L, "plum_texture");
 					lua_setmetatable(L, -2);
 

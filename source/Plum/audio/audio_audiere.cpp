@@ -4,6 +4,7 @@ namespace Plum
 {
 	void Audio::startup(bool disableSound)
 	{
+		this->cleanupSteps = 0;
 		this->disableSound = disableSound;
 		if(!disableSound)
 		{
@@ -29,12 +30,43 @@ namespace Plum
 	{
 		if(!disableSound)
 		{
+			if(++cleanupSteps == STEPS_TO_CLEANUP)
+			{
+				// Cleanup all inactive channels.
+				// Reverse iteration so we can delete while we loop over things.
+				for(int i = activeChannels.size() - 1; i >= 0; i--)
+				{
+					if(activeChannels[i]->shouldDispose)
+					{
+						delete activeChannels[i];
+						activeChannels.pop_back();
+					}
+				}
+				cleanupSteps = 0;
+			}
+
+			// Update the audio device.
 			audioDevice->update();
 		}
 	}
 
 	void Audio::setMasterPitch(double pitch)
 	{
+		masterPitch = pitch;
+		for(u32 i = 0; i < activeChannels.size(); i++)
+		{
+			if(!activeChannels[i]->shouldDispose)
+			{
+				activeChannels[i]->setPitch(pitch);
+			}
+		}
+		for(u32 i = 0; i < soundStreamPool.size(); i++)
+		{
+			if (soundStreamPool[i] && soundStreamPool[i]->isPlaying())
+			{
+				soundStreamPool[i]->setPitchShift((float) pitch);
+			}
+		}
 		return;
 	}
 
@@ -73,48 +105,53 @@ namespace Plum
 		return sound;
 	}
 
-
-	void Audio::addStream(audiere::OutputStreamPtr stream)
+	// Attempt to allocate a new stream for a sound effect,
+	// reusing an existing array slot, where possible
+	// Returns the handle index for the added stream, or -1 on failure (no sound, bad stream).
+	// Handle may become invalidated if the stream becomes null, or the sound stream finishes playing.
+	int Audio::addSoundStream(audiere::OutputStreamPtr stream)
 	{
 		if(disableSound)
 		{
-			return;
+			return -1;
 		}
 		if(!stream)
 		{
-			return;
+			return -1;
 		}
 
-		u32 found = 0;
+		int found = -1;
 		// Reuse streams where possible
 		// Cleanup along the way.
-		for (u32 i = 0; i < streamPool.size(); ++i)
+		for (u32 i = 0; i < soundStreamPool.size(); ++i)
 		{
-			if (streamPool[i] && !streamPool[i]->isPlaying())
+			if (soundStreamPool[i] && !soundStreamPool[i]->isPlaying())
 			{
-				streamPool[i] = NULL;
+				soundStreamPool[i] = NULL;
 			}
-			if(!streamPool[i])
+			if(!soundStreamPool[i])
 			{
-				if(!found)
+				if(found == -1)
 				{
-					found = i + 1;
+					found = i;
 				}
 			}
 		}
 
-		if(found)
+		if(found != -1)
 		{
-			found--;
-			streamPool[found] = stream;
+			found;
+			soundStreamPool[found] = stream;
+			return found;
 		}
 		else
 		{
-			streamPool.push_back(stream);
+			soundStreamPool.push_back(stream);
+			return soundStreamPool.size() - 1;
 		}
 	}
 
-	ptrdiff_t Audio::playSound(Sound* sound, double volume)
+	int Audio::playSound(Sound* sound, double volume)
 	{
 		if(disableSound)
 		{
@@ -130,10 +167,35 @@ namespace Plum
 		{
 			return 0;
 		}
-		addStream(stream);
+		int handle = addSoundStream(stream);
 		stream->play();
 
-		return (ptrdiff_t) stream.get();
+		return handle;
+	}
+
+	Channel* Audio::createChannel(int handle)
+	{
+		if(handle >= 0 && handle < soundStreamPool.size())
+		{
+			return createChannel(soundStreamPool[handle]);
+		}
+	}
+
+	Channel* Audio::createChannel(audiere::OutputStreamPtr stream)
+	{
+		if(disableSound)
+		{
+			return NULL;
+		}
+		if(!stream)
+		{
+			return NULL;
+		}
+
+
+		Channel* chan = new Channel(stream);
+		activeChannels.push_back(chan);
+		return chan;
 	}
 
 	Song* Audio::loadSong(std::string filename)
@@ -187,7 +249,7 @@ namespace Plum
 			return;
 		}
 
-		song->channel = new Channel(stream);
+		song->channel = createChannel(stream);
 		stream->setRepeat(true);
 		stream->setVolume((float) song->getVolume());
 		stream->play();

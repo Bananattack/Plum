@@ -15,19 +15,25 @@ namespace Plum
 		}
 	};
 
+	// Channel data.
+	// Do not allocate this yourself. Instead, use the audio class to do it for you.
+	// When done, don't use delete. Use the dispose() function.
 	struct Channel
 	{
 		audiere::OutputStreamPtr stream;
-		Channel(ptrdiff_t channel)
-		{
-			this->stream = (audiere::OutputStream*) channel;
-		}
+		bool shouldDispose;
 
 		Channel(audiere::OutputStreamPtr channel)
 		{
 			this->stream = channel;
+			shouldDispose = false;
 		}
 		~Channel() {}
+
+		void dispose()
+		{
+			shouldDispose = true;
+		}
 
 		void resume()
 		{
@@ -55,9 +61,19 @@ namespace Plum
 			return stream->getVolume();
 		}
 
-		void setVolume(double volume = 1.0)
+		void setVolume(double volume)
 		{
 			stream->setVolume((float) volume);
+		}
+
+		double getPitch()
+		{
+			return stream->getPitchShift();
+		}
+
+		void setPitch(double pitch)
+		{
+			stream->setPitchShift((float) pitch);
 		}
 	};
 
@@ -103,7 +119,7 @@ namespace Plum
 			if(channel)
 			{
 				channel->stop();
-				delete channel;
+				channel->dispose();
 				channel = NULL;
 			}
 		}
@@ -113,13 +129,23 @@ namespace Plum
 			return this->volume;
 		}
 
-		void setVolume(double volume = 1.0)
+		void setVolume(double volume)
 		{
 			this->volume = volume;
 			if(channel)
 			{
 				channel->setVolume(volume);
 			}
+		}
+
+		double getPitch()
+		{
+			return channel->getPitch();
+		}
+
+		void setPitch(double pitch)
+		{
+			channel->setPitch(pitch);
 		}
 	};
 
@@ -147,11 +173,18 @@ namespace Plum
 		};
 
 	private:
+		static const int STEPS_TO_CLEANUP = 50;
+		int cleanupSteps;
+
+		double masterPitch;
+
 		bool disableSound;
 		audiere::AudioDevicePtr audioDevice;
-		std::vector<audiere::OutputStreamPtr> streamPool;
+		std::vector<audiere::OutputStreamPtr> soundStreamPool;
+		std::vector<Channel*> activeChannels;
 
-		void addStream(audiere::OutputStreamPtr stream);
+		int addSoundStream(audiere::OutputStreamPtr stream);
+		Channel* createChannel(audiere::OutputStreamPtr stream);
 	public:
 		Audio()
 			: audioDevice(0)
@@ -165,7 +198,9 @@ namespace Plum
 
 		Sound* loadSound(std::string filename);
 		Sound* loadSound(const char* filename);
-		ptrdiff_t playSound(Sound* sound, double volume = 1.0);
+		int playSound(Sound* sound, double volume = 1.0);
+
+		Channel* createChannel(int handle);
 
 		Song* loadSong(std::string filename);
 		Song* loadSong(const char* filename);
