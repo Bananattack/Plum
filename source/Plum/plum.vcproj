@@ -120,7 +120,7 @@
 				Optimization="3"
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories="../sdl_header;../zlib;../corona;../fmod_header;../audiere/src;.."
+				AdditionalIncludeDirectories="&quot;../SDL-1.2.13/include&quot;;../zlib;../corona;../fmod_header;../audiere/src;.."
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				WarningLevel="3"
@@ -137,12 +137,12 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="../SDL.lib ../SDLmain.lib OpenGL32.lib ../fmodex_vc.lib delayimp.lib winmm.lib dxguid.lib ../audiere/vc7/bin/$(ConfigurationName)/audiere.lib"
+				AdditionalDependencies="../SDL.lib ../SDLmain.lib OpenGL32.lib winmm.lib dxguid.lib ../audiere/vc7/bin/$(ConfigurationName)/audiere.lib"
 				OutputFile="$(SolutionDir)\test\$(ProjectName).exe"
 				AdditionalLibraryDirectories="..\directx"
 				EnableUAC="false"
 				IgnoreDefaultLibraryNames="libc.lib"
-				DelayLoadDLLs="fmodex.dll"
+				DelayLoadDLLs=""
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				OptimizeReferences="2"
@@ -358,166 +358,6 @@
 			<Filter
 				Name="3rd_party"
 				>
-				<Filter
-					Name="fmod_header"
-					>
-					<File
-						RelativePath="..\fmod_header\fmod.h"
-						>
-					</File>
-					<File
-						RelativePath="..\fmod_header\fmod.hpp"
-						>
-					</File>
-					<File
-						RelativePath="..\fmod_header\fmod_codec.h"
-						>
-					</File>
-					<File
-						RelativePath="..\fmod_header\fmod_dsp.h"
-						>
-					</File>
-					<File
-						RelativePath="..\fmod_header\fmod_errors.h"
-						>
-					</File>
-					<File
-						RelativePath="..\fmod_header\fmod_output.h"
-						>
-					</File>
-				</Filter>
-				<Filter
-					Name="sdl_header"
-					>
-					<File
-						RelativePath="..\sdl_header\begin_code.h"
-						>
-					</File>
-					<File
-						RelativePath="..\sdl_header\close_code.h"
-						>
-					</File>
-					<File
-						RelativePath="..\sdl_header\SDL.h"
-						>
-					</File>
-					<File
-						RelativePath="..\sdl_header\SDL_active.h"
-						>
-					</File>
-					<File
-						RelativePath="..\sdl_header\SDL_audio.h"
-						>
-					</File>
-					<File
-						RelativePath="..\sdl_header\SDL_byteorder.h"
-						>
-					</File>
-					<File
-						RelativePath="..\sdl_header\SDL_cdrom.h"
-						>
-					</File>
-					<File
-						RelativePath="..\sdl_header\SDL_copying.h"
-						>
-					</File>
-					<File
-						RelativePath="..\sdl_header\SDL_cpuinfo.h"
-						>
-					</File>
-					<File
-						RelativePath="..\sdl_header\SDL_endian.h"
-						>
-					</File>
-					<File
-						RelativePath="..\sdl_header\SDL_error.h"
-						>
-					</File>
-					<File
-						RelativePath="..\sdl_header\SDL_events.h"
-						>
-					</File>
-					<File
-						RelativePath="..\sdl_header\SDL_getenv.h"
-						>
-					</File>
-					<File
-						RelativePath="..\sdl_header\SDL_joystick.h"
-						>
-					</File>
-					<File
-						RelativePath="..\sdl_header\SDL_keyboard.h"
-						>
-					</File>
-					<File
-						RelativePath="..\sdl_header\SDL_keysym.h"
-						>
-					</File>
-					<File
-						RelativePath="..\sdl_header\SDL_loadso.h"
-						>
-					</File>
-					<File
-						RelativePath="..\sdl_header\SDL_main.h"
-						>
-					</File>
-					<File
-						RelativePath="..\sdl_header\SDL_mouse.h"
-						>
-					</File>
-					<File
-						RelativePath="..\sdl_header\SDL_mutex.h"
-						>
-					</File>
-					<File
-						RelativePath="..\sdl_header\SDL_name.h"
-						>
-					</File>
-					<File
-						RelativePath="..\sdl_header\SDL_opengl.h"
-						>
-					</File>
-					<File
-						RelativePath="..\sdl_header\SDL_platform.h"
-						>
-					</File>
-					<File
-						RelativePath="..\sdl_header\SDL_quit.h"
-						>
-					</File>
-					<File
-						RelativePath="..\sdl_header\SDL_rwops.h"
-						>
-					</File>
-					<File
-						RelativePath="..\sdl_header\SDL_stdinc.h"
-						>
-					</File>
-					<File
-						RelativePath="..\sdl_header\SDL_syswm.h"
-						>
-					</File>
-					<File
-						RelativePath="..\sdl_header\SDL_thread.h"
-						>
-					</File>
-					<File
-						RelativePath="..\sdl_header\SDL_timer.h"
-						>
-					</File>
-					<File
-						RelativePath="..\sdl_header\SDL_types.h"
-						>
-					</File>
-					<File
-						RelativePath="..\sdl_header\SDL_version.h"
-						>
-					</File>
-					<File
-						RelativePath="..\sdl_header\SDL_video.h"
-						>
-					</File>
-				</Filter>
 			</Filter>
 			<Filter
 				Name="video"

@@ -37,9 +37,7 @@
 #include <zlib.h>
 // corona's for image loading!
 #include <corona.h>
-// fmod's for audio!
-//#include <fmod.hpp>
-//#include <fmod_errors.h>
+// audiere's for audio!
 #include <audiere.h>
 // SDL's for video and input stuff!
 #include <SDL.h>
