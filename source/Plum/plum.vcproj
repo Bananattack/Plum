@@ -137,7 +137,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="../SDLmain.lib ../SDL.lib OpenGL32.lib ../fmodex_vc.lib delayimp.lib winmm.lib dxguid.lib ../audiere/vc7/bin/$(ConfigurationName)/audiere.lib"
+				AdditionalDependencies="../SDL.lib ../SDLmain.lib OpenGL32.lib ../fmodex_vc.lib delayimp.lib winmm.lib dxguid.lib ../audiere/vc7/bin/$(ConfigurationName)/audiere.lib"
 				OutputFile="$(SolutionDir)\test\$(ProjectName).exe"
 				AdditionalLibraryDirectories="..\directx"
 				EnableUAC="false"
