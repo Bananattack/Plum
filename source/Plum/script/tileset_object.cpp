@@ -41,14 +41,14 @@ namespace Plum
 	static int tilesetGetTiles(lua_State* L)
 	{
 		Tileset** ts = checkValidTilesetObject(L, 1); 
-		Script::pushTextureRef(L, (*ts)->tiles);
+		PLUM_PUSH_DATA(L, Texture, (*ts)->tiles, false);
 		return 1;
 	}
 
 	static int tilesetReplaceTiles(lua_State* L)
 	{
 		Tileset** ts = checkValidTilesetObject(L, 1); 
-		Script::TextureWrapper* tex = NULL;
+		ScriptLibrary::Wrapper<Texture>* tex = NULL;
 
 		(*ts)->externalTileFile = "";
 		if(lua_isstring(L, 1))
@@ -60,9 +60,9 @@ namespace Plum
 		}
 		else
 		{
-			tex = Script::checkValidTextureObject(L, 2);
+			tex = PLUM_CHECK_DATA(L, 2, Texture);
 			delete (*ts)->tiles;
-			(*ts)->tiles = new Texture(tex->texture->getImage());
+			(*ts)->tiles = new Texture(tex->data->getImage());
 		}
 
 		return 0;
@@ -71,14 +71,14 @@ namespace Plum
 	static int tilesetGetObs(lua_State* L)
 	{
 		Tileset** ts = checkValidTilesetObject(L, 1); 
-		Script::pushTextureRef(L, (*ts)->obs);
+		PLUM_PUSH_DATA(L, Texture, (*ts)->obs, false);
 		return 1;
 	}
 
 	static int tilesetReplaceObs(lua_State* L)
 	{
 		Tileset** ts = checkValidTilesetObject(L, 1); 
-		Script::TextureWrapper* tex = NULL;
+		ScriptLibrary::Wrapper<Texture>* tex = NULL;
 
 		(*ts)->externalObsFile = "";
 		if(lua_isstring(L, 1))
@@ -90,9 +90,9 @@ namespace Plum
 		}
 		else
 		{
-			tex = Script::checkValidTextureObject(L, 2);
+			tex = PLUM_CHECK_DATA(L, 2, Texture);
 			delete (*ts)->obs;
-			(*ts)->obs = new Texture(tex->texture->getImage());
+			(*ts)->obs = new Texture(tex->data->getImage());
 		}
 
 		return 0;

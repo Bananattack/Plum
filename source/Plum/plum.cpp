@@ -2,25 +2,8 @@
 
 using namespace Plum;
 
-#ifdef PLUM_WIN32
-	static FARPROC WINAPI failHook(unsigned /* dliNotify */, PDelayLoadInfo pdli)
-	{
-		throw Plum::Engine::Exception("Error encountered in Plum.\r\n"
-				"Seems like '" + std::string(pdli->szDll) + "' might be missing or corrupted.\r\n"
-				+ "Please get a working version, and try again.\r\n");
-		return 0;
-	}
-#endif
-
 int main(int argc, char** argv)
 {
-#ifdef PLUM_WIN32
-	__pfnDliFailureHook2 = failHook;
-#	ifdef _DEBUG
-	_CrtSetDbgFlag ( _CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF );
-#	endif
-#endif
-
 	Engine engine;
 
 	clearLog();

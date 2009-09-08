@@ -70,7 +70,7 @@ namespace Plum
 	{
 		Sprite** s = checkValidSpriteObject(L, 1); 
 		//Script::texturePushForSprite(L, *s);
-		Script::pushTextureRef(L, (*s)->getTexture());
+		PLUM_PUSH_DATA(L, Texture, (*s)->getTexture(), false);
 		return 1;
 	}
 

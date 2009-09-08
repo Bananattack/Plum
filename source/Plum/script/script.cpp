@@ -27,8 +27,8 @@ namespace Plum
 		// by looking up with the lua_State.
 		scriptInstances.insert(ScriptInstanceMap::value_type(L, this));
 
-		initPlumModule(L);
-		initTextureClass(L);
+		// Load library functions.
+		ScriptLibrary::openLibrary(L);
 		initVideoClass(L);
 		initFontClass(L);
 		initImageClass(L);

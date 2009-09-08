@@ -32,11 +32,11 @@ namespace Plum
 		} \
 		if(luaL_getmetafield(L, 1, std::string("get" + fieldName).c_str())) \
 		{ \
-			luaL_error(L, "Attempt to modify readonly field '%s' on " metaname " instance.", fieldName.c_str()); \
+			luaL_error(L, "Attempt to modify readonly field '%s' on %s instance.", fieldName.c_str(), metaname); \
 			lua_pop(L, 1); \
 			return 0; \
 		} \
-		luaL_error(L, "Attempt to modify unknown field '%s' on " metaname " instance.", fieldName.c_str()); \
+		luaL_error(L, "Attempt to modify unknown field '%s' on %s instance.", fieldName.c_str(), metaname); \
 		return 0; \
 	}
 
@@ -96,16 +96,58 @@ namespace Plum
 			Image* image;
 			bool canDelete;
 		};
-
-		struct TextureWrapper
-		{
-			bool canDelete;
-			Texture* texture;	
-		};
 		
-		static Script::TextureWrapper* checkValidTextureObject(lua_State* L, int index);
+		//static ScriptLibrary::Wrapper<Texture>* checkValidTextureObject(lua_State* L, int index);
 
 		static void pushImageRef(lua_State* L, Image* image);
-		static void pushTextureRef(lua_State* L, Texture* texture);
 	};
+
+
+#define PLUM_BIND_LIB(library_name) namespace library_name \
+	{ \
+		const char* const libraryName = "plum_"#library_name; \
+		void openLibrary(lua_State* L); \
+	}
+
+#define PLUM_BIND_FUNC_BEGIN() static const luaL_Reg functionsToBind[] = {
+#define PLUM_BIND_META(name) { "__"#name, name },
+#define PLUM_BIND_FUNC(name) { #name, name },
+#define PLUM_BIND_FUNC_END() {NULL, NULL}, }; luaL_register(L, libraryName, functionsToBind);
+#define PLUM_BIND_FUNC_END_NULL() {NULL, NULL}, }; luaL_register(L, NULL, functionsToBind);
+
+
+#define PLUM_CHECK_DATA(L, i, T) ScriptLibrary::_checkWrapper<T>(L, i, "plum_"#T"Object")
+#define PLUM_PUSH_DATA(L, T, data, canDelete) ScriptLibrary::_pushWrapperReference<T>(L, "plum_"#T"Object", data, canDelete)
+
+	namespace ScriptLibrary
+	{
+		const char* const libraryName = "plum";
+		void openLibrary(lua_State* L);
+
+		template <typename T> struct Wrapper
+		{
+			T* data;
+			bool canDelete;
+		};
+
+		template <typename T> ScriptLibrary::Wrapper<T>* _checkWrapper(lua_State* L, int index, const char* metaname)
+		{
+			return (Wrapper<T>*) luaL_checkudata(L, index, metaname);
+		}
+
+		template <typename T> void _pushWrapperReference(lua_State* L, const char* metaname, T* data, bool canDelete)
+		{
+			Wrapper<T>* w = (Wrapper<T>*) lua_newuserdata(L, sizeof(Wrapper<T*>));
+			luaL_getmetatable(L, metaname);
+			lua_setmetatable(L, -2);
+
+			w->data = data;
+			w->canDelete = canDelete;
+		}
+
+		PLUM_BIND_LIB(ImageObject)
+		PLUM_BIND_LIB(TextureObject)
+		PLUM_BIND_LIB(MouseObject)
+	}
+
 }
