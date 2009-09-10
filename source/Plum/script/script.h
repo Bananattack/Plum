@@ -75,10 +75,6 @@ namespace Plum
 		void stepGarbageCollector();
 		void processInputHook(InputHook& hook);
 
-		static void initPlumModule(lua_State* L);
-
-		static void initTextureClass(lua_State* L);
-		static void initImageClass(lua_State* L);
 		static void initSpriteClass(lua_State* L);
 		static void initVideoClass(lua_State* L);
 		static void initFontClass(lua_State* L);
@@ -90,16 +86,6 @@ namespace Plum
 		static void initSongClass(lua_State* L);
 		static void initFileClass(lua_State* L);
 		static void initTilesetClass(lua_State* L);
-
-		struct ImageWrapper
-		{
-			Image* image;
-			bool canDelete;
-		};
-		
-		//static ScriptLibrary::Wrapper<Texture>* checkValidTextureObject(lua_State* L, int index);
-
-		static void pushImageRef(lua_State* L, Image* image);
 	};
 
 
@@ -116,6 +102,7 @@ namespace Plum
 #define PLUM_BIND_FUNC_END_NULL() {NULL, NULL}, }; luaL_register(L, NULL, functionsToBind);
 
 
+#define PLUM_IS_DATA(L, i, T) ScriptLibrary::_isWrapper<T>(L, i, "plum_"#T"Object")
 #define PLUM_CHECK_DATA(L, i, T) ScriptLibrary::_checkWrapper<T>(L, i, "plum_"#T"Object")
 #define PLUM_PUSH_DATA(L, T, data, canDelete) ScriptLibrary::_pushWrapperReference<T>(L, "plum_"#T"Object", data, canDelete)
 
@@ -130,7 +117,29 @@ namespace Plum
 			bool canDelete;
 		};
 
-		template <typename T> ScriptLibrary::Wrapper<T>* _checkWrapper(lua_State* L, int index, const char* metaname)
+		template <typename T> bool _isWrapper(lua_State* L, int index, const char* metaname)
+		{
+			void* p = lua_touserdata(L, index);
+			bool result = false;
+			// Value is userdata?
+			if (p != NULL)
+			{
+				// Has a metatable?
+				if(lua_getmetatable(L, 1))
+				{
+					// Get correct metatable
+					lua_getfield(L, LUA_REGISTRYINDEX, metaname);
+					if (lua_rawequal(L, -1, -2))
+					{
+						result = true;
+					}
+					lua_pop(L, 2);
+				}
+			}
+			return result;
+		}
+
+		template <typename T> Wrapper<T>* _checkWrapper(lua_State* L, int index, const char* metaname)
 		{
 			return (Wrapper<T>*) luaL_checkudata(L, index, metaname);
 		}
@@ -147,7 +156,6 @@ namespace Plum
 
 		PLUM_BIND_LIB(ImageObject)
 		PLUM_BIND_LIB(TextureObject)
-		PLUM_BIND_LIB(MouseObject)
 	}
 
 }

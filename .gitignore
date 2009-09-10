@@ -12,6 +12,10 @@ source/zzip/Debug
 source/zzip/Release
 source/zlib/Debug
 source/zlib/Release
+source/audiere/vc7/audiere/Release/*.*
+source/audiere/vc7/audiere/Debug/*.*
+source/audiere/vc7/bin/Release/*.lib
+source/audiere/vc7/bin/Debug/*.lib
 test/*.log
 test/**/*.log
 test/Plum.exp

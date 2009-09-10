@@ -19,22 +19,12 @@ namespace Plum
 
 					return 1;
 				}
-				else if (lua_isuserdata(L, 1))
+				else if(PLUM_IS_DATA(L, 1, Image))
 				{
-					void* data = lua_touserdata(L, 1);
-					if(lua_getmetatable(L, 1))
-					{
-						lua_getfield(L, LUA_REGISTRYINDEX, "plum_image");
-						// Creating a texture from an image?
-						if (lua_rawequal(L, -1, -2))
-						{
-							lua_pop(L, 2);
+					Wrapper<Image>* img = PLUM_CHECK_DATA(L, 1, Image);
+					PLUM_PUSH_DATA(L, Texture, new Texture(img->data), true);
 
-							PLUM_PUSH_DATA(L, Texture, new Texture(((Script::ImageWrapper*) data)->image), true);
-
-							return 1;
-						}
-					}
+					return 1;
 				}
 				luaL_error(L, "Attempt to call plum.Texture constructor with invalid argument types.\r\nMust be (string filename) or (plum.Image image).");
 				return 0;
@@ -216,7 +206,7 @@ namespace Plum
 			int getimage(lua_State* L)
 			{
 				Wrapper<Texture>* t = PLUM_CHECK_DATA(L, 1, Texture); 
-				Script::pushImageRef(L, t->data->getImage());
+				PLUM_PUSH_DATA(L, Image, t->data->getImage(), false);
 				return 1;
 			}
 

@@ -31,7 +31,6 @@ namespace Plum
 		ScriptLibrary::openLibrary(L);
 		initVideoClass(L);
 		initFontClass(L);
-		initImageClass(L);
 		initTimerClass(L);
 		initInputClass(L);
 		initKeyboardClass(L);

@@ -205,6 +205,7 @@ namespace Plum
 			lua_pop(L, 1);
 
 
+			ImageObject::openLibrary(L);
 			TextureObject::openLibrary(L);
 		}
 	}
