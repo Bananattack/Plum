@@ -17,21 +17,33 @@ spr:setAnimation("throb", "left")
 fnt = plum.Font('resources/fonts/ccfont.png')
 fnt:enableVariableWidth()
 
---tileset = plum.Tileset("test.tileset")
---showTiles = false
+img = plum.Image('resources/sprites/heartsprite.png')
+tex = plum.data.textureDecode(plum.data.imageEncode(img))
+img = nil
+tileset = plum.Tileset("test.tileset")
+showTiles = false
+showEncodedTexture = false
 
 function initHooks()
     -- Plumed hook.
     plumed.hookLaunch(plum.key.F10)
     plumed.hookExit(initHooks)
 
+    plum.hookInput(plum.key['E'], 
+            function(input)
+                showEncodedTexture = not showEncodedTexture
+                showTiles = false
+                input.pressed = false
+            end
+        )
     plum.hookInput(plum.key['1'], 
             function(input)
+                showEncodedTexture = false
                 showTiles = not showTiles
                 input.pressed = false
             end
         )
-    plum.hookInput(plum.key['2'], 
+    plum.hookInput(plum.key['R'], 
             function(input)
                 -- Replace tiles.
                 tileset:replaceTiles(spr.texture)
@@ -61,13 +73,16 @@ time = plum.timer.time
 
 while not plum.key.Escape.pressed do
     plum.video.verticalGradientRect(0, 0, plum.video.screenWidth, plum.video.screenHeight, plum.color.rgb(0x33, 0x66, 0xcc), plum.color.Magenta)
-
-    --tex:rotateScaleBlitRegion(1, 1, 16, 16, x, y, angle, 3 + math.sin(math.rad(plum.timer.time)) * 0.25 )
+    spr.scale = 3 + math.sin(math.rad(plum.timer.time)) * 0.25
     if showTiles then
         tileset.tiles:blit(0, 0)
+    elseif showEncodedTexture then
+        tex:rotateScaleBlitRegion(1, 1, 16, 16, spr.x, spr.y, spr.angle, spr.scale)
+    else
+        spr:blit()
     end
-    spr.scale = 3 + math.sin(math.rad(plum.timer.time)) * 0.25
-    spr:blit()
+    
+    
 
     fnt:print(5, 5, "FPS: " .. plum.timer.fps .. " " .. tostring(plum.key.Enter.pressed))
     fnt:print(5, 5 + fnt.height, "Mouse: (" .. plum.mouse.x .. ", " .. plum.mouse.y .. ")")

@@ -11,20 +11,20 @@ namespace Plum
 
 			int create(lua_State* L)
 			{
-				if(lua_isstring(L, 1))
-				{
-					const char* filename = lua_tostring(L, 1);
-
-					PLUM_PUSH_DATA(L, Image, new Image(filename), true);
-					
-					return 1;
-				}
-				else if(lua_isnumber(L, 1) && lua_isnumber(L, 2))
+				if(lua_isnumber(L, 1) && lua_isnumber(L, 2))
 				{
 					int w = lua_tointeger(L, 1);
 					int h = lua_tointeger(L, 2);
 
 					PLUM_PUSH_DATA(L, Image, new Image(w, h), true);
+					
+					return 1;
+				}
+				else if(lua_isstring(L, 1))
+				{
+					const char* filename = lua_tostring(L, 1);
+
+					PLUM_PUSH_DATA(L, Image, new Image(filename), true);
 					
 					return 1;
 				}

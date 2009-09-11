@@ -232,11 +232,24 @@ namespace Plum
 			PLUM_BIND_FUNC(loadConfig)
 			PLUM_BIND_FUNC(hookInput)
 			PLUM_BIND_FUNC(unhookAllInput)
-			PLUM_BIND_FUNC(imageEncode)
-			PLUM_BIND_FUNC(imageDecode)
-			PLUM_BIND_FUNC(textureEncode)
-			PLUM_BIND_FUNC(textureDecode)
 			PLUM_BIND_FUNC_END()
+
+			// Create the 'data' table.
+			lua_newtable(L);
+			lua_pushvalue(L, -1);
+			lua_setfield(L, -3, "data");
+
+			lua_pushcfunction(L, imageEncode);
+			lua_setfield(L, -2, "imageEncode");
+			lua_pushcfunction(L, imageDecode);
+			lua_setfield(L, -2, "imageDecode");
+			lua_pushcfunction(L, textureEncode);
+			lua_setfield(L, -2, "textureEncode");
+			lua_pushcfunction(L, textureDecode);
+			lua_setfield(L, -2, "textureDecode");
+
+			// Done with 'data' now.
+			lua_pop(L, 1);
 
 			// Create the 'color' table.
 			lua_newtable(L);

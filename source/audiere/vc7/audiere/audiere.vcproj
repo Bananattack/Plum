@@ -335,10 +335,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\midi_null.cpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\noise.cpp"
 				>
 			</File>
