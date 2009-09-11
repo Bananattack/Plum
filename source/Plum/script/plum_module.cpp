@@ -138,6 +138,91 @@ namespace Plum
 			return 0;
 		}
 
+		static void encodeImageData(lua_State* L, Image* img)
+		{
+			// Allocate buffer, four bytes representing texture dimension stuff.
+			// (occupied width, height (occupied size), width, height (overall size))
+			// And the rest for compressed data (might not use all of it).
+			u8* buffer = new u8[sizeof(u32) * 4 + img->width * img->height * sizeof(Color)];
+			// Pack the dimensions in 4 unsigned 32-bit integers.
+			((u32*) buffer)[0] = (u32) img->occupiedWidth;
+			((u32*) buffer)[1] = (u32) img->occupiedHeight;
+			((u32*) buffer)[2] = (u32) img->width;
+			((u32*) buffer)[3] = (u32) img->height;
+
+			printf("Encoded thing has dimensions (%u, %u, %u, %u)\r\n", ((u32*) buffer)[0], ((u32*) buffer)[1], ((u32*) buffer)[2], ((u32*) buffer)[3]);
+			// Compress.
+			int compressedSize = Compression::compressData((u8*)(img->data),
+				img->width * img->height * sizeof(Color),
+				buffer + sizeof(u32) * 4,
+				img->width * img->height * sizeof(Color)
+			);
+			// Encode.
+			std::string encodedText = Base64::encode(std::string(buffer, buffer + sizeof(u32) * 4 + compressedSize));
+			// Push encoded text.
+			lua_pushstring(L, encodedText.c_str());
+			// Destroy buffer.
+			delete buffer;
+		}
+
+		int imageEncode(lua_State* L)
+		{
+			Wrapper<Image>* wrapper = PLUM_CHECK_DATA(L, 1, Image);
+			encodeImageData(L, wrapper->data);
+
+			return 1;
+		}
+
+		int textureEncode(lua_State* L)
+		{
+			Wrapper<Texture>* texture = PLUM_CHECK_DATA(L, 1, Texture);
+			encodeImageData(L, texture->data->getImage());
+
+			return 1;
+		}
+
+		static Image* decodeImageData(const char* s)
+		{
+			std::string blob = Base64::decode(s);
+			u8* data = (u8*) blob.data();
+
+			// Unpack the dimensions from 4 unsigned 32-bit integers.
+			u32 occupiedWidth = ((u32*) data)[0];
+			u32 occupiedHeight = ((u32*) data)[1];
+			u32 width = ((u32*) data)[2];
+			u32 height = ((u32*) data)[3];
+			// Allocate image.
+			Image* img = new Image(width, height);
+			img->occupiedWidth = occupiedWidth;
+			img->occupiedHeight = occupiedHeight;
+			img->restoreClipRegion();
+			// Decompress.
+			data += sizeof(u32) * 4;
+			Compression::decompressData(data, blob.length(), (u8*)(img->data), img->width * img->height * sizeof(Color));
+			// Done!
+			return img;
+		}
+
+		int imageDecode(lua_State* L)
+		{
+			const char* s = luaL_checkstring(L, 1);
+			Image* img = decodeImageData(s);
+			// Push decoded image.
+			PLUM_PUSH_DATA(L, Image, img, true);
+			return 1;
+		}
+
+		int textureDecode(lua_State* L)
+		{
+			const char* s = luaL_checkstring(L, 1);
+			Image* img = decodeImageData(s);
+			// Push decoded texture.
+			PLUM_PUSH_DATA(L, Texture, new Texture(img), true);
+			// Destroy temporary image.
+			delete img;
+			return 1;
+		}
+
 		void openLibrary(lua_State* L)
 		{
 			PLUM_BIND_FUNC_BEGIN()
@@ -147,6 +232,10 @@ namespace Plum
 			PLUM_BIND_FUNC(loadConfig)
 			PLUM_BIND_FUNC(hookInput)
 			PLUM_BIND_FUNC(unhookAllInput)
+			PLUM_BIND_FUNC(imageEncode)
+			PLUM_BIND_FUNC(imageDecode)
+			PLUM_BIND_FUNC(textureEncode)
+			PLUM_BIND_FUNC(textureDecode)
 			PLUM_BIND_FUNC_END()
 
 			// Create the 'color' table.

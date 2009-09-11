@@ -20,6 +20,33 @@ fnt:enableVariableWidth()
 --tileset = plum.Tileset("test.tileset")
 --showTiles = false
 
+myimg = plum.Image('resources/sprites/heartsprite.png')
+myimg = plum.imageDecode(plum.imageEncode(myimg))
+--tex = plum.Texture(myimg)
+
+tex = plum.Texture(myimg)
+--tex = plum.textureDecode(enc)
+enc = plum.textureEncode(tex)
+myimg = plum.imageDecode(enc)
+tex = plum.Texture(myimg)
+tex = plum.textureDecode(plum.textureEncode(tex))
+--[[tex = plum.textureDecode(plum.textureEncode(tex))
+tex = plum.textureDecode(plum.textureEncode(tex))
+tex = plum.textureDecode(plum.textureEncode(tex))
+tex = plum.textureDecode(plum.textureEncode(tex))
+tex = plum.textureDecode(plum.textureEncode(tex))
+tex = plum.textureDecode(plum.textureEncode(tex))
+tex = plum.textureDecode(plum.textureEncode(tex))
+tex = plum.textureDecode(plum.textureEncode(tex))
+tex = plum.textureDecode(plum.textureEncode(tex))
+tex = plum.textureDecode(plum.textureEncode(tex))
+tex = plum.textureDecode(plum.textureEncode(tex))
+tex = plum.textureDecode(plum.textureEncode(tex))
+tex = plum.textureDecode(plum.textureEncode(tex))
+tex = plum.textureDecode(plum.textureEncode(tex))
+tex = plum.textureDecode(plum.textureEncode(tex))]]
+myimg = nil
+
 function initHooks()
     -- Plumed hook.
     plumed.hookLaunch(plum.key.F10)
@@ -67,7 +94,9 @@ while not plum.key.Escape.pressed do
         tileset.tiles:blit(0, 0)
     end
     spr.scale = 3 + math.sin(math.rad(plum.timer.time)) * 0.25
-    spr:blit()
+    --spr:blit()
+    tex:blit(spr.x, spr.y)
+    
 
     fnt:print(5, 5, "FPS: " .. plum.timer.fps .. " " .. tostring(plum.key.Enter.pressed))
     fnt:print(5, 5 + fnt.height, "Mouse: (" .. plum.mouse.x .. ", " .. plum.mouse.y .. ")")

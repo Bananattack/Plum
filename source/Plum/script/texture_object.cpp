@@ -203,6 +203,22 @@ namespace Plum
 				return 1;
 			}
 
+			int gettrueWidth(lua_State* L)
+			{
+				Wrapper<Texture>* t = PLUM_CHECK_DATA(L, 1, Texture);
+				lua_pushnumber(L, t->data->getTextureWidth());
+
+				return 1;
+			}
+
+			int gettrueHeight(lua_State* L)
+			{
+				Wrapper<Texture>* t = PLUM_CHECK_DATA(L, 1, Texture);
+				lua_pushnumber(L, t->data->getTextureHeight());
+
+				return 1;
+			}
+
 			int getimage(lua_State* L)
 			{
 				Wrapper<Texture>* t = PLUM_CHECK_DATA(L, 1, Texture); 
@@ -236,6 +252,8 @@ namespace Plum
 				PLUM_BIND_FUNC(getwidth)
 				PLUM_BIND_FUNC(getheight)
 				PLUM_BIND_FUNC(getimage)
+				PLUM_BIND_FUNC(gettrueWidth)
+				PLUM_BIND_FUNC(gettrueHeight)
 				PLUM_BIND_FUNC_END_NULL()
 
 				lua_pop(L, 1);
