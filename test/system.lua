@@ -18,7 +18,8 @@ fnt = plum.Font('resources/fonts/ccfont.png')
 fnt:enableVariableWidth()
 
 img = plum.Image('resources/sprites/heartsprite.png')
-tex = plum.data.textureDecode(plum.data.imageEncode(img))
+print(plum.data.digestFile('resources/sprites/heartsprite.png'))
+tex = plum.data.decodeTexture(plum.data.encodeImage(img))
 img = nil
 tileset = plum.Tileset("test.tileset")
 showTiles = false

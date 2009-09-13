@@ -165,7 +165,7 @@ namespace Plum
 			delete buffer;
 		}
 
-		int imageEncode(lua_State* L)
+		int encodeImage(lua_State* L)
 		{
 			Wrapper<Image>* wrapper = PLUM_CHECK_DATA(L, 1, Image);
 			encodeImageData(L, wrapper->data);
@@ -173,7 +173,7 @@ namespace Plum
 			return 1;
 		}
 
-		int textureEncode(lua_State* L)
+		int encodeTexture(lua_State* L)
 		{
 			Wrapper<Texture>* texture = PLUM_CHECK_DATA(L, 1, Texture);
 			encodeImageData(L, texture->data->getImage());
@@ -203,7 +203,7 @@ namespace Plum
 			return img;
 		}
 
-		int imageDecode(lua_State* L)
+		int decodeImage(lua_State* L)
 		{
 			const char* s = luaL_checkstring(L, 1);
 			Image* img = decodeImageData(s);
@@ -212,7 +212,7 @@ namespace Plum
 			return 1;
 		}
 
-		int textureDecode(lua_State* L)
+		int decodeTexture(lua_State* L)
 		{
 			const char* s = luaL_checkstring(L, 1);
 			Image* img = decodeImageData(s);
@@ -220,6 +220,26 @@ namespace Plum
 			PLUM_PUSH_DATA(L, Texture, new Texture(img), true);
 			// Destroy temporary image.
 			delete img;
+			return 1;
+		}
+
+		int digestString(lua_State* L)
+		{
+			// Get the SHA1 digest of the string argument passed.
+			std::string s = luaL_checkstring(L, 1);
+			std::string result;
+			SHA1::digestString(s, result);
+			lua_pushstring(L, Base64::encode(result).c_str());
+			return 1;
+		}
+
+		int digestFile(lua_State* L)
+		{
+			// Get the SHA1 digest of the file named by the string argument passed.
+			std::string s = luaL_checkstring(L, 1);
+			std::string result;
+			SHA1::digestFile(s, result);
+			lua_pushstring(L, Base64::encode(result).c_str());
 			return 1;
 		}
 
@@ -239,14 +259,18 @@ namespace Plum
 			lua_pushvalue(L, -1);
 			lua_setfield(L, -3, "data");
 
-			lua_pushcfunction(L, imageEncode);
-			lua_setfield(L, -2, "imageEncode");
-			lua_pushcfunction(L, imageDecode);
-			lua_setfield(L, -2, "imageDecode");
-			lua_pushcfunction(L, textureEncode);
-			lua_setfield(L, -2, "textureEncode");
-			lua_pushcfunction(L, textureDecode);
-			lua_setfield(L, -2, "textureDecode");
+			lua_pushcfunction(L, encodeImage);
+			lua_setfield(L, -2, "encodeImage");
+			lua_pushcfunction(L, decodeImage);
+			lua_setfield(L, -2, "decodeImage");
+			lua_pushcfunction(L, encodeTexture);
+			lua_setfield(L, -2, "encodeTexture");
+			lua_pushcfunction(L, decodeTexture);
+			lua_setfield(L, -2, "decodeTexture");
+			lua_pushcfunction(L, digestString);
+			lua_setfield(L, -2, "digestString");
+			lua_pushcfunction(L, digestFile);
+			lua_setfield(L, -2, "digestFile");
 
 			// Done with 'data' now.
 			lua_pop(L, 1);
