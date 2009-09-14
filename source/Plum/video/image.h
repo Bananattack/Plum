@@ -193,6 +193,7 @@ namespace Plum
 			template <typename BlendCallback> void line(int x, int y, int x2, int y2, Color color, const BlendCallback& blend)
 			{
 				// Now we'll clip the line using Cohen-Sutherland clipping
+				// (this source adapted from ika)
 				int c1 = 0;
 				int c2 = 0;
 

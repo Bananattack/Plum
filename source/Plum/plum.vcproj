@@ -333,6 +333,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\engine\tilemap.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\engine\tileset.cpp"
 					>
 				</File>
@@ -468,6 +472,10 @@
 				</File>
 				<File
 					RelativePath=".\engine\sprite.h"
+					>
+				</File>
+				<File
+					RelativePath=".\engine\tilemap.h"
 					>
 				</File>
 				<File
