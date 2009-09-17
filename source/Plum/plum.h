@@ -76,9 +76,11 @@ extern "C"
 
 #include "engine/input.h"
 #include "engine/timer.h"
-#include "engine/sprite.h"
+#include "engine/sprite.h" // REMOVEME later.
 #include "engine/font.h"
-#include "engine/tileset.h"
+#include "engine/tileset.h" // REMOVEME later.
+#include "engine/spritesheet.h"
+#include "engine/tilemap.h"
 
 #include "script/script.h"
 #include "engine/engine.h"

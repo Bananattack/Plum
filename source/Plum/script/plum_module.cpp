@@ -333,6 +333,8 @@ namespace Plum
 
 			ImageObject::openLibrary(L);
 			TextureObject::openLibrary(L);
+			SpritesheetObject::openLibrary(L);
+			TilemapObject::openLibrary(L);
 		}
 	}
 }

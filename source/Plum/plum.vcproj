@@ -121,6 +121,8 @@
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
 				AdditionalIncludeDirectories="&quot;../SDL-1.2.13/include&quot;;../zlib;../corona;../fmod_header;../audiere/src;.."
+				PreprocessorDefinitions="_CRT_SECURE_NO_DEPRECATE"
+				StringPooling="true"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				WarningLevel="3"
@@ -261,7 +263,15 @@
 					>
 				</File>
 				<File
+					RelativePath=".\script\spritesheet_object.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\script\texture_object.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\script\tilemap_object.cpp"
 					>
 				</File>
 				<File
@@ -333,7 +343,7 @@
 					>
 				</File>
 				<File
-					RelativePath=".\engine\tilemap.cpp"
+					RelativePath=".\engine\spritesheet.cpp"
 					>
 				</File>
 				<File
@@ -472,6 +482,10 @@
 				</File>
 				<File
 					RelativePath=".\engine\sprite.h"
+					>
+				</File>
+				<File
+					RelativePath=".\engine\spritesheet.h"
 					>
 				</File>
 				<File

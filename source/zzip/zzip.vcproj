@@ -106,6 +106,7 @@
 				EnableIntrinsicFunctions="true"
 				AdditionalIncludeDirectories="../zlib;../"
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE"
+				StringPooling="true"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				WarningLevel="3"

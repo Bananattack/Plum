@@ -1,9 +1,6 @@
-* FIX THE ENGINE. The entry point for the project is just SCREWED and it's making static/global STL containers crash cause they don't initialize properly. Needs to be fixed.
 * Make it so Plum compiles on Linux again
 * Try and get Plum compiling on a Mac.
 * Painstakingly bind Plum's API to Lua.
-* Get Lua working with .pit files.
-* Make a 'condensed' sprite format, that'll keep image data embedded as Base64 (Ascii85?) encoded ZLIB string.
 * Make map and tileset formats, which will also need plaintext compression eventually.
 * Make a tool to edit maps, or (faster for now) convert from existing format.
 * Advanced audio support

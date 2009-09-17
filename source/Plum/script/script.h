@@ -156,6 +156,8 @@ namespace Plum
 
 		PLUM_BIND_LIB(ImageObject)
 		PLUM_BIND_LIB(TextureObject)
+		PLUM_BIND_LIB(SpritesheetObject)
+		PLUM_BIND_LIB(TilemapObject)
 	}
 
 }

@@ -1,4 +1,4 @@
-6#pragma once
+#pragma once
 namespace Plum
 {
 	class Tilemap
@@ -14,6 +14,15 @@ namespace Plum
 				this->width = width;
 				this->height = height;
 				data = new int[width * height];
+				for(int i = 0; i < width * height; i++)
+				{
+					data[i] = 0;
+				}
+			}
+
+			~Tilemap()
+			{
+				delete data;
 			}
 
 			int getWidth()
@@ -29,18 +38,18 @@ namespace Plum
 			int getTile(int tx, int ty)
 			{
 				if(tx < 0 || tx >= width || ty < 0 || ty >= height) return 0;
-				return data[ty * height + tx];
+				return data[ty * width + tx];
 			}
 
 			void setTile(int tx, int ty, int tileIndex)
 			{
 				if(tx < 0 || tx >= width || ty < 0 || ty >= height) return;
-				data[ty * height + tx] = tileIndex;
+				data[ty * width + tx] = tileIndex;
 			}
 
 			void rect(int tx, int ty, int tx2, int ty2, int tileIndex)
 			{
-				int i, j;
+				int i;
 				if (tx > tx2)
 				{
 					PLUM_SWAP(tx, tx2);
@@ -106,7 +115,7 @@ namespace Plum
 				{
 					tx = 0;
 				}
-				ift(tx2 >= width)
+				if(tx2 >= width)
 				{
 					tx2 = width - 1;
 				}
@@ -313,7 +322,7 @@ namespace Plum
 				}
 			}
 
-			void stamp(int tx, int ty, TileMap* dest)
+			void stamp(int tx, int ty, Tilemap* dest)
 			{
 				int i, j;
 				int tx2 = tx + width - 1;
@@ -354,5 +363,44 @@ namespace Plum
 					}
 				}
 			}
-	}
+
+			void blit(Spritesheet* spr, int worldX, int worldY, int destX, int destY, int tilesWide, int tilesHigh, BlendMode mode = BlendUnspecified, Color tint = Color::White)
+			{
+				if(tilesWide < 0 || tilesHigh < 0) return;
+
+				// Adapted from Verge.
+				int xofs = -(worldX % spr->frameWidth);
+				int yofs = -(worldY % spr->frameHeight);
+				int tileX = worldX / spr->frameWidth;
+				int tileY = worldY / spr->frameHeight;
+
+				// Clip the tile region to make sure things don't crash.
+				if(tileX < 0)
+				{
+					tileX = 0;
+				}
+				if(tileY < 0)
+				{
+					tileY = 0;
+				}
+				if(tileX + tilesWide > width)
+				{
+					tilesWide = width - tileX;
+				}
+				if(tileY + tilesHigh > height)
+				{
+					tilesHigh = height - tileY;
+				}
+
+				int i, j;
+				for(i = 0; i < tilesHigh; i++)
+				{
+					for(j = 0; j < tilesWide; j++)
+					{
+						spr->blitFrame(j * spr->frameWidth + xofs + destX, i * spr->frameHeight + yofs + destY,
+							data[(tileY + i) * width + (tileX + j)], 0.0, 1.0, mode, tint);
+					}
+				}
+			}
+	};
 }
