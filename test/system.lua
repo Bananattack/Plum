@@ -1,4 +1,4 @@
-spr = plum.Spritesheet(plum.Texture('tileset.png'), 16, 16)
+local spr = plum.Spritesheet(plum.Texture('tileset.png'), 16, 16)
 spr.padding = 0
 spr.columns = 20
 
@@ -8,8 +8,8 @@ brush:setTile(1, 0, 29)
 brush:setTile(0, 1, 48)
 brush:setTile(1, 1, 49)
 
-bg = plum.Tilemap(70, 60)
-fg = plum.Tilemap(70, 60)
+local bg = plum.Tilemap(70, 60)
+local fg = plum.Tilemap(70, 60)
 
 fg:solidRect(0, 0, 2, 2, 4)
 fg:setTile(0, 1, 1)
@@ -29,13 +29,17 @@ for i = 0, 20, 2 do
     end
 end
 
-fnt = plum.Font('resources/fonts/ccfont.png')
+local fnt = plum.Font('resources/fonts/ccfont.png')
 fnt:enableVariableWidth()
 
+local TILES_WIDE = plum.video.screenWidth / spr.frameWidth + 2
+local TILES_HIGH = plum.video.screenHeight / spr.frameHeight + 2
 while true do
     plum.video.clear(plum.color.Blue)
-    bg:blit(spr, 0, 0, 0, 0, plum.video.screenWidth / spr.frameWidth + 2, plum.video.screenHeight / spr.frameHeight + 2)
-    fg:blit(spr, 0, 0, 0, 0, plum.video.screenWidth / spr.frameWidth + 2, plum.video.screenHeight / spr.frameHeight + 2)
+    bg:blit(spr, 0, 0, 0, 0, TILES_WIDE, TILES_HIGH)
+    fg:blit(spr, 0, 0, 0, 0, TILES_WIDE, TILES_HIGH)
+    fg:blit(spr, 0, 0, 0, 0, TILES_WIDE, TILES_HIGH)
+    fg:blit(spr, 0, 0, 0, 0, TILES_WIDE, TILES_HIGH)
     fnt:print(0, 0, tostring(plum.timer.fps))
     plum.refresh()
 end
