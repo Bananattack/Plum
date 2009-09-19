@@ -9,12 +9,14 @@ namespace Plum
 		public:
 			PitCoronaFile(ZZIP_FILE* f)
 			{
+				logFormat("Allocating file 0x%x", f);
 				file = f;
 			}
 
 			virtual ~PitCoronaFile()
 			{
-				zzip_fclose(file);
+				logFormat("Deleting file 0x%x", file);
+				zzip_close(file);
 			}
 
 			virtual int COR_CALL read(void* buffer, int size)

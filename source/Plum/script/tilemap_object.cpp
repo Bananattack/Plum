@@ -104,7 +104,7 @@ namespace Plum
 				int tx = luaL_checkint(L, 2);
 				int ty = luaL_checkint(L, 3);
 				Wrapper<Tilemap>* dest = PLUM_CHECK_DATA(L, 4, Tilemap);
-				m->data->stamp(tx, tx, dest->data);
+				m->data->stamp(tx, ty, dest->data);
 				return 0;
 			}
 

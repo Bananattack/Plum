@@ -14,15 +14,20 @@ namespace Plum
 				this->width = width;
 				this->height = height;
 				data = new int[width * height];
-				for(int i = 0; i < width * height; i++)
-				{
-					data[i] = 0;
-				}
+				clear(0);
 			}
 
 			~Tilemap()
 			{
 				delete data;
+			}
+
+			void clear(int tileIndex)
+			{
+				for(int i = 0; i < width * height; i++)
+				{
+					data[i] = tileIndex;
+				}
 			}
 
 			int getWidth()
@@ -326,7 +331,7 @@ namespace Plum
 			{
 				int i, j;
 				int tx2 = tx + width - 1;
-				int ty2 = ty + height -1;
+				int ty2 = ty + height - 1;
 				int sourceX = 0;
 				int sourceY = 0;
 				int sourceX2 = width - 1;

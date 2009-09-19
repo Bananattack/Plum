@@ -190,11 +190,11 @@ namespace Plum
 			glTexCoord2d(regionS, regionT);
 			glVertex2d(0.0, 0.0);
 			glTexCoord2d(regionS, regionT2);
-			glVertex2d(0.0, scaledHeight);
+			glVertex2d(0.0, scaledHeight + 1);
 			glTexCoord2d(regionS2, regionT2);
-			glVertex2d(scaledWidth, scaledHeight);
+			glVertex2d(scaledWidth + 1, scaledHeight + 1);
 			glTexCoord2d(regionS2, regionT);
-			glVertex2d(scaledWidth, 0.0);
+			glVertex2d(scaledWidth + 1, 0.0);
 		glEnd();
 		glPopMatrix();
 	}
@@ -258,11 +258,11 @@ namespace Plum
 			glTexCoord2d(regionS, regionT);
 			glVertex2d(0.0, 0.0);
 			glTexCoord2d(regionS, regionT2);
-			glVertex2d(1.0, height);
+			glVertex2d(0.0, height + 1);
 			glTexCoord2d(regionS2, regionT2);
 			glVertex2d(width + 1, height + 1);
 			glTexCoord2d(regionS2, regionT);
-			glVertex2d(width, 0.0);
+			glVertex2d(width + 1, 0.0);
 		glEnd();
 		glPopMatrix();
 	}
