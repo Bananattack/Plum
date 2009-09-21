@@ -267,4 +267,41 @@ namespace Plum
 		glPopMatrix();
 	}
 
+	// For when performance really matters, bind the texture and figure out blend modes ahead of time,
+	// then call this in your loop. Especially important for tilemaps.
+	// "raw" because it does less hand-holding. But could possibly be considered very hand-holdy.
+	void Texture::rawBlitRegion(int sourceX, int sourceY, int sourceX2, int sourceY2,
+					int destX, int destY, double angle, double scale)
+	{
+		sourceX = PLUM_MIN(PLUM_MAX(0, sourceX), imageWidth - 1);
+		sourceY = PLUM_MIN(PLUM_MAX(0, sourceY), imageHeight - 1);
+		sourceX2 = PLUM_MIN(PLUM_MAX(0, sourceX2), imageWidth - 1);
+		sourceY2 = PLUM_MIN(PLUM_MAX(0, sourceY2), imageHeight - 1);
+
+		double regionS = ((double) sourceX + 0.5) / textureWidth;
+		double regionT = ((double) sourceY + 0.5) / textureHeight;
+		double regionS2 = ((double) sourceX2 + 0.5) / textureWidth;
+		double regionT2 = ((double) sourceY2 + 0.5) / textureHeight;
+
+		double width = ((double) sourceX2 - sourceX) * scale;
+		double height = ((double) sourceY2 - sourceY) * scale;
+
+		glPushMatrix();
+
+		glTranslated(destX + width / 2.0, destY + height / 2.0, 0.0);
+		glRotated(angle, 0.0, 0.0, 1.0);
+		glTranslated(-width / 2.0, -height / 2.0, 0.0);
+
+		glBegin(GL_QUADS);
+			glTexCoord2d(regionS, regionT);
+			glVertex2d(0.0, 0.0);
+			glTexCoord2d(regionS, regionT2);
+			glVertex2d(0.0, height + 1);
+			glTexCoord2d(regionS2, regionT2);
+			glVertex2d(width + 1, height + 1);
+			glTexCoord2d(regionS2, regionT);
+			glVertex2d(width + 1, 0.0);
+		glEnd();
+		glPopMatrix();
+	}
 }

@@ -78,5 +78,7 @@ namespace Plum
 					int destX, int destY, double angle, BlendMode mode = BlendUnspecified, Color tint = Color::White);
 			void rotateScaleBlitRegion(int sourceX, int sourceY, int sourceX2, int sourceY2,
 					int destX, int destY, double angle, double scale, BlendMode mode = BlendUnspecified, Color tint = Color::White);
+			void rawBlitRegion(int sourceX, int sourceY, int sourceX2, int sourceY2,
+					int destX, int destY, double angle, double scale);
 	};
 }

@@ -58,12 +58,10 @@ namespace Plum
 				int x = luaL_checkint(L, 2);
 				int y = luaL_checkint(L, 3);
 				int f = luaL_checkint(L, 4);
-				double angle = luaL_checknumber(L, 5);
-				double scale = luaL_checknumber(L, 6);
 				BlendMode mode = (BlendMode) luaL_optint(L, 7, BlendUnspecified);
 				Color tint = luaL_optint(L, 8, Color::White);
 
-				spr->data->blitFrame(x, y, f, angle, scale, mode, tint);
+				spr->data->blitFrame(x, y, f, mode, tint);
 				return 0;
 			}
 

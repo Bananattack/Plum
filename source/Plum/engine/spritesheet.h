@@ -36,12 +36,25 @@ namespace Plum
 			}
 
 		public:
-			void blitFrame(int x, int y, int f, double angle, double scale, BlendMode mode = BlendUnspecified, Color tint = Color::White)
+			void bind()
+			{
+				texture->bind();
+			}
+
+			void blitFrame(int x, int y, int f, BlendMode mode = BlendUnspecified, Color tint = Color::White)
 			{
 				int fx = (f % columns) * (frameWidth + padding) + padding;
 				int fy = (f / columns) * (frameHeight + padding) + padding;
-				texture->rotateScaleBlitRegion(fx, fy, fx + frameWidth - 1, fy + frameHeight - 1,
-						x, y, angle, scale, mode, tint);
+				texture->blitRegion(fx, fy, fx + frameWidth - 1, fy + frameHeight - 1,
+						x, y, mode, tint);
+			}
+
+			void rawBlitFrame(int x, int y, int f, double angle, double scale)
+			{
+				int fx = (f % columns) * (frameWidth + padding) + padding;
+				int fy = (f / columns) * (frameHeight + padding) + padding;
+				texture->rawBlitRegion(fx, fy, fx + frameWidth - 1, fy + frameHeight - 1,
+						x, y, 0, 1);
 			}
 	};
 }

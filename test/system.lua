@@ -29,6 +29,8 @@ for i = 0, 20, 2 do
     end
 end
 
+local layers = { bg, fg, fg, fg }
+
 local fnt = plum.Font('resources/fonts/ccfont.png')
 fnt:enableVariableWidth()
 
@@ -36,10 +38,9 @@ local TILES_WIDE = plum.video.screenWidth / spr.frameWidth + 2
 local TILES_HIGH = plum.video.screenHeight / spr.frameHeight + 2
 while true do
     plum.video.clear(plum.color.Blue)
-    bg:blit(spr, 0, 0, 0, 0, TILES_WIDE, TILES_HIGH)
-    fg:blit(spr, 0, 0, 0, 0, TILES_WIDE, TILES_HIGH)
-    fg:blit(spr, 0, 0, 0, 0, TILES_WIDE, TILES_HIGH)
-    fg:blit(spr, 0, 0, 0, 0, TILES_WIDE, TILES_HIGH)
+    for i, v in ipairs(layers) do
+        v:blit(spr, 0, 0, 0, 0, TILES_WIDE, TILES_HIGH)
+    end
     fnt:print(0, 0, tostring(plum.timer.fps))
     plum.refresh()
 end

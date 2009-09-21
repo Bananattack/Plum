@@ -398,12 +398,20 @@ namespace Plum
 				}
 
 				int i, j;
+
+				glEnable(GL_TEXTURE_2D);
+				spr->bind();
+
+				mode = (mode == BlendUnspecified) ? getBlendMode() : mode;
+				useHardwareBlender(mode);
+
+				useHardwareColor(255, 255, 255, 255);
 				for(i = 0; i < tilesHigh; i++)
 				{
 					for(j = 0; j < tilesWide; j++)
 					{
-						spr->blitFrame(j * spr->frameWidth + xofs + destX, i * spr->frameHeight + yofs + destY,
-							data[(tileY + i) * width + (tileX + j)], 0.0, 1.0, mode, tint);
+						spr->rawBlitFrame(j * spr->frameWidth + xofs + destX, i * spr->frameHeight + yofs + destY,
+							data[(tileY + i) * width + (tileX + j)], 0, 1);
 					}
 				}
 			}
