@@ -1,4 +1,4 @@
-plumed.class 'Mouse' do
+plumed.ui.class 'Mouse' do
     local this_class = plumed.ui.Mouse
     local cursorTexture = plum.Texture('plumed/resources/images/mouse_cursor.png')
 
@@ -8,7 +8,7 @@ plumed.class 'Mouse' do
     end
     
     function this_class:addToEditor()
-        self.renderHandle = plumed.addRender(plumed.methodPointer(self, this_class.render))
+        self.renderHandle = plumed.addRender(plumed.methodPointer(self, this_class.render), 2)
         self.updateHandle = plumed.addUpdate(plumed.methodPointer(self, this_class.update))
     end
     

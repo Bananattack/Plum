@@ -140,7 +140,7 @@ namespace Plum
 
 		static void encodeImageData(lua_State* L, Image* img)
 		{
-			// Allocate buffer, four bytes representing texture dimension stuff.
+			// Allocate buffer, four ints representing texture dimension stuff.
 			// (occupied width, height (occupied size), width, height (overall size))
 			// And the rest for compressed data (might not use all of it).
 			u8* buffer = new u8[sizeof(u32) * 4 + img->width * img->height * sizeof(Color)];
@@ -150,7 +150,7 @@ namespace Plum
 			((u32*) buffer)[2] = (u32) img->width;
 			((u32*) buffer)[3] = (u32) img->height;
 
-			printf("Encoded thing has dimensions (%u, %u, %u, %u)\r\n", ((u32*) buffer)[0], ((u32*) buffer)[1], ((u32*) buffer)[2], ((u32*) buffer)[3]);
+			//printf("Encoded thing has dimensions (%u, %u, %u, %u)\r\n", ((u32*) buffer)[0], ((u32*) buffer)[1], ((u32*) buffer)[2], ((u32*) buffer)[3]);
 			// Compress.
 			int compressedSize = Compression::compressData((u8*)(img->data),
 				img->width * img->height * sizeof(Color),
@@ -223,6 +223,54 @@ namespace Plum
 			return 1;
 		}
 
+		int encodeTilemap(lua_State* L)
+		{
+			Wrapper<Tilemap>* wrapper = PLUM_CHECK_DATA(L, 1, Tilemap);
+			Tilemap* tilemap = wrapper->data;
+
+			// Allocate buffer, 2 ints representing texture dimension stuff.
+			// (width, height (overall size))
+			// And the rest for compressed data (might not use all of it).
+			u8* buffer = new u8[sizeof(u32) * 2 + tilemap->width * tilemap->height * sizeof(Tile)];
+			// Pack the dimensions in 2 unsigned 32-bit integers.
+			((u32*) buffer)[0] = (u32) tilemap->width;
+			((u32*) buffer)[1] = (u32) tilemap->height;
+
+			// Compress.
+			int compressedSize = Compression::compressData((u8*)(tilemap->data),
+				tilemap->width * tilemap->height * sizeof(Tile),
+				buffer + sizeof(u32) * 2,
+				tilemap->width * tilemap->height * sizeof(Tile)
+			);
+			// Encode.
+			std::string encodedText = Base64::encode(std::string(buffer, buffer + sizeof(u32) * 2 + compressedSize));
+			// Push encoded text.
+			lua_pushstring(L, encodedText.c_str());
+			// Destroy buffer.
+			delete buffer;
+
+			return 1;
+		}
+
+		static int decodeTilemap(lua_State* L)
+		{
+			const char* s = luaL_checkstring(L, 1);
+			std::string blob = Base64::decode(s);
+			u8* data = (u8*) blob.data();
+
+			// Unpack the dimensions from 2 unsigned 32-bit integers.
+			u32 width = ((u32*) data)[0];
+			u32 height = ((u32*) data)[1];
+			// Allocate image.
+			Tilemap* tilemap = new Tilemap(width, height);
+			// Decompress.
+			data += sizeof(u32) * 2;
+			Compression::decompressData(data, blob.length(), (u8*)(tilemap->data), tilemap->width * tilemap->height * sizeof(Tile));
+			// Push decoded tilemap.
+			PLUM_PUSH_DATA(L, Tilemap, tilemap, true);
+			return 1;
+		}
+
 		int digestString(lua_State* L)
 		{
 			// Get the SHA1 digest of the string argument passed.
@@ -267,6 +315,10 @@ namespace Plum
 			lua_setfield(L, -2, "encodeTexture");
 			lua_pushcfunction(L, decodeTexture);
 			lua_setfield(L, -2, "decodeTexture");
+			lua_pushcfunction(L, encodeTilemap);
+			lua_setfield(L, -2, "encodeTilemap");
+			lua_pushcfunction(L, decodeTilemap);
+			lua_setfield(L, -2, "decodeTilemap");
 			lua_pushcfunction(L, digestString);
 			lua_setfield(L, -2, "digestString");
 			lua_pushcfunction(L, digestFile);

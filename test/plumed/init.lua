@@ -13,6 +13,8 @@ require 'plumed.ui'
 require 'plumed.callback_handle_list'
 require 'plumed.render'
 require 'plumed.update'
+-- The beef of the map editors, the maps.
+require 'plumed.map'
 -- The main 'program' routine for the editor
 require 'plumed.main'
 

@@ -171,10 +171,10 @@ namespace Plum
 		sourceX2 = PLUM_MIN(PLUM_MAX(0, sourceX2), imageWidth - 1);
 		sourceY2 = PLUM_MIN(PLUM_MAX(0, sourceY2), imageHeight - 1);
 
-		double regionS = ((double) sourceX) / textureWidth;
-		double regionT = ((double) sourceY) / textureHeight;
-		double regionS2 = ((double) sourceX2 + 1) / textureWidth;
-		double regionT2 = ((double) sourceY2 + 1) / textureHeight;
+		double regionS = ((double) sourceX + 0.5) / textureWidth;
+		double regionT = ((double) sourceY + 0.5) / textureHeight;
+		double regionS2 = ((double) sourceX2 + 0.5) / textureWidth;
+		double regionT2 = ((double) sourceY2 + 0.5) / textureHeight;
 
 		mode = (mode == BlendUnspecified) ? getBlendMode() : mode;
 		useHardwareBlender(mode);
@@ -190,11 +190,11 @@ namespace Plum
 			glTexCoord2d(regionS, regionT);
 			glVertex2d(0.0, 0.0);
 			glTexCoord2d(regionS, regionT2);
-			glVertex2d(0.0, scaledHeight + 1);
+			glVertex2d(0.0, scaledHeight);
 			glTexCoord2d(regionS2, regionT2);
-			glVertex2d(scaledWidth + 1, scaledHeight + 1);
+			glVertex2d(scaledWidth, scaledHeight);
 			glTexCoord2d(regionS2, regionT);
-			glVertex2d(scaledWidth + 1, 0.0);
+			glVertex2d(scaledWidth, 0.0);
 		glEnd();
 		glPopMatrix();
 	}

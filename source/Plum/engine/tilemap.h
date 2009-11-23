@@ -1,19 +1,20 @@
 #pragma once
 namespace Plum
 {
+	typedef u32 Tile;
 	class Tilemap
 	{
-		private:
+		public:
 			int width;
 			int height;
-			int* data;
-			
-		public:
+
+			Tile* data;
+
 			Tilemap(int width, int height)
 			{
 				this->width = width;
 				this->height = height;
-				data = new int[width * height];
+				data = new Tile[width * height];
 				clear(0);
 			}
 
@@ -22,7 +23,7 @@ namespace Plum
 				delete data;
 			}
 
-			void clear(int tileIndex)
+			void clear(Tile tileIndex)
 			{
 				for(int i = 0; i < width * height; i++)
 				{
@@ -46,13 +47,13 @@ namespace Plum
 				return data[ty * width + tx];
 			}
 
-			void setTile(int tx, int ty, int tileIndex)
+			void setTile(int tx, int ty, Tile tileIndex)
 			{
 				if(tx < 0 || tx >= width || ty < 0 || ty >= height) return;
 				data[ty * width + tx] = tileIndex;
 			}
 
-			void rect(int tx, int ty, int tx2, int ty2, int tileIndex)
+			void rect(int tx, int ty, int tx2, int ty2, Tile tileIndex)
 			{
 				int i;
 				if (tx > tx2)
@@ -99,7 +100,7 @@ namespace Plum
 				}
 			}
 
-			void solidRect(int tx, int ty, int tx2, int ty2, int tileIndex)
+			void solidRect(int tx, int ty, int tx2, int ty2, Tile tileIndex)
 			{
 				int i, j;
 				if (tx > tx2)
@@ -142,7 +143,7 @@ namespace Plum
 				}
 			}
 
-			void line(int tx, int ty, int tx2, int ty2, int tileIndex)
+			void line(int tx, int ty, int tx2, int ty2, Tile tileIndex)
 			{
 				// Now we'll clip the line using Cohen-Sutherland clipping
 				// (this source adapted from ika)

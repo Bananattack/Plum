@@ -54,6 +54,8 @@ function plumed.launch()
         end
     )
     
+    plumed.switchMap(plumed.Map())
+    
     ---- Main loop stuff goes here.
     while plumed.active do
         plum.video.clear(plum.color.rgb (0x00, 0x00, 0xff))

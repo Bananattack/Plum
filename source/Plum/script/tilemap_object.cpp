@@ -69,7 +69,7 @@ namespace Plum
 				Wrapper<Tilemap>* m = PLUM_CHECK_DATA(L, 1, Tilemap);
 				int tx = luaL_checkint(L, 2);
 				int ty = luaL_checkint(L, 3);
-				int tileIndex = luaL_checkint(L, 4);
+				Tile tileIndex = (Tile) luaL_checkint(L, 4);
 				m->data->setTile(tx, ty, tileIndex);
 				return 0;
 			}
@@ -81,7 +81,7 @@ namespace Plum
 				int ty = luaL_checkint(L, 3);
 				int tx2 = luaL_checkint(L, 4);
 				int ty2 = luaL_checkint(L, 5);
-				int tileIndex = luaL_checkint(L, 6);
+				Tile tileIndex = (Tile) luaL_checkint(L, 6);
 				m->data->rect(tx, ty, tx2, ty2, tileIndex);
 				return 0;
 			}
@@ -93,7 +93,7 @@ namespace Plum
 				int ty = luaL_checkint(L, 3);
 				int tx2 = luaL_checkint(L, 4);
 				int ty2 = luaL_checkint(L, 5);
-				int tileIndex = luaL_checkint(L, 6);
+				Tile tileIndex = (Tile) luaL_checkint(L, 6);
 				m->data->solidRect(tx, ty, tx2, ty2, tileIndex);
 				return 0;
 			}

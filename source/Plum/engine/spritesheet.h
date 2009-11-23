@@ -32,7 +32,7 @@ namespace Plum
 				frameWidth = w;
 				frameHeight = h;
 				padding = 0;
-				columns = 0;
+				columns = 1;
 			}
 
 		public:
@@ -43,6 +43,9 @@ namespace Plum
 
 			void blitFrame(int x, int y, int f, BlendMode mode = BlendUnspecified, Color tint = Color::White)
 			{
+				// Ensure there's always at least one column before looking up a frame
+				if(columns == 0) columns = 1;
+
 				int fx = (f % columns) * (frameWidth + padding) + padding;
 				int fy = (f / columns) * (frameHeight + padding) + padding;
 				texture->blitRegion(fx, fy, fx + frameWidth - 1, fy + frameHeight - 1,
@@ -51,6 +54,9 @@ namespace Plum
 
 			void rawBlitFrame(int x, int y, int f, double angle, double scale)
 			{
+				// Ensure there's always at least one column before looking up a frame
+				if(columns == 0) columns = 1;
+
 				int fx = (f % columns) * (frameWidth + padding) + padding;
 				int fy = (f / columns) * (frameHeight + padding) + padding;
 				texture->rawBlitRegion(fx, fy, fx + frameWidth - 1, fy + frameHeight - 1,

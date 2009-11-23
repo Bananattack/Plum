@@ -1,4 +1,4 @@
-plumed.class 'Widget' do
+plumed.ui.class 'Widget' do
     local this_class = plumed.ui.Widget
 
     function this_class:__init()

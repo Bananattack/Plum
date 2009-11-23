@@ -11,8 +11,8 @@ do
 	setmetatable(plumed.Object, meta)
 end
 
-function plumed.module(t)
-    this_module = t or {}
+function plumed.module(target)
+    local this_module = target or {}
     -- Create a global class given a name string and a parent class reference.
     function this_module.class(name, parent)
         local cls = {}
@@ -59,7 +59,7 @@ function plumed.module(t)
                 local p = cls.parent
                 
                 called_super = true
-                t = { ... }
+                local t = { ... }
                 if p then
                     construct(p, obj, t)
                 else
@@ -94,7 +94,7 @@ function plumed.module(t)
             -- Setup class information
             setmetatable(obj, cls)
             
-            t = { ... }
+            local t = { ... }
             construct(cls, obj, t)
             
             -- Return the finished constructor
@@ -105,7 +105,7 @@ function plumed.module(t)
         
         -- Shove into global namespace
         this_module[name] = cls
-        
+    
         -- For convenience so you can write the Python-like: class 'Entity'(Sprite)
         -- instead of the lamer class('Entity', Sprite)
         -- Treat class('Entity', Sprite)(OtherThing) by ignoring last term.

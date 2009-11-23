@@ -14,6 +14,7 @@ function plumed.addRender(f, z_index)
     plumed._renderList[i].z_index = z_index or 1
     
     table.insert(plumed._renderListOrder, i)
+    return i
 end
 
 function plumed.removeRender(i)
