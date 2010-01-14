@@ -186,16 +186,32 @@ namespace Plum
 		useHardwareColor(r, g, b, a);
 		glTranslated(destX, destY, 0);
 
-		glBegin(GL_QUADS);
-			glTexCoord2d(regionS, regionT);
-			glVertex2d(0.0, 0.0);
-			glTexCoord2d(regionS, regionT2);
-			glVertex2d(0.0, scaledHeight);
-			glTexCoord2d(regionS2, regionT2);
-			glVertex2d(scaledWidth, scaledHeight);
-			glTexCoord2d(regionS2, regionT);
-			glVertex2d(scaledWidth, 0.0);
-		glEnd();
+
+		GLdouble vertexArray[] = {
+			0.0, 0.0,
+			0.0, scaledHeight,
+			scaledWidth, scaledHeight,
+			scaledWidth, 0.0,
+		};
+
+		GLdouble textureArray[] = {
+			regionS, regionT,
+			regionS, regionT2,
+			regionS2, regionT2,
+			regionS2, regionT,
+		};
+
+
+		glEnableClientState(GL_VERTEX_ARRAY);
+		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
+		glVertexPointer(2, GL_DOUBLE, 0, vertexArray);
+		glTexCoordPointer(2, GL_DOUBLE, 0, textureArray);
+		glDrawArrays(GL_QUADS, 0, 4);
+		
+		glDisableClientState(GL_VERTEX_ARRAY);
+		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+
 		glPopMatrix();
 	}
 
@@ -254,16 +270,30 @@ namespace Plum
 		glRotated(angle, 0.0, 0.0, 1.0);
 		glTranslated(-width / 2.0, -height / 2.0, 0.0);
 
-		glBegin(GL_QUADS);
-			glTexCoord2d(regionS, regionT);
-			glVertex2d(0.0, 0.0);
-			glTexCoord2d(regionS, regionT2);
-			glVertex2d(0.0, height + 1);
-			glTexCoord2d(regionS2, regionT2);
-			glVertex2d(width + 1, height + 1);
-			glTexCoord2d(regionS2, regionT);
-			glVertex2d(width + 1, 0.0);
-		glEnd();
+		GLdouble vertexArray[] = {
+			0.0, 0.0,
+			0.0, height + 1.0,
+			width + 1.0, height + 1.0,
+			width + 1.0, 0.0,
+		};
+
+		GLdouble textureArray[] = {
+			regionS, regionT,
+			regionS, regionT2,
+			regionS2, regionT2,
+			regionS2, regionT,
+		};
+
+		glEnableClientState(GL_VERTEX_ARRAY);
+		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
+		glVertexPointer(2, GL_DOUBLE, 0, vertexArray);
+		glTexCoordPointer(2, GL_DOUBLE, 0, textureArray);
+		glDrawArrays(GL_QUADS, 0, 4);
+		
+		glDisableClientState(GL_VERTEX_ARRAY);
+		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+
 		glPopMatrix();
 	}
 
@@ -292,16 +322,30 @@ namespace Plum
 		glRotated(angle, 0.0, 0.0, 1.0);
 		glTranslated(-width / 2.0, -height / 2.0, 0.0);
 
-		glBegin(GL_QUADS);
-			glTexCoord2d(regionS, regionT);
-			glVertex2d(0.0, 0.0);
-			glTexCoord2d(regionS, regionT2);
-			glVertex2d(0.0, height + 1);
-			glTexCoord2d(regionS2, regionT2);
-			glVertex2d(width + 1, height + 1);
-			glTexCoord2d(regionS2, regionT);
-			glVertex2d(width + 1, 0.0);
-		glEnd();
+		GLdouble vertexArray[] = {
+			0.0, 0.0,
+			0.0, height + 1.0,
+			width + 1.0, height + 1.0,
+			width + 1.0, 0.0,
+		};
+
+		GLdouble textureArray[] = {
+			regionS, regionT,
+			regionS, regionT2,
+			regionS2, regionT2,
+			regionS2, regionT,
+		};
+
+		glEnableClientState(GL_VERTEX_ARRAY);
+		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
+		glVertexPointer(2, GL_DOUBLE, 0, vertexArray);
+		glTexCoordPointer(2, GL_DOUBLE, 0, textureArray);
+		glDrawArrays(GL_QUADS, 0, 4);
+		
+		glDisableClientState(GL_VERTEX_ARRAY);
+		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+
 		glPopMatrix();
 	}
 }

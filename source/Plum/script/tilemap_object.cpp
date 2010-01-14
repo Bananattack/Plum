@@ -16,7 +16,7 @@ namespace Plum
 				{
 					int w = lua_tointeger(L, 1);
 					int h = lua_tointeger(L, 2);
-					PLUM_PUSH_DATA(L, Tilemap, new Tilemap(w, h), true);
+					PLUM_PUSH_DATA(L, Tilemap, new Tilemap(w, h), NULL);
 					return 1;
 				}
 				luaL_error(L, "Attempt to call plum.Tilemap constructor with invalid argument types.\r\nMust be (int w, int h).");
@@ -26,10 +26,15 @@ namespace Plum
 			int gc(lua_State* L)
 			{
 				Wrapper<Tilemap>* m = PLUM_CHECK_DATA(L, 1, Tilemap);
-				// Only delete if it doesn't belong to a texture of some sort.
-				if(m->canDelete)
+
+				// Only delete if it doesn't belong to a parent of some sort.
+				if(!m->parentRef)
 				{
 					delete m->data;
+				}
+				else
+				{
+					luaL_unref(L, LUA_REGISTRYINDEX, m->parentRef);
 				}
 				return 0;
 			}

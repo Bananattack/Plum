@@ -175,10 +175,11 @@ namespace Plum
 
 	Channel* Audio::createChannel(int handle)
 	{
-		if(handle >= 0 && handle < soundStreamPool.size())
+		if(handle >= 0 && (size_t) handle < soundStreamPool.size())
 		{
 			return createChannel(soundStreamPool[handle]);
 		}
+		return NULL;
 	}
 
 	Channel* Audio::createChannel(audiere::OutputStreamPtr stream)

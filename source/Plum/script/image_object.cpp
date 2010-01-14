@@ -16,7 +16,7 @@ namespace Plum
 					int w = lua_tointeger(L, 1);
 					int h = lua_tointeger(L, 2);
 
-					PLUM_PUSH_DATA(L, Image, new Image(w, h), true);
+					PLUM_PUSH_DATA(L, Image, new Image(w, h), NULL);
 					
 					return 1;
 				}
@@ -24,7 +24,7 @@ namespace Plum
 				{
 					const char* filename = lua_tostring(L, 1);
 
-					PLUM_PUSH_DATA(L, Image, new Image(filename), true);
+					PLUM_PUSH_DATA(L, Image, new Image(filename), NULL);
 					
 					return 1;
 				}
@@ -40,10 +40,14 @@ namespace Plum
 			{
 				Wrapper<Image>* img = PLUM_CHECK_DATA(L, 1, Image);
 
-				// Only delete if it doesn't belong to a texture of some sort.
-				if(img->canDelete)
+				// Only delete if it doesn't belong to a parent of some sort.
+				if(!img->parentRef)
 				{
 					delete img->data;
+				}
+				else
+				{
+					luaL_unref(L, LUA_REGISTRYINDEX, img->parentRef);
 				}
 
 				return 0;

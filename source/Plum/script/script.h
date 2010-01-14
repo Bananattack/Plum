@@ -104,7 +104,7 @@ namespace Plum
 
 #define PLUM_IS_DATA(L, i, T) ScriptLibrary::_isWrapper<T>(L, i, "plum_"#T"Object")
 #define PLUM_CHECK_DATA(L, i, T) ScriptLibrary::_checkWrapper<T>(L, i, "plum_"#T"Object")
-#define PLUM_PUSH_DATA(L, T, data, canDelete) ScriptLibrary::_pushWrapperReference<T>(L, "plum_"#T"Object", data, canDelete)
+#define PLUM_PUSH_DATA(L, T, data, parentRef) ScriptLibrary::_pushWrapperReference<T>(L, "plum_"#T"Object", data, parentRef)
 
 	namespace ScriptLibrary
 	{
@@ -114,7 +114,10 @@ namespace Plum
 		template <typename T> struct Wrapper
 		{
 			T* data;
-			bool canDelete;
+
+			// The parent, if not NULL, is a registry index to the thing that manages this object's memory
+			// (ie. don't delete this, since you didn't allocate the memory.)
+			int parentRef;
 		};
 
 		template <typename T> bool _isWrapper(lua_State* L, int index, const char* metaname)
@@ -144,14 +147,14 @@ namespace Plum
 			return (Wrapper<T>*) luaL_checkudata(L, index, metaname);
 		}
 
-		template <typename T> void _pushWrapperReference(lua_State* L, const char* metaname, T* data, bool canDelete)
+		template <typename T> void _pushWrapperReference(lua_State* L, const char* metaname, T* data, int parentRef)
 		{
-			Wrapper<T>* w = (Wrapper<T>*) lua_newuserdata(L, sizeof(Wrapper<T*>));
+			Wrapper<T>* w = (Wrapper<T>*) lua_newuserdata(L, sizeof(Wrapper<T>));
 			luaL_getmetatable(L, metaname);
 			lua_setmetatable(L, -2);
 
 			w->data = data;
-			w->canDelete = canDelete;
+			w->parentRef = parentRef;
 		}
 
 		PLUM_BIND_LIB(ImageObject)

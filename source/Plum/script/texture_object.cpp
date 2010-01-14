@@ -15,14 +15,14 @@ namespace Plum
 				{
 					const char* filename = lua_tostring(L, 1);
 
-					PLUM_PUSH_DATA(L, Texture, new Texture(filename), true);
+					PLUM_PUSH_DATA(L, Texture, new Texture(filename), NULL);
 
 					return 1;
 				}
 				else if(PLUM_IS_DATA(L, 1, Image))
 				{
 					Wrapper<Image>* img = PLUM_CHECK_DATA(L, 1, Image);
-					PLUM_PUSH_DATA(L, Texture, new Texture(img->data), true);
+					PLUM_PUSH_DATA(L, Texture, new Texture(img->data), NULL);
 
 					return 1;
 				}
@@ -34,11 +34,14 @@ namespace Plum
 			{
 				Wrapper<Texture>* t = PLUM_CHECK_DATA(L, 1, Texture);
 
-				if(t->canDelete)
+				// Only delete if it doesn't belong to a parent of some sort.
+				if(!t->parentRef)
 				{
 					delete t->data;
-					t->data = NULL;
-					t->canDelete = false;
+				}
+				else
+				{
+					luaL_unref(L, LUA_REGISTRYINDEX, t->parentRef);
 				}
 
 				return 0;
@@ -222,7 +225,13 @@ namespace Plum
 			int getimage(lua_State* L)
 			{
 				Wrapper<Texture>* t = PLUM_CHECK_DATA(L, 1, Texture); 
-				PLUM_PUSH_DATA(L, Image, t->data->getImage(), false);
+
+				// Push reference to this, so the texture stays around
+				// as long as it's required for this image.
+				lua_pushvalue(L, 1);
+				int ref = luaL_ref(L, LUA_REGISTRYINDEX);
+
+				PLUM_PUSH_DATA(L, Image, t->data->getImage(), ref);
 				return 1;
 			}
 

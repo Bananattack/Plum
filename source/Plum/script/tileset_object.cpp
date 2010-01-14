@@ -41,7 +41,13 @@ namespace Plum
 	static int tilesetGetTiles(lua_State* L)
 	{
 		Tileset** ts = checkValidTilesetObject(L, 1); 
-		PLUM_PUSH_DATA(L, Texture, (*ts)->tiles, false);
+
+		// Push reference to this tileset, so the tileset stays around
+		// as long as it's required for this texture.
+		lua_pushvalue(L, 1);
+		int ref = luaL_ref(L, LUA_REGISTRYINDEX);
+
+		PLUM_PUSH_DATA(L, Texture, (*ts)->tiles, ref);
 		return 1;
 	}
 
@@ -70,8 +76,14 @@ namespace Plum
 
 	static int tilesetGetObs(lua_State* L)
 	{
-		Tileset** ts = checkValidTilesetObject(L, 1); 
-		PLUM_PUSH_DATA(L, Texture, (*ts)->obs, false);
+		Tileset** ts = checkValidTilesetObject(L, 1);
+
+		// Push reference to this tileset, so the tileset stays around
+		// as long as it's required for this texture.
+		lua_pushvalue(L, 1);
+		int ref = luaL_ref(L, LUA_REGISTRYINDEX);
+
+		PLUM_PUSH_DATA(L, Texture, (*ts)->obs, ref);
 		return 1;
 	}
 

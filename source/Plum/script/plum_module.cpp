@@ -208,7 +208,7 @@ namespace Plum
 			const char* s = luaL_checkstring(L, 1);
 			Image* img = decodeImageData(s);
 			// Push decoded image.
-			PLUM_PUSH_DATA(L, Image, img, true);
+			PLUM_PUSH_DATA(L, Image, img, NULL);
 			return 1;
 		}
 
@@ -217,7 +217,7 @@ namespace Plum
 			const char* s = luaL_checkstring(L, 1);
 			Image* img = decodeImageData(s);
 			// Push decoded texture.
-			PLUM_PUSH_DATA(L, Texture, new Texture(img), true);
+			PLUM_PUSH_DATA(L, Texture, new Texture(img), NULL);
 			// Destroy temporary image.
 			delete img;
 			return 1;
@@ -267,7 +267,7 @@ namespace Plum
 			data += sizeof(u32) * 2;
 			Compression::decompressData(data, blob.length(), (u8*)(tilemap->data), tilemap->width * tilemap->height * sizeof(Tile));
 			// Push decoded tilemap.
-			PLUM_PUSH_DATA(L, Tilemap, tilemap, true);
+			PLUM_PUSH_DATA(L, Tilemap, tilemap, NULL);
 			return 1;
 		}
 

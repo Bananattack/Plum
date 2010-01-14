@@ -7,8 +7,12 @@ function initHooks()
 end
 
 initHooks()
+
+tex = plum.Texture('tileset.png')
+
 while true do
     plum.video.clear(plum.color.Black)
+    tex:blit(0, 0)
     plum.refresh()
 end
 

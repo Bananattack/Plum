@@ -20,13 +20,13 @@ namespace Plum
 					if(PLUM_IS_DATA(L, 1, Image))
 					{
 						Wrapper<Image>* img = PLUM_CHECK_DATA(L, 1, Image);
-						PLUM_PUSH_DATA(L, Spritesheet, new Spritesheet(img->data, w, h), true);
+						PLUM_PUSH_DATA(L, Spritesheet, new Spritesheet(img->data, w, h), NULL);
 						return 1;
 					}
 					else if(PLUM_IS_DATA(L, 1, Texture))
 					{
 						Wrapper<Texture>* tex = PLUM_CHECK_DATA(L, 1, Texture);
-						PLUM_PUSH_DATA(L, Spritesheet, new Spritesheet(tex->data, w, h), true);
+						PLUM_PUSH_DATA(L, Spritesheet, new Spritesheet(tex->data, w, h), NULL);
 						return 1;
 					}
 				}
@@ -37,10 +37,14 @@ namespace Plum
 			int gc(lua_State* L)
 			{
 				Wrapper<Spritesheet>* spr = PLUM_CHECK_DATA(L, 1, Spritesheet);
-				// Only delete if it doesn't belong to a texture of some sort.
-				if(spr->canDelete)
+				// Only delete if it doesn't belong to a parent of some sort.
+				if(!spr->parentRef)
 				{
 					delete spr->data;
+				}
+				else
+				{
+					luaL_unref(L, LUA_REGISTRYINDEX, spr->parentRef);
 				}
 				return 0;
 			}
