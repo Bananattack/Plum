@@ -219,15 +219,15 @@
 				Name="script"
 				>
 				<File
+					RelativePath=".\script\canvas_object.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\script\file_object.cpp"
 					>
 				</File>
 				<File
 					RelativePath=".\script\font_object.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\script\image_object.cpp"
 					>
 				</File>
 				<File
@@ -381,11 +381,11 @@
 					>
 				</File>
 				<File
-					RelativePath=".\video\color.h"
+					RelativePath=".\video\canvas.h"
 					>
 				</File>
 				<File
-					RelativePath=".\video\image.h"
+					RelativePath=".\video\color.h"
 					>
 				</File>
 				<File
