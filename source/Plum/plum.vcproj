@@ -199,7 +199,7 @@
 					>
 				</File>
 				<File
-					RelativePath=".\video\texture.cpp"
+					RelativePath=".\video\image.cpp"
 					>
 				</File>
 				<File
@@ -228,6 +228,10 @@
 				</File>
 				<File
 					RelativePath=".\script\font_object.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\script\image_object.cpp"
 					>
 				</File>
 				<File
@@ -264,10 +268,6 @@
 				</File>
 				<File
 					RelativePath=".\script\spritesheet_object.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\script\texture_object.cpp"
 					>
 				</File>
 				<File
@@ -389,7 +389,7 @@
 					>
 				</File>
 				<File
-					RelativePath=".\video\texture.h"
+					RelativePath=".\video\image.h"
 					>
 				</File>
 				<File

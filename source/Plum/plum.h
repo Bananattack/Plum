@@ -67,7 +67,7 @@ extern "C"
 #include "video/color.h"
 #include "video/blending.h"
 #include "video/canvas.h"
-#include "video/texture.h"
+#include "video/image.h"
 #include "video/video.h"
 
 #include "audio/audio_audiere.h"
