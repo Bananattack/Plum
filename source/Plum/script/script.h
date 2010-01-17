@@ -157,7 +157,7 @@ namespace Plum
 			w->parentRef = parentRef;
 		}
 
-		PLUM_BIND_LIB(ImageObject)
+		PLUM_BIND_LIB(CanvasObject)
 		PLUM_BIND_LIB(TextureObject)
 		PLUM_BIND_LIB(SpritesheetObject)
 		PLUM_BIND_LIB(TilemapObject)

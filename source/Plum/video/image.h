@@ -1,10 +1,10 @@
 #pragma once
 namespace Plum
 {
-	class ImageNotFoundException : public std::exception
+	class CanvasNotFoundException : public std::exception
 	{
 		public:
-			ImageNotFoundException(const std::string& message)
+			CanvasNotFoundException(const std::string& message)
 				: msg(message)
 			{
 			}
@@ -14,7 +14,7 @@ namespace Plum
 				return msg.c_str();
 			}
 
-			virtual ~ImageNotFoundException() throw ()
+			virtual ~CanvasNotFoundException() throw ()
 			{
 			}
 
@@ -22,7 +22,7 @@ namespace Plum
 			std::string msg;
 	};
 
-	class Image
+	class Canvas
 	{
 		public:
 			int width;
@@ -35,25 +35,25 @@ namespace Plum
 
 			Color* data;
 
-			Image(const char* filename)
+			Canvas(const char* filename)
 			{
 				init(filename);
 				replaceColor(Color::Magenta, 0);
 			}
 
-			Image(const std::string& filename)
+			Canvas(const std::string& filename)
 			{
 				init(filename.c_str());
 				replaceColor(Color::Magenta, 0);
 			}
 
-			Image(int width, int height)
+			Canvas(int width, int height)
 			{
 				init(width, height);
 				clear(Color::Black);
 			}
 
-			Image(int width, int height, Color* pixels)
+			Canvas(int width, int height, Color* pixels)
 			{
 				this->occupiedWidth = this->width = width;
 				this->occupiedHeight = this->height = height; 
@@ -62,7 +62,7 @@ namespace Plum
 				replaceColor(Color::Magenta, 0);
 			}
 
-			~Image()
+			~Canvas()
 			{
 				delete[] data;	
 			}
@@ -75,7 +75,7 @@ namespace Plum
 				if(!image.get())
 				{
 					std::string s = "Couldn't open image '" + std::string(filename) + "'!\r\n";
-					throw ImageNotFoundException(s);
+					throw CanvasNotFoundException(s);
 				}
 
 				Color* pixels = (Color*) image->getPixels();
@@ -719,7 +719,7 @@ namespace Plum
 				}
 			}
 
-			template <typename BlendCallback> void blit(int x, int y, Image* dest, const BlendCallback& blend)
+			template <typename BlendCallback> void blit(int x, int y, Canvas* dest, const BlendCallback& blend)
 			{
 				int i, j;
 				int x2 = x + width - 1;
@@ -761,23 +761,23 @@ namespace Plum
 				}
 			}
 
-			template <typename BlendCallback> void scaleBlit(int x, int y, int scaledWidth, int scaledHeight, Image* dest, const BlendCallback& blend)
+			template <typename BlendCallback> void scaleBlit(int x, int y, int scaledWidth, int scaledHeight, Canvas* dest, const BlendCallback& blend)
 			{
 				scaleBlitRegion(0, 0, occupiedWidth, occupiedHeight, x, y, scaledWidth, scaledHeight, dest, blend);
 			}
 
-			template <typename BlendCallback> void rotateBlit(int x, int y, double angle, Image* dest, const BlendCallback& blend)
+			template <typename BlendCallback> void rotateBlit(int x, int y, double angle, Canvas* dest, const BlendCallback& blend)
 			{
 				rotateScaleBlitRegion(0, 0, occupiedWidth, occupiedHeight, x, y, angle, 1, dest, blend);
 			}
 
-			template <typename BlendCallback> void rotateScaleBlit(int x, int y, double angle, double scale, Image* dest, const BlendCallback& blend)
+			template <typename BlendCallback> void rotateScaleBlit(int x, int y, double angle, double scale, Canvas* dest, const BlendCallback& blend)
 			{
 				rotateScaleBlitRegion(0, 0, occupiedWidth, occupiedHeight, x, y, angle, scale, dest, blend);
 			}
 
 			template <typename BlendCallback> void blitRegion(int sx, int sy, int sx2, int sy2,
-					int dx, int dy, Image* dest, const BlendCallback& blend)
+					int dx, int dy, Canvas* dest, const BlendCallback& blend)
 			{
 				int cx = dest->clipX;
 				int cy = dest->clipY;
@@ -799,7 +799,7 @@ namespace Plum
 			}
 
 			template <typename BlendCallback> void scaleBlitRegion(int sx, int sy, int sx2, int sy2,
-					int dx, int dy, int scw, int sch, Image* dest, const BlendCallback& blend)
+					int dx, int dy, int scw, int sch, Canvas* dest, const BlendCallback& blend)
 			{
 				if (sx > sx2)
 				{
@@ -857,13 +857,13 @@ namespace Plum
 			}
 
 			template <typename BlendCallback> void rotateBlitRegion(int sx, int sy, int sx2, int sy2,
-					int dx, int dy, double angle, Image* dest, const BlendCallback& blend)
+					int dx, int dy, double angle, Canvas* dest, const BlendCallback& blend)
 			{
 				rotateScaleBlitRegion(sx, sy, sx2, sy2, dx, dy, angle, 1.0, dest, blend);
 			}
 
 			template <typename BlendCallback> void rotateScaleBlitRegion(int sx, int sy, int sx2, int sy2,
-					int dx, int dy, double angle, double scale, Image* dest, const BlendCallback& blend)
+					int dx, int dy, double angle, double scale, Canvas* dest, const BlendCallback& blend)
 			{
 				int minX, minY;
 				int maxX, maxY;

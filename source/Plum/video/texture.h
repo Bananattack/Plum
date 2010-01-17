@@ -26,39 +26,39 @@ namespace Plum
 
 			// A backend software image that this raw texture copies.
 			// Useful if the textures need to be reloaded later.
-			Image* textureImage;
+			Canvas* textureCanvas;
 			// The GL target type
 			int target; 
 			// The GL texture ID
 			GLuint textureID;
-			// The width and height of the image
-			int imageWidth, imageHeight;
+			// The width and height of the canvas
+			int canvasWidth, canvasHeight;
 			// The width and height of the texture (usually is a power of two)
 			int textureWidth, textureHeight;
-			// The ratio of image{Width|Height} / texture{Width|Height}
+			// The ratio of canvas{Width|Height} / texture{Width|Height}
 			double widthRatio, heightRatio;
 
-			void setImageWidth(int width);
-			void setImageHeight(int height);
+			void setCanvasWidth(int width);
+			void setCanvasHeight(int height);
 			void setTextureWidth(int width);
 			void setTextureHeight(int height);
 		public:
 			Texture(const std::string& filename);
 			Texture(const char* filename);
-			Texture(Image* image);
+			Texture(Canvas* canvas);
 
 			~Texture();
 
 			void init(const char* filename);
-			void init(Image* image);
+			void init(Canvas* canvas);
 
-			int getImageWidth();
-			int getImageHeight();
+			int getCanvasWidth();
+			int getCanvasHeight();
 			int getTextureWidth();
 			int getTextureHeight();
 			double getWidthRatio();
 			double getHeightRatio();
-			Image* getImage();
+			Canvas* getCanvas();
 
 			void updateRatios();
 			void refresh();

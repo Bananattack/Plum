@@ -12,32 +12,32 @@ namespace Plum
 		init(filename);
 	}
 
-	Texture::Texture(Image* image)
+	Texture::Texture(Canvas* canvas)
 	{
-		init(image);
+		init(canvas);
 	}
 
 	Texture::~Texture()
 	{
 		glDeleteTextures(1, &textureID);
-		delete textureImage;
+		delete textureCanvas;
 	}
 
 	void Texture::init(const char* filename)
 	{
-		Image* image = new Image(filename);
-		init(image);
-		delete image;
+		Canvas* canvas = new Canvas(filename);
+		init(canvas);
+		delete canvas;
 	}
 
-	void Texture::init(Image* image)
+	void Texture::init(Canvas* canvas)
 	{
 		target = GL_TEXTURE_2D;
 
-		textureImage = new Image(nearestPowerOfTwo(image->occupiedWidth), nearestPowerOfTwo(image->occupiedHeight));
-		textureImage->clear(0);
-		image->blit<SoftOpaqueBlender>(0, 0, textureImage, SoftOpaqueBlender());
-		textureImage->setClipRegion(0, 0, image->occupiedWidth - 1, image->occupiedHeight - 1);
+		textureCanvas = new Canvas(nearestPowerOfTwo(canvas->occupiedWidth), nearestPowerOfTwo(canvas->occupiedHeight));
+		textureCanvas->clear(0);
+		canvas->blit<SoftOpaqueBlender>(0, 0, textureCanvas, SoftOpaqueBlender());
+		textureCanvas->setClipRegion(0, 0, canvas->occupiedWidth - 1, canvas->occupiedHeight - 1);
 
 		glGenTextures(1, &textureID);
 		bind();
@@ -46,26 +46,26 @@ namespace Plum
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
 
 
-		setImageWidth(image->occupiedWidth);
-		setImageHeight(image->occupiedHeight);
-		setTextureWidth(textureImage->width);
-		setTextureHeight(textureImage->height);
+		setCanvasWidth(canvas->occupiedWidth);
+		setCanvasHeight(canvas->occupiedHeight);
+		setTextureWidth(textureCanvas->width);
+		setTextureHeight(textureCanvas->height);
 
 		glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 		glTexImage2D(target, 0, GL_RGBA8, textureWidth, textureHeight,
-			0, GL_RGBA, GL_UNSIGNED_BYTE, textureImage->data);
+			0, GL_RGBA, GL_UNSIGNED_BYTE, textureCanvas->data);
 	}
 
-	int Texture::getImageWidth()
+	int Texture::getCanvasWidth()
 	{
-		return imageWidth;
+		return canvasWidth;
 	}
 
-	int Texture::getImageHeight()
+	int Texture::getCanvasHeight()
 	{
-		return imageHeight;
+		return canvasHeight;
 	}
 
 	int Texture::getTextureWidth()
@@ -88,20 +88,20 @@ namespace Plum
 		return heightRatio;
 	}
 
-	Image* Texture::getImage()
+	Canvas* Texture::getCanvas()
 	{
-		return textureImage;
+		return textureCanvas;
 	}
 
-	void Texture::setImageWidth(int width)
+	void Texture::setCanvasWidth(int width)
 	{
-		this->textureImage->occupiedWidth = this->imageWidth = width;
+		this->textureCanvas->occupiedWidth = this->canvasWidth = width;
 		updateRatios();
 	}
 
-	void Texture::setImageHeight(int height)
+	void Texture::setCanvasHeight(int height)
 	{
-		this->textureImage->occupiedHeight = this->imageHeight = height;
+		this->textureCanvas->occupiedHeight = this->canvasHeight = height;
 		updateRatios();
 	}
 
@@ -119,15 +119,15 @@ namespace Plum
 
 	void Texture::updateRatios()
 	{
-		widthRatio = (textureWidth != 0) ? ((double) imageWidth) / textureWidth : 0;
-		heightRatio = (textureHeight != 0) ? ((double) imageHeight) / textureHeight : 0;
+		widthRatio = (textureWidth != 0) ? ((double) canvasWidth) / textureWidth : 0;
+		heightRatio = (textureHeight != 0) ? ((double) canvasHeight) / textureHeight : 0;
 	}
 
 	void Texture::refresh()
 	{
 		bind();
 		glTexSubImage2D(target, 0, 0, 0, textureWidth, textureHeight,
-			GL_RGBA, GL_UNSIGNED_BYTE, textureImage->data);
+			GL_RGBA, GL_UNSIGNED_BYTE, textureCanvas->data);
 	}
 
 	void Texture::bind()
@@ -137,12 +137,12 @@ namespace Plum
 
 	void Texture::blit(int x, int y, BlendMode mode, Color tint)
 	{
-		scaleBlitRegion(0, 0, imageWidth, imageHeight, x, y, imageWidth, imageHeight, mode, tint);
+		scaleBlitRegion(0, 0, canvasWidth, canvasHeight, x, y, canvasWidth, canvasHeight, mode, tint);
 	}
 
 	void Texture::scaleBlit(int x, int y, int width, int height, BlendMode mode, Color tint)
 	{
-		scaleBlitRegion(0, 0, imageWidth, imageHeight, x, y, width, height, mode, tint);
+		scaleBlitRegion(0, 0, canvasWidth, canvasHeight, x, y, width, height, mode, tint);
 	}
 
 	void Texture::blitRegion(int sourceX, int sourceY, int sourceX2, int sourceY2,
@@ -166,10 +166,10 @@ namespace Plum
 		{
 			PLUM_SWAP(sourceY, sourceY2);
 		}
-		sourceX = PLUM_MIN(PLUM_MAX(0, sourceX), imageWidth - 1);
-		sourceY = PLUM_MIN(PLUM_MAX(0, sourceY), imageHeight - 1);
-		sourceX2 = PLUM_MIN(PLUM_MAX(0, sourceX2), imageWidth - 1);
-		sourceY2 = PLUM_MIN(PLUM_MAX(0, sourceY2), imageHeight - 1);
+		sourceX = PLUM_MIN(PLUM_MAX(0, sourceX), canvasWidth - 1);
+		sourceY = PLUM_MIN(PLUM_MAX(0, sourceY), canvasHeight - 1);
+		sourceX2 = PLUM_MIN(PLUM_MAX(0, sourceX2), canvasWidth - 1);
+		sourceY2 = PLUM_MIN(PLUM_MAX(0, sourceY2), canvasHeight - 1);
 
 		double regionS = ((double) sourceX + 0.5) / textureWidth;
 		double regionT = ((double) sourceY + 0.5) / textureHeight;
@@ -217,12 +217,12 @@ namespace Plum
 
 	void Texture::rotateBlit(int x, int y, double angle, BlendMode mode, Color tint)
 	{
-		rotateScaleBlitRegion(0, 0, imageWidth, imageHeight, x, y, angle, 1.0, mode, tint);
+		rotateScaleBlitRegion(0, 0, canvasWidth, canvasHeight, x, y, angle, 1.0, mode, tint);
 	}
 
 	void Texture::rotateScaleBlit(int x, int y, double angle, double scale, BlendMode mode, Color tint)
 	{
-		rotateScaleBlitRegion(0, 0, imageWidth, imageHeight, x, y, angle, scale, mode, tint);
+		rotateScaleBlitRegion(0, 0, canvasWidth, canvasHeight, x, y, angle, scale, mode, tint);
 	}
 
 	void Texture::rotateBlitRegion(int sourceX, int sourceY, int sourceX2, int sourceY2,
@@ -245,10 +245,10 @@ namespace Plum
 		{
 			PLUM_SWAP(sourceY, sourceY2);
 		}
-		sourceX = PLUM_MIN(PLUM_MAX(0, sourceX), imageWidth - 1);
-		sourceY = PLUM_MIN(PLUM_MAX(0, sourceY), imageHeight - 1);
-		sourceX2 = PLUM_MIN(PLUM_MAX(0, sourceX2), imageWidth - 1);
-		sourceY2 = PLUM_MIN(PLUM_MAX(0, sourceY2), imageHeight - 1);
+		sourceX = PLUM_MIN(PLUM_MAX(0, sourceX), canvasWidth - 1);
+		sourceY = PLUM_MIN(PLUM_MAX(0, sourceY), canvasHeight - 1);
+		sourceX2 = PLUM_MIN(PLUM_MAX(0, sourceX2), canvasWidth - 1);
+		sourceY2 = PLUM_MIN(PLUM_MAX(0, sourceY2), canvasHeight - 1);
 
 		double regionS = ((double) sourceX + 0.5) / textureWidth;
 		double regionT = ((double) sourceY + 0.5) / textureHeight;
@@ -303,10 +303,10 @@ namespace Plum
 	void Texture::rawBlitRegion(int sourceX, int sourceY, int sourceX2, int sourceY2,
 					int destX, int destY, double angle, double scale)
 	{
-		sourceX = PLUM_MIN(PLUM_MAX(0, sourceX), imageWidth - 1);
-		sourceY = PLUM_MIN(PLUM_MAX(0, sourceY), imageHeight - 1);
-		sourceX2 = PLUM_MIN(PLUM_MAX(0, sourceX2), imageWidth - 1);
-		sourceY2 = PLUM_MIN(PLUM_MAX(0, sourceY2), imageHeight - 1);
+		sourceX = PLUM_MIN(PLUM_MAX(0, sourceX), canvasWidth - 1);
+		sourceY = PLUM_MIN(PLUM_MAX(0, sourceY), canvasHeight - 1);
+		sourceX2 = PLUM_MIN(PLUM_MAX(0, sourceX2), canvasWidth - 1);
+		sourceY2 = PLUM_MIN(PLUM_MAX(0, sourceY2), canvasHeight - 1);
 
 		double regionS = ((double) sourceX + 0.5) / textureWidth;
 		double regionT = ((double) sourceY + 0.5) / textureHeight;

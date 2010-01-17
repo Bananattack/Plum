@@ -138,24 +138,24 @@ namespace Plum
 			return 0;
 		}
 
-		static void encodeImageData(lua_State* L, Image* img)
+		static void encodeImageData(lua_State* L, Canvas* canvas)
 		{
 			// Allocate buffer, four ints representing texture dimension stuff.
 			// (occupied width, height (occupied size), width, height (overall size))
 			// And the rest for compressed data (might not use all of it).
-			u8* buffer = new u8[sizeof(u32) * 4 + img->width * img->height * sizeof(Color)];
+			u8* buffer = new u8[sizeof(u32) * 4 + canvas->width * canvas->height * sizeof(Color)];
 			// Pack the dimensions in 4 unsigned 32-bit integers.
-			((u32*) buffer)[0] = (u32) img->occupiedWidth;
-			((u32*) buffer)[1] = (u32) img->occupiedHeight;
-			((u32*) buffer)[2] = (u32) img->width;
-			((u32*) buffer)[3] = (u32) img->height;
+			((u32*) buffer)[0] = (u32) canvas->occupiedWidth;
+			((u32*) buffer)[1] = (u32) canvas->occupiedHeight;
+			((u32*) buffer)[2] = (u32) canvas->width;
+			((u32*) buffer)[3] = (u32) canvas->height;
 
 			//printf("Encoded thing has dimensions (%u, %u, %u, %u)\r\n", ((u32*) buffer)[0], ((u32*) buffer)[1], ((u32*) buffer)[2], ((u32*) buffer)[3]);
 			// Compress.
-			int compressedSize = Compression::compressData((u8*)(img->data),
-				img->width * img->height * sizeof(Color),
+			int compressedSize = Compression::compressData((u8*)(canvas->data),
+				canvas->width * canvas->height * sizeof(Color),
 				buffer + sizeof(u32) * 4,
-				img->width * img->height * sizeof(Color)
+				canvas->width * canvas->height * sizeof(Color)
 			);
 			// Encode.
 			std::string encodedText = Base64::encode(std::string(buffer, buffer + sizeof(u32) * 4 + compressedSize));
@@ -165,9 +165,9 @@ namespace Plum
 			delete buffer;
 		}
 
-		int encodeImage(lua_State* L)
+		int encodeCanvas(lua_State* L)
 		{
-			Wrapper<Image>* wrapper = PLUM_CHECK_DATA(L, 1, Image);
+			Wrapper<Canvas>* wrapper = PLUM_CHECK_DATA(L, 1, Canvas);
 			encodeImageData(L, wrapper->data);
 
 			return 1;
@@ -176,12 +176,12 @@ namespace Plum
 		int encodeTexture(lua_State* L)
 		{
 			Wrapper<Texture>* texture = PLUM_CHECK_DATA(L, 1, Texture);
-			encodeImageData(L, texture->data->getImage());
+			encodeImageData(L, texture->data->getCanvas());
 
 			return 1;
 		}
 
-		static Image* decodeImageData(const char* s)
+		static Canvas* decodeImageData(const char* s)
 		{
 			std::string blob = Base64::decode(s);
 			u8* data = (u8*) blob.data();
@@ -192,34 +192,34 @@ namespace Plum
 			u32 width = ((u32*) data)[2];
 			u32 height = ((u32*) data)[3];
 			// Allocate image.
-			Image* img = new Image(width, height);
-			img->occupiedWidth = occupiedWidth;
-			img->occupiedHeight = occupiedHeight;
-			img->restoreClipRegion();
+			Canvas* canvas = new Canvas(width, height);
+			canvas->occupiedWidth = occupiedWidth;
+			canvas->occupiedHeight = occupiedHeight;
+			canvas->restoreClipRegion();
 			// Decompress.
 			data += sizeof(u32) * 4;
-			Compression::decompressData(data, blob.length(), (u8*)(img->data), img->width * img->height * sizeof(Color));
+			Compression::decompressData(data, blob.length(), (u8*)(canvas->data), canvas->width * canvas->height * sizeof(Color));
 			// Done!
-			return img;
+			return canvas;
 		}
 
-		int decodeImage(lua_State* L)
+		int decodeCanvas(lua_State* L)
 		{
 			const char* s = luaL_checkstring(L, 1);
-			Image* img = decodeImageData(s);
+			Canvas* canvas = decodeImageData(s);
 			// Push decoded image.
-			PLUM_PUSH_DATA(L, Image, img, NULL);
+			PLUM_PUSH_DATA(L, Canvas, canvas, NULL);
 			return 1;
 		}
 
 		int decodeTexture(lua_State* L)
 		{
 			const char* s = luaL_checkstring(L, 1);
-			Image* img = decodeImageData(s);
+			Canvas* canvas = decodeImageData(s);
 			// Push decoded texture.
-			PLUM_PUSH_DATA(L, Texture, new Texture(img), NULL);
+			PLUM_PUSH_DATA(L, Texture, new Texture(canvas), NULL);
 			// Destroy temporary image.
-			delete img;
+			delete canvas;
 			return 1;
 		}
 
@@ -307,10 +307,10 @@ namespace Plum
 			lua_pushvalue(L, -1);
 			lua_setfield(L, -3, "data");
 
-			lua_pushcfunction(L, encodeImage);
-			lua_setfield(L, -2, "encodeImage");
-			lua_pushcfunction(L, decodeImage);
-			lua_setfield(L, -2, "decodeImage");
+			lua_pushcfunction(L, encodeCanvas);
+			lua_setfield(L, -2, "encodeCanvas");
+			lua_pushcfunction(L, decodeCanvas);
+			lua_setfield(L, -2, "decodeCanvas");
 			lua_pushcfunction(L, encodeTexture);
 			lua_setfield(L, -2, "encodeTexture");
 			lua_pushcfunction(L, decodeTexture);
@@ -383,7 +383,7 @@ namespace Plum
 			lua_pop(L, 1);
 
 
-			ImageObject::openLibrary(L);
+			CanvasObject::openLibrary(L);
 			TextureObject::openLibrary(L);
 			SpritesheetObject::openLibrary(L);
 			TilemapObject::openLibrary(L);

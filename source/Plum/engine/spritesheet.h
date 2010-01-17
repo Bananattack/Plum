@@ -10,14 +10,14 @@ namespace Plum
 			int padding;
 			int columns;
 
-			Spritesheet(Image* img, int w, int h)
+			Spritesheet(Canvas* canvas, int w, int h)
 			{
-				init(img, w, h);
+				init(canvas, w, h);
 			}
 
 			Spritesheet(Texture* tex, int w, int h)
 			{
-				init(tex->getImage(), w, h);
+				init(tex->getCanvas(), w, h);
 			}
 			
 			~Spritesheet()
@@ -26,9 +26,9 @@ namespace Plum
 			}
 
 		private:
-			void init(Image* img, int w, int h)
+			void init(Canvas* canvas, int w, int h)
 			{
-				texture = new Texture(img);
+				texture = new Texture(canvas);
 				frameWidth = w;
 				frameHeight = h;
 				padding = 0;

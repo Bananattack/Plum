@@ -19,14 +19,14 @@ namespace Plum
 
 					return 1;
 				}
-				else if(PLUM_IS_DATA(L, 1, Image))
+				else if(PLUM_IS_DATA(L, 1, Canvas))
 				{
-					Wrapper<Image>* img = PLUM_CHECK_DATA(L, 1, Image);
-					PLUM_PUSH_DATA(L, Texture, new Texture(img->data), NULL);
+					Wrapper<Canvas>* canvas = PLUM_CHECK_DATA(L, 1, Canvas);
+					PLUM_PUSH_DATA(L, Texture, new Texture(canvas->data), NULL);
 
 					return 1;
 				}
-				luaL_error(L, "Attempt to call plum.Texture constructor with invalid argument types.\r\nMust be (string filename) or (plum.Image image).");
+				luaL_error(L, "Attempt to call plum.Texture constructor with invalid argument types.\r\nMust be (string filename) or (plum.Canvas canvas).");
 				return 0;
 			}
 
@@ -193,7 +193,7 @@ namespace Plum
 			int getwidth(lua_State* L)
 			{
 				Wrapper<Texture>* t = PLUM_CHECK_DATA(L, 1, Texture);
-				lua_pushnumber(L, t->data->getImageWidth());
+				lua_pushnumber(L, t->data->getCanvasWidth());
 
 				return 1;
 			}
@@ -201,7 +201,7 @@ namespace Plum
 			int getheight(lua_State* L)
 			{
 				Wrapper<Texture>* t = PLUM_CHECK_DATA(L, 1, Texture);
-				lua_pushnumber(L, t->data->getImageHeight());
+				lua_pushnumber(L, t->data->getCanvasHeight());
 
 				return 1;
 			}
@@ -222,16 +222,16 @@ namespace Plum
 				return 1;
 			}
 
-			int getimage(lua_State* L)
+			int getcanvas(lua_State* L)
 			{
 				Wrapper<Texture>* t = PLUM_CHECK_DATA(L, 1, Texture); 
 
 				// Push reference to this, so the texture stays around
-				// as long as it's required for this image.
+				// as long as it's required for the child.
 				lua_pushvalue(L, 1);
 				int ref = luaL_ref(L, LUA_REGISTRYINDEX);
 
-				PLUM_PUSH_DATA(L, Image, t->data->getImage(), ref);
+				PLUM_PUSH_DATA(L, Canvas, t->data->getCanvas(), ref);
 				return 1;
 			}
 
@@ -260,7 +260,7 @@ namespace Plum
 				PLUM_BIND_FUNC(refresh)
 				PLUM_BIND_FUNC(getwidth)
 				PLUM_BIND_FUNC(getheight)
-				PLUM_BIND_FUNC(getimage)
+				PLUM_BIND_FUNC(getcanvas)
 				PLUM_BIND_FUNC(gettrueWidth)
 				PLUM_BIND_FUNC(gettrueHeight)
 				PLUM_BIND_FUNC_END_NULL()

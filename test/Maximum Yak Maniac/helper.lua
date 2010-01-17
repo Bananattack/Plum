@@ -134,16 +134,14 @@ function randomItem(t)
 end
 
 function createSpriteFrame(tex, replace, color)
-    local tex_left = plum.Texture(tex.image)
-    local tex_right = plum.Texture(tex.image)
+    local tex_left = plum.Texture(tex.canvas)
+    local tex_right = plum.Texture(tex.canvas)
     
-    tex_left.image:replaceColor(PLAYER_ONE_COLOR, color)
+    tex_left.canvas:replaceColor(PLAYER_ONE_COLOR, color)
     tex_left:refresh()
-    tex_right.image:replaceColor(PLAYER_ONE_COLOR, color)
-    tex_right.image:flip(true, false)
+    tex_right.canvas:replaceColor(PLAYER_ONE_COLOR, color)
+    tex_right.canvas:flip(true, false)
     tex_right:refresh()
-    
-    --v3.FlipBlit(0, 0, true, false, img_left.image_handle, img_right.image_handle)
     
     return {
         left = tex_left;

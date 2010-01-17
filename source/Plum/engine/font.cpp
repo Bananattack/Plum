@@ -7,21 +7,21 @@ namespace Plum
 		texture = new Texture(filename);
 		letterSpacing = 1;
 
-		Image* image = texture->getImage();
+		Canvas* canvas = texture->getCanvas();
 
 		// Try to automatically detect the font size based on the border edges.
 		int w = 0;
 		int h = 0;
-		Color c = image->getPixel(0, 0);
-		for (w = 1; w < image->width; w++)
+		Color c = canvas->getPixel(0, 0);
+		for (w = 1; w < canvas->width; w++)
 		{
-			Color z = image->getPixel(w, 1);
+			Color z = canvas->getPixel(w, 1);
 			if (z == c)
 				break;
 		}
-		for (h = 1; h < image->height; h++)
+		for (h = 1; h < canvas->height; h++)
 		{
-			Color z = image->getPixel(1, h);
+			Color z = canvas->getPixel(1, h);
 			if (z == c)
 				break;
 		}
@@ -39,10 +39,10 @@ namespace Plum
 	{
 		int fx = (cell % FONT_COLUMNS) * (width + 1) + 1;
 		int fy = (cell / FONT_COLUMNS) * (height + 1) + 1;
-		Image* image = texture->getImage();
+		Canvas* canvas = texture->getCanvas();
 		for(int y = 0; y < height; y++)
 		{
-			if(image->getPixel(fx + column, fy + y)[AlphaChannel] > 0)
+			if(canvas->getPixel(fx + column, fy + y)[AlphaChannel] > 0)
 			{
 				return false;
 			}

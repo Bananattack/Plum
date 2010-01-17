@@ -3,7 +3,7 @@
 namespace Plum
 {
 	// For importing purposes.
-	Tileset::Tileset(int tileSize, Image* tiles, Image* obs)
+	Tileset::Tileset(int tileSize, Canvas* tiles, Canvas* obs)
 	{
 		this->tileSize = tileSize;
 		this->tiles = new Texture(tiles);
@@ -120,15 +120,15 @@ namespace Plum
 				// Pop.
 				lua_pop(config.lua, 1);
 				// Allocate temporary image.
-				Image* img = new Image(width, height);
-				img->occupiedWidth = occupiedWidth;
-				img->occupiedHeight = occupiedHeight;
+				Canvas* canvas = new Canvas(width, height);
+				canvas->occupiedWidth = occupiedWidth;
+				canvas->occupiedHeight = occupiedHeight;
 				// Decompress.
-				Compression::decompressData((u8*) blob.data(), blob.length(), (u8*)(img->data), width * height * sizeof(Color));
+				Compression::decompressData((u8*) blob.data(), blob.length(), (u8*)(canvas->data), width * height * sizeof(Color));
 				// Make texture.
-				tiles = new Texture(img);
+				tiles = new Texture(canvas);
 				// Destroy temporary image.
-				delete img;
+				delete canvas;
 			}
 		}
 		else
@@ -239,15 +239,15 @@ namespace Plum
 				// Pop.
 				lua_pop(config.lua, 1);
 				// Allocate temporary image.
-				Image* img = new Image(width, height);
-				img->occupiedWidth = occupiedWidth;
-				img->occupiedHeight = occupiedHeight;
+				Canvas* canvas = new Canvas(width, height);
+				canvas->occupiedWidth = occupiedWidth;
+				canvas->occupiedHeight = occupiedHeight;
 				// Decompress.
-				Compression::decompressData((u8*) blob.data(), blob.length(), (u8*)(img->data), width * height * sizeof(Color));
+				Compression::decompressData((u8*) blob.data(), blob.length(), (u8*)(canvas->data), width * height * sizeof(Color));
 				// Make texture.
-				obs = new Texture(img);
+				obs = new Texture(canvas);
 				// Destroy temporary image.
-				delete img;
+				delete canvas;
 			}
 		}
 		else
@@ -305,20 +305,20 @@ namespace Plum
 		{
 			fprintf(f, "    tiles = {\n");
 
-			Image* img = tiles->getImage();
+			Canvas* canvas = tiles->getCanvas();
 			// Physical width of image being stored, so it knows how big to inflate when loading later.
 			// This is the texture size.
-			fprintf(f, "        width = %d;\n", img->width);
+			fprintf(f, "        width = %d;\n", canvas->width);
 
 			// Physical height of image being stored, so it knows how big to inflate when loading later.
 			// This is the texture size.
-			fprintf(f, "        height = %d;\n", img->height);
+			fprintf(f, "        height = %d;\n", canvas->height);
 
 			// Actually occupied width of image being stored, so it knows how much of it was actually used later.
-			fprintf(f, "        occupiedWidth = %d;\n", img->occupiedWidth);
+			fprintf(f, "        occupiedWidth = %d;\n", canvas->occupiedWidth);
 
 			// Actually occupied width of image being stored, so it knows how much of it was actually used later.
-			fprintf(f, "        occupiedHeight = %d;\n", img->occupiedHeight);
+			fprintf(f, "        occupiedHeight = %d;\n", canvas->occupiedHeight);
 
 			// If we have loaded from an external file, we can store that in the tileset, so the engine can autoupdate.
 			if(externalTileFile.length() > 0)
@@ -328,12 +328,12 @@ namespace Plum
 			}
 
 			// Allocate buffer.
-			u8* buffer = new u8[img->width * img->height * sizeof(Color)];
+			u8* buffer = new u8[canvas->width * canvas->height * sizeof(Color)];
 			// Compress.
-			int compressedSize = Compression::compressData((u8*)(img->data),
-				img->width * img->height * sizeof(Color),
+			int compressedSize = Compression::compressData((u8*)(canvas->data),
+				canvas->width * canvas->height * sizeof(Color),
 				buffer,
-				img->width * img->height * sizeof(Color)
+				canvas->width * canvas->height * sizeof(Color)
 			);
 			// Encode.
 			std::string blob = std::string(buffer, buffer + compressedSize);
@@ -359,18 +359,18 @@ namespace Plum
 		{
 			fprintf(f, "    obs = {\n");
 
-			Image* img = obs->getImage();
+			Canvas* canvas = obs->getCanvas();
 			// Width of image being stored, so it knows how big to inflate when loading later.
-			fprintf(f, "        width = %d;\n", img->width);
+			fprintf(f, "        width = %d;\n", canvas->width);
 
 			// Height of image being stored, so it knows how big to inflate when loading later.
-			fprintf(f, "        height = %d;\n", img->height);
+			fprintf(f, "        height = %d;\n", canvas->height);
 
 			// Actually occupied width of image being stored, so it knows how much of it was actually used later.
-			fprintf(f, "        occupiedWidth = %d;\n", img->occupiedWidth);
+			fprintf(f, "        occupiedWidth = %d;\n", canvas->occupiedWidth);
 
 			// Actually occupied width of image being stored, so it knows how much of it was actually used later.
-			fprintf(f, "        occupiedHeight = %d;\n", img->occupiedHeight);
+			fprintf(f, "        occupiedHeight = %d;\n", canvas->occupiedHeight);
 
 			// If we have loaded from an external file, we can store that in the tileset, so the engine can autoupdate.
 			if(externalObsFile.length() > 0)
@@ -380,9 +380,9 @@ namespace Plum
 			}
 
 			// Allocate buffer.
-			u8* buffer = new u8[img->width * img->height * sizeof(Color)];
+			u8* buffer = new u8[canvas->width * canvas->height * sizeof(Color)];
 			// Compress.
-			int compressedSize = Compression::compressData((u8*)(img->data), img->width * img->height, buffer, img->width * img->height);
+			int compressedSize = Compression::compressData((u8*)(canvas->data), canvas->width * canvas->height, buffer, canvas->width * canvas->height);
 			// Encode.
 			std::string blob = std::string(buffer, buffer + compressedSize);
 			std::string plainText = Base64::encode(blob);

@@ -68,7 +68,7 @@ namespace Plum
 		{
 			tex = PLUM_CHECK_DATA(L, 2, Texture);
 			delete (*ts)->tiles;
-			(*ts)->tiles = new Texture(tex->data->getImage());
+			(*ts)->tiles = new Texture(tex->data->getCanvas());
 		}
 
 		return 0;
@@ -104,7 +104,7 @@ namespace Plum
 		{
 			tex = PLUM_CHECK_DATA(L, 2, Texture);
 			delete (*ts)->obs;
-			(*ts)->obs = new Texture(tex->data->getImage());
+			(*ts)->obs = new Texture(tex->data->getCanvas());
 		}
 
 		return 0;

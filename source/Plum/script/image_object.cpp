@@ -4,10 +4,10 @@ namespace Plum
 {
 	namespace ScriptLibrary
 	{
-		namespace ImageObject
+		namespace CanvasObject
 		{
-			SCRIPT_OBJ_GETTER(index, Wrapper<Image>*, libraryName)
-			SCRIPT_OBJ_SETTER(newindex, Wrapper<Image>*, libraryName)
+			SCRIPT_OBJ_GETTER(index, Wrapper<Canvas>*, libraryName)
+			SCRIPT_OBJ_SETTER(newindex, Wrapper<Canvas>*, libraryName)
 
 			int create(lua_State* L)
 			{
@@ -16,7 +16,7 @@ namespace Plum
 					int w = lua_tointeger(L, 1);
 					int h = lua_tointeger(L, 2);
 
-					PLUM_PUSH_DATA(L, Image, new Image(w, h), NULL);
+					PLUM_PUSH_DATA(L, Canvas, new Canvas(w, h), NULL);
 					
 					return 1;
 				}
@@ -24,13 +24,13 @@ namespace Plum
 				{
 					const char* filename = lua_tostring(L, 1);
 
-					PLUM_PUSH_DATA(L, Image, new Image(filename), NULL);
+					PLUM_PUSH_DATA(L, Canvas, new Canvas(filename), NULL);
 					
 					return 1;
 				}
 				else
 				{
-					luaL_error(L, "Attempt to call plum.Image constructor with invalid argument types.\r\nMust be (string filename) or (int w, int h).");
+					luaL_error(L, "Attempt to call plum.Canvas constructor with invalid argument types.\r\nMust be (string filename) or (int w, int h).");
 					return 0;
 				}
 			}
@@ -38,16 +38,16 @@ namespace Plum
 
 			int gc(lua_State* L)
 			{
-				Wrapper<Image>* img = PLUM_CHECK_DATA(L, 1, Image);
+				Wrapper<Canvas>* canvas = PLUM_CHECK_DATA(L, 1, Canvas);
 
 				// Only delete if it doesn't belong to a parent of some sort.
-				if(!img->parentRef)
+				if(!canvas->parentRef)
 				{
-					delete img->data;
+					delete canvas->data;
 				}
 				else
 				{
-					luaL_unref(L, LUA_REGISTRYINDEX, img->parentRef);
+					luaL_unref(L, LUA_REGISTRYINDEX, canvas->parentRef);
 				}
 
 				return 0;
@@ -55,35 +55,35 @@ namespace Plum
 
 			int tostring(lua_State* L)
 			{
-				PLUM_CHECK_DATA(L, 1, Image);
-				lua_pushstring(L, "(plum.Image object)");
+				PLUM_CHECK_DATA(L, 1, Canvas);
+				lua_pushstring(L, "(plum.Canvas object)");
 				return 1;
 			}
 
 			int blit(lua_State* L)
 			{
-				Wrapper<Image>* img = PLUM_CHECK_DATA(L, 1, Image);
+				Wrapper<Canvas>* canvas = PLUM_CHECK_DATA(L, 1, Canvas);
 				int x = luaL_checkint(L, 2);
 				int y = luaL_checkint(L, 3);
-				Wrapper<Image>* dest = PLUM_CHECK_DATA(L, 4, Image);
+				Wrapper<Canvas>* dest = PLUM_CHECK_DATA(L, 4, Canvas);
 				BlendMode mode = (BlendMode) luaL_optint(L, 5, getBlendMode());
 				
 				switch(mode)
 				{
 					case BlendOpaque:
-						img->data->blit<SoftOpaqueBlender>(x, y, dest->data, SoftOpaqueBlender());
+						canvas->data->blit<SoftOpaqueBlender>(x, y, dest->data, SoftOpaqueBlender());
 						break;
 					case BlendMerge:
-						img->data->blit<SoftMergeBlender>(x, y, dest->data, SoftMergeBlender());
+						canvas->data->blit<SoftMergeBlender>(x, y, dest->data, SoftMergeBlender());
 						break;
 					case BlendPreserve:
-						img->data->blit<SoftPreserveBlender>(x, y, dest->data, SoftPreserveBlender());
+						canvas->data->blit<SoftPreserveBlender>(x, y, dest->data, SoftPreserveBlender());
 						break;
 					case BlendAdd:
-						img->data->blit<SoftAddBlender>(x, y, dest->data, SoftAddBlender());
+						canvas->data->blit<SoftAddBlender>(x, y, dest->data, SoftAddBlender());
 						break;
 					case BlendSubtract:
-						img->data->blit<SoftSubtractBlender>(x, y, dest->data, SoftSubtractBlender());
+						canvas->data->blit<SoftSubtractBlender>(x, y, dest->data, SoftSubtractBlender());
 						break;
 				}
 				return 0;
@@ -92,34 +92,34 @@ namespace Plum
 
 			int replaceColor(lua_State* L)
 			{
-				Wrapper<Image>* img = PLUM_CHECK_DATA(L, 1, Image);
+				Wrapper<Canvas>* canvas = PLUM_CHECK_DATA(L, 1, Canvas);
 				int find = luaL_checkint(L, 2);
 				int replace = luaL_checkint(L, 3);
-				img->data->replaceColor(find, replace);
+				canvas->data->replaceColor(find, replace);
 				return 0;
 			}
 
 			int flip(lua_State* L)
 			{
-				Wrapper<Image>* img = PLUM_CHECK_DATA(L, 1, Image);
+				Wrapper<Canvas>* canvas = PLUM_CHECK_DATA(L, 1, Canvas);
 				bool h = lua_toboolean(L, 2) != 0;
 				bool v = lua_toboolean(L, 3) != 0;
-				img->data->flip(h, v);
+				canvas->data->flip(h, v);
 				return 0;
 			}
 
 			int getwidth(lua_State* L)
 			{
-				Wrapper<Image>* img = PLUM_CHECK_DATA(L, 1, Image);
-				lua_pushnumber(L, img->data->width);
+				Wrapper<Canvas>* canvas = PLUM_CHECK_DATA(L, 1, Canvas);
+				lua_pushnumber(L, canvas->data->width);
 
 				return 1;
 			}
 
 			int getheight(lua_State* L)
 			{
-				Wrapper<Image>* img = PLUM_CHECK_DATA(L, 1, Image);
-				lua_pushnumber(L, img->data->height);
+				Wrapper<Canvas>* canvas = PLUM_CHECK_DATA(L, 1, Canvas);
+				lua_pushnumber(L, canvas->data->height);
 
 				return 1;
 			}
@@ -150,8 +150,8 @@ namespace Plum
 				// Push plum namespace.
 				lua_getglobal(L, "plum");
 
-				// plum.image = <function imageNew>
-				lua_pushstring(L, "Image");
+				// plum.canvas = <function imageNew>
+				lua_pushstring(L, "Canvas");
 				lua_pushcfunction(L, create);
 				lua_settable(L, -3);
 
