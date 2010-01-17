@@ -1,6 +1,6 @@
 plumed.ui.class 'Mouse' do
     local this_class = plumed.ui.Mouse
-    local cursorTexture = plum.Texture('plumed/resources/images/mouse_cursor.png')
+    local cursorImage = plum.Image('plumed/resources/images/mouse_cursor.png')
 
     function this_class:__init()
         self.lastX = 0
@@ -18,7 +18,7 @@ plumed.ui.class 'Mouse' do
     end
     
     function this_class:render()
-        cursorTexture:blit(self.x, self.y)
+        cursorImage:blit(self.x, self.y)
     end
     
     function this_class:update()

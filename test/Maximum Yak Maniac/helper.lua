@@ -134,8 +134,8 @@ function randomItem(t)
 end
 
 function createSpriteFrame(tex, replace, color)
-    local tex_left = plum.Texture(tex.canvas)
-    local tex_right = plum.Texture(tex.canvas)
+    local tex_left = plum.Image(tex.canvas)
+    local tex_right = plum.Image(tex.canvas)
     
     tex_left.canvas:replaceColor(PLAYER_ONE_COLOR, color)
     tex_left:refresh()

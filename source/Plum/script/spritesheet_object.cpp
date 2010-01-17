@@ -12,7 +12,7 @@ namespace Plum
 
 			int create(lua_State* L)
 			{
-				if((PLUM_IS_DATA(L, 1, Canvas) || PLUM_IS_DATA(L, 1, Texture))
+				if((PLUM_IS_DATA(L, 1, Canvas) || PLUM_IS_DATA(L, 1, Image))
 					&& lua_isnumber(L, 2) && lua_isnumber(L, 3))
 				{
 					int w = lua_tointeger(L, 2);
@@ -23,14 +23,14 @@ namespace Plum
 						PLUM_PUSH_DATA(L, Spritesheet, new Spritesheet(canvas->data, w, h), NULL);
 						return 1;
 					}
-					else if(PLUM_IS_DATA(L, 1, Texture))
+					else if(PLUM_IS_DATA(L, 1, Image))
 					{
-						Wrapper<Texture>* tex = PLUM_CHECK_DATA(L, 1, Texture);
-						PLUM_PUSH_DATA(L, Spritesheet, new Spritesheet(tex->data, w, h), NULL);
+						Wrapper<Image>* img = PLUM_CHECK_DATA(L, 1, Image);
+						PLUM_PUSH_DATA(L, Spritesheet, new Spritesheet(img->data, w, h), NULL);
 						return 1;
 					}
 				}
-				luaL_error(L, "Attempt to call plum.Spritesheet constructor with invalid argument types.\r\nMust be (Texture tex, int frameWidth, int frameHeight) or (Canvas canvas, int frameWidth, int frameHeight).");
+				luaL_error(L, "Attempt to call plum.Spritesheet constructor with invalid argument types.\r\nMust be (Image img, int frameWidth, int frameHeight) or (Canvas canvas, int frameWidth, int frameHeight).");
 				return 0;
 			}
 
@@ -155,7 +155,7 @@ namespace Plum
 				// Push plum namespace.
 				lua_getglobal(L, "plum");
 
-				// plum.texture = <function textureNew>
+				// plum.Spritesheet = <function create>
 				lua_pushstring(L, "Spritesheet");
 				lua_pushcfunction(L, create);
 				lua_settable(L, -3);

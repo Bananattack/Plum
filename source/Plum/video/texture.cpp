@@ -2,35 +2,35 @@
 
 namespace Plum
 {
-	Texture::Texture(const std::string& filename)
+	Image::Image(const std::string& filename)
 	{
 		init(filename.c_str());
 	}
 
-	Texture::Texture(const char* filename)
+	Image::Image(const char* filename)
 	{
 		init(filename);
 	}
 
-	Texture::Texture(Canvas* canvas)
+	Image::Image(Canvas* canvas)
 	{
 		init(canvas);
 	}
 
-	Texture::~Texture()
+	Image::~Image()
 	{
 		glDeleteTextures(1, &textureID);
 		delete textureCanvas;
 	}
 
-	void Texture::init(const char* filename)
+	void Image::init(const char* filename)
 	{
 		Canvas* canvas = new Canvas(filename);
 		init(canvas);
 		delete canvas;
 	}
 
-	void Texture::init(Canvas* canvas)
+	void Image::init(Canvas* canvas)
 	{
 		target = GL_TEXTURE_2D;
 
@@ -58,101 +58,101 @@ namespace Plum
 			0, GL_RGBA, GL_UNSIGNED_BYTE, textureCanvas->data);
 	}
 
-	int Texture::getCanvasWidth()
+	int Image::getCanvasWidth()
 	{
 		return canvasWidth;
 	}
 
-	int Texture::getCanvasHeight()
+	int Image::getCanvasHeight()
 	{
 		return canvasHeight;
 	}
 
-	int Texture::getTextureWidth()
+	int Image::getTextureWidth()
 	{
 		return textureWidth;
 	}
 
-	int Texture::getTextureHeight()
+	int Image::getTextureHeight()
 	{
 		return textureHeight;
 	}
 
-	double Texture::getWidthRatio()
+	double Image::getWidthRatio()
 	{
 		return widthRatio;
 	}
 
-	double Texture::getHeightRatio()
+	double Image::getHeightRatio()
 	{
 		return heightRatio;
 	}
 
-	Canvas* Texture::getCanvas()
+	Canvas* Image::getCanvas()
 	{
 		return textureCanvas;
 	}
 
-	void Texture::setCanvasWidth(int width)
+	void Image::setCanvasWidth(int width)
 	{
 		this->textureCanvas->occupiedWidth = this->canvasWidth = width;
 		updateRatios();
 	}
 
-	void Texture::setCanvasHeight(int height)
+	void Image::setCanvasHeight(int height)
 	{
 		this->textureCanvas->occupiedHeight = this->canvasHeight = height;
 		updateRatios();
 	}
 
-	void Texture::setTextureWidth(int width)
+	void Image::setTextureWidth(int width)
 	{
 		this->textureWidth = width;
 		updateRatios();
 	}
 
-	void Texture::setTextureHeight(int height)
+	void Image::setTextureHeight(int height)
 	{
 		this->textureHeight = height;
 		updateRatios();
 	}
 
-	void Texture::updateRatios()
+	void Image::updateRatios()
 	{
 		widthRatio = (textureWidth != 0) ? ((double) canvasWidth) / textureWidth : 0;
 		heightRatio = (textureHeight != 0) ? ((double) canvasHeight) / textureHeight : 0;
 	}
 
-	void Texture::refresh()
+	void Image::refresh()
 	{
 		bind();
 		glTexSubImage2D(target, 0, 0, 0, textureWidth, textureHeight,
 			GL_RGBA, GL_UNSIGNED_BYTE, textureCanvas->data);
 	}
 
-	void Texture::bind()
+	void Image::bind()
 	{
 		glBindTexture(target, textureID); 
 	}
 
-	void Texture::blit(int x, int y, BlendMode mode, Color tint)
+	void Image::blit(int x, int y, BlendMode mode, Color tint)
 	{
 		scaleBlitRegion(0, 0, canvasWidth, canvasHeight, x, y, canvasWidth, canvasHeight, mode, tint);
 	}
 
-	void Texture::scaleBlit(int x, int y, int width, int height, BlendMode mode, Color tint)
+	void Image::scaleBlit(int x, int y, int width, int height, BlendMode mode, Color tint)
 	{
 		scaleBlitRegion(0, 0, canvasWidth, canvasHeight, x, y, width, height, mode, tint);
 	}
 
-	void Texture::blitRegion(int sourceX, int sourceY, int sourceX2, int sourceY2,
+	void Image::blitRegion(int sourceX, int sourceY, int sourceX2, int sourceY2,
 					int destX, int destY, BlendMode mode, Color tint)
 	{
 		scaleBlitRegion(sourceX, sourceY, sourceX2, sourceY2, destX, destY,
 			PLUM_ABS(sourceX2 - sourceX) + 1, PLUM_ABS(sourceY2 - sourceY) + 1, mode, tint);
 	}
 
-	void Texture::scaleBlitRegion(int sourceX, int sourceY, int sourceX2, int sourceY2,
+	void Image::scaleBlitRegion(int sourceX, int sourceY, int sourceX2, int sourceY2,
 					int destX, int destY, int scaledWidth, int scaledHeight, BlendMode mode, Color tint)
 	{
 		ColorChannel r, g, b, a;
@@ -215,23 +215,23 @@ namespace Plum
 		glPopMatrix();
 	}
 
-	void Texture::rotateBlit(int x, int y, double angle, BlendMode mode, Color tint)
+	void Image::rotateBlit(int x, int y, double angle, BlendMode mode, Color tint)
 	{
 		rotateScaleBlitRegion(0, 0, canvasWidth, canvasHeight, x, y, angle, 1.0, mode, tint);
 	}
 
-	void Texture::rotateScaleBlit(int x, int y, double angle, double scale, BlendMode mode, Color tint)
+	void Image::rotateScaleBlit(int x, int y, double angle, double scale, BlendMode mode, Color tint)
 	{
 		rotateScaleBlitRegion(0, 0, canvasWidth, canvasHeight, x, y, angle, scale, mode, tint);
 	}
 
-	void Texture::rotateBlitRegion(int sourceX, int sourceY, int sourceX2, int sourceY2,
+	void Image::rotateBlitRegion(int sourceX, int sourceY, int sourceX2, int sourceY2,
 					int destX, int destY, double angle, BlendMode mode, Color tint)
 	{
 		rotateScaleBlitRegion(sourceX, sourceY, sourceX2, sourceY2, destX, destY, angle, 1.0, mode, tint);
 	}
 
-	void Texture::rotateScaleBlitRegion(int sourceX, int sourceY, int sourceX2, int sourceY2,
+	void Image::rotateScaleBlitRegion(int sourceX, int sourceY, int sourceX2, int sourceY2,
 					int destX, int destY, double angle, double scale, BlendMode mode, Color tint)
 	{
 		ColorChannel r, g, b, a;
@@ -300,7 +300,7 @@ namespace Plum
 	// For when performance really matters, bind the texture and figure out blend modes ahead of time,
 	// then call this in your loop. Especially important for tilemaps.
 	// "raw" because it does less hand-holding. But could possibly be considered very hand-holdy.
-	void Texture::rawBlitRegion(int sourceX, int sourceY, int sourceX2, int sourceY2,
+	void Image::rawBlitRegion(int sourceX, int sourceY, int sourceX2, int sourceY2,
 					int destX, int destY, double angle, double scale)
 	{
 		sourceX = PLUM_MIN(PLUM_MAX(0, sourceX), canvasWidth - 1);

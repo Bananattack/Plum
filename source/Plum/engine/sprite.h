@@ -6,7 +6,7 @@ namespace Plum
 	class Sprite
 	{
 		private:
-			Texture* texture;
+			Image* image;
 			AnimationParser* parser;
 			std::map<std::string, AnimationInfo*> animationInfo;
 		public:
@@ -35,9 +35,9 @@ namespace Plum
 		private:
 			void init(double x, double y, const std::string& filename, lua_State* state = 0);
 		public:
-			Texture* getTexture()
+			Image* getImage()
 			{
-				return texture;
+				return image;
 			}
 
 			void blit();

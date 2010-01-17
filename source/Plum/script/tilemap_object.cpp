@@ -159,7 +159,7 @@ namespace Plum
 				// Push plum namespace.
 				lua_getglobal(L, "plum");
 
-				// plum.texture = <function textureNew>
+				// plum.tilemap = <function create>
 				lua_pushstring(L, "Tilemap");
 				lua_pushcfunction(L, create);
 				lua_settable(L, -3);

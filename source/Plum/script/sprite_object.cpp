@@ -66,7 +66,7 @@ namespace Plum
 		return 0;
 	}
 
-	static int spriteGetTexture(lua_State* L)
+	static int spriteGetImage(lua_State* L)
 	{
 		Sprite** s = checkValidSpriteObject(L, 1); 
 
@@ -75,7 +75,7 @@ namespace Plum
 		lua_pushvalue(L, 1);
 		int ref = luaL_ref(L, LUA_REGISTRYINDEX);
 
-		PLUM_PUSH_DATA(L, Texture, (*s)->getTexture(), ref);
+		PLUM_PUSH_DATA(L, Image, (*s)->getImage(), ref);
 		return 1;
 	}
 
@@ -185,7 +185,7 @@ namespace Plum
 		{ "blit", spriteBlit },
 		{ "update", spriteUpdate },
 		{ "setAnimation", spriteSwitchAnimation },
-		{ "gettexture", spriteGetTexture },
+		{ "getimage", spriteGetImage },
 		{ "getconfig", spriteGetConfig },
 		{ "getx", spriteGetX },
 		{ "setx", spriteSetX },

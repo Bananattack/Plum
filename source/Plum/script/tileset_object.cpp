@@ -43,18 +43,18 @@ namespace Plum
 		Tileset** ts = checkValidTilesetObject(L, 1); 
 
 		// Push reference to this tileset, so the tileset stays around
-		// as long as it's required for this texture.
+		// as long as it's required for this image.
 		lua_pushvalue(L, 1);
 		int ref = luaL_ref(L, LUA_REGISTRYINDEX);
 
-		PLUM_PUSH_DATA(L, Texture, (*ts)->tiles, ref);
+		PLUM_PUSH_DATA(L, Image, (*ts)->tiles, ref);
 		return 1;
 	}
 
 	static int tilesetReplaceTiles(lua_State* L)
 	{
 		Tileset** ts = checkValidTilesetObject(L, 1); 
-		ScriptLibrary::Wrapper<Texture>* tex = NULL;
+		ScriptLibrary::Wrapper<Image>* img = NULL;
 
 		(*ts)->externalTileFile = "";
 		if(lua_isstring(L, 1))
@@ -62,13 +62,13 @@ namespace Plum
 			const char* filename = lua_tostring(L, 1);
 			delete (*ts)->tiles;
 			(*ts)->externalTileFile = filename;
-			(*ts)->tiles = new Texture(filename);
+			(*ts)->tiles = new Image(filename);
 		}
 		else
 		{
-			tex = PLUM_CHECK_DATA(L, 2, Texture);
+			img = PLUM_CHECK_DATA(L, 2, Image);
 			delete (*ts)->tiles;
-			(*ts)->tiles = new Texture(tex->data->getCanvas());
+			(*ts)->tiles = new Image(img->data->getCanvas());
 		}
 
 		return 0;
@@ -79,18 +79,18 @@ namespace Plum
 		Tileset** ts = checkValidTilesetObject(L, 1);
 
 		// Push reference to this tileset, so the tileset stays around
-		// as long as it's required for this texture.
+		// as long as it's required for this image.
 		lua_pushvalue(L, 1);
 		int ref = luaL_ref(L, LUA_REGISTRYINDEX);
 
-		PLUM_PUSH_DATA(L, Texture, (*ts)->obs, ref);
+		PLUM_PUSH_DATA(L, Image, (*ts)->obs, ref);
 		return 1;
 	}
 
 	static int tilesetReplaceObs(lua_State* L)
 	{
 		Tileset** ts = checkValidTilesetObject(L, 1); 
-		ScriptLibrary::Wrapper<Texture>* tex = NULL;
+		ScriptLibrary::Wrapper<Image>* img = NULL;
 
 		(*ts)->externalObsFile = "";
 		if(lua_isstring(L, 1))
@@ -98,13 +98,13 @@ namespace Plum
 			const char* filename = lua_tostring(L, 1);
 			delete (*ts)->obs;
 			(*ts)->externalObsFile = filename;
-			(*ts)->obs = new Texture(filename);
+			(*ts)->obs = new Image(filename);
 		}
 		else
 		{
-			tex = PLUM_CHECK_DATA(L, 2, Texture);
+			img = PLUM_CHECK_DATA(L, 2, Image);
 			delete (*ts)->obs;
-			(*ts)->obs = new Texture(tex->data->getCanvas());
+			(*ts)->obs = new Image(img->data->getCanvas());
 		}
 
 		return 0;

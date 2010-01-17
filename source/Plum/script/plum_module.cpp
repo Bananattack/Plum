@@ -173,10 +173,10 @@ namespace Plum
 			return 1;
 		}
 
-		int encodeTexture(lua_State* L)
+		int encodeImage(lua_State* L)
 		{
-			Wrapper<Texture>* texture = PLUM_CHECK_DATA(L, 1, Texture);
-			encodeImageData(L, texture->data->getCanvas());
+			Wrapper<Image>* image = PLUM_CHECK_DATA(L, 1, Image);
+			encodeImageData(L, image->data->getCanvas());
 
 			return 1;
 		}
@@ -212,12 +212,12 @@ namespace Plum
 			return 1;
 		}
 
-		int decodeTexture(lua_State* L)
+		int decodeImage(lua_State* L)
 		{
 			const char* s = luaL_checkstring(L, 1);
 			Canvas* canvas = decodeImageData(s);
 			// Push decoded texture.
-			PLUM_PUSH_DATA(L, Texture, new Texture(canvas), NULL);
+			PLUM_PUSH_DATA(L, Image, new Image(canvas), NULL);
 			// Destroy temporary image.
 			delete canvas;
 			return 1;
@@ -311,10 +311,10 @@ namespace Plum
 			lua_setfield(L, -2, "encodeCanvas");
 			lua_pushcfunction(L, decodeCanvas);
 			lua_setfield(L, -2, "decodeCanvas");
-			lua_pushcfunction(L, encodeTexture);
-			lua_setfield(L, -2, "encodeTexture");
-			lua_pushcfunction(L, decodeTexture);
-			lua_setfield(L, -2, "decodeTexture");
+			lua_pushcfunction(L, encodeImage);
+			lua_setfield(L, -2, "encodeImage");
+			lua_pushcfunction(L, decodeImage);
+			lua_setfield(L, -2, "decodeImage");
 			lua_pushcfunction(L, encodeTilemap);
 			lua_setfield(L, -2, "encodeTilemap");
 			lua_pushcfunction(L, decodeTilemap);
@@ -384,7 +384,7 @@ namespace Plum
 
 
 			CanvasObject::openLibrary(L);
-			TextureObject::openLibrary(L);
+			ImageObject::openLibrary(L);
 			SpritesheetObject::openLibrary(L);
 			TilemapObject::openLibrary(L);
 		}

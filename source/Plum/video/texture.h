@@ -1,7 +1,7 @@
 #pragma once
 namespace Plum
 {
-	class Texture
+	class Image
 	{
 		private:
 			inline static int nearestPowerOfTwo(int num)
@@ -24,8 +24,8 @@ namespace Plum
 				}
 			}
 
-			// A backend software image that this raw texture copies.
-			// Useful if the textures need to be reloaded later.
+			// A backend software canvas that this image's raw texture copies.
+			// Useful if the textures need to be refreshed later.
 			Canvas* textureCanvas;
 			// The GL target type
 			int target; 
@@ -43,11 +43,11 @@ namespace Plum
 			void setTextureWidth(int width);
 			void setTextureHeight(int height);
 		public:
-			Texture(const std::string& filename);
-			Texture(const char* filename);
-			Texture(Canvas* canvas);
+			Image(const std::string& filename);
+			Image(const char* filename);
+			Image(Canvas* canvas);
 
-			~Texture();
+			~Image();
 
 			void init(const char* filename);
 			void init(Canvas* canvas);

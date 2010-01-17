@@ -5,7 +5,7 @@ vergeclass 'Grass' do
         self.y_offset = y_offset
         self.parallax = parallax
         self.height = height
-        self.texture = plum.Texture(resource.image.grass.canvas)
+        self.texture = plum.Image(resource.image.grass.canvas)
         self.texture.canvas:replaceColor(plum.color.Black, color)
         self.texture:refresh()
     end

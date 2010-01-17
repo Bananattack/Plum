@@ -1,6 +1,6 @@
 vergeclass 'Balloon' do
     function Balloon:__init(x, y)
-        self.frame = plum.Texture(randomItem(resource.image.balloon).canvas)
+        self.frame = plum.Image(randomItem(resource.image.balloon).canvas)
         self.color = plum.color.hsv(math.random(0, 359), 255, 255)
         self.frame.canvas:replaceColor(plum.color.White, self.color)
         self.frame:refresh()

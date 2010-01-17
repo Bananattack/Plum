@@ -33,41 +33,41 @@ resource = {
     };
     image = {
         yak = {
-            idle = plum.Texture('resources/maximum_yac_idle.png');
-            eat = plum.Texture('resources/maximum_yac_eat.png');
+            idle = plum.Image('resources/maximum_yac_idle.png');
+            eat = plum.Image('resources/maximum_yac_eat.png');
         };
         cloud = {
-            plum.Texture('resources/cloud_1.png');
-            plum.Texture('resources/cloud_2.png');
+            plum.Image('resources/cloud_1.png');
+            plum.Image('resources/cloud_2.png');
         };
         big_building = {
-            plum.Texture('resources/big_building_1.png');
+            plum.Image('resources/big_building_1.png');
         };
         building = {
-            plum.Texture('resources/building_1.png');
-            plum.Texture('resources/building_3.png');
-            plum.Texture('resources/building_4.png');
-            plum.Texture('resources/building_5.png');
+            plum.Image('resources/building_1.png');
+            plum.Image('resources/building_3.png');
+            plum.Image('resources/building_4.png');
+            plum.Image('resources/building_5.png');
         };
         poof = {
-            plum.Texture('resources/poof_1.png');
-            plum.Texture('resources/poof_2.png');
-            plum.Texture('resources/poof_3.png');
-            plum.Texture('resources/poof_4.png');
-            plum.Texture('resources/poof_5.png');
-            plum.Texture('resources/poof_6.png');
-            plum.Texture('resources/poof_7.png');
+            plum.Image('resources/poof_1.png');
+            plum.Image('resources/poof_2.png');
+            plum.Image('resources/poof_3.png');
+            plum.Image('resources/poof_4.png');
+            plum.Image('resources/poof_5.png');
+            plum.Image('resources/poof_6.png');
+            plum.Image('resources/poof_7.png');
         };
         roids = {
-            plum.Texture('resources/syringe.png');
+            plum.Image('resources/syringe.png');
         };
         balloon = {
-            plum.Texture('resources/balloon_1.png');
-            plum.Texture('resources/balloon_2.png');
-            plum.Texture('resources/balloon_3.png');
+            plum.Image('resources/balloon_1.png');
+            plum.Image('resources/balloon_2.png');
+            plum.Image('resources/balloon_3.png');
         };
         
-        grass = plum.Texture('resources/grass.png');
+        grass = plum.Image('resources/grass.png');
     };
 };
 

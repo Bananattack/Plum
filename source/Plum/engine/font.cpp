@@ -4,10 +4,10 @@ namespace Plum
 {
 	void Font::init(const char* filename)
 	{
-		texture = new Texture(filename);
+		image = new Image(filename);
 		letterSpacing = 1;
 
-		Canvas* canvas = texture->getCanvas();
+		Canvas* canvas = image->getCanvas();
 
 		// Try to automatically detect the font size based on the border edges.
 		int w = 0;
@@ -39,7 +39,7 @@ namespace Plum
 	{
 		int fx = (cell % FONT_COLUMNS) * (width + 1) + 1;
 		int fy = (cell / FONT_COLUMNS) * (height + 1) + 1;
-		Canvas* canvas = texture->getCanvas();
+		Canvas* canvas = image->getCanvas();
 		for(int y = 0; y < height; y++)
 		{
 			if(canvas->getPixel(fx + column, fy + y)[AlphaChannel] > 0)
@@ -81,7 +81,7 @@ namespace Plum
 		int fx = ((c - 32) % FONT_COLUMNS) * (width + 1) + 1;
 		int fy = ((c - 32) / FONT_COLUMNS) * (height + 1) + 1;
 
-		texture->blitRegion(fx, fy, fx + width - 1, fy + height - 1, x, y, mode, tint);
+		image->blitRegion(fx, fy, fx + width - 1, fy + height - 1, x, y, mode, tint);
 	}
 
 	void Font::print(int x1, int y, std::string s, BlendMode mode, Color tint)

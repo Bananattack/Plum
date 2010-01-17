@@ -8,8 +8,8 @@ namespace Plum
 			std::string externalObsFile, externalObsHash;
 
 			int tileSize;
-			Texture* tiles;
-			Texture* obs;
+			Image* tiles;
+			Image* obs;
 			Config config;
 
 			// For importing purposes.

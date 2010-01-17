@@ -4,10 +4,10 @@ namespace Plum
 {
 	namespace ScriptLibrary
 	{
-		namespace TextureObject
+		namespace ImageObject
 		{
-			SCRIPT_OBJ_GETTER(index, Wrapper<Texture>*, libraryName)
-			SCRIPT_OBJ_SETTER(newindex, Wrapper<Texture>*, libraryName)
+			SCRIPT_OBJ_GETTER(index, Wrapper<Image>*, libraryName)
+			SCRIPT_OBJ_SETTER(newindex, Wrapper<Image>*, libraryName)
 
 			int create(lua_State* L)
 			{
@@ -15,24 +15,24 @@ namespace Plum
 				{
 					const char* filename = lua_tostring(L, 1);
 
-					PLUM_PUSH_DATA(L, Texture, new Texture(filename), NULL);
+					PLUM_PUSH_DATA(L, Image, new Image(filename), NULL);
 
 					return 1;
 				}
 				else if(PLUM_IS_DATA(L, 1, Canvas))
 				{
 					Wrapper<Canvas>* canvas = PLUM_CHECK_DATA(L, 1, Canvas);
-					PLUM_PUSH_DATA(L, Texture, new Texture(canvas->data), NULL);
+					PLUM_PUSH_DATA(L, Image, new Image(canvas->data), NULL);
 
 					return 1;
 				}
-				luaL_error(L, "Attempt to call plum.Texture constructor with invalid argument types.\r\nMust be (string filename) or (plum.Canvas canvas).");
+				luaL_error(L, "Attempt to call plum.Image constructor with invalid argument types.\r\nMust be (string filename) or (plum.Canvas canvas).");
 				return 0;
 			}
 
 			int gc(lua_State* L)
 			{
-				Wrapper<Texture>* t = PLUM_CHECK_DATA(L, 1, Texture);
+				Wrapper<Image>* t = PLUM_CHECK_DATA(L, 1, Image);
 
 				// Only delete if it doesn't belong to a parent of some sort.
 				if(!t->parentRef)
@@ -49,14 +49,14 @@ namespace Plum
 
 			int tostring(lua_State* L)
 			{
-				PLUM_CHECK_DATA(L, 1, Texture);
-				lua_pushstring(L, "(plum.Texture object)");
+				PLUM_CHECK_DATA(L, 1, Image);
+				lua_pushstring(L, "(plum.Image object)");
 				return 1;
 			}
 
 			int blit(lua_State* L)
 			{
-				Wrapper<Texture>* t = PLUM_CHECK_DATA(L, 1, Texture);
+				Wrapper<Image>* t = PLUM_CHECK_DATA(L, 1, Image);
 				int x = luaL_checkint(L, 2);
 				int y = luaL_checkint(L, 3);
 				BlendMode mode = (BlendMode) luaL_optint(L, 4, BlendUnspecified);
@@ -69,7 +69,7 @@ namespace Plum
 
 			int blitRegion(lua_State* L)
 			{
-				Wrapper<Texture>* t = PLUM_CHECK_DATA(L, 1, Texture);
+				Wrapper<Image>* t = PLUM_CHECK_DATA(L, 1, Image);
 				int sx = luaL_checkint(L, 2);
 				int sy = luaL_checkint(L, 3);
 				int sx2 = luaL_checkint(L, 4);
@@ -86,7 +86,7 @@ namespace Plum
 
 			int scaleBlit(lua_State* L)
 			{
-				Wrapper<Texture>* t = PLUM_CHECK_DATA(L, 1, Texture);
+				Wrapper<Image>* t = PLUM_CHECK_DATA(L, 1, Image);
 				int x = luaL_checkint(L, 2);
 				int y = luaL_checkint(L, 3);
 				int width = luaL_checkint(L, 4);
@@ -101,7 +101,7 @@ namespace Plum
 
 			int scaleBlitRegion(lua_State* L)
 			{
-				Wrapper<Texture>* t = PLUM_CHECK_DATA(L, 1, Texture);
+				Wrapper<Image>* t = PLUM_CHECK_DATA(L, 1, Image);
 				int sx = luaL_checkint(L, 2);
 				int sy = luaL_checkint(L, 3);
 				int sx2 = luaL_checkint(L, 4);
@@ -120,7 +120,7 @@ namespace Plum
 
 			int rotateBlit(lua_State* L)
 			{
-				Wrapper<Texture>* t = PLUM_CHECK_DATA(L, 1, Texture);
+				Wrapper<Image>* t = PLUM_CHECK_DATA(L, 1, Image);
 				int x = luaL_checkint(L, 2);
 				int y = luaL_checkint(L, 3);
 				double angle = luaL_checknumber(L, 4);
@@ -134,7 +134,7 @@ namespace Plum
 
 			int rotateBlitRegion(lua_State* L)
 			{
-				Wrapper<Texture>* t = PLUM_CHECK_DATA(L, 1, Texture);
+				Wrapper<Image>* t = PLUM_CHECK_DATA(L, 1, Image);
 				int sx = luaL_checkint(L, 2);
 				int sy = luaL_checkint(L, 3);
 				int sx2 = luaL_checkint(L, 4);
@@ -151,7 +151,7 @@ namespace Plum
 
 			int rotateScaleBlit(lua_State* L)
 			{
-				Wrapper<Texture>* t = PLUM_CHECK_DATA(L, 1, Texture);
+				Wrapper<Image>* t = PLUM_CHECK_DATA(L, 1, Image);
 				int x = luaL_checkint(L, 2);
 				int y = luaL_checkint(L, 3);
 				double angle = luaL_checknumber(L, 4);
@@ -166,7 +166,7 @@ namespace Plum
 
 			int rotateScaleBlitRegion(lua_State* L)
 			{
-				Wrapper<Texture>* t = PLUM_CHECK_DATA(L, 1, Texture);
+				Wrapper<Image>* t = PLUM_CHECK_DATA(L, 1, Image);
 				int sx = luaL_checkint(L, 2);
 				int sy = luaL_checkint(L, 3);
 				int sx2 = luaL_checkint(L, 4);
@@ -184,7 +184,7 @@ namespace Plum
 
 			int refresh(lua_State* L)
 			{
-				Wrapper<Texture>* t = PLUM_CHECK_DATA(L, 1, Texture);
+				Wrapper<Image>* t = PLUM_CHECK_DATA(L, 1, Image);
 				t->data->refresh();
 
 				return 1;
@@ -192,7 +192,7 @@ namespace Plum
 
 			int getwidth(lua_State* L)
 			{
-				Wrapper<Texture>* t = PLUM_CHECK_DATA(L, 1, Texture);
+				Wrapper<Image>* t = PLUM_CHECK_DATA(L, 1, Image);
 				lua_pushnumber(L, t->data->getCanvasWidth());
 
 				return 1;
@@ -200,7 +200,7 @@ namespace Plum
 
 			int getheight(lua_State* L)
 			{
-				Wrapper<Texture>* t = PLUM_CHECK_DATA(L, 1, Texture);
+				Wrapper<Image>* t = PLUM_CHECK_DATA(L, 1, Image);
 				lua_pushnumber(L, t->data->getCanvasHeight());
 
 				return 1;
@@ -208,7 +208,7 @@ namespace Plum
 
 			int gettrueWidth(lua_State* L)
 			{
-				Wrapper<Texture>* t = PLUM_CHECK_DATA(L, 1, Texture);
+				Wrapper<Image>* t = PLUM_CHECK_DATA(L, 1, Image);
 				lua_pushnumber(L, t->data->getTextureWidth());
 
 				return 1;
@@ -216,7 +216,7 @@ namespace Plum
 
 			int gettrueHeight(lua_State* L)
 			{
-				Wrapper<Texture>* t = PLUM_CHECK_DATA(L, 1, Texture);
+				Wrapper<Image>* t = PLUM_CHECK_DATA(L, 1, Image);
 				lua_pushnumber(L, t->data->getTextureHeight());
 
 				return 1;
@@ -224,9 +224,9 @@ namespace Plum
 
 			int getcanvas(lua_State* L)
 			{
-				Wrapper<Texture>* t = PLUM_CHECK_DATA(L, 1, Texture); 
+				Wrapper<Image>* t = PLUM_CHECK_DATA(L, 1, Image); 
 
-				// Push reference to this, so the texture stays around
+				// Push reference to this, so the image stays around
 				// as long as it's required for the child.
 				lua_pushvalue(L, 1);
 				int ref = luaL_ref(L, LUA_REGISTRYINDEX);
@@ -270,8 +270,8 @@ namespace Plum
 				// Push plum namespace.
 				lua_getglobal(L, "plum");
 
-				// plum.texture = <function textureNew>
-				lua_pushstring(L, "Texture");
+				// plum.image = <function create>
+				lua_pushstring(L, "Image");
 				lua_pushcfunction(L, create);
 				lua_settable(L, -3);
 

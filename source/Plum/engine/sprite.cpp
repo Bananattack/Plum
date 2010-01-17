@@ -14,7 +14,7 @@ namespace Plum
 
 	Sprite::~Sprite()
 	{
-		delete texture;
+		delete image;
 		delete parser;
 
 		std::map<std::string, AnimationInfo*>::iterator i;
@@ -28,7 +28,7 @@ namespace Plum
 	{
 		cfg.init(filename, "sprite", state);
 
-		texture = new Texture(Path::getDirectory(filename) + cfg.getStringValue("image_filename"));
+		image = new Image(Path::getDirectory(filename) + cfg.getStringValue("image_filename"));
 
 		frameWidth = cfg.getIntValue("frame_width");
 		frameHeight = cfg.getIntValue("frame_height");
@@ -108,7 +108,7 @@ namespace Plum
 		int f = parser->getFrame();
 		int fx = (f % frameColumns) * (frameWidth + framePadding) + framePadding;
 		int fy = (f / frameColumns) * (frameHeight + framePadding) + framePadding;
-		texture->rotateScaleBlitRegion(fx, fy, fx + frameWidth - 1, fy + frameHeight - 1,
+		image->rotateScaleBlitRegion(fx, fy, fx + frameWidth - 1, fy + frameHeight - 1,
 				(int) x, (int) y, angle, scale, blendMode, tint);
 	}
 

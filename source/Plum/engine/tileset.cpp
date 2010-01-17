@@ -6,8 +6,8 @@ namespace Plum
 	Tileset::Tileset(int tileSize, Canvas* tiles, Canvas* obs)
 	{
 		this->tileSize = tileSize;
-		this->tiles = new Texture(tiles);
-		this->obs = new Texture(obs);
+		this->tiles = new Image(tiles);
+		this->obs = new Image(obs);
 	}
 
 	Tileset::Tileset(const std::string& filename, lua_State* state)
@@ -94,7 +94,7 @@ namespace Plum
 					if(lastHash.length() != 20 || hash.compare(0, 20, lastHash, 0, 20) != 0)
 					{
 						logFormat("Out of date. Reloading external file.\r\n");
-						this->tiles = new Texture(externalFile);
+						this->tiles = new Image(externalFile);
 						modified = true;
 						update = true;
 						externalTileHash = hash;
@@ -126,7 +126,7 @@ namespace Plum
 				// Decompress.
 				Compression::decompressData((u8*) blob.data(), blob.length(), (u8*)(canvas->data), width * height * sizeof(Color));
 				// Make texture.
-				tiles = new Texture(canvas);
+				tiles = new Image(canvas);
 				// Destroy temporary image.
 				delete canvas;
 			}
@@ -211,7 +211,7 @@ namespace Plum
 					if(lastHash.length() != 20 || hash.compare(0, 20, lastHash, 0, 20) != 0)
 					{
 						logFormat("Out of date. Reloading external file.\r\n");
-						this->obs = new Texture(externalFile);
+						this->obs = new Image(externalFile);
 						modified = true;
 						update = true;
 
@@ -238,15 +238,15 @@ namespace Plum
 				std::string blob = Base64::decode(lua_tostring(config.lua, -1));
 				// Pop.
 				lua_pop(config.lua, 1);
-				// Allocate temporary image.
+				// Allocate temporary canvas.
 				Canvas* canvas = new Canvas(width, height);
 				canvas->occupiedWidth = occupiedWidth;
 				canvas->occupiedHeight = occupiedHeight;
 				// Decompress.
 				Compression::decompressData((u8*) blob.data(), blob.length(), (u8*)(canvas->data), width * height * sizeof(Color));
-				// Make texture.
-				obs = new Texture(canvas);
-				// Destroy temporary image.
+				// Make image.
+				obs = new Image(canvas);
+				// Destroy temporary canvas.
 				delete canvas;
 			}
 		}
@@ -301,7 +301,7 @@ namespace Plum
 		//
 		// The image MUST have dimensions that are multiples of the tileSize or terrible things will happen.
 		//
-		// Since a tileset holds a texture, it may save unused pixels that are were necessary to obey power-of-two texture rules.
+		// Since a tileset holds an image (which is a hardware texture), it may save unused pixels that are were necessary to obey power-of-two texture rules.
 		{
 			fprintf(f, "    tiles = {\n");
 
@@ -355,7 +355,7 @@ namespace Plum
 		//
 		// The image MUST have dimensions that are multiples of the tileSize or terrible things will happen.
 		//
-		// Since a tileset holds a texture, it may save unused pixels that are were necessary to obey power-of-two texture rules.
+		// Since a tileset holds an image (which is a hardware texture), it may save unused pixels that are were necessary to obey power-of-two texture rules.
 		{
 			fprintf(f, "    obs = {\n");
 

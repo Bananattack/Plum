@@ -69,11 +69,11 @@ function plumed.switchMap(map)
     
     local DEFAULT_WIDTH = 50
     local DEFAULT_HEIGHT = 50
-    local tex = plum.Texture('tileset.png')
-    local spr = plum.Spritesheet(tex, 16, 16)
+    local img = plum.Image('tileset.png')
+    local spr = plum.Spritesheet(img, 16, 16)
     
-    spr.columns = tex.width / 16
-    tex = nil
+    spr.columns = img.width / 16
+    img = nil
     
     local tilemap = plum.Tilemap(DEFAULT_WIDTH, DEFAULT_HEIGHT);
     tilemap:solidRect(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT, 4)

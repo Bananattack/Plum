@@ -4,7 +4,7 @@ namespace Plum
 	class Spritesheet
 	{
 		private:
-			Texture* texture;
+			Image* image;
 		public:
 			int frameWidth, frameHeight;
 			int padding;
@@ -15,20 +15,20 @@ namespace Plum
 				init(canvas, w, h);
 			}
 
-			Spritesheet(Texture* tex, int w, int h)
+			Spritesheet(Image* img, int w, int h)
 			{
-				init(tex->getCanvas(), w, h);
+				init(img->getCanvas(), w, h);
 			}
 			
 			~Spritesheet()
 			{
-				delete texture;
+				delete image;
 			}
 
 		private:
 			void init(Canvas* canvas, int w, int h)
 			{
-				texture = new Texture(canvas);
+				image = new Image(canvas);
 				frameWidth = w;
 				frameHeight = h;
 				padding = 0;
@@ -38,7 +38,7 @@ namespace Plum
 		public:
 			void bind()
 			{
-				texture->bind();
+				image->bind();
 			}
 
 			void blitFrame(int x, int y, int f, BlendMode mode = BlendUnspecified, Color tint = Color::White)
@@ -48,7 +48,7 @@ namespace Plum
 
 				int fx = (f % columns) * (frameWidth + padding) + padding;
 				int fy = (f / columns) * (frameHeight + padding) + padding;
-				texture->blitRegion(fx, fy, fx + frameWidth - 1, fy + frameHeight - 1,
+				image->blitRegion(fx, fy, fx + frameWidth - 1, fy + frameHeight - 1,
 						x, y, mode, tint);
 			}
 
@@ -59,7 +59,7 @@ namespace Plum
 
 				int fx = (f % columns) * (frameWidth + padding) + padding;
 				int fy = (f / columns) * (frameHeight + padding) + padding;
-				texture->rawBlitRegion(fx, fy, fx + frameWidth - 1, fy + frameHeight - 1,
+				image->rawBlitRegion(fx, fy, fx + frameWidth - 1, fy + frameHeight - 1,
 						x, y, 0, 1);
 			}
 	};

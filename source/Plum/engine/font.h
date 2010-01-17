@@ -8,7 +8,7 @@ namespace Plum
 			static const int FONT_COLUMNS = 20;
 			static const int FONT_ROWS = 5;
 
-			Texture* texture;
+			Image* image;
 			int width, height;
 			int letterSpacing;
 			int glyphWidth[FONT_COLUMNS * FONT_ROWS];
@@ -25,7 +25,7 @@ namespace Plum
 
 			~Font()
 			{
-				delete texture;
+				delete image;
 			}
 		private:
 			void init(const char* filename);
