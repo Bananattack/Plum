@@ -249,7 +249,6 @@ namespace Plum
 		// Pop video.
 		lua_pop(L, 1);
 
-
 		// Pop plum namespace.
 		lua_pop(L, 1);
 	}
