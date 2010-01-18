@@ -58,7 +58,7 @@ function plumed.launch()
     
     ---- Main loop stuff goes here.
     while plumed.active do
-        plum.video.clear(plum.color.rgb (0x00, 0x00, 0xff))
+        plum.video:clear(plum.color.rgb (0x00, 0x00, 0xff))
         plumed.render()
         plum.refresh()
         for i = 1, plum.timer.gap do

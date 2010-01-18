@@ -15,10 +15,10 @@ vergeclass 'Grass' do
         y = y + self.y_offset
         local w = self.texture.width
         local sx = (x + w) % w
-        for i = -1, plum.video.screenWidth / w + 2 do
+        for i = -1, plum.video.width / w + 2 do
             self.texture:blit(sx + (i * w), y - self.texture.height)
         end
-        plum.video.solidRect(0, y, plum.video.screenWidth, y + self.height, self.color)
+        plum.video:solidRect(0, y, plum.video.width, y + self.height, self.color)
     end
 end
 
@@ -43,7 +43,7 @@ vergeclass 'World' do
         self.sprites = {}
         
         self.building_count = 0
-        self.spawn_offset = plum.video.screenWidth + 50
+        self.spawn_offset = plum.video.width + 50
         
         self.game_over = false
         
@@ -72,7 +72,7 @@ vergeclass 'World' do
         local t = math.max(players[1].timer, 0)
         local t2 = math.max(players[2].timer, 0)
         
-        plum.video.solidRect(1, 10, 6, 50, PLAYER_ONE_COLOR)
+        plum.video:solidRect(1, 10, 6, 50, PLAYER_ONE_COLOR)
         resource.font.plain:print(10, 10, tostring(1000000000 + players[1].score):sub(2, 10))
         
         fnt = players[1].heal_counter > 0 and resource.font.big_green or resource.font.big
@@ -82,19 +82,19 @@ vergeclass 'World' do
             resource.font.big_yellow:print(10, 50, "+" .. tostring(players[1].score_counter) .. "!")
         end
         
-        plum.video.solidRect(plum.video.screenWidth - 1, 10, plum.video.screenWidth - 6, 50, PLAYER_TWO_COLOR)
-        resource.font.plain:printRight(plum.video.screenWidth - 10, 10,  tostring(1000000000 + players[2].score):sub(2, 10))
+        plum.video:solidRect(plum.video.width - 1, 10, plum.video.width - 6, 50, PLAYER_TWO_COLOR)
+        resource.font.plain:printRight(plum.video.width - 10, 10,  tostring(1000000000 + players[2].score):sub(2, 10))
         
         fnt = players[2].heal_counter > 0 and resource.font.big_green or resource.font.big
-        fnt:printRight(plum.video.screenWidth - 10, 20, math.floor(t2 / 100 / 60) .. ":" .. tostring(t2 / 100 % 60 + 100):sub(2, 3))
+        fnt:printRight(plum.video.width - 10, 20, math.floor(t2 / 100 / 60) .. ":" .. tostring(t2 / 100 % 60 + 100):sub(2, 3))
         if players[2].score_counter > 0 then
-            resource.font.big_yellow:printRight(plum.video.screenWidth - 10, 50, "+" .. tostring(players[2].score_counter) .. "!")
+            resource.font.big_yellow:printRight(plum.video.width - 10, 50, "+" .. tostring(players[2].score_counter) .. "!")
         end
     end
     
     function World:render()
         local grass = self.grass
-        plum.video.solidRect(0, 0, plum.video.screenWidth, plum.video.screenHeight / 2 - 1, plum.color.rgb(0x1F, 0xD1, 0xE0))
+        plum.video:solidRect(0, 0, plum.video.width, plum.video.height / 2 - 1, plum.color.rgb(0x1F, 0xD1, 0xE0))
         self.sky:renderLayer(1)
         
         grass[1]:blit(self.x, 0)
@@ -112,17 +112,17 @@ vergeclass 'World' do
         
         if self.game_over then
             plum.video.opacity = 127
-            plum.video.solidRect(0, 0, plum.video.screenWidth, plum.video.screenHeight, plum.color.Black)
+            plum.video:solidRect(0, 0, plum.video.width, plum.video.height, plum.color.Black)
             plum.video.opacity = 255
-            resource.font.big_yellow:printCenter(plum.video.screenWidth / 2, plum.video.screenHeight / 2 - 30, "GAME OVER")
+            resource.font.big_yellow:printCenter(plum.video.width / 2, plum.video.height / 2 - 30, "GAME OVER")
             if players[1].score > players[2].score then
-                resource.font.big:printCenter(plum.video.screenWidth / 2, plum.video.screenHeight / 2, "PLAYER 1 WINS")
+                resource.font.big:printCenter(plum.video.width / 2, plum.video.height / 2, "PLAYER 1 WINS")
             elseif players[1].score == players[2].score then
-                resource.font.big:printCenter(plum.video.screenWidth / 2, plum.video.screenHeight / 2, "TIE")
+                resource.font.big:printCenter(plum.video.width / 2, plum.video.height / 2, "TIE")
             else
-                resource.font.big:printCenter(plum.video.screenWidth / 2, plum.video.screenHeight / 2, "PLAYER 2 WINS")
+                resource.font.big:printCenter(plum.video.width / 2, plum.video.height / 2, "PLAYER 2 WINS")
             end
-            resource.font.big:printCenter(plum.video.screenWidth / 2, plum.video.screenHeight / 2 + 30, "Press Enter")
+            resource.font.big:printCenter(plum.video.width / 2, plum.video.height / 2 + 30, "Press Enter")
         end
         self:drawHUD()
     end
@@ -145,7 +145,7 @@ vergeclass 'World' do
         for i, player in ipairs(players) do
             if player.timer > 0 then
                 b = player.x
-                if player.x < self.x + plum.video.screenWidth - CAMERA_HORIZONTAL_BORDER then
+                if player.x < self.x + plum.video.width - CAMERA_HORIZONTAL_BORDER then
                     return false
                 end
             else
@@ -173,11 +173,11 @@ vergeclass 'World' do
     
         local a = self:cameraCanMoveForward()
         if a then
-            self.x = a - plum.video.screenWidth + CAMERA_HORIZONTAL_BORDER
+            self.x = a - plum.video.width + CAMERA_HORIZONTAL_BORDER
         end
         
-        if self.spawn_offset < self.x + plum.video.screenWidth + 50 then
-            self.spawn_offset = self.x + plum.video.screenWidth + 50
+        if self.spawn_offset < self.x + plum.video.width + 50 then
+            self.spawn_offset = self.x + plum.video.width + 50
         end
         
         if self:checkGameOver() then

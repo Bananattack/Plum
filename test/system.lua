@@ -11,7 +11,7 @@ initHooks()
 img = plum.Image('tileset.png')
 
 while true do
-    plum.video.clear(plum.color.Black)
+    plum.video:clear(plum.color.Black)
     img:blit(0, 0)
     plum.refresh()
 end

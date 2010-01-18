@@ -58,7 +58,7 @@ vergeclass 'Building' do
         table.insert(world.sprites, Particle(self.x + math.random(-20, self.frame.width - 44), self.y + math.random(0, self.frame.height)))
         table.insert(world.sprites, Particle(self.x + math.random(-20, self.frame.width - 44), self.y + math.random(0, self.frame.height)))
         if self.has_roids and math.random(0, 100) < 75 then
-            table.insert(world.sprites, Roids(world.x + math.random(0, plum.video.screenWidth), math.random(1, 10)))
+            table.insert(world.sprites, Roids(world.x + math.random(0, plum.video.width), math.random(1, 10)))
         end
         self.shake_timer = 80
         

@@ -26,7 +26,7 @@ vergeclass 'Roids' do
     end
     
     function Roids:render()
-        plum.video.solidCircle(self.x - world.x + self.frame.width / 2, 180, 15, 8, plum.color.Blue)
+        plum.video:solidCircle(self.x - world.x + self.frame.width / 2, 180, 15, 8, plum.color.Blue)
         self.frame:rotateScaleBlit(self.x - world.x, self.y - self.frame.height + 20, self.angle, self.scale)
     end
     

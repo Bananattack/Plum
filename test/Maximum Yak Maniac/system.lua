@@ -75,7 +75,7 @@ render_list = {}
 update_list = {}
 
 function render()
-    plum.video.solidRect(0, 0, plum.video.screenWidth, plum.video.screenHeight, 0)
+    plum.video:solidRect(0, 0, plum.video.width, plum.video.height, 0)
     for i, f in ipairs(render_list) do
         f()
     end
@@ -95,23 +95,23 @@ end
 
 function intro()
     while not plum.key.Enter.pressed do
-        plum.video.solidRect(0, 0, plum.video.screenWidth, plum.video.screenHeight, plum.color.Black)
-        plum.video.solidRect(1, 10, 6, 50, PLAYER_ONE_COLOR)
-        plum.video.solidRect(plum.video.screenWidth - 6, 10, plum.video.screenWidth - 1, 50, PLAYER_TWO_COLOR)
+        plum.video:solidRect(0, 0, plum.video.width, plum.video.height, plum.color.Black)
+        plum.video:solidRect(1, 10, 6, 50, PLAYER_ONE_COLOR)
+        plum.video:solidRect(plum.video.width - 6, 10, plum.video.width - 1, 50, PLAYER_TWO_COLOR)
         resource.font.plain:print(10, 10, "Controls:")
         resource.font.plain:print(10, 20, "A/D = Move")
         resource.font.plain:print(10, 30, "W = Jump")
         resource.font.plain:print(10, 40, "S = Eat")
         
-        resource.font.plain:printRight(plum.video.screenWidth - 10, 10, "Controls:")
-        resource.font.plain:printRight(plum.video.screenWidth - 10, 20, "Left/Right = Move")
-        resource.font.plain:printRight(plum.video.screenWidth - 10, 30, "Up = Jump")
-        resource.font.plain:printRight(plum.video.screenWidth - 10, 40, "Down = Eat")
+        resource.font.plain:printRight(plum.video.width - 10, 10, "Controls:")
+        resource.font.plain:printRight(plum.video.width - 10, 20, "Left/Right = Move")
+        resource.font.plain:printRight(plum.video.width - 10, 30, "Up = Jump")
+        resource.font.plain:printRight(plum.video.width - 10, 40, "Down = Eat")
         
-        resource.font.big_green:printCenter(plum.video.screenWidth / 2, plum.video.screenHeight / 2 - 30, "Maximum Yak Maniac")
-        resource.font.big:printCenter(plum.video.screenWidth / 2, plum.video.screenHeight / 2 + 30, "Press Enter")
+        resource.font.big_green:printCenter(plum.video.width / 2, plum.video.height / 2 - 30, "Maximum Yak Maniac")
+        resource.font.big:printCenter(plum.video.width / 2, plum.video.height / 2 + 30, "Press Enter")
         
-        resource.font.plain:printCenter(plum.video.screenWidth / 2, plum.video.screenHeight - resource.font.plain.height, "by Overkill (Music by mad)")
+        resource.font.plain:printCenter(plum.video.width / 2, plum.video.height - resource.font.plain.height, "by Overkill (Music by mad)")
         plum.refresh()
     end
     plum.key.Enter.pressed = false

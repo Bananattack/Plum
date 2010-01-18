@@ -2,7 +2,7 @@ vergeclass 'Sky' do
     function Sky:__init()
         self.clouds = {{}, {}}
         self.cloud_movement_speed = { 0.0625, 0.50 }
-        self.spawn_offset = { plum.video.screenWidth + 50, plum.video.screenWidth + 100 }
+        self.spawn_offset = { plum.video.width + 50, plum.video.width + 100 }
     end
     
     function Sky:renderLayer(layer)
@@ -10,15 +10,15 @@ vergeclass 'Sky' do
         for i, cloud in ipairs(self.clouds[layer]) do
             cloud.image:blit(cloud.x - world.x, cloud.y)
         end
-        --resource.font.plain:PrintCenter(plum.video.screenWidth / 2, layer * 10, tostring(#self.clouds[layer]))
+        --resource.font.plain:PrintCenter(plum.video.width / 2, layer * 10, tostring(#self.clouds[layer]))
         plum.video.opacity = 255
     end
     
     function Sky:update()
         -- Spawn new clouds
         for layer = 1, 2 do
-            if self.spawn_offset[layer] < world.x + plum.video.screenWidth then
-                self.spawn_offset[layer] = world.x + plum.video.screenWidth
+            if self.spawn_offset[layer] < world.x + plum.video.width then
+                self.spawn_offset[layer] = world.x + plum.video.width
             end
   
             -- Move clouds
@@ -35,7 +35,7 @@ vergeclass 'Sky' do
                 if layer == 1 then
                     c = Cloud(self.spawn_offset[layer], math.random(0,  80), layer)
                 elseif layer == 2 then
-                    c = Cloud(self.spawn_offset[layer], math.random(100,  plum.video.screenHeight - 80), layer)
+                    c = Cloud(self.spawn_offset[layer], math.random(100, plum.video.height - 80), layer)
                 end
                 if c then
                     if layer == 1 then

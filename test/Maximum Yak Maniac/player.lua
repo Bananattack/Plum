@@ -94,7 +94,7 @@ vergeclass 'Player' do
         end
         
         self.timer = self.timer - 1
-        if self.x - self.timer >= world.x + plum.video.screenWidth then
+        if self.x - self.timer >= world.x + plum.video.width then
             self.offscreen = true
         end
     end
@@ -229,15 +229,15 @@ vergeclass 'Player' do
         self.x = self.x + self.speed
         if self.x < world.x then
             self.x = world.x
-        elseif self.x > world.x + plum.video.screenWidth - self.frame.width then
-            self.x = world.x + plum.video.screenWidth - self.frame.width
+        elseif self.x > world.x + plum.video.width - self.frame.width then
+            self.x = world.x + plum.video.width - self.frame.width
         end
         
         self.timer = self.timer - 1
     end
     
     function Player:render()
-        plum.video.solidCircle(self.x - world.x + self.frame.width / 2, 180, 20, 3, plum.color.Black)
+        plum.video:solidCircle(self.x - world.x + self.frame.width / 2, 180, 20, 3, plum.color.Black)
         self.frame:rotateBlit(self.x - world.x, self.y, self.angle)
     end
 end

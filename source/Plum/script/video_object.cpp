@@ -2,8 +2,10 @@
 
 namespace Plum
 {
+	static const char* METANAME = "plum_video";
 	static int video_getField(lua_State* L)
 	{
+		luaL_checkudata(L, 1, METANAME);
 		std::string fieldName = luaL_checkstring(L, 2);
 		if(luaL_getmetafield(L, 1, std::string("get" + fieldName).c_str()))
 		{
@@ -16,6 +18,7 @@ namespace Plum
 
 	static int video_setField(lua_State* L)
 	{
+		luaL_checkudata(L, 1, METANAME);
 		std::string fieldName = luaL_checkstring(L, 2);
 		/* L, 3 is the value to set. */
 		if(luaL_getmetafield(L, 1, std::string("set" + fieldName).c_str()))
@@ -38,13 +41,15 @@ namespace Plum
 
 	static int video_toString(lua_State* L)
 	{
-		lua_pushstring(L, "(plum.video singleton)");
+		luaL_checkudata(L, 1, METANAME);
+		lua_pushstring(L, "(plum.Video singleton)");
 		return 1;
 	}
 
 	static int video_clear(lua_State* L)
 	{
-		Color color = luaL_checkint(L, 1);
+		luaL_checkudata(L, 1, METANAME);
+		Color color = luaL_checkint(L, 2);
 
 		Script::getInstance(L)->engine->video.clear(color);
 		return 0;
@@ -52,12 +57,13 @@ namespace Plum
 
 	static int video_rect(lua_State* L)
 	{
-		int x = luaL_checkint(L, 1);
-		int y = luaL_checkint(L, 2);
-		int x2 = luaL_checkint(L, 3);
-		int y2 = luaL_checkint(L, 4);
-		Color color = luaL_checkint(L, 5);
-		BlendMode mode = (BlendMode) luaL_optint(L, 6, BlendUnspecified);
+		luaL_checkudata(L, 1, METANAME);
+		int x = luaL_checkint(L, 2);
+		int y = luaL_checkint(L, 3);
+		int x2 = luaL_checkint(L, 4);
+		int y2 = luaL_checkint(L, 5);
+		Color color = luaL_checkint(L, 6);
+		BlendMode mode = (BlendMode) luaL_optint(L, 7, BlendUnspecified);
 
 		Script::getInstance(L)->engine->video.rect(x, y, x2, y2, color, mode);
 		return 0;
@@ -65,12 +71,13 @@ namespace Plum
 
 	static int video_solidRect(lua_State* L)
 	{
-		int x = luaL_checkint(L, 1);
-		int y = luaL_checkint(L, 2);
-		int x2 = luaL_checkint(L, 3);
-		int y2 = luaL_checkint(L, 4);
-		Color color = luaL_checkint(L, 5);
-		BlendMode mode = (BlendMode) luaL_optint(L, 6, BlendUnspecified);
+		luaL_checkudata(L, 1, METANAME);
+		int x = luaL_checkint(L, 2);
+		int y = luaL_checkint(L, 3);
+		int x2 = luaL_checkint(L, 4);
+		int y2 = luaL_checkint(L, 5);
+		Color color = luaL_checkint(L, 6);
+		BlendMode mode = (BlendMode) luaL_optint(L, 7, BlendUnspecified);
 
 		Script::getInstance(L)->engine->video.solidRect(x, y, x2, y2, color, mode);
 		return 0;
@@ -78,12 +85,13 @@ namespace Plum
 
 	static int video_line(lua_State* L)
 	{
-		int x = luaL_checkint(L, 1);
-		int y = luaL_checkint(L, 2);
-		int x2 = luaL_checkint(L, 3);
-		int y2 = luaL_checkint(L, 4);
-		Color color = luaL_checkint(L, 5);
-		BlendMode mode = (BlendMode) luaL_optint(L, 6, BlendUnspecified);
+		luaL_checkudata(L, 1, METANAME);
+		int x = luaL_checkint(L, 2);
+		int y = luaL_checkint(L, 3);
+		int x2 = luaL_checkint(L, 4);
+		int y2 = luaL_checkint(L, 5);
+		Color color = luaL_checkint(L, 6);
+		BlendMode mode = (BlendMode) luaL_optint(L, 7, BlendUnspecified);
 
 		Script::getInstance(L)->engine->video.line(x, y, x2, y2, color, mode);
 		return 0;
@@ -91,13 +99,14 @@ namespace Plum
 
 	static int video_horizontalGradientRect(lua_State* L)
 	{
-		int x = luaL_checkint(L, 1);
-		int y = luaL_checkint(L, 2);
-		int x2 = luaL_checkint(L, 3);
-		int y2 = luaL_checkint(L, 4);
-		Color color = luaL_checkint(L, 5);
-		Color color2 = luaL_checkint(L, 6);
-		BlendMode mode = (BlendMode) luaL_optint(L, 7, BlendUnspecified);
+		luaL_checkudata(L, 1, METANAME);
+		int x = luaL_checkint(L, 2);
+		int y = luaL_checkint(L, 3);
+		int x2 = luaL_checkint(L, 4);
+		int y2 = luaL_checkint(L, 5);
+		Color color = luaL_checkint(L, 6);
+		Color color2 = luaL_checkint(L, 7);
+		BlendMode mode = (BlendMode) luaL_optint(L, 8, BlendUnspecified);
 
 		Script::getInstance(L)->engine->video.horizontalGradientRect(x, y, x2, y2, color, color2, mode);
 		return 0;
@@ -105,13 +114,14 @@ namespace Plum
 
 	static int video_verticalGradientRect(lua_State* L)
 	{
-		int x = luaL_checkint(L, 1);
-		int y = luaL_checkint(L, 2);
-		int x2 = luaL_checkint(L, 3);
-		int y2 = luaL_checkint(L, 4);
-		Color color = luaL_checkint(L, 5);
-		Color color2 = luaL_checkint(L, 6);
-		BlendMode mode = (BlendMode) luaL_optint(L, 7, BlendUnspecified);
+		luaL_checkudata(L, 1, METANAME);
+		int x = luaL_checkint(L, 2);
+		int y = luaL_checkint(L, 3);
+		int x2 = luaL_checkint(L, 4);
+		int y2 = luaL_checkint(L, 5);
+		Color color = luaL_checkint(L, 6);
+		Color color2 = luaL_checkint(L, 7);
+		BlendMode mode = (BlendMode) luaL_optint(L, 8, BlendUnspecified);
 
 		Script::getInstance(L)->engine->video.verticalGradientRect(x, y, x2, y2, color, color2, mode);
 		return 0;
@@ -120,12 +130,13 @@ namespace Plum
 
 	static int video_circle(lua_State* L)
 	{
-		int x = luaL_checkint(L, 1);
-		int y = luaL_checkint(L, 2);
-		int xrad = luaL_checkint(L, 3);
-		int yrad = luaL_checkint(L, 4);
-		Color color = luaL_checkint(L, 5);
-		BlendMode mode = (BlendMode) luaL_optint(L, 6, BlendUnspecified);
+		luaL_checkudata(L, 1, METANAME);
+		int x = luaL_checkint(L, 2);
+		int y = luaL_checkint(L, 3);
+		int xrad = luaL_checkint(L, 4);
+		int yrad = luaL_checkint(L, 5);
+		Color color = luaL_checkint(L, 6);
+		BlendMode mode = (BlendMode) luaL_optint(L, 7, BlendUnspecified);
 
 		Script::getInstance(L)->engine->video.circle(x, y, xrad, yrad, color, mode);
 		return 0;
@@ -133,37 +144,42 @@ namespace Plum
 
 	static int video_solidCircle(lua_State* L)
 	{
-		int x = luaL_checkint(L, 1);
-		int y = luaL_checkint(L, 2);
-		int xrad = luaL_checkint(L, 3);
-		int yrad = luaL_checkint(L, 4);
-		Color color = luaL_checkint(L, 5);
-		BlendMode mode = (BlendMode) luaL_optint(L, 6, BlendUnspecified);
+		luaL_checkudata(L, 1, METANAME);
+		int x = luaL_checkint(L, 2);
+		int y = luaL_checkint(L, 3);
+		int xrad = luaL_checkint(L, 4);
+		int yrad = luaL_checkint(L, 5);
+		Color color = luaL_checkint(L, 6);
+		BlendMode mode = (BlendMode) luaL_optint(L, 7, BlendUnspecified);
 
 		Script::getInstance(L)->engine->video.solidCircle(x, y, xrad, yrad, color, mode);
 		return 0;
 	}
 
-	static int video_getScreenWidth(lua_State* L)
+	static int video_getWidth(lua_State* L)
 	{
+		luaL_checkudata(L, 1, METANAME);
 		lua_pushinteger(L, Script::getInstance(L)->engine->video.getScreenWidth());
 		return 1;
 	}
 
-	static int video_getScreenHeight(lua_State* L)
+	static int video_getHeight(lua_State* L)
 	{
+		luaL_checkudata(L, 1, METANAME);
 		lua_pushinteger(L, Script::getInstance(L)->engine->video.getScreenHeight());
 		return 1;
 	}
 
 	static int video_getBlendMode(lua_State* L)
 	{
+		luaL_checkudata(L, 1, METANAME);
 		lua_pushinteger(L, getBlendMode());
 		return 1;
 	}
 
 	static int video_setBlendMode(lua_State* L)
 	{
+		luaL_checkudata(L, 1, METANAME);
 		BlendMode mode = (BlendMode) luaL_checkint(L, 2);
 		setBlendMode(mode);
 		return 0;
@@ -171,12 +187,14 @@ namespace Plum
 
 	static int video_getOpacity(lua_State* L)
 	{
+		luaL_checkudata(L, 1, METANAME);
 		lua_pushinteger(L, getOpacity());
 		return 1;
 	}
 
 	static int video_setOpacity(lua_State* L)
 	{
+		luaL_checkudata(L, 1, METANAME);
 		int v = luaL_checkint(L, 2);
 		setOpacity(v);
 		return 0;
@@ -195,8 +213,8 @@ namespace Plum
 		{ "horizontalGradientRect", video_horizontalGradientRect },
 		{ "verticalGradientRect", video_verticalGradientRect },
 
-		{ "getscreenWidth", video_getScreenWidth },
-		{ "getscreenHeight", video_getScreenHeight },
+		{ "getwidth", video_getWidth },
+		{ "getheight", video_getHeight },
 		{ "getblendMode", video_getBlendMode },
 		{ "setblendMode", video_setBlendMode },
 		{ "getopacity", video_getOpacity },
@@ -208,7 +226,7 @@ namespace Plum
 	void Script::initVideoClass(lua_State* L)
 	{
 		// Load timer metatable
-		luaL_newmetatable(L, "plum_video");
+		luaL_newmetatable(L, METANAME);
 		// Duplicate the metatable on the stack.
 		lua_pushvalue(L, -1);
 		// metatable.__index = metatable
@@ -221,11 +239,11 @@ namespace Plum
 		lua_getglobal(L, "plum");
 
 		// Create video
-		lua_newtable(L);
+		lua_newuserdata(L, 0); // empty userdata (change this if it causes problems).
 		lua_pushvalue(L, -1);
 		lua_setfield(L, -3, "video");
 
-		luaL_getmetatable(L, "plum_video");
+		luaL_getmetatable(L, METANAME);
 		lua_setmetatable(L, -2);
 
 		// Pop video.

@@ -9,8 +9,8 @@ plumed.class 'Map' do
         if not data then
             self.layers = {}
             --[[self:addLayer({
-                    TILES_WIDE = plum.video.screenWidth / spritesheet.frameWidth;
-                    TILES_HEIGHT = plum.video.screenHeight / spritesheet.frameHeight;
+                    TILES_WIDE = plum.video.width / spritesheet.frameWidth;
+                    TILES_HEIGHT = plum.video.height / spritesheet.frameHeight;
                     width = DEFAULT_WIDTH;
                     height = DEFAULT_HEIGHT;
                     spritesheet = spritesheet;
@@ -80,8 +80,8 @@ function plumed.switchMap(map)
     
     
     map:addLayer({
-            TILES_WIDE = plum.video.screenWidth / spr.frameWidth;
-            TILES_HIGH = plum.video.screenHeight / spr.frameHeight;
+            TILES_WIDE = plum.video.width / spr.frameWidth;
+            TILES_HIGH = plum.video.height / spr.frameHeight;
             width = DEFAULT_WIDTH;
             height = DEFAULT_HEIGHT;
             spritesheet = spr;
