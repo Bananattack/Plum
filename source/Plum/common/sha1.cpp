@@ -234,11 +234,11 @@ namespace Plum
 		u8 digest[20];
 		u8 buffer[BUFFER_SIZE];
 		
-		ZZIP_FILE* f = zzip_fopen_plum(str.c_str(), "rb");
-
-		if(!f)
+		File* f = new File(str.c_str(), FileRead);
+		if(!f->active())
 		{
 			hash = "";
+			delete f;
 			return false;
 		}
 
@@ -246,7 +246,7 @@ namespace Plum
 		SHA1Init(&ctx);
 		while(true)
 		{
-			u32 bytes = zzip_fread(buffer, 1, BUFFER_SIZE, f);
+			u32 bytes = f->readRaw(buffer, BUFFER_SIZE);
 			if(bytes)
 			{
 				SHA1Update(&ctx, buffer, bytes);
@@ -256,7 +256,7 @@ namespace Plum
 				SHA1Final(digest, &ctx);
 
 				hash = std::string(digest, digest + 20);
-				zzip_fclose(f);
+				delete f;
 				return true;
 			}
 		}

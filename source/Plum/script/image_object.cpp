@@ -270,7 +270,7 @@ namespace Plum
 				// Push plum namespace.
 				lua_getglobal(L, "plum");
 
-				// plum.image = <function create>
+				// plum.Image = <function create>
 				lua_pushstring(L, "Image");
 				lua_pushcfunction(L, create);
 				lua_settable(L, -3);

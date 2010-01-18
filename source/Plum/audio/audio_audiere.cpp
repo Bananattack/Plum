@@ -82,7 +82,7 @@ namespace Plum
 			return NULL;
 		}
 
-		audiere::FilePtr file = OpenPitAudiereFile(filename, false);
+		audiere::FilePtr file = OpenLibraryFileWrapper<AudierePlumFile>(filename, false);
 		if(!file.get())
 		{
 			return NULL;
@@ -211,7 +211,7 @@ namespace Plum
 			return NULL;
 		}
 
-		audiere::FilePtr file = OpenPitAudiereFile(filename, false);
+		audiere::FilePtr file = OpenLibraryFileWrapper<AudierePlumFile>(filename, false);
 		if(!file)
 		{
 			return NULL;

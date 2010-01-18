@@ -40,23 +40,24 @@ namespace Plum
 		luaL_dostring(lua, setup.c_str());
 		
 		// Load the file into a string.
-		ZZIP_FILE* f = zzip_fopen_plum(filename.c_str(), "rb");
-		if(!f)
+		File* f = new File(filename.c_str(), FileRead);
+		if(!f->active())
 		{
+			delete f;
 			throw Engine::Exception("The " + blockName + " file '" + filename + "' was not found.");
 		}
 		unsigned int length = 0;
-		zzip_seek(f, 0, SEEK_END);
-		length = zzip_tell(f);
-		zzip_seek(f, 0, SEEK_SET);
+		f->seek(0, SeekEnd);
+		length = f->tell();
+		f->seek(0, SeekStart);
 
 		int bufsize = length + 8;
 		char* buf = new char[bufsize];
 		// By going 'return VALUE' there's no chance to inject while/if statements.
 		buf[0] = 'r'; buf[1] = 'e'; buf[2] = 't'; buf[3] = 'u'; buf[4] = 'r'; buf[5] = 'n'; buf[6] = ' ';
-		zzip_fread(buf + 7, length, 1, f);
+		f->readRaw(buf + 7, length);
 		buf[bufsize - 1] = 0;
-		zzip_fclose(f);
+		delete f;
 
 		// Load the config
 		if(luaL_loadbuffer(lua, buf, strlen(buf), std::string("@" + filename).c_str()))

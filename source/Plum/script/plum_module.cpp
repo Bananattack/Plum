@@ -382,7 +382,8 @@ namespace Plum
 			// Pop the library.
 			lua_pop(L, 1);
 
-
+			// Load all the submodules and classes contained within Plum.
+			FileObject::openLibrary(L);
 			CanvasObject::openLibrary(L);
 			ImageObject::openLibrary(L);
 			SpritesheetObject::openLibrary(L);

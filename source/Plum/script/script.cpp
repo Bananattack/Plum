@@ -37,7 +37,6 @@ namespace Plum
 		initMouseClass(L);
 		initSoundClass(L);
 		initSongClass(L);
-		initFileClass(L);
 		initSpriteClass(L);
 		initTilesetClass(L);
 
@@ -76,20 +75,21 @@ namespace Plum
 
 	void Script::runScript(std::string filename)
 	{
-		ZZIP_FILE* f = zzip_fopen_plum(filename.c_str(), "rb");
-		if(!f)
+		File* f = new File(filename.c_str(), FileRead);
+		if(!f->active())
 		{
+			delete f;
 			throw Engine::Exception("The script file '" + filename + "' was not found.");
 		}
 		unsigned int length = 0;
-		zzip_seek(f, 0, SEEK_END);
-		length = zzip_tell(f);
-		zzip_seek(f, 0, SEEK_SET);
+		f->seek(0, SeekEnd);
+		length = f->tell();
+		f->seek(0, SeekStart);
 
 		char* buf = new char[length + 1];
-		zzip_fread(buf, length, 1, f);
+		f->readRaw(buf, length);
 		buf[length] = 0;
-		zzip_fclose(f);
+		delete f;
 
 		if(luaL_loadbuffer(L, buf, strlen(buf), std::string("@" + filename).c_str()) || lua_pcall(L, 0, LUA_MULTRET, 0))
 		{

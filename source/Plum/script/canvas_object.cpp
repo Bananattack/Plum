@@ -150,7 +150,7 @@ namespace Plum
 				// Push plum namespace.
 				lua_getglobal(L, "plum");
 
-				// plum.canvas = <function imageNew>
+				// plum.Canvas = <function imageNew>
 				lua_pushstring(L, "Canvas");
 				lua_pushcfunction(L, create);
 				lua_settable(L, -3);

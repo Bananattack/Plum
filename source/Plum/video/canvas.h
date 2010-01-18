@@ -70,7 +70,7 @@ namespace Plum
 			void init(const char* filename)
 			{
 				int i;
-				std::auto_ptr<corona::File> file(OpenPitCoronaFile(filename, false));
+				std::auto_ptr<corona::File> file(OpenLibraryFileWrapper<CoronaPlumFile>(filename, false));
 				std::auto_ptr<corona::Image> image(corona::OpenImage(file.get(), corona::PF_R8G8B8A8, corona::FF_AUTODETECT));
 				if(!image.get())
 				{
