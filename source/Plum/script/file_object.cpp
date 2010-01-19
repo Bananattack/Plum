@@ -155,6 +155,32 @@ namespace Plum
 				return 0;
 			}
 
+			int readFloat(lua_State* L)
+			{
+				Wrapper<File>* file = PLUM_CHECK_DATA(L, 1, File);
+
+				float value;
+				if(file->data->readFloat(value))
+				{
+					lua_pushnumber(L, value);
+					return 1;
+				}
+				return 0;
+			}
+
+			int readDouble(lua_State* L)
+			{
+				Wrapper<File>* file = PLUM_CHECK_DATA(L, 1, File);
+
+				double value;
+				if(file->data->readDouble(value))
+				{
+					lua_pushnumber(L, value);
+					return 1;
+				}
+				return 0;
+			}
+
 			int readBlock(lua_State* L)
 			{
 				Wrapper<File>* file = PLUM_CHECK_DATA(L, 1, File);
@@ -219,6 +245,23 @@ namespace Plum
 				return 1;
 			}
 
+			int readVergeCompressed(lua_State* L)
+			{
+				Wrapper<File>* file = PLUM_CHECK_DATA(L, 1, File);
+				int blockSize = luaL_checkinteger(L, 2);
+
+				char* buffer = new char[blockSize];
+				bool success = file->data->readVergeCompressed(buffer, blockSize);
+
+				if(success)
+				{
+					lua_pushlstring(L, buffer, blockSize);
+				}
+
+				delete [] buffer;
+				return success;
+			}
+
 			int writeU8(lua_State* L)
 			{
 				Wrapper<File>* file = PLUM_CHECK_DATA(L, 1, File);
@@ -273,6 +316,24 @@ namespace Plum
 				return 1;
 			}
 
+			int writeFloat(lua_State* L)
+			{
+				Wrapper<File>* file = PLUM_CHECK_DATA(L, 1, File);
+				double value = luaL_checknumber(L, 2);
+
+				lua_pushboolean(L, file->data->writeFloat((float) value));
+				return 1;
+			}
+
+			int writeDouble(lua_State* L)
+			{
+				Wrapper<File>* file = PLUM_CHECK_DATA(L, 1, File);
+				double value = luaL_checknumber(L, 2);
+
+				lua_pushboolean(L, file->data->writeDouble(value));
+				return 1;
+			}
+
 			int writeString(lua_State* L)
 			{
 				Wrapper<File>* file = PLUM_CHECK_DATA(L, 1, File);
@@ -307,20 +368,26 @@ namespace Plum
 				PLUM_BIND_META(index)
 				PLUM_BIND_META(newindex)
 				PLUM_BIND_META(tostring)
+				PLUM_BIND_FUNC(close)
 				PLUM_BIND_FUNC(readU8)
 				PLUM_BIND_FUNC(readU16)
 				PLUM_BIND_FUNC(readU32)
 				PLUM_BIND_FUNC(readInt8)
 				PLUM_BIND_FUNC(readInt16)
 				PLUM_BIND_FUNC(readInt32)
+				PLUM_BIND_FUNC(readFloat)
+				PLUM_BIND_FUNC(readDouble)
 				PLUM_BIND_FUNC(readBlock)
 				PLUM_BIND_FUNC(readLine)
+				PLUM_BIND_FUNC(readVergeCompressed)
 				PLUM_BIND_FUNC(writeU8)
 				PLUM_BIND_FUNC(writeU16)
 				PLUM_BIND_FUNC(writeU32)
 				PLUM_BIND_FUNC(writeInt8)
 				PLUM_BIND_FUNC(writeInt16)
 				PLUM_BIND_FUNC(writeInt32)
+				PLUM_BIND_FUNC(writeFloat)
+				PLUM_BIND_FUNC(writeDouble)
 				PLUM_BIND_FUNC(writeString)
 				PLUM_BIND_FUNC(writeLine)
 				PLUM_BIND_FUNC_END_NULL()

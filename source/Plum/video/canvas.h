@@ -118,7 +118,6 @@ namespace Plum
 				clipX2 = PLUM_MIN(PLUM_MAX(0, x2), occupiedWidth - 1);
 				clipY2 = PLUM_MIN(PLUM_MAX(0, y2), occupiedHeight - 1);
 			}
-
 			
 			Color getPixel(int x, int y)
 			{
@@ -896,8 +895,8 @@ namespace Plum
 				cosine = (int) (cos(angle) * 65536);
 				sine = (int) (sin(angle) * 65536);
 
-				centerX = (sx2 - sx) * scale / 2;
-				centerY = (sy2 - sy) * scale / 2;
+				centerX = (int) ((sx2 - sx) * scale / 2);
+				centerY = (int) ((sy2 - sy) * scale / 2);
 
 				sinCenterX = centerX * sine;
 				sinCenterY = centerY * sine;
@@ -946,8 +945,8 @@ namespace Plum
 				centerX = ((sx2 - sx) << 15) + (sx << 16); 
 				centerY = ((sy2 - sy) << 15) + (sy << 16);
 
-				sine /= scale;
-				cosine /= scale;
+				sine = (int) (sine / scale);
+				cosine = (int) (cosine / scale);
 
 				for (destY = minY; destY < maxY; destY++)
 				{

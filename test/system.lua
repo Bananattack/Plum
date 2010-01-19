@@ -1,4 +1,6 @@
 require 'plumed'
+require 'vergemap'
+
 
 function initHooks()
     -- Plumed hook.

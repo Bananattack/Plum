@@ -291,6 +291,119 @@ namespace Plum
 			return 1;
 		}
 
+		int vergeReadTilemap8(lua_State* L)
+		{
+			Wrapper<File>* file = PLUM_CHECK_DATA(L, 1, File);
+			int width = luaL_checkinteger(L, 2);
+			int height = luaL_checkinteger(L, 3);
+
+			int blockSize = width * height;
+			u8* buffer = new u8[blockSize];
+			bool success = file->data->readVergeCompressed(buffer, blockSize);
+
+			if(success)
+			{
+				Tilemap* tilemap = new Tilemap(width, height);
+
+				// Read bytes.
+				for(int t = 0; t < width * height; t++)
+				{
+					tilemap->data[t] = buffer[t];
+				}
+
+				// Push tilemap.
+				PLUM_PUSH_DATA(L, Tilemap, tilemap, NULL);
+			}
+
+			delete [] buffer;
+			return success;
+		}
+
+		int vergeReadTilemap16(lua_State* L)
+		{
+			Wrapper<File>* file = PLUM_CHECK_DATA(L, 1, File);
+			int width = luaL_checkinteger(L, 2);
+			int height = luaL_checkinteger(L, 3);
+
+			int blockSize = width * height * 2;
+			u8* buffer = new u8[blockSize];
+			bool success = file->data->readVergeCompressed(buffer, blockSize);
+
+			if(success)
+			{
+				Tilemap* tilemap = new Tilemap(width, height);
+
+				// Read little-endian 16-bit ints.
+				for(int t = 0; t < width * height; t++)
+				{
+					tilemap->data[t] = buffer[t * 2 + 1] << 8 | buffer[t * 2];
+				}
+
+				// Push tilemap.
+				PLUM_PUSH_DATA(L, Tilemap, tilemap, NULL);
+			}
+
+			delete [] buffer;
+			return success;
+		}
+
+		int vergeReadObstructionCanvas(lua_State* L)
+		{
+			Wrapper<File>* file = PLUM_CHECK_DATA(L, 1, File);
+			int width = luaL_checkinteger(L, 2);
+			int height = luaL_checkinteger(L, 3);
+
+			int blockSize = width * height;
+			u8* buffer = new u8[blockSize];
+			bool success = file->data->readVergeCompressed(buffer, blockSize);
+
+			if(success)
+			{
+				Canvas* canvas = new Canvas(width, height);
+
+				// Read bytes. Verge stores one pixel per byte, no bitwise packing.
+				for(int t = 0; t < width * height; t++)
+				{ 
+					// White = obs, transparent = nothing
+					canvas->data[t] = (buffer[t] != 0) * Color::White;
+				}
+				// Push image.
+				PLUM_PUSH_DATA(L, Canvas, canvas, NULL);
+			}
+
+			delete [] buffer;
+			return success;
+		}
+
+		int vergeReadRGBCanvas(lua_State* L)
+		{
+			Wrapper<File>* file = PLUM_CHECK_DATA(L, 1, File);
+			int width = luaL_checkinteger(L, 2);
+			int height = luaL_checkinteger(L, 3);
+
+			int blockSize = width * height * 3;
+			u8* buffer = new u8[blockSize];
+			bool success = file->data->readVergeCompressed(buffer, blockSize);
+
+			if(success)
+			{
+				Canvas* canvas = new Canvas(width, height);
+
+				// Read bytes.
+				for(int t = 0; t < width * height; t++)
+				{ 
+					// Pixels are stored in RGB format.
+					canvas->data[t] = Color(buffer[t * 3], buffer[t * 3 + 1], buffer[t * 3 + 2]);
+				}
+
+				// Push image.
+				PLUM_PUSH_DATA(L, Canvas, canvas, NULL);
+			}
+
+			delete [] buffer;
+			return success;
+		}
+
 		void openLibrary(lua_State* L)
 		{
 			PLUM_BIND_FUNC_BEGIN()
@@ -377,6 +490,24 @@ namespace Plum
 			lua_setfield(L, -2, "Subtract");
 
 			// Done with 'blend' now.
+			lua_pop(L, 1);
+
+
+			// Create the 'verge' table.
+			lua_newtable(L);
+			lua_pushvalue(L, -1);
+			lua_setfield(L, -3, "verge");
+
+			lua_pushcfunction(L, vergeReadTilemap8);
+			lua_setfield(L, -2, "readTilemap8");
+			lua_pushcfunction(L, vergeReadTilemap16);
+			lua_setfield(L, -2, "readTilemap16");
+			lua_pushcfunction(L, vergeReadObstructionCanvas);
+			lua_setfield(L, -2, "readObstructionCanvas");
+			lua_pushcfunction(L, vergeReadRGBCanvas);
+			lua_setfield(L, -2, "readRGBCanvas");
+
+			// Done with 'verge' now.
 			lua_pop(L, 1);
 
 			// Pop the library.

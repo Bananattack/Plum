@@ -171,6 +171,28 @@ namespace Plum
 		return zzip_fread(&value, sizeof(int32), 1, zzipFile) == 1;
 	}
 
+	bool File::readFloat(float& value)
+	{
+		// Can't do this in write mode. Shoo.
+		if(writing || !active())
+		{
+			return false;
+		}
+
+		return zzip_fread(&value, sizeof(float), 1, zzipFile) == 1;
+	}
+	
+	bool File::readDouble(double& value)
+	{
+		// Can't do this in write mode. Shoo.
+		if(writing || !active())
+		{
+			return false;
+		}
+
+		return zzip_fread(&value, sizeof(double), 1, zzipFile) == 1;
+	}
+
 	static int zzip_getc (ZZIP_FILE *f)
 	{
 		char c;
@@ -269,6 +291,32 @@ namespace Plum
 		return fwrite(buffer, 1, size, physicalFile);
 	}
 
+	bool File::readVergeCompressed(void* buffer, size_t expectedSize)
+	{
+		u32 actualSize;
+		uLong destSize = expectedSize;
+
+		readU32(actualSize);
+		if (actualSize != destSize)
+		{
+			return false;
+		}
+
+		u32 compressedLength;
+		readU32(compressedLength);
+
+		u8* chunk = new byte[compressedLength];
+		u8* dest = (u8*) buffer;
+		readRaw(chunk, compressedLength);
+
+		int result = uncompress(dest, &destSize, chunk, compressedLength);
+
+		delete [] chunk;
+
+		return result == Z_OK;
+		// TODO: proper error handling, since zlib explosions are messy.
+	}
+
 	bool File::seek(int position, FileSeekMode mode)
 	{
 		// Can't seek in write mode. Shoo.
@@ -357,6 +405,28 @@ namespace Plum
 		}
 
 		return fwrite(&value, sizeof(int32), 1, physicalFile) == 1;
+	}
+
+	bool File::writeFloat(float value)
+	{
+		// Can't do this in read mode. Shoo.
+		if(!writing || !active())
+		{
+			return false;
+		}
+
+		return fwrite(&value, sizeof(float), 1, physicalFile) == 1;
+	}
+	
+	bool File::writeDouble(double value)
+	{
+		// Can't do this in read mode. Shoo.
+		if(!writing || !active())
+		{
+			return false;
+		}
+
+		return fwrite(&value, sizeof(double), 1, physicalFile) == 1;
 	}
 
 	bool File::writeString(const char* value, size_t size)
