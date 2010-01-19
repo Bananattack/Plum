@@ -61,6 +61,7 @@ namespace Plum
 
 	File::File(const char* filename, FileOpenMode mode)
 	{
+		closed = false;
 		if(mode == FileWrite)
 		{
 			writing = true;
