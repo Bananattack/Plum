@@ -9,12 +9,16 @@ namespace Plum
 			int height;
 
 			Tile* data;
+			
+			// Used for visual display of tilemaps.
+			Spritesheet* spr;
 
 			Tilemap(int width, int height)
 			{
 				this->width = width;
 				this->height = height;
 				data = new Tile[width * height];
+				spr = NULL;
 				clear(0);
 			}
 
@@ -370,11 +374,18 @@ namespace Plum
 				}
 			}
 
-			void blit(Spritesheet* spr, int worldX, int worldY, int destX, int destY, int tilesWide, int tilesHigh, BlendMode mode = BlendUnspecified, Color tint = Color::White)
+			inline void blit(Camera* camera, BlendMode mode = BlendUnspecified, Color tint = Color::White)
 			{
-				if(tilesWide < 0 || tilesHigh < 0) return;
+				blit((int) camera->x, (int) camera->y, camera->destX, camera->destY,
+					(camera->destX2 - camera->destX) / spr->frameWidth,
+					(camera->destY2 - camera->destY) / spr->frameWidth,
+					mode, tint); 
+			}
 
-				// Adapted from Verge.
+			void blit(int worldX, int worldY, int destX, int destY, int tilesWide, int tilesHigh, BlendMode mode = BlendUnspecified, Color tint = Color::White)
+			{
+				if(!spr || tilesWide < 0 || tilesHigh < 0) return;
+
 				int xofs = -(worldX % spr->frameWidth);
 				int yofs = -(worldY % spr->frameHeight);
 				int tileX = worldX / spr->frameWidth;

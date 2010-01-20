@@ -208,7 +208,7 @@ namespace Plum
 			const char* s = luaL_checkstring(L, 1);
 			Canvas* canvas = decodeImageData(s);
 			// Push decoded image.
-			PLUM_PUSH_DATA(L, Canvas, canvas, NULL);
+			PLUM_PUSH_DATA(L, Canvas, canvas, LUA_NOREF);
 			return 1;
 		}
 
@@ -217,7 +217,7 @@ namespace Plum
 			const char* s = luaL_checkstring(L, 1);
 			Canvas* canvas = decodeImageData(s);
 			// Push decoded texture.
-			PLUM_PUSH_DATA(L, Image, new Image(canvas), NULL);
+			PLUM_PUSH_DATA(L, Image, new Image(canvas), LUA_NOREF);
 			// Destroy temporary image.
 			delete canvas;
 			return 1;
@@ -267,7 +267,7 @@ namespace Plum
 			data += sizeof(u32) * 2;
 			Compression::decompressData(data, blob.length(), (u8*)(tilemap->data), tilemap->width * tilemap->height * sizeof(Tile));
 			// Push decoded tilemap.
-			PLUM_PUSH_DATA(L, Tilemap, tilemap, NULL);
+			PLUM_PUSH_DATA(L, Tilemap, tilemap, LUA_NOREF);
 			return 1;
 		}
 
@@ -312,7 +312,7 @@ namespace Plum
 				}
 
 				// Push tilemap.
-				PLUM_PUSH_DATA(L, Tilemap, tilemap, NULL);
+				PLUM_PUSH_DATA(L, Tilemap, tilemap, LUA_NOREF);
 			}
 
 			delete [] buffer;
@@ -340,7 +340,7 @@ namespace Plum
 				}
 
 				// Push tilemap.
-				PLUM_PUSH_DATA(L, Tilemap, tilemap, NULL);
+				PLUM_PUSH_DATA(L, Tilemap, tilemap, LUA_NOREF);
 			}
 
 			delete [] buffer;
@@ -368,7 +368,7 @@ namespace Plum
 					canvas->data[t] = (buffer[t] != 0) * Color::White;
 				}
 				// Push image.
-				PLUM_PUSH_DATA(L, Canvas, canvas, NULL);
+				PLUM_PUSH_DATA(L, Canvas, canvas, LUA_NOREF);
 			}
 
 			delete [] buffer;
@@ -397,7 +397,7 @@ namespace Plum
 				}
 
 				// Push image.
-				PLUM_PUSH_DATA(L, Canvas, canvas, NULL);
+				PLUM_PUSH_DATA(L, Canvas, canvas, LUA_NOREF);
 			}
 
 			delete [] buffer;
@@ -519,6 +519,7 @@ namespace Plum
 			ImageObject::openLibrary(L);
 			SpritesheetObject::openLibrary(L);
 			TilemapObject::openLibrary(L);
+			FontObject::openLibrary(L);
 		}
 	}
 }

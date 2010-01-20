@@ -42,7 +42,7 @@ namespace Plum
 					return 0;
 				}
 
-				PLUM_PUSH_DATA(L, File, f, NULL);
+				PLUM_PUSH_DATA(L, File, f, LUA_NOREF);
 				return 1;
 			}
 
@@ -51,7 +51,7 @@ namespace Plum
 				Wrapper<File>* file = PLUM_CHECK_DATA(L, 1, File);
 
 				// Only delete if it doesn't belong to a parent of some sort.
-				if(!file->parentRef)
+				if(file->parentRef != LUA_NOREF)
 				{
 					delete file->data;
 				}

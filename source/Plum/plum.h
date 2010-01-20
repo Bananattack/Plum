@@ -80,6 +80,7 @@ extern "C"
 #include "engine/font.h"
 #include "engine/tileset.h" // REMOVEME later.
 #include "engine/spritesheet.h"
+#include "engine/camera.h"
 #include "engine/tilemap.h"
 
 #include "script/script.h"

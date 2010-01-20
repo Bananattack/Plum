@@ -15,14 +15,14 @@ namespace Plum
 				{
 					const char* filename = lua_tostring(L, 1);
 
-					PLUM_PUSH_DATA(L, Image, new Image(filename), NULL);
+					PLUM_PUSH_DATA(L, Image, new Image(filename), LUA_NOREF);
 
 					return 1;
 				}
 				else if(PLUM_IS_DATA(L, 1, Canvas))
 				{
 					Wrapper<Canvas>* canvas = PLUM_CHECK_DATA(L, 1, Canvas);
-					PLUM_PUSH_DATA(L, Image, new Image(canvas->data), NULL);
+					PLUM_PUSH_DATA(L, Image, new Image(canvas->data), LUA_NOREF);
 
 					return 1;
 				}
@@ -35,7 +35,7 @@ namespace Plum
 				Wrapper<Image>* t = PLUM_CHECK_DATA(L, 1, Image);
 
 				// Only delete if it doesn't belong to a parent of some sort.
-				if(!t->parentRef)
+				if(t->parentRef != LUA_NOREF)
 				{
 					delete t->data;
 				}
@@ -231,7 +231,7 @@ namespace Plum
 				lua_pushvalue(L, 1);
 				int ref = luaL_ref(L, LUA_REGISTRYINDEX);
 
-				PLUM_PUSH_DATA(L, Canvas, t->data->getCanvas(), ref);
+				PLUM_PUSH_DATA(L, Canvas, t->data->getCanvas(), LUA_NOREF);
 				return 1;
 			}
 

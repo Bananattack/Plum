@@ -84,11 +84,11 @@ namespace Plum
 		image->blitRegion(fx, fy, fx + width - 1, fy + height - 1, x, y, mode, tint);
 	}
 
-	void Font::print(int x1, int y, std::string s, BlendMode mode, Color tint)
+	void Font::print(int x1, int y, const char* s, BlendMode mode, Color tint)
 	{
 		mode = (mode == BlendUnspecified) ? getBlendMode() : mode;
 		int x = x1;
-		for (unsigned int i = 0; i < s.length(); i++)
+		for (unsigned int i = 0; s[i] != 0; i++)
 		{
 			if(s[i] == '\n')
 			{
@@ -107,13 +107,13 @@ namespace Plum
 		}
 	}
 
-	void Font::printCenter(int x1, int y, std::string s, BlendMode mode, Color tint)
+	void Font::printRight(int x1, int y, const char* s, BlendMode mode, Color tint)
 	{
 		mode = (mode == BlendUnspecified) ? getBlendMode() : mode;
 		int x = x1;
 		int lineIndex = 0;
-		int ofs = lineWidth(s, 0) / 2;
-		for (unsigned int i = 0; i < s.length(); i++)
+		int ofs = lineWidth(s, 0);
+		for (unsigned int i = 0; s[i] != 0; i++)
 		{
 			if(s[i] == '\n')
 			{
@@ -121,7 +121,7 @@ namespace Plum
 				y += height;
 
 				lineIndex++;
-				ofs = lineWidth(s, lineIndex) / 2;
+				ofs = lineWidth(s, lineIndex);
 			}
 			else if(s[i] == '\t')
 			{
@@ -135,13 +135,13 @@ namespace Plum
 		}
 	}
 
-	void Font::printRight(int x1, int y, std::string s, BlendMode mode, Color tint)
+	void Font::printCenter(int x1, int y, const char* s, BlendMode mode, Color tint)
 	{
 		mode = (mode == BlendUnspecified) ? getBlendMode() : mode;
 		int x = x1;
 		int lineIndex = 0;
-		int ofs = lineWidth(s, 0);
-		for (unsigned int i = 0; i < s.length(); i++)
+		int ofs = lineWidth(s, 0) / 2;
+		for (unsigned int i = 0; s[i] != 0; i++)
 		{
 			if(s[i] == '\n')
 			{
@@ -149,7 +149,7 @@ namespace Plum
 				y += height;
 
 				lineIndex++;
-				ofs = lineWidth(s, lineIndex);
+				ofs = lineWidth(s, lineIndex) / 2;
 			}
 			else if(s[i] == '\t')
 			{

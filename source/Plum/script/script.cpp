@@ -30,7 +30,6 @@ namespace Plum
 		// Load library functions.
 		ScriptLibrary::openLibrary(L);
 		initVideoClass(L);
-		initFontClass(L);
 		initTimerClass(L);
 		initInputClass(L);
 		initKeyboardClass(L);

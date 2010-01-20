@@ -7,7 +7,7 @@ function Map(filename)
     local VERSION = 2
     local self = {}
 
-    f = plum.File(filename, 'r')
+    local f = plum.File(filename, 'r')
     
     local signature = f:readBlock(#SIGNATURE)    
     if signature ~= SIGNATURE then
@@ -29,6 +29,9 @@ function Map(filename)
     self.renderString = f:readBlock(256)
     self.startupScript = f:readBlock(256)
     
+    local tileset = Tileset(self.vspFilename) 
+    self.tileset = tileset
+    
     -- Default starting location.
     self.startX = f:readU16()
     self.startY = f:readU16()
@@ -37,7 +40,9 @@ function Map(filename)
     local layerCount = f:readInt32()
     self.layers = {}
     for i = 1, layerCount do
-        table.insert(self.layers, Layer(f))
+        local layer = Layer(f)
+        layer.tilemap.spritesheet = tileset.tiles
+        table.insert(self.layers, layer)
     end
     
     -- Size of map.
@@ -45,8 +50,9 @@ function Map(filename)
     self.height = self.layers[1].height
     
     -- The obstruction and zone layers.
-    self.obsLayer = plum.verge.readTilemap8(f, self.width, self.height)
-    self.zoneLayer = plum.verge.readTilemap16(f, self.width, self.height)
+    self.obsData = plum.verge.readTilemap8(f, self.width, self.height)
+    self.obsData.spritesheet = tileset.obs
+    self.zoneData = plum.verge.readTilemap16(f, self.width, self.height)
     
     -- The actual zone data.
     local zoneCount = f:readInt32()
@@ -83,7 +89,6 @@ function Layer(f)
     local lucent = f:readU8()
     self.opacity = (100 - lucent) * 255 / 100
     
-    print(width, height)
     local tilemap = plum.verge.readTilemap16(f, width, height)
     self.tilemap = tilemap
     
@@ -103,7 +108,7 @@ function Tileset(filename)
     local VERSION = 6
     local self = {}
 
-    f = plum.File(filename, 'r')
+    local f = plum.File(filename, 'r')
     
     local signature = f:readInt32()
     if signature ~= SIGNATURE then
@@ -111,7 +116,6 @@ function Tileset(filename)
     end
     
     local version = f:readInt32()
-    print(version .. ' ' .. VERSION)
     if version ~= VERSION then
         error(filename .. ' is an unsupported version of tileset.', 2)
     end
@@ -123,10 +127,8 @@ function Tileset(filename)
     
     -- Number of tiles in the tileset.
     self.tileCount = f:readInt32()
-    print(self.tileCount .. ' tiles')
     
     local compression = f:readInt32()
-    print(compression)
     if compression ~= 1 then
         error(filename .. ' has an unsupported compression setting.', 2)
     end
@@ -166,7 +168,6 @@ function Tileset(filename)
     end
     
     self.obsCount = f:readInt32()
-    print('obsCount = ' .. self.obsCount)
     do
         local TEXTURE_SIZE = 256
         local TILES_PER_ROW = TEXTURE_SIZE / 16
@@ -191,7 +192,6 @@ function Tileset(filename)
     return self
 end
 
-tileset = Tileset('molasses.vsp')
 map = Map('molasses.map')
 
 while not plum.key.Enter.pressed do
@@ -199,10 +199,10 @@ while not plum.key.Enter.pressed do
     
     for i, layer in ipairs(map.layers) do
         plum.video.opacity = layer.opacity
-        layer.tilemap:blit(tileset.tiles, 0, 0, 0, 0, 20, 15)
+        layer.tilemap:blit(0, 0, 0, 0, 20, 15)
     end
     plum.video.opacity = 127
-    map.obsLayer:blit(tileset.obs, 0, 0, 0, 0, 20, 15)
+    map.obsData:blit(0, 0, 0, 0, 20, 15)
     plum.video.opacity = 255
     
     plum.refresh()

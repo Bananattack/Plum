@@ -404,10 +404,6 @@
 					RelativePath=".\audio\audio_audiere.h"
 					>
 				</File>
-				<File
-					RelativePath=".\audio\audio_fmod.h"
-					>
-				</File>
 			</Filter>
 			<Filter
 				Name="script"
@@ -422,6 +418,10 @@
 				>
 				<File
 					RelativePath=".\common\animation.h"
+					>
+				</File>
+				<File
+					RelativePath=".\audio\audio_fmod.h"
 					>
 				</File>
 				<File
@@ -460,6 +460,10 @@
 			<Filter
 				Name="engine"
 				>
+				<File
+					RelativePath=".\engine\camera.h"
+					>
+				</File>
 				<File
 					RelativePath=".\engine\engine.h"
 					>

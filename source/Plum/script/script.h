@@ -105,6 +105,7 @@ namespace Plum
 #define PLUM_IS_DATA(L, i, T) ScriptLibrary::_isWrapper<T>(L, i, "plum_"#T"Object")
 #define PLUM_CHECK_DATA(L, i, T) ScriptLibrary::_checkWrapper<T>(L, i, "plum_"#T"Object")
 #define PLUM_PUSH_DATA(L, T, data, parentRef) ScriptLibrary::_pushWrapperReference<T>(L, "plum_"#T"Object", data, parentRef)
+#define PLUM_GET_EXT(L, w, T) ScriptLibrary::_pushExtData<T>(L, w)
 
 	namespace ScriptLibrary
 	{
@@ -118,6 +119,9 @@ namespace Plum
 			// The parent, if not NULL, is a registry index to the thing that manages this object's memory
 			// (ie. don't delete this, since you didn't allocate the memory.)
 			int parentRef;
+
+			// Reference to any 'extra' data that Lua needs to manage.
+			int extRef;
 		};
 
 		template <typename T> bool _isWrapper(lua_State* L, int index, const char* metaname)
@@ -147,7 +151,7 @@ namespace Plum
 			return (Wrapper<T>*) luaL_checkudata(L, index, metaname);
 		}
 
-		template <typename T> void _pushWrapperReference(lua_State* L, const char* metaname, T* data, int parentRef)
+		template <typename T> Wrapper<T>* _pushWrapperReference(lua_State* L, const char* metaname, T* data, int parentRef)
 		{
 			Wrapper<T>* w = (Wrapper<T>*) lua_newuserdata(L, sizeof(Wrapper<T>));
 			luaL_getmetatable(L, metaname);
@@ -155,12 +159,28 @@ namespace Plum
 
 			w->data = data;
 			w->parentRef = parentRef;
+			w->extRef = LUA_NOREF;
+
+			return w;
+		}
+
+		template <typename T> void _pushExtData(lua_State* L, Wrapper<T>* w)
+		{
+			// Create ext, if not defined.
+			if(w->extRef == LUA_NOREF)
+			{
+				lua_newtable(L);
+				w->extRef = luaL_ref(L, LUA_REGISTRYINDEX);
+			}
+			// Push ext object onto stack.
+			lua_rawgeti(L, LUA_REGISTRYINDEX, w->extRef);
 		}
 
 		PLUM_BIND_LIB(FileObject)
 		PLUM_BIND_LIB(CanvasObject)
 		PLUM_BIND_LIB(ImageObject)
 		PLUM_BIND_LIB(SpritesheetObject)
+		PLUM_BIND_LIB(FontObject)
 		PLUM_BIND_LIB(TilemapObject)
 	}
 

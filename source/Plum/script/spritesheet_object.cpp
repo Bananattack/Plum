@@ -20,13 +20,13 @@ namespace Plum
 					if(PLUM_IS_DATA(L, 1, Canvas))
 					{
 						Wrapper<Canvas>* canvas = PLUM_CHECK_DATA(L, 1, Canvas);
-						PLUM_PUSH_DATA(L, Spritesheet, new Spritesheet(canvas->data, w, h), NULL);
+						PLUM_PUSH_DATA(L, Spritesheet, new Spritesheet(canvas->data, w, h), LUA_NOREF);
 						return 1;
 					}
 					else if(PLUM_IS_DATA(L, 1, Image))
 					{
 						Wrapper<Image>* img = PLUM_CHECK_DATA(L, 1, Image);
-						PLUM_PUSH_DATA(L, Spritesheet, new Spritesheet(img->data, w, h), NULL);
+						PLUM_PUSH_DATA(L, Spritesheet, new Spritesheet(img->data, w, h), LUA_NOREF);
 						return 1;
 					}
 				}
@@ -38,7 +38,7 @@ namespace Plum
 			{
 				Wrapper<Spritesheet>* spr = PLUM_CHECK_DATA(L, 1, Spritesheet);
 				// Only delete if it doesn't belong to a parent of some sort.
-				if(!spr->parentRef)
+				if(spr->parentRef != LUA_NOREF)
 				{
 					delete spr->data;
 				}

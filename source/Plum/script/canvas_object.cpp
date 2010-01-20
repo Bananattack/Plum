@@ -16,7 +16,7 @@ namespace Plum
 					int w = lua_tointeger(L, 1);
 					int h = lua_tointeger(L, 2);
 
-					PLUM_PUSH_DATA(L, Canvas, new Canvas(w, h), NULL);
+					PLUM_PUSH_DATA(L, Canvas, new Canvas(w, h), LUA_NOREF);
 					
 					return 1;
 				}
@@ -24,7 +24,7 @@ namespace Plum
 				{
 					const char* filename = lua_tostring(L, 1);
 
-					PLUM_PUSH_DATA(L, Canvas, new Canvas(filename), NULL);
+					PLUM_PUSH_DATA(L, Canvas, new Canvas(filename), LUA_NOREF);
 					
 					return 1;
 				}
@@ -41,7 +41,7 @@ namespace Plum
 				Wrapper<Canvas>* canvas = PLUM_CHECK_DATA(L, 1, Canvas);
 
 				// Only delete if it doesn't belong to a parent of some sort.
-				if(!canvas->parentRef)
+				if(canvas->parentRef != LUA_NOREF)
 				{
 					delete canvas->data;
 				}
@@ -634,7 +634,7 @@ namespace Plum
 				// Push plum namespace.
 				lua_getglobal(L, "plum");
 
-				// plum.Canvas = <function imageNew>
+				// plum[classname] = create
 				lua_pushstring(L, "Canvas");
 				lua_pushcfunction(L, create);
 				lua_settable(L, -3);
