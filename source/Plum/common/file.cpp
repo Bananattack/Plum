@@ -234,6 +234,7 @@ namespace Plum
 
 		// Adapted from FileReadLn in Verge, with modifications to make it fit nicer.
 		char buffer[256];
+		int len;
 		// Wipe out old value data.
 		value.clear();
 		// EOL status: 0 = none, 1 = newline, 2 = eof
@@ -241,17 +242,28 @@ namespace Plum
 		do
 		{
 			zzip_fgets(buffer, 255, zzipFile);
-
+			
 			// We didn't read anything, this is eof
 			if(buffer[0] == '\0')
 			{
 				eol = 2; 
 			}
-			// Last character is an end-of-line character, so it's the end of the current line.
-			else if(buffer[strlen(buffer) - 1] == '\r' || buffer[strlen(buffer) - 1] == '\n')
+			else
 			{
-				buffer[strlen(buffer) - 1] = '\0';
-				eol = 1;
+				len = strlen(buffer);
+				// Last two characters form a CRLF sequence, so it's the end of the current line.
+				if(buffer[len - 2] == '\r' && buffer[len - 1] == '\n')
+				{
+					buffer[len - 2] = '\0';
+					buffer[len - 1] = '\0';
+					eol = 1;
+				}
+				// Last character is an end-of-line character, so it's the end of the current line.
+				else if(buffer[len - 1] == '\r' || buffer[len - 1] == '\n')
+				{
+					buffer[len - 1] = '\0';
+					eol = 1;
+				}
 			}
 
 			value += buffer;
