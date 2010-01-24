@@ -56,6 +56,19 @@ namespace Plum
 				return 1;
 			}
 
+			int getimage(lua_State* L)
+			{
+				Wrapper<Spritesheet>* spr = PLUM_CHECK_DATA(L, 1, Spritesheet);
+
+				// Push reference to this, so the spritesheet stays around
+				// as long as it's required for the child.
+				lua_pushvalue(L, 1);
+				int ref = luaL_ref(L, LUA_REGISTRYINDEX);
+
+				PLUM_PUSH_DATA(L, Image, spr->data->getImage(), ref);
+				return 1;
+			}
+
 			int blitFrame(lua_State* L)
 			{
 				Wrapper<Spritesheet>* spr = PLUM_CHECK_DATA(L, 1, Spritesheet);

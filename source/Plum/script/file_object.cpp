@@ -181,7 +181,7 @@ namespace Plum
 				return 0;
 			}
 
-			int readBlock(lua_State* L)
+			int readBlob(lua_State* L)
 			{
 				Wrapper<File>* file = PLUM_CHECK_DATA(L, 1, File);
 				int blockSize = luaL_checkinteger(L, 2);
@@ -192,6 +192,26 @@ namespace Plum
 				if(size)
 				{
 					lua_pushlstring(L, buffer, blockSize);
+				}
+
+				delete [] buffer;
+				return size > 0;
+			}
+
+			int readFixedString(lua_State* L)
+			{
+				Wrapper<File>* file = PLUM_CHECK_DATA(L, 1, File);
+				int blockSize = luaL_checkinteger(L, 2);
+
+				char* buffer = new char[blockSize];
+				int size = file->data->readRaw(buffer, blockSize);
+
+				// Force termination within block to prevent exceeding the buffer.
+				buffer[blockSize - 1] = 0;
+
+				if(size)
+				{
+					lua_pushstring(L, buffer);
 				}
 
 				delete [] buffer;
@@ -377,7 +397,8 @@ namespace Plum
 				PLUM_BIND_FUNC(readInt32)
 				PLUM_BIND_FUNC(readFloat)
 				PLUM_BIND_FUNC(readDouble)
-				PLUM_BIND_FUNC(readBlock)
+				PLUM_BIND_FUNC(readBlob)
+				PLUM_BIND_FUNC(readFixedString)
 				PLUM_BIND_FUNC(readLine)
 				PLUM_BIND_FUNC(readVergeCompressed)
 				PLUM_BIND_FUNC(writeU8)

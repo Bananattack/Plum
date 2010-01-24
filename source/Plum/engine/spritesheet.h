@@ -36,6 +36,11 @@ namespace Plum
 			}
 
 		public:
+			Image* getImage()
+			{
+				return image;
+			}
+
 			void bind()
 			{
 				image->bind();

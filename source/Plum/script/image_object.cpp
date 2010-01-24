@@ -231,7 +231,7 @@ namespace Plum
 				lua_pushvalue(L, 1);
 				int ref = luaL_ref(L, LUA_REGISTRYINDEX);
 
-				PLUM_PUSH_DATA(L, Canvas, t->data->getCanvas(), LUA_NOREF);
+				PLUM_PUSH_DATA(L, Canvas, t->data->getCanvas(), ref);
 				return 1;
 			}
 

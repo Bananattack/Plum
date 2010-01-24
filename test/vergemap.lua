@@ -9,7 +9,7 @@ function Map(filename)
 
     local f = plum.File(filename, 'r')
     
-    local signature = f:readBlock(#SIGNATURE)    
+    local signature = f:readBlob(#SIGNATURE)    
     if signature ~= SIGNATURE then
         error(filename .. ' is an invalid map! (Incorrect signature)', 2)
     end
@@ -23,11 +23,11 @@ function Map(filename)
     f:readInt32()
     
     -- String data of various use.
-    self.mapName = f:readBlock(256)
-    self.vspFilename = f:readBlock(256)
-    self.musicFilename = f:readBlock(256)
-    self.renderString = f:readBlock(256)
-    self.startupScript = f:readBlock(256)
+    self.mapName = f:readFixedString(256)
+    self.vspFilename = f:readFixedString(256)
+    self.musicFilename = f:readFixedString(256)
+    self.renderString = f:readFixedString(256)
+    self.startupScript = f:readFixedString(256)
     
     local tileset = Tileset(self.vspFilename) 
     self.tileset = tileset
@@ -59,8 +59,8 @@ function Map(filename)
     self.zones = {}
     for i = 1, layerCount do
         local zone = {}
-        zone.name = f:readBlock(256)
-        zone.script = f:readBlock(256)
+        zone.name = f:readFixedString(256)
+        zone.script = f:readFixedString(256)
         zone.percent = f:readU8()
         zone.delay = f:readU8()
         zone.method = f:readU8()
@@ -77,7 +77,7 @@ end
 function Layer(f)
     local self = {}
 
-    self.name = f:readBlock(256)
+    self.name = f:readFixedString(256)
     self.parallaxX = f:readDouble()
     self.parallaxY = f:readDouble()
     
@@ -159,7 +159,7 @@ function Tileset(filename)
     self.animations = {}
     for i = 1, animationCount do
         local anim = {}
-        anim.name = f:readBlock(256)
+        anim.name = f:readFixedString(256)
         anim.startTile = f:readInt32()
         anim.endTile = f:readInt32()
         anim.delay = f:readInt32()
@@ -193,6 +193,7 @@ function Tileset(filename)
 end
 
 map = Map('molasses.map')
+
 
 while not plum.key.Enter.pressed do
     plum.video:clear(plum.color.Black)
