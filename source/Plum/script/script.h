@@ -177,6 +177,7 @@ namespace Plum
 		}
 
 		PLUM_BIND_LIB(FileObject)
+		PLUM_BIND_LIB(DirectoryObject)
 		PLUM_BIND_LIB(CanvasObject)
 		PLUM_BIND_LIB(ImageObject)
 		PLUM_BIND_LIB(SpritesheetObject)

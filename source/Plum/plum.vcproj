@@ -223,6 +223,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\script\directory_object.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\script\file_object.cpp"
 					>
 				</File>
@@ -308,6 +312,10 @@
 				</File>
 				<File
 					RelativePath=".\common\config.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\common\directory.cpp"
 					>
 				</File>
 				<File
@@ -434,6 +442,10 @@
 				</File>
 				<File
 					RelativePath=".\common\config.h"
+					>
+				</File>
+				<File
+					RelativePath=".\common\directory.h"
 					>
 				</File>
 				<File
