@@ -400,6 +400,7 @@ namespace Plum
 				PLUM_BIND_FUNC(readBlob)
 				PLUM_BIND_FUNC(readFixedString)
 				PLUM_BIND_FUNC(readLine)
+				PLUM_BIND_FUNC(readFully)
 				PLUM_BIND_FUNC(readVergeCompressed)
 				PLUM_BIND_FUNC(writeU8)
 				PLUM_BIND_FUNC(writeU16)
