@@ -4,9 +4,18 @@ Plum
 About Plum
 ----------
 
-Plum is a free indie game engine, that will one day be used for making cool 2D
+Plum is a free game engine, that will one day be used for making cool 2D
 games with minimal effort and maximum awesome through Lua scripting, a mixture
-of software and hardware rendering, and a well designed map strucutre.
+of software and hardware rendering, tilemaps, spritesheets, and other fun things.
+
+Under the hood, Plum uses Audiere for sound mixing, Corona for loading images,
+SDL for event handling, OpenGL for rendering, zziplib for packfiles,
+and a few other things.
+
+Plum takes some inspiration from ika (http://ika.sf.net)
+and Verge (http://verge-rpg.com), because these were game-making
+communities I've been a part of over the years. They've shaped what I
+expect out of an engine, and helped me as a developer as I was growing up.
 
 It is very much a work-in-progress still, as many core features are not yet 
 implemented. But it is slowly making strides. 
