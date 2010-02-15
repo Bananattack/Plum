@@ -55,6 +55,18 @@ namespace Plum
 		return 0;
 	}
 
+	static int video_setPixel(lua_State* L)
+	{
+		luaL_checkudata(L, 1, METANAME);
+		int x = luaL_checkint(L, 2);
+		int y = luaL_checkint(L, 3);
+		Color color = luaL_checkint(L, 4);
+		BlendMode mode = (BlendMode) luaL_optint(L, 5, BlendUnspecified);
+
+		Script::getInstance(L)->engine->video.setPixel(x, y, color, mode);
+		return 0;
+	}
+
 	static int video_rect(lua_State* L)
 	{
 		luaL_checkudata(L, 1, METANAME);
@@ -206,6 +218,8 @@ namespace Plum
 		{ "__tostring",	video_toString },
 
 		{ "clear", video_clear },
+		{ "setPixel", video_setPixel },
+		{ "line", video_line },
 		{ "rect", video_rect },
 		{ "solidRect", video_solidRect },
 		{ "circle", video_circle },

@@ -161,6 +161,7 @@ namespace Plum
 				PLUM_BIND_FUNC(setpadding)
 				PLUM_BIND_FUNC(getcolumns)
 				PLUM_BIND_FUNC(setcolumns)
+				PLUM_BIND_FUNC(getimage)
 				PLUM_BIND_FUNC_END_NULL()
 
 				lua_pop(L, 1);

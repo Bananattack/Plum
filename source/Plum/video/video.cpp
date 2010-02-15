@@ -87,13 +87,14 @@ namespace Plum
 		mode = (mode == BlendUnspecified) ? getBlendMode() : mode;
 		useHardwareBlender(mode);
 
+		GLdouble vertexArray[] = { x, y };
 		glDisable(GL_TEXTURE_2D);
-		glPushMatrix();
-		glBegin(GL_POINTS);
-			useHardwareColor(r, g, b, a);
-			glVertex2d(x, y);
-		glEnd();
-		glPopMatrix();
+
+		useHardwareColor(r, g, b, a);
+		glEnableClientState(GL_VERTEX_ARRAY);
+		glVertexPointer(2, GL_DOUBLE, 0, vertexArray);
+		glDrawArrays(GL_POINTS, 0, 1);
+		glDisableClientState(GL_VERTEX_ARRAY);
 	}
 
 	void Video::line(int x, int y, int x2, int y2, Color color, BlendMode mode)
@@ -104,14 +105,14 @@ namespace Plum
 		mode = (mode == BlendUnspecified) ? getBlendMode() : mode;
 		useHardwareBlender(mode);
 
+		GLdouble vertexArray[] = { x, y - 1, x2 + 1, y2 };
 		glDisable(GL_TEXTURE_2D);
-		glPushMatrix();
-		glBegin(GL_LINES);
-			useHardwareColor(r, g, b, a);
-			glVertex2d(x, y);
-			glVertex2d(x2, y2);
-		glEnd();
-		glPopMatrix();
+
+		useHardwareColor(r, g, b, a);
+		glEnableClientState(GL_VERTEX_ARRAY);
+		glVertexPointer(2, GL_DOUBLE, 0, vertexArray);
+		glDrawArrays(GL_LINES, 0, 2);
+		glDisableClientState(GL_VERTEX_ARRAY);
 	}
 
 	void Video::rect(int x, int y, int x2, int y2, Color color, BlendMode mode)

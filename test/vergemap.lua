@@ -1,7 +1,3 @@
-local function pack(...)
-    return arg
-end
-
 function Map(filename)
     local SIGNATURE = 'V3MAP\0'
     local VERSION = 2
@@ -190,21 +186,4 @@ function Tileset(filename)
     end
     
     return self
-end
-
-map = Map('molasses.map')
-
-
-while not plum.key.Enter.pressed do
-    plum.video:clear(plum.color.Black)
-    
-    for i, layer in ipairs(map.layers) do
-        plum.video.opacity = layer.opacity
-        layer.tilemap:blit(0, 0, 0, 0, 20, 15)
-    end
-    plum.video.opacity = 127
-    map.obsData:blit(0, 0, 0, 0, 20, 15)
-    plum.video.opacity = 255
-    
-    plum.refresh()
 end
