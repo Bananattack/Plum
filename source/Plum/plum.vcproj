@@ -425,10 +425,6 @@
 					>
 				</File>
 				<File
-					RelativePath=".\audio\audio_fmod.h"
-					>
-				</File>
-				<File
 					RelativePath=".\common\base64.h"
 					>
 				</File>
