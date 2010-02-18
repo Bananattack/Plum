@@ -103,7 +103,6 @@
 				EnableIntrinsicFunctions="true"
 				StringPooling="true"
 				RuntimeLibrary="2"
-				EnableFunctionLevelLinking="true"
 				WarningLevel="3"
 				DebugInformationFormat="3"
 			/>

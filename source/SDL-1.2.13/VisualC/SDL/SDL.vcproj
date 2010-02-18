@@ -124,14 +124,12 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				InlineFunctionExpansion="1"
+				InlineFunctionExpansion="2"
 				EnableIntrinsicFunctions="false"
 				AdditionalIncludeDirectories="..\..\include;..\..\..\directx"
 				PreprocessorDefinitions="_CRT_SECURE_NO_DEPRECATE;NDEBUG;_WINDOWS;_WIN32_WINNT=0x0400"
 				StringPooling="true"
 				RuntimeLibrary="2"
-				BufferSecurityCheck="true"
-				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderFile=".\Release/SDL.pch"
 				AssemblerListingLocation=".\Release/"

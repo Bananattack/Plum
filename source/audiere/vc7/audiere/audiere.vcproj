@@ -117,6 +117,7 @@
 				WholeProgramOptimization="true"
 				AdditionalIncludeDirectories="&quot;../../third-party/vc6/include&quot;;&quot;../../third-party/vc6/include/dumb/include&quot;"
 				PreprocessorDefinitions="NO_SPEEX;_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_WINDOWS;_USRDLL;AUDIERE_EXPORTS;NOMINMAX;WIN32_LEAN_AND_MEAN;STRICT;NO_FLAC"
+				StringPooling="true"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
