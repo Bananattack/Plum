@@ -516,6 +516,9 @@ namespace Plum
 			// Load all the submodules and classes contained within Plum.
 			FileObject::openLibrary(L);
 			DirectoryObject::openLibrary(L);
+			PointObject::openLibrary(L);
+			RectObject::openLibrary(L);
+			TransformObject::openLibrary(L);
 			CanvasObject::openLibrary(L);
 			ImageObject::openLibrary(L);
 			SpritesheetObject::openLibrary(L);

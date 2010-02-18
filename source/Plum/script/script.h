@@ -132,7 +132,7 @@ namespace Plum
 			if (p != NULL)
 			{
 				// Has a metatable?
-				if(lua_getmetatable(L, 1))
+				if(lua_getmetatable(L, index))
 				{
 					// Get correct metatable
 					lua_getfield(L, LUA_REGISTRYINDEX, metaname);
@@ -178,6 +178,9 @@ namespace Plum
 
 		PLUM_BIND_LIB(FileObject)
 		PLUM_BIND_LIB(DirectoryObject)
+		PLUM_BIND_LIB(PointObject)
+		PLUM_BIND_LIB(RectObject)
+		PLUM_BIND_LIB(TransformObject)
 		PLUM_BIND_LIB(CanvasObject)
 		PLUM_BIND_LIB(ImageObject)
 		PLUM_BIND_LIB(SpritesheetObject)

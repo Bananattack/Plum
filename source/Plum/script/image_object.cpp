@@ -56,13 +56,23 @@ namespace Plum
 
 			int blit(lua_State* L)
 			{
-				Wrapper<Image>* t = PLUM_CHECK_DATA(L, 1, Image);
+				Wrapper<Image>* img = PLUM_CHECK_DATA(L, 1, Image);
 				int x = luaL_checkint(L, 2);
 				int y = luaL_checkint(L, 3);
 				BlendMode mode = (BlendMode) luaL_optint(L, 4, BlendUnspecified);
 				Color tint = luaL_optint(L, 5, Color::White);
 
-				t->data->blit(x, y, mode, tint);
+				img->data->blit(x, y, mode, tint);
+
+				return 0;
+			}
+
+			int draw(lua_State* L)
+			{
+				Wrapper<Image>* img = PLUM_CHECK_DATA(L, 1, Image);
+				Wrapper<Transform>* transform = PLUM_CHECK_DATA(L, 2, Transform);
+
+				img->data->transformBlit(transform->data);
 
 				return 0;
 			}
@@ -250,6 +260,7 @@ namespace Plum
 				PLUM_BIND_META(newindex)
 				PLUM_BIND_META(tostring)
 				PLUM_BIND_FUNC(blit)
+				PLUM_BIND_FUNC(draw)
 				PLUM_BIND_FUNC(blitRegion)
 				PLUM_BIND_FUNC(scaleBlit)
 				PLUM_BIND_FUNC(scaleBlitRegion)

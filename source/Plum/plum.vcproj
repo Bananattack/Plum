@@ -255,6 +255,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\script\point_object.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\script\rect_object.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\script\script.cpp"
 					>
 				</File>
@@ -284,6 +292,10 @@
 				</File>
 				<File
 					RelativePath=".\script\timer_object.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\script\transform_object.cpp"
 					>
 				</File>
 				<File
@@ -394,6 +406,10 @@
 				</File>
 				<File
 					RelativePath=".\video\image.h"
+					>
+				</File>
+				<File
+					RelativePath=".\video\transform.h"
 					>
 				</File>
 				<File

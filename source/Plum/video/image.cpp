@@ -348,4 +348,80 @@ namespace Plum
 
 		glPopMatrix();
 	}
+
+	// Draws image, based on a transformation object (saves on complex arg passing)
+	void Image::transformBlit(Transform* transform)
+	{
+		double sourceX, sourceY, sourceX2, sourceY2;
+		ColorChannel r, g, b, a;
+		getRGBA(transform->tint, r, g, b, a);
+
+		if(transform->clip)
+		{
+			if(transform->clip->x > transform->clip->x2)
+			{
+				PLUM_SWAP(transform->clip->x, transform->clip->x2);
+			}
+			if(transform->clip->y > transform->clip->y2)
+			{
+				PLUM_SWAP(transform->clip->y, transform->clip->y2);
+			}
+			sourceX = PLUM_MIN(PLUM_MAX(0, transform->clip->x), canvasWidth - 1);
+			sourceY = PLUM_MIN(PLUM_MAX(0, transform->clip->y), canvasHeight - 1);
+			sourceX2 = PLUM_MIN(PLUM_MAX(0, transform->clip->x2), canvasWidth - 1);
+			sourceY2 = PLUM_MIN(PLUM_MAX(0, transform->clip->y2), canvasHeight - 1);
+		}
+		else
+		{
+			sourceX = sourceY = 0;
+			sourceX2 = canvasWidth - 1;
+			sourceY2 = canvasHeight - 1;
+		}
+
+		double regionS = ((double) sourceX + 0.5) / textureWidth;
+		double regionT = ((double) sourceY + 0.5) / textureHeight;
+		double regionS2 = ((double) sourceX2 + 0.5) / textureWidth;
+		double regionT2 = ((double) sourceY2 + 0.5) / textureHeight;
+
+		double width = ((double) sourceX2 - sourceX);
+		double height = ((double) sourceY2 - sourceY);
+
+		useHardwareBlender((transform->mode == BlendUnspecified) ? getBlendMode() : transform->mode);
+
+		glEnable(GL_TEXTURE_2D);
+		glPushMatrix();
+		bind();
+
+		useHardwareColor(r, g, b, a);
+		glTranslated(transform->position->x + transform->pivot->x, transform->position->y + transform->pivot->y, 0.0);
+		glScaled(transform->scale->x, transform->scale->y, 0.0);
+		glRotated(transform->angle, 0.0, 0.0, 1.0);
+		glTranslated(-transform->pivot->x, -transform->pivot->y, 0.0);
+
+		GLdouble vertexArray[] = {
+			0.0, 0.0,
+			0.0, height + 1.0,
+			width + 1.0, height + 1.0,
+			width + 1.0, 0.0,
+		};
+
+		GLdouble textureArray[] = {
+			regionS, regionT,
+			regionS, regionT2,
+			regionS2, regionT2,
+			regionS2, regionT,
+		};
+
+		glEnableClientState(GL_VERTEX_ARRAY);
+		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
+		glVertexPointer(2, GL_DOUBLE, 0, vertexArray);
+		glTexCoordPointer(2, GL_DOUBLE, 0, textureArray);
+		glDrawArrays(GL_QUADS, 0, 4);
+		
+		glDisableClientState(GL_VERTEX_ARRAY);
+		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+
+		glPopMatrix();
+	}
 }
