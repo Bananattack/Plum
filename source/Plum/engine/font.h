@@ -56,6 +56,6 @@ namespace Plum
 			int lineCount(std::string s);
 			int textWidth(std::string s);
 			int textHeight(std::string s);
-			
+			std::string wrapText(const std::string& input, int lineLength);
 	};
 }

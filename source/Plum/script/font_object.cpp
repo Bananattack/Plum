@@ -117,6 +117,15 @@ namespace Plum
 				return 1;
 			}
 
+			int wrapText(lua_State* L)
+			{
+				Wrapper<Font>* font = PLUM_CHECK_DATA(L, 1, Font);
+				const char* message = luaL_checkstring(L, 2);
+				int lineLength = luaL_checkint(L, 3);
+				lua_pushstring(L, font->data->wrapText(message, lineLength).c_str());
+				return 1;
+			}
+
 			int getwidth(lua_State* L)
 			{
 				Wrapper<Font>* font = PLUM_CHECK_DATA(L, 1, Font);
@@ -130,6 +139,8 @@ namespace Plum
 				lua_pushinteger(L, font->data->height);
 				return 1;
 			}
+
+
 			void openLibrary(lua_State* L)
 			{
 				luaL_newmetatable(L, libraryName);
@@ -150,6 +161,7 @@ namespace Plum
 				PLUM_BIND_FUNC(print)
 				PLUM_BIND_FUNC(printRight)
 				PLUM_BIND_FUNC(printCenter)
+				PLUM_BIND_FUNC(wrapText)
 				PLUM_BIND_FUNC(getwidth)
 				PLUM_BIND_FUNC(getheight)
 				PLUM_BIND_FUNC_END_NULL()

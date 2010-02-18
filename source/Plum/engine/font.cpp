@@ -221,4 +221,57 @@ namespace Plum
 	{
 		return lineCount(s) * height;
 	}
+
+	// Overkill: 2005-12-19
+	// Thank you, Zip.
+	// Rewritten, Kildorf: 2007-10-16
+	// Rewritten, Overkill: 2010-02-18
+	std::string Font::wrapText(const std::string& input, int lineLength)
+	// Pass: The string to wrap, the length in pixels to fit into
+	// Return: The passed string with \n characters inserted as breaks
+	// Assmes: The font is valid, and will overrun if a word is longer than linelen
+	// Note: Existing breaks will be respected, but adjacent \n characters will be
+	//     replaced with a single \n so add a space for multiple line breaks
+	{
+		// Beginning of the current line
+		int lastBreak = -1;
+		// Last whitespace character
+		int lastWhitespace = -1;
+		// Current character
+		int pos = 0;
+		// Length of string
+		int len = input.length();
+
+		std::string result = input;
+
+		while (pos < len)
+		{
+			if (result[pos] == ' ')
+			{
+				lastWhitespace = pos;
+			}
+			else if (result[pos] == '\n')
+			{
+				lastWhitespace = pos;
+				lastBreak = pos;
+			}
+			else if (result[pos] == '\r')
+			{
+				if (result[pos + 1] == '\n')
+					pos++;
+				lastWhitespace = pos;
+				lastBreak = pos;
+			}
+			else if (textWidth(result.substr(lastBreak + 1, pos - lastBreak)) > lineLength
+				&& lastWhitespace != lastBreak)
+			{
+				result[lastWhitespace] = '\n';
+				lastBreak = lastWhitespace;
+			}
+
+			pos++;
+		}
+
+		return result;
+	}
 }
