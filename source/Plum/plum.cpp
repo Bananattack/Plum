@@ -36,7 +36,7 @@ int main(int argc, char** argv)
 	}
 	catch(std::exception& e)
 	{
-		engine.quit("Error " + std::string(e.what()));
+		engine.quit(e.what());
 	}
 	engine.quit();
 
