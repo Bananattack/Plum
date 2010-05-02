@@ -76,7 +76,7 @@ About the Author
 
 Andrew G. Crowell is an indie game developer.
 
-He is also a student, and will be going into his final year of his Computer Science
-degree program in September 2009 - April 2010.
+He was once a student, and completed the final year of his Computer Science
+degree program in April 2010.
 
 Read more about him and his lame attempts at game dev here: http://www.bananattack.com/
