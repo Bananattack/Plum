@@ -187,3 +187,26 @@ function Tileset(filename)
     
     return self
 end
+
+tileset = Tileset('molasses.vsp')
+map = Map('molasses.map')
+
+fnt = plum.Font('resources/fonts/ccfont.png')
+fnt:enableVariableWidth()
+local TITLE = 'Test'
+while not plum.key.Enter.pressed do
+    plum.video:clear(plum.color.Black)
+    
+    for i, layer in ipairs(map.layers) do
+        plum.video.opacity = layer.opacity
+        layer.tilemap:blit(tileset.tiles, 0, 0, 0, 0, 20, 15)
+    end
+    plum.video.opacity = 127
+    map.obsLayer:blit(tileset.obs, 0, 0, 0, 0, 20, 15)
+    plum.video.opacity = 255
+    fnt:print(0, 0, TITLE .. ' ' .. plum.timer.fps)
+    plum.refresh()
+    
+    for i = 1, plum.timer.gap do
+    end
+end
