@@ -199,10 +199,10 @@ while not plum.key.Enter.pressed do
     
     for i, layer in ipairs(map.layers) do
         plum.video.opacity = layer.opacity
-        layer.tilemap:blit(tileset.tiles, 0, 0, 0, 0, 20, 15)
+        layer.tilemap:blit(0, 0, 0, 0, 20, 15)
     end
     plum.video.opacity = 127
-    map.obsLayer:blit(tileset.obs, 0, 0, 0, 0, 20, 15)
+    map.obsData:blit(0, 0, 0, 0, 20, 15)
     plum.video.opacity = 255
     fnt:print(0, 0, TITLE .. ' ' .. plum.timer.fps)
     plum.refresh()
