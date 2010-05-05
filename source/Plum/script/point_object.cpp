@@ -78,6 +78,16 @@ namespace Plum
 				return 0;
 			}
 
+            int setLocation(lua_State* L)
+            {
+				Wrapper<Point>* p = PLUM_CHECK_DATA(L, 1, Point);
+				double x = luaL_checknumber(L, 2);
+                double y = luaL_checknumber(L, 3);
+                p->data->x = x;
+				p->data->y = y;
+				return 0;
+            }
+
 			void openLibrary(lua_State* L)
 			{
 				luaL_newmetatable(L, libraryName);
@@ -97,6 +107,7 @@ namespace Plum
 				PLUM_BIND_FUNC(gety)
 				PLUM_BIND_FUNC(setx)
 				PLUM_BIND_FUNC(sety)
+                PLUM_BIND_FUNC(setLocation)
 				{ "get1", getx }, // self[1]
 				{ "get2", gety }, // self[2]
 				{ "set1", setx }, // self[1] = val

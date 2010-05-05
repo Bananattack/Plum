@@ -17,6 +17,7 @@ namespace Plum
 		fractionalGap = 0;
 		gap = 0;
 		fps = 0;
+        ticks = 0;
 		updateCount = 0;
 	}
 
@@ -59,6 +60,7 @@ namespace Plum
 				gap = PLUM_MIN(maxFrameGap, gap);
 			}
 			tickLast = time;
+            ticks += gap;
 		}
 		else
 		{

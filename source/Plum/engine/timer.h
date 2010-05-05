@@ -23,6 +23,7 @@ namespace Plum
 		u32 fps;
 		u32 time;
 		u32 updateCount;
+        u32 ticks;
 
 		Timer();
 		void reset();

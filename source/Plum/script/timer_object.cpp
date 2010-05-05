@@ -35,7 +35,7 @@ namespace Plum
 
 	static int timerGetTime(lua_State* L)
 	{
-		lua_pushinteger(L, Script::getInstance(L)->engine->timer.time / 10);
+		lua_pushinteger(L, Script::getInstance(L)->engine->timer.ticks);
 		return 1;
 	}
 

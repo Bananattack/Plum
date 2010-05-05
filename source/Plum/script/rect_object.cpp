@@ -78,6 +78,20 @@ namespace Plum
 				return 1;
 			}
 
+			int getwidth(lua_State* L)
+			{
+				Wrapper<Rect>* r = PLUM_CHECK_DATA(L, 1, Rect);
+				lua_pushnumber(L, r->data->x2 - r->data->x);
+				return 1;
+			}
+
+			int getheight(lua_State* L)
+			{
+				Wrapper<Rect>* r = PLUM_CHECK_DATA(L, 1, Rect);
+				lua_pushnumber(L, r->data->y2 - r->data->y);
+				return 1;
+			}
+
 			int setx(lua_State* L)
 			{
 				Wrapper<Rect>* r = PLUM_CHECK_DATA(L, 1, Rect);
@@ -110,6 +124,60 @@ namespace Plum
 				return 0;
 			}
 
+			int setwidth(lua_State* L)
+			{
+				Wrapper<Rect>* r = PLUM_CHECK_DATA(L, 1, Rect);
+				double val = luaL_checknumber(L, 2);
+                r->data->x2 = r->data->x + val;
+				return 1;
+			}
+
+			int setheight(lua_State* L)
+			{
+				Wrapper<Rect>* r = PLUM_CHECK_DATA(L, 1, Rect);
+				double val = luaL_checknumber(L, 2);
+                r->data->y2 = r->data->y + val;
+				return 1;
+			}
+
+            int setRegion(lua_State* L)
+            {
+				Wrapper<Rect>* r = PLUM_CHECK_DATA(L, 1, Rect);
+				double x = luaL_checknumber(L, 2);
+                double y = luaL_checknumber(L, 3);
+                double x2 = luaL_checknumber(L, 4);
+                double y2 = luaL_checknumber(L, 5);
+                r->data->x = x;
+				r->data->y = y;
+                r->data->x2 = y2;
+                r->data->y2 = y2;
+				return 0;
+            }
+
+			int containsPoint(lua_State* L)
+			{
+				Wrapper<Rect>* r = PLUM_CHECK_DATA(L, 1, Rect);
+                Wrapper<Point>* p = PLUM_CHECK_DATA(L, 1, Point);
+                Point* point = p->data;
+                Rect* self = r->data;
+		        return point->x >= self->x
+			        && point->x <= self->x2
+			        && point->y >= self->y
+			        && point->y <= self->y2;
+			}
+
+			int touchesRect(lua_State* L)
+			{
+				Wrapper<Rect>* r = PLUM_CHECK_DATA(L, 1, Rect);
+                Wrapper<Rect>* r2 = PLUM_CHECK_DATA(L, 1, Rect);
+                Rect* self = r->data;
+                Rect* target = r2->data;
+		        return self->x2 >= target->x
+			        && self->x <= target->x2
+			        && self->y2 >= target->y
+			        && self->y <= target->y2;
+			}
+
 			void openLibrary(lua_State* L)
 			{
 				luaL_newmetatable(L, libraryName);
@@ -129,10 +197,17 @@ namespace Plum
 				PLUM_BIND_FUNC(gety)
 				PLUM_BIND_FUNC(getx2)
 				PLUM_BIND_FUNC(gety2)
+                PLUM_BIND_FUNC(getwidth)
+                PLUM_BIND_FUNC(getheight)
 				PLUM_BIND_FUNC(setx)
 				PLUM_BIND_FUNC(sety)
 				PLUM_BIND_FUNC(setx2)
 				PLUM_BIND_FUNC(sety2)
+                PLUM_BIND_FUNC(setwidth)
+                PLUM_BIND_FUNC(setheight)
+                PLUM_BIND_FUNC(setRegion)
+                PLUM_BIND_FUNC(containsPoint)
+                PLUM_BIND_FUNC(touchesRect)
 				{ "get1", getx }, // self[1]
 				{ "get2", gety }, // self[2]
 				{ "get3", getx2 }, // self[3]
