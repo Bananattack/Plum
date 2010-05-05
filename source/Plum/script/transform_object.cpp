@@ -195,6 +195,21 @@ namespace Plum
 				return 1;
 			}
 
+			int getmirror(lua_State* L)
+			{
+				Wrapper<Transform>* t = PLUM_CHECK_DATA(L, 1, Transform);
+				lua_pushboolean(L, t->data->mirror);
+				return 1;
+			}
+
+			int setmirror(lua_State* L)
+			{
+				Wrapper<Transform>* t = PLUM_CHECK_DATA(L, 1, Transform);
+				bool mirror = lua_toboolean(L, 2) != 0;
+				t->data->mirror = mirror;
+				return 0;
+			}
+
 			int getangle(lua_State* L)
 			{
 				Wrapper<Transform>* t = PLUM_CHECK_DATA(L, 1, Transform);
@@ -358,11 +373,13 @@ namespace Plum
 				PLUM_BIND_META(index)
 				PLUM_BIND_META(newindex)
 				PLUM_BIND_META(tostring)
+				PLUM_BIND_FUNC(getmirror)
+				PLUM_BIND_FUNC(setmirror)
 				PLUM_BIND_FUNC(getangle)
-				PLUM_BIND_FUNC(getmode)
-				PLUM_BIND_FUNC(gettint)
 				PLUM_BIND_FUNC(setangle)
+				PLUM_BIND_FUNC(getmode)
 				PLUM_BIND_FUNC(setmode)
+				PLUM_BIND_FUNC(gettint)
 				PLUM_BIND_FUNC(settint)
 				PLUM_BIND_FUNC(getposition)
 				PLUM_BIND_FUNC(getclip)

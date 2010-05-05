@@ -187,14 +187,14 @@ namespace Plum
 		glTranslated(destX, destY, 0);
 
 
-		GLdouble vertexArray[] = {
+		const GLdouble vertexArray[] = {
 			0.0, 0.0,
 			0.0, scaledHeight,
 			scaledWidth, scaledHeight,
 			scaledWidth, 0.0,
 		};
 
-		GLdouble textureArray[] = {
+		const GLdouble textureArray[] = {
 			regionS, regionT,
 			regionS, regionT2,
 			regionS2, regionT2,
@@ -270,14 +270,14 @@ namespace Plum
 		glRotated(angle, 0.0, 0.0, 1.0);
 		glTranslated(-width / 2.0, -height / 2.0, 0.0);
 
-		GLdouble vertexArray[] = {
+		const GLdouble vertexArray[] = {
 			0.0, 0.0,
 			0.0, height + 1.0,
 			width + 1.0, height + 1.0,
 			width + 1.0, 0.0,
 		};
 
-		GLdouble textureArray[] = {
+		const GLdouble textureArray[] = {
 			regionS, regionT,
 			regionS, regionT2,
 			regionS2, regionT2,
@@ -322,29 +322,23 @@ namespace Plum
 		glRotated(angle, 0.0, 0.0, 1.0);
 		glTranslated(-width / 2.0, -height / 2.0, 0.0);
 
-		GLdouble vertexArray[] = {
+		const GLdouble vertexArray[] = {
 			0.0, 0.0,
 			0.0, height + 1.0,
 			width + 1.0, height + 1.0,
 			width + 1.0, 0.0,
 		};
 
-		GLdouble textureArray[] = {
+		const GLdouble textureArray[] = {
 			regionS, regionT,
 			regionS, regionT2,
 			regionS2, regionT2,
 			regionS2, regionT,
 		};
 
-		glEnableClientState(GL_VERTEX_ARRAY);
-		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-
 		glVertexPointer(2, GL_DOUBLE, 0, vertexArray);
 		glTexCoordPointer(2, GL_DOUBLE, 0, textureArray);
 		glDrawArrays(GL_QUADS, 0, 4);
-		
-		glDisableClientState(GL_VERTEX_ARRAY);
-		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
 		glPopMatrix();
 	}
@@ -358,18 +352,10 @@ namespace Plum
 
 		if(transform->clip)
 		{
-			if(transform->clip->x > transform->clip->x2)
-			{
-				PLUM_SWAP(transform->clip->x, transform->clip->x2);
-			}
-			if(transform->clip->y > transform->clip->y2)
-			{
-				PLUM_SWAP(transform->clip->y, transform->clip->y2);
-			}
 			sourceX = PLUM_MIN(PLUM_MAX(0, transform->clip->x), canvasWidth - 1);
 			sourceY = PLUM_MIN(PLUM_MAX(0, transform->clip->y), canvasHeight - 1);
-			sourceX2 = PLUM_MIN(PLUM_MAX(0, transform->clip->x2), canvasWidth - 1);
-			sourceY2 = PLUM_MIN(PLUM_MAX(0, transform->clip->y2), canvasHeight - 1);
+			sourceX2 = PLUM_MIN(sourceX + transform->clip->width, canvasWidth) - 1;
+			sourceY2 = PLUM_MIN(sourceY + transform->clip->height, canvasHeight) - 1;
 		}
 		else
 		{
@@ -394,18 +380,18 @@ namespace Plum
 
 		useHardwareColor(r, g, b, a);
 		glTranslated(transform->position->x + transform->pivot->x, transform->position->y + transform->pivot->y, 0.0);
-		glScaled(transform->scale->x, transform->scale->y, 0.0);
+		glScaled(transform->scale->x * (1 - transform->mirror * 2), transform->scale->y, 0.0);
 		glRotated(transform->angle, 0.0, 0.0, 1.0);
 		glTranslated(-transform->pivot->x, -transform->pivot->y, 0.0);
 
-		GLdouble vertexArray[] = {
+		const GLdouble vertexArray[] = {
 			0.0, 0.0,
 			0.0, height + 1.0,
 			width + 1.0, height + 1.0,
 			width + 1.0, 0.0,
 		};
 
-		GLdouble textureArray[] = {
+		const GLdouble textureArray[] = {
 			regionS, regionT,
 			regionS, regionT2,
 			regionS2, regionT2,

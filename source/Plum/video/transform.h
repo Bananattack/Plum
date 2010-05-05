@@ -16,14 +16,15 @@ namespace Plum
 
 	struct Rect
 	{
-		double x, y, x2, y2;
+		double x, y;
+		double width, height;
 
 		Rect()
 		{
 		}
 
-		Rect(double x, double y, double x2, double y2)
-			: x(x), y(y), x2(x2), y2(y2)
+		Rect(double x, double y, double width, double height)
+			: x(x), y(y), width(width), height(height)
 		{
 		}
 	};
@@ -32,6 +33,8 @@ namespace Plum
 	// Makes it nicer to lower argument count and coupling in functions.
 	struct Transform
 	{
+		// Flip horizontally.
+		bool mirror;
 		// Angle of rotation. Defaults to 0.
 		double angle;
 		// Blending mode. Defaults to Unspecified (inherit global).
@@ -45,11 +48,13 @@ namespace Plum
 		Point* pivot;
 		// Scale proportions. Required.
 		Point* scale;
+
 		// Clipping rectangle. NULL = whole image.
 		Rect* clip;
 		
 		Transform()
 		{
+			mirror = false;
 			angle = 0;
 			mode = BlendUnspecified;
 			tint = Color::White;

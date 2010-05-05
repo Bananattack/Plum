@@ -412,6 +412,8 @@ namespace Plum
 				int i, j;
 
 				glEnable(GL_TEXTURE_2D);
+				glEnableClientState(GL_VERTEX_ARRAY);
+				glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 				spr->bind();
 
 				mode = (mode == BlendUnspecified) ? getBlendMode() : mode;
@@ -426,6 +428,9 @@ namespace Plum
 							data[(tileY + i) * width + (tileX + j)], 0, 1);
 					}
 				}
+
+				glDisableClientState(GL_VERTEX_ARRAY);
+				glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 			}
 	};
 }
