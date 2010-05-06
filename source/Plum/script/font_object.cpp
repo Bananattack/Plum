@@ -51,7 +51,7 @@ namespace Plum
 				Wrapper<Font>* font = PLUM_CHECK_DATA(L, 1, Font);
 				int x = luaL_checkint(L, 2);
 				int y = luaL_checkint(L, 3);
-				const char* message = lua_tostring(L, 4);
+				const char* message = luaL_checkstring(L, 4);
 				BlendMode mode = (BlendMode) luaL_optint(L, 5, BlendUnspecified);
 				Color tint = luaL_optint(L, 6, Color::White);
 
@@ -64,7 +64,7 @@ namespace Plum
 				Wrapper<Font>* font = PLUM_CHECK_DATA(L, 1, Font);
 				int x = luaL_checkint(L, 2);
 				int y = luaL_checkint(L, 3);
-				const char* message = lua_tostring(L, 4);
+				const char* message = luaL_checkstring(L, 4);
 				BlendMode mode = (BlendMode) luaL_optint(L, 5, BlendUnspecified);
 				Color tint = luaL_optint(L, 6, Color::White);
 
@@ -77,7 +77,7 @@ namespace Plum
 				Wrapper<Font>* font = PLUM_CHECK_DATA(L, 1, Font);
 				int x = luaL_checkint(L, 2);
 				int y = luaL_checkint(L, 3);
-				const char* message = lua_tostring(L, 4);
+				const char* message = luaL_checkstring(L, 4);
 				BlendMode mode = (BlendMode) luaL_optint(L, 5, BlendUnspecified);
 				Color tint = luaL_optint(L, 6, Color::White);
 
@@ -97,7 +97,14 @@ namespace Plum
 				Wrapper<Font>* font = PLUM_CHECK_DATA(L, 1, Font);
 				const char* message = luaL_checkstring(L, 2);
 				int lineIndex = luaL_checkint(L, 3);
-				lua_pushinteger(L, font->data->lineWidth(message, lineIndex));
+                if(message)
+                {
+                    lua_pushinteger(L, font->data->lineWidth(message, lineIndex));
+                }
+                else
+                {
+				    lua_pushinteger(L, 0);
+                }
 				return 1;
 			}
 

@@ -108,10 +108,6 @@ namespace Plum
 				PLUM_BIND_FUNC(setx)
 				PLUM_BIND_FUNC(sety)
                 PLUM_BIND_FUNC(setLocation)
-				{ "get1", getx }, // self[1]
-				{ "get2", gety }, // self[2]
-				{ "set1", setx }, // self[1] = val
-				{ "set2", sety }, // self[2] = val
 				PLUM_BIND_FUNC_END_NULL()
 
 				lua_pop(L, 1);

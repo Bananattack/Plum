@@ -17,7 +17,7 @@ Log::Write(const char* str)
     std::string s(std::string(indent_count * 2, ' ') + str + "\n");
     fputs(s.c_str(), handle);
     fflush(handle);
-  }
+  }8
 }
 
 ////////////////////////////////////////////////////////////////////////////////

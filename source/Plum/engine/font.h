@@ -34,28 +34,14 @@ namespace Plum
 			void enableVariableWidth();
 			void printChar(int x, int y, char c, BlendMode mode, Color tint);
 
-			void print(int x, int y, const char* s, BlendMode mode = BlendUnspecified, Color tint = Color::White);
-			void print(int x, int y, const std::string& s, BlendMode mode = BlendUnspecified, Color tint = Color::White)
-			{
-				print(x, y, s.c_str(), mode, tint);
-			}
+			void print(int x, int y, const std::string& s, BlendMode mode = BlendUnspecified, Color tint = Color::White);
+			void printRight(int x, int y, const std::string& s, BlendMode mode = BlendUnspecified, Color tint = Color::White);
+			void printCenter(int x, int y, const std::string& s, BlendMode mode = BlendUnspecified, Color tint = Color::White);
 			
-			void printRight(int x, int y, const char* s, BlendMode mode = BlendUnspecified, Color tint = Color::White);
-			void printRight(int x, int y, const std::string& s, BlendMode mode = BlendUnspecified, Color tint = Color::White)
-			{
-				printRight(x, y, s.c_str(), mode, tint);
-			}
-			
-			void printCenter(int x, int y, const char* s, BlendMode mode = BlendUnspecified, Color tint = Color::White);
-			void printCenter(int x, int y, const std::string& s, BlendMode mode = BlendUnspecified, Color tint = Color::White)
-			{
-				printCenter(x, y, s.c_str(), mode, tint);
-			}
-			
-			int lineWidth(std::string s, int lineIndex);
-			int lineCount(std::string s);
-			int textWidth(std::string s);
-			int textHeight(std::string s);
+			int lineWidth(const std::string& s, int lineIndex);
+			int lineCount(const std::string& s);
+			int textWidth(const std::string& s);
+			int textHeight(const std::string& s);
 			std::string wrapText(const std::string& input, int lineLength);
 	};
 }

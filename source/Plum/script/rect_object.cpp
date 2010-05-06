@@ -180,10 +180,11 @@ namespace Plum
                 Wrapper<Point>* p = PLUM_CHECK_DATA(L, 2, Point);
                 Point* point = p->data;
                 Rect* self = r->data;
-		        return point->x >= self->x
+                lua_pushboolean(L, point->x >= self->x
 			        && point->x <= self->x + self->width
 			        && point->y >= self->y
-			        && point->y <= self->y + self->height;
+			        && point->y <= self->y + self->height);
+                return 1;
 			}
 
 			int touchesRect(lua_State* L)
@@ -192,10 +193,11 @@ namespace Plum
                 Wrapper<Rect>* r2 = PLUM_CHECK_DATA(L, 2, Rect);
                 Rect* self = r->data;
                 Rect* target = r2->data;
-		        return self->x + self->width >= target->x
+		        lua_pushboolean(L, self->x + self->width >= target->x
 			        && self->x <= target->x + target->width
 			        && self->y + self->height >= target->y
-			        && self->y <= target->y + target->height;
+			        && self->y <= target->y + target->height);
+                return 1;
 			}
 
 			void openLibrary(lua_State* L)

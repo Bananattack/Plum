@@ -84,11 +84,11 @@ namespace Plum
 		image->blitRegion(fx, fy, fx + width - 1, fy + height - 1, x, y, mode, tint);
 	}
 
-	void Font::print(int x1, int y, const char* s, BlendMode mode, Color tint)
+	void Font::print(int x1, int y, const std::string& s, BlendMode mode, Color tint)
 	{
 		mode = (mode == BlendUnspecified) ? getBlendMode() : mode;
 		int x = x1;
-		for (unsigned int i = 0; s[i] != 0; i++)
+		for (unsigned int i = 0; i < s.length(); i++)
 		{
 			if(s[i] == '\n')
 			{
@@ -107,13 +107,13 @@ namespace Plum
 		}
 	}
 
-	void Font::printRight(int x1, int y, const char* s, BlendMode mode, Color tint)
+	void Font::printRight(int x1, int y, const std::string& s, BlendMode mode, Color tint)
 	{
 		mode = (mode == BlendUnspecified) ? getBlendMode() : mode;
 		int x = x1;
 		int lineIndex = 0;
 		int ofs = lineWidth(s, 0);
-		for (unsigned int i = 0; s[i] != 0; i++)
+		for (unsigned int i = 0; i < s.length(); i++)
 		{
 			if(s[i] == '\n')
 			{
@@ -135,13 +135,13 @@ namespace Plum
 		}
 	}
 
-	void Font::printCenter(int x1, int y, const char* s, BlendMode mode, Color tint)
+	void Font::printCenter(int x1, int y, const std::string& s, BlendMode mode, Color tint)
 	{
 		mode = (mode == BlendUnspecified) ? getBlendMode() : mode;
 		int x = x1;
 		int lineIndex = 0;
 		int ofs = lineWidth(s, 0) / 2;
-		for (unsigned int i = 0; s[i] != 0; i++)
+		for (unsigned int i = 0; i < s.length(); i++)
 		{
 			if(s[i] == '\n')
 			{
@@ -163,7 +163,7 @@ namespace Plum
 		}
 	}
 
-	int Font::lineWidth(std::string s, int lineIndex)
+	int Font::lineWidth(const std::string& s, int lineIndex)
 	{
 		unsigned int i;
 		int w = 0;
@@ -193,7 +193,7 @@ namespace Plum
 		return w;
 	}
 
-	int Font::lineCount(std::string s)
+	int Font::lineCount(const std::string& s)
 	{
 		int c = 1;
 		for (unsigned int i = 0; i < s.length(); i++)
@@ -206,7 +206,7 @@ namespace Plum
 		return c;
 	}
 
-	int Font::textWidth(std::string s)
+	int Font::textWidth(const std::string& s)
 	{
 		int c = lineCount(s);
 		int w = 0;
@@ -217,7 +217,7 @@ namespace Plum
 		return w;
 	}
 
-	int Font::textHeight(std::string s)
+	int Font::textHeight(const std::string& s)
 	{
 		return lineCount(s) * height;
 	}
