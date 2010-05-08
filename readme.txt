@@ -48,16 +48,18 @@ If you're pushing changes to me, please use release mode.
 
 - To compile from git on Linux:
 
+*** NOTE: THE BELOW WOULD ONLY BE USEFUL IF THE LINUX PORT WORKED (IT DOESN'T COMPILE ANYMORE)
+*** IF YOU ARE INTERESTED IN HELPING ME GET THIS WORKING AGAIN FEEL FREE TO FORK FROM THIS
 I assume you already know how to use git. If not learn the basics, then come back.
-You need the build-essentials, like gcc and make.
-You will also need to hae SDL installed.
-Potentially other things, I'm not very good at Linux.
+You need the build-essentials, like g++ and make.
+You will also need to have SDL installed.
+Potentially other things, I'm not very good at Linux dev.
 
 Anyways, just run "make" in the base directory of the git repo.
 With that, you will get a compiled executable named "Plum",
 which should appear in the "test/" folder.
 
-If you're good at Linux, and want to help make my awesome game
+If you're good at developing under Linux, and want to help make my awesome game
 engine more portable, please contact me!
 
 Licensing
