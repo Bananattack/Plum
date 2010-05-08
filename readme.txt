@@ -34,7 +34,7 @@ How to compile from git
 I assume you already know how to use git. If not learn the basics, then come back.
 You need to install Visual Studio 2008.
 If you're using Express edition, you will need other dependencies.
-For certain, you will require the Windows Platform SDK.
+For certain, you will require the Windows Platform SDK, and probably the DirectX SDK since SDL needs that.
 
 If any finds out there are other things they need installed, please
 contact me.
