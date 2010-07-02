@@ -5,6 +5,8 @@
  */
 #include <map>
 #include <utility>
+#include <cstdlib>
+#include <cstring>
 #include "corona.h"
 #include "Debug.h"
 #include "SimpleImage.h"

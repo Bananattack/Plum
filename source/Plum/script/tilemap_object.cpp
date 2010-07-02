@@ -34,7 +34,7 @@ namespace Plum
 				luaL_unref(L, LUA_REGISTRYINDEX, m->extRef);
 
 				// Only delete if it doesn't belong to a parent of some sort.
-				if(m->parentRef != LUA_NOREF)
+				if(m->parentRef == LUA_NOREF)
 				{
 					delete m->data;
 				}

@@ -24,7 +24,7 @@ namespace Plum
 				Wrapper<Rect>* r = PLUM_CHECK_DATA(L, 1, Rect);
 
 				// Only delete if it doesn't belong to a parent of some sort.
-				if(r->parentRef != LUA_NOREF)
+				if(r->parentRef == LUA_NOREF)
 				{
 					delete r->data;
 				}

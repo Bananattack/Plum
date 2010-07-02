@@ -318,7 +318,7 @@ namespace Plum
 		u32 compressedLength;
 		readU32(compressedLength);
 
-		u8* chunk = new byte[compressedLength];
+		u8* chunk = new u8[compressedLength];
 		u8* dest = (u8*) buffer;
 		readRaw(chunk, compressedLength);
 

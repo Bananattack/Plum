@@ -1,0 +1,34 @@
+libcorona = {
+    'files': [
+        'Convert.cpp',
+        'Corona.cpp',
+        'Debug.cpp',
+        'DefaultFileSystem.cpp',
+        'MemoryFile.cpp',
+        'OpenBMP.cpp',
+        'OpenGIF.cpp',
+        'OpenJPEG.cpp',
+        'OpenPCX.cpp',
+        'OpenPNG.cpp',
+        'OpenTGA.cpp',
+        'SavePNG.cpp',
+        'SaveTGA.cpp',
+    ],
+
+    'dependencies': [
+        'jpeg',
+        'png',
+        'ungif',
+    ],
+
+    'environment': {
+        'CPPPATH': [
+            'source/corona/jpeg-6b',
+            'source/corona/libpng-1.2.1',
+            'source/corona/libungif-4.1.0',
+            'source',
+        ]
+    }
+}
+
+Return('libcorona')

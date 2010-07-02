@@ -38,7 +38,7 @@ namespace Plum
 			{
 				Wrapper<Spritesheet>* spr = PLUM_CHECK_DATA(L, 1, Spritesheet);
 				// Only delete if it doesn't belong to a parent of some sort.
-				if(spr->parentRef != LUA_NOREF)
+				if(spr->parentRef == LUA_NOREF)
 				{
 					delete spr->data;
 				}

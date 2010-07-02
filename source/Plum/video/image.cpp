@@ -45,11 +45,10 @@ namespace Plum
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
 
-
+        textureWidth = textureCanvas->width;
+        textureHeight = textureCanvas->height;
 		setCanvasWidth(canvas->occupiedWidth);
 		setCanvasHeight(canvas->occupiedHeight);
-		setTextureWidth(textureCanvas->width);
-		setTextureHeight(textureCanvas->height);
 
 		glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_NEAREST);

@@ -51,7 +51,7 @@ namespace Plum
 				Wrapper<File>* file = PLUM_CHECK_DATA(L, 1, File);
 
 				// Only delete if it doesn't belong to a parent of some sort.
-				if(file->parentRef != LUA_NOREF)
+				if(file->parentRef == LUA_NOREF)
 				{
 					delete file->data;
 				}

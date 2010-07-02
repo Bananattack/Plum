@@ -7,8 +7,8 @@ int main(int argc, char** argv)
 	Engine engine;
 
 	clearLog();
-	freopen("stdout.log", "w", stdout);
-	freopen("stderr.log", "w", stderr);
+//	freopen("stdout.log", "w", stdout);
+//	freopen("stderr.log", "w", stderr);
 	try
 	{
 		engine.startup();

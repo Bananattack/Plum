@@ -41,7 +41,7 @@ namespace Plum
 				Wrapper<Canvas>* canvas = PLUM_CHECK_DATA(L, 1, Canvas);
 
 				// Only delete if it doesn't belong to a parent of some sort.
-				if(canvas->parentRef != LUA_NOREF)
+				if(canvas->parentRef == LUA_NOREF)
 				{
 					delete canvas->data;
 				}

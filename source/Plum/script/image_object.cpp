@@ -35,7 +35,7 @@ namespace Plum
 				Wrapper<Image>* t = PLUM_CHECK_DATA(L, 1, Image);
 
 				// Only delete if it doesn't belong to a parent of some sort.
-				if(t->parentRef != LUA_NOREF)
+				if(t->parentRef == LUA_NOREF)
 				{
 					delete t->data;
 				}

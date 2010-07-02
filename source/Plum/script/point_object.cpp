@@ -22,7 +22,7 @@ namespace Plum
 				Wrapper<Point>* p = PLUM_CHECK_DATA(L, 1, Point);
 
 				// Only delete if it doesn't belong to a parent of some sort.
-				if(p->parentRef != LUA_NOREF)
+				if(p->parentRef == LUA_NOREF)
 				{
 					delete p->data;
 				}

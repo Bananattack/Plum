@@ -1,6 +1,8 @@
 source/Plum/_output
 source/Plum/Plum.aps
 source/**/*.vcproj.*.user
+source/**/*.o
+source/**/*.a
 source/SDL-1.2.13/VisualC/SDL/Debug
 source/SDL-1.2.13/VisualC/SDL/Release
 source/SDL-1.2.13/VisualC/SDL/*.vcproj.*.user
@@ -26,3 +28,4 @@ test/test.txt
 Plum.ncb
 Plum.suo
 Debug
+.sconsign.dblite

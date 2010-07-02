@@ -1,4 +1,6 @@
 #include <algorithm>
+#include <cstring>
+#include <cstdlib>
 #include "Debug.h"
 #include "Open.h"
 #include "SimpleImage.h"

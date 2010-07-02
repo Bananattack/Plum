@@ -31,7 +31,7 @@ namespace Plum
 				Wrapper<Directory>* dir = PLUM_CHECK_DATA(L, 1, Directory);
 
 				// Only delete if it doesn't belong to a parent of some sort.
-				if(dir->parentRef != LUA_NOREF)
+				if(dir->parentRef == LUA_NOREF)
 				{
 					delete dir->data;
 				}

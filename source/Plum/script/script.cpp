@@ -98,7 +98,7 @@ namespace Plum
 
 	void Script::stepGarbageCollector()
 	{
-		lua_gc(L, LUA_GCSTEP, 1);
+		lua_gc(L, LUA_GCSTEP, 1); 
 	}
 
 	void Script::processInputHook(Script::InputHook& hook)

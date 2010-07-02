@@ -101,6 +101,13 @@ namespace Plum
 #define PLUM_BIND_FUNC_END() {NULL, NULL}, }; luaL_register(L, libraryName, functionsToBind);
 #define PLUM_BIND_FUNC_END_NULL() {NULL, NULL}, }; luaL_register(L, NULL, functionsToBind);
 
+#ifdef PLUM_DEBUG_GC
+#define PLUM_DEBUG_GC_PUSH(w, T) { printf("Pushed plum_"#T"Object instance at 0x%X (data: 0x%X, parentRef: %d)...\n", (size_t) w, (size_t) w->data, w->parentRef); }
+#define PLUM_DEBUG_GC_FREE(w, T) { printf("Freeing plum_"#T"Object instance at 0x%X (data: 0x%X, parentRef: %d)...\n", (size_t) w, (size_t) w->data, w->parentRef); }
+#else
+#define PLUM_DEBUG_GC_PUSH(w, T)
+#define PLUM_DEBUG_GC_FREE(w, T)
+#endif
 
 #define PLUM_IS_DATA(L, i, T) ScriptLibrary::_isWrapper<T>(L, i, "plum_"#T"Object")
 #define PLUM_CHECK_DATA(L, i, T) ScriptLibrary::_checkWrapper<T>(L, i, "plum_"#T"Object")

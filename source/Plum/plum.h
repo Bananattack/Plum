@@ -10,6 +10,7 @@
 #include <cmath>
 #include <exception>
 #include <algorithm>
+#include <memory>
 
 #if defined(WIN32) || defined(_WIN32)
 #	define PLUM_WIN32

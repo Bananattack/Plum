@@ -27,7 +27,7 @@ namespace Plum
 				Wrapper<Font>* font = PLUM_CHECK_DATA(L, 1, Font);
 
 				// Only delete if it doesn't belong to a parent of some sort.
-				if(font->parentRef != LUA_NOREF)
+				if(font->parentRef == LUA_NOREF)
 				{
 					delete font->data;
 				}
