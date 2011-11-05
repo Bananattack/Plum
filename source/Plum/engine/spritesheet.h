@@ -32,7 +32,7 @@ namespace Plum
 				frameWidth = w;
 				frameHeight = h;
 				padding = 0;
-				columns = 1;
+                columns = image->getCanvasWidth() / w;
 			}
 
 		public:
@@ -46,10 +46,18 @@ namespace Plum
 				image->bind();
 			}
 
+            Color getFramePixel(int f, int x, int y)
+            {
+                if(!columns || x < 0 || x >= frameWidth || y < 0 || y >= frameHeight) return 0;
+
+				int fx = (f % columns) * (frameWidth + padding) + padding;
+				int fy = (f / columns) * (frameHeight + padding) + padding;
+				return image->getCanvas()->getPixel(fx + x, fy + y);
+            }
+
 			void blitFrame(int x, int y, int f, BlendMode mode = BlendUnspecified, Color tint = Color::White)
 			{
-				// Ensure there's always at least one column before looking up a frame
-				if(columns == 0) columns = 1;
+				if(!columns) return;
 
 				int fx = (f % columns) * (frameWidth + padding) + padding;
 				int fy = (f / columns) * (frameHeight + padding) + padding;
@@ -59,8 +67,7 @@ namespace Plum
 
 			void rawBlitFrame(int x, int y, int f, double angle, double scale)
 			{
-				// Ensure there's always at least one column before looking up a frame
-				if(columns == 0) columns = 1;
+				if(!columns) return;
 
 				int fx = (f % columns) * (frameWidth + padding) + padding;
 				int fy = (f / columns) * (frameHeight + padding) + padding;

@@ -1,6 +1,6 @@
 source/Plum/_output
 source/Plum/Plum.aps
-source/**/*.vcproj.*.user
+source/**/*.user
 source/**/*.o
 source/**/*.a
 source/SDL-1.2.13/VisualC/SDL/Debug
@@ -25,6 +25,7 @@ test/Plum.exp
 test/Plum.lib
 test/Plum.suo
 test/test.txt
+Plum.sdf
 Plum.ncb
 Plum.suo
 Debug

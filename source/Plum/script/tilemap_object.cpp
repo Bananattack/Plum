@@ -106,7 +106,17 @@ namespace Plum
 				Wrapper<Tilemap>* m = PLUM_CHECK_DATA(L, 1, Tilemap);
 				int tx = luaL_checkint(L, 2);
 				int ty = luaL_checkint(L, 3);
-				lua_pushinteger(L, m->data->getTile(tx, ty));
+                Tile t = m->data->getTile(tx, ty);
+
+                if(t != Tilemap::InvalidTile)
+                {
+                    lua_pushinteger(L, t);
+                }
+                else
+                {
+                    lua_pushnil(L);
+                }
+				
 				return 1;
 			}
 

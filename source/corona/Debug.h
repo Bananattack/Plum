@@ -4,7 +4,7 @@
 
 #ifdef _DEBUG
 # ifndef CORONA_DEBUG
-#  define CORONA_DEBUG
+//#  define CORONA_DEBUG
 # endif
 #endif
 

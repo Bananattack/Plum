@@ -1,0 +1,216 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{7F953593-93ED-4D49-88B8-37EEF5E399DF}</ProjectGuid>
+    <RootNamespace>plum</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">_output/$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">_output/$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>../SDL-1.2.13/include;../zlib;../corona;../audiere/src;..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>../SDLmain.lib;../SDL.lib;OpenGL32.lib;dxguid.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\directx;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <DelayLoadDLLs>%(DelayLoadDLLs)</DelayLoadDLLs>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <EntryPointSymbol>
+      </EntryPointSymbol>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <Optimization>Full</Optimization>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <AdditionalIncludeDirectories>../SDL-1.2.13/include;../zlib;../corona;../audiere/src;..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>../SDL.lib;../SDLmain.lib;OpenGL32.lib;winmm.lib;dxguid.lib;../audiere/vc7/bin/$(Configuration)/audiere.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(SolutionDir)\test\$(ProjectName).exe</OutputFile>
+      <AdditionalLibraryDirectories>..\directx;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <EnableUAC>false</EnableUAC>
+      <IgnoreSpecificDefaultLibraries>libcmt.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <DelayLoadDLLs>%(DelayLoadDLLs)</DelayLoadDLLs>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>
+      </EnableCOMDATFolding>
+      <EntryPointSymbol>
+      </EntryPointSymbol>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Message>Compressing executable with UPX.</Message>
+      <Command>"$(SolutionDir)\upx\upx.exe" -9 -v --mono --no-progress "$(SolutionDir)\test\$(ProjectName).exe"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="plum.cpp" />
+    <ClCompile Include="video\blending.cpp" />
+    <ClCompile Include="video\image.cpp" />
+    <ClCompile Include="video\video.cpp" />
+    <ClCompile Include="audio\audio_audiere.cpp" />
+    <ClCompile Include="script\canvas_object.cpp" />
+    <ClCompile Include="script\directory_object.cpp" />
+    <ClCompile Include="script\file_object.cpp" />
+    <ClCompile Include="script\font_object.cpp" />
+    <ClCompile Include="script\image_object.cpp" />
+    <ClCompile Include="script\input_object.cpp" />
+    <ClCompile Include="script\keyboard_object.cpp" />
+    <ClCompile Include="script\mouse_object.cpp" />
+    <ClCompile Include="script\plum_module.cpp" />
+    <ClCompile Include="script\point_object.cpp" />
+    <ClCompile Include="script\rect_object.cpp" />
+    <ClCompile Include="script\script.cpp" />
+    <ClCompile Include="script\song_object.cpp" />
+    <ClCompile Include="script\sound_object.cpp" />
+    <ClCompile Include="script\sprite_object.cpp" />
+    <ClCompile Include="script\spritesheet_object.cpp" />
+    <ClCompile Include="script\tilemap_object.cpp" />
+    <ClCompile Include="script\tileset_object.cpp" />
+    <ClCompile Include="script\timer_object.cpp" />
+    <ClCompile Include="script\transform_object.cpp" />
+    <ClCompile Include="script\video_object.cpp" />
+    <ClCompile Include="common\animation.cpp" />
+    <ClCompile Include="common\base64.cpp" />
+    <ClCompile Include="common\common.cpp" />
+    <ClCompile Include="common\compression.cpp" />
+    <ClCompile Include="common\config.cpp" />
+    <ClCompile Include="common\directory.cpp" />
+    <ClCompile Include="common\file.cpp" />
+    <ClCompile Include="common\path.cpp" />
+    <ClCompile Include="common\sha1.cpp" />
+    <ClCompile Include="engine\engine.cpp" />
+    <ClCompile Include="engine\font.cpp" />
+    <ClCompile Include="engine\input.cpp" />
+    <ClCompile Include="engine\sprite.cpp" />
+    <ClCompile Include="engine\tileset.cpp" />
+    <ClCompile Include="engine\timer.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="plum.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="video\blending.h" />
+    <ClInclude Include="video\canvas.h" />
+    <ClInclude Include="video\color.h" />
+    <ClInclude Include="video\image.h" />
+    <ClInclude Include="video\transform.h" />
+    <ClInclude Include="video\video.h" />
+    <ClInclude Include="audio\audio_audiere.h" />
+    <ClInclude Include="script\script.h" />
+    <ClInclude Include="common\animation.h" />
+    <ClInclude Include="common\base64.h" />
+    <ClInclude Include="common\common.h" />
+    <ClInclude Include="common\compression.h" />
+    <ClInclude Include="common\config.h" />
+    <ClInclude Include="common\directory.h" />
+    <ClInclude Include="common\file.h" />
+    <ClInclude Include="common\path.h" />
+    <ClInclude Include="common\sha1.h" />
+    <ClInclude Include="common\types.h" />
+    <ClInclude Include="engine\camera.h" />
+    <ClInclude Include="engine\engine.h" />
+    <ClInclude Include="engine\font.h" />
+    <ClInclude Include="engine\input.h" />
+    <ClInclude Include="engine\keyboard.h" />
+    <ClInclude Include="engine\mouse.h" />
+    <ClInclude Include="engine\sprite.h" />
+    <ClInclude Include="engine\spritesheet.h" />
+    <ClInclude Include="engine\tilemap.h" />
+    <ClInclude Include="engine\tileset.h" />
+    <ClInclude Include="engine\timer.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="plum.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Plum.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\audiere\vc7\audiere\audiere.vcxproj">
+      <Project>{e5195361-63cd-4c1b-8dd7-3e579779b1f6}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\corona\corona.vcxproj">
+      <Project>{defa9e48-98bc-4bc5-b4b5-40231dfdb938}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\lua\lua.vcxproj">
+      <Project>{9879234c-63e3-4ee3-9da4-6cd88677a00a}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\SDL-1.2.13\VisualC\SDL\SDL.vcxproj">
+      <Project>{81ce8daf-ebb2-4761-8e45-b71abcca8c68}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\zlib\zlib.vcxproj">
+      <Project>{9224b68e-4e98-429f-a15d-322f38bdf9c7}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\zzip\zzip.vcxproj">
+      <Project>{87ceebe8-4be5-4c38-9082-93502b714cd4}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

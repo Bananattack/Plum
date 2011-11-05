@@ -5,6 +5,8 @@ namespace Plum
 	class Tilemap
 	{
 		public:
+            static const Tile InvalidTile = Tile(-1);
+
 			int width;
 			int height;
 
@@ -45,9 +47,9 @@ namespace Plum
 				return height;
 			}
 
-			int getTile(int tx, int ty)
+			Tile getTile(int tx, int ty)
 			{
-				if(tx < 0 || tx >= width || ty < 0 || ty >= height) return 0;
+				if(tx < 0 || tx >= width || ty < 0 || ty >= height) return InvalidTile;
 				return data[ty * width + tx];
 			}
 

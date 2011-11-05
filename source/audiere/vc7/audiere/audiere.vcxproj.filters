@@ -1,0 +1,363 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="mpaudec">
+      <UniqueIdentifier>{8d33a4d0-8278-41e6-9667-dabb920a10ac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dumb">
+      <UniqueIdentifier>{5811fd17-205a-4246-b65b-5c0accc454a0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dumb\include">
+      <UniqueIdentifier>{5bd80718-7f4b-4681-a233-31bfeb1a069d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dumb\include\internal">
+      <UniqueIdentifier>{e3868954-bbeb-401a-bce7-e3cc94c960a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dumb\src">
+      <UniqueIdentifier>{12913f57-e1c1-4495-944e-02137a609cd1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dumb\src\core">
+      <UniqueIdentifier>{efc10d94-8c0e-4c00-9cd5-5b4b7b4c493a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dumb\src\it">
+      <UniqueIdentifier>{f0cde42f-0316-4eb9-8eee-d2a9cd9f0840}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dumb\src\helpers">
+      <UniqueIdentifier>{c60863a1-22dc-4a07-a357-0ad885e8c3b6}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\src\audiere.h">
+      <Filter>files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\basic_source.h">
+      <Filter>files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\debug.h">
+      <Filter>files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\default_file.h">
+      <Filter>files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\device.h">
+      <Filter>files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\device_ds.h">
+      <Filter>files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\device_ds_buffer.h">
+      <Filter>files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\device_ds_stream.h">
+      <Filter>files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\device_mixer.h">
+      <Filter>files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\device_mm.h">
+      <Filter>files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\device_null.h">
+      <Filter>files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\dumb_resample.h">
+      <Filter>files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\input_aiff.h">
+      <Filter>files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\input_mod.h">
+      <Filter>files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\input_mp3.h">
+      <Filter>files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\input_ogg.h">
+      <Filter>files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\input_wav.h">
+      <Filter>files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\internal.h">
+      <Filter>files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\mci_device.h">
+      <Filter>files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\memory_file.h">
+      <Filter>files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\resampler.h">
+      <Filter>files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\resource.h">
+      <Filter>files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\threads.h">
+      <Filter>files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\timer.h">
+      <Filter>files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\types.h">
+      <Filter>files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\utility.h">
+      <Filter>files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\mpaudec\internal.h">
+      <Filter>mpaudec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\mpaudec\mpaudec.h">
+      <Filter>mpaudec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\mpaudec\mpaudectab.h">
+      <Filter>mpaudec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\mpaudec\mpegaudio.h">
+      <Filter>mpaudec</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\third-party\vc6\include\dumb\include\dumb.h">
+      <Filter>dumb\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\third-party\vc6\include\dumb\include\internal\dumb.h">
+      <Filter>dumb\include\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\third-party\vc6\include\dumb\include\internal\it.h">
+      <Filter>dumb\include\internal</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\..\src\audiere.rc">
+      <Filter>files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\basic_source.cpp">
+      <Filter>files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\cd_win32.cpp">
+      <Filter>files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\debug.cpp">
+      <Filter>files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\device.cpp">
+      <Filter>files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\device_ds.cpp">
+      <Filter>files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\device_ds_buffer.cpp">
+      <Filter>files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\device_ds_stream.cpp">
+      <Filter>files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\device_mixer.cpp">
+      <Filter>files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\device_mm.cpp">
+      <Filter>files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\device_null.cpp">
+      <Filter>files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\dumb_resample.cpp">
+      <Filter>files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\dxguid.cpp">
+      <Filter>files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\file_ansi.cpp">
+      <Filter>files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\input.cpp">
+      <Filter>files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\input_aiff.cpp">
+      <Filter>files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\input_mod.cpp">
+      <Filter>files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\input_mp3.cpp">
+      <Filter>files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\input_ogg.cpp">
+      <Filter>files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\input_wav.cpp">
+      <Filter>files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\loop_point_source.cpp">
+      <Filter>files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\memory_file.cpp">
+      <Filter>files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\midi_mci.cpp">
+      <Filter>files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\noise.cpp">
+      <Filter>files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\resampler.cpp">
+      <Filter>files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\sample_buffer.cpp">
+      <Filter>files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\sound.cpp">
+      <Filter>files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\sound_effect.cpp">
+      <Filter>files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\square_wave.cpp">
+      <Filter>files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\threads_win32.cpp">
+      <Filter>files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\timer_win32.cpp">
+      <Filter>files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\tone.cpp">
+      <Filter>files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\utility.cpp">
+      <Filter>files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\version.cpp">
+      <Filter>files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\mpaudec\bits.c">
+      <Filter>mpaudec</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\mpaudec\mpaudec.c">
+      <Filter>mpaudec</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third-party\vc6\include\dumb\src\core\atexit.c">
+      <Filter>dumb\src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third-party\vc6\include\dumb\src\core\duhlen.c">
+      <Filter>dumb\src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third-party\vc6\include\dumb\src\core\duhtag.c">
+      <Filter>dumb\src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third-party\vc6\include\dumb\src\core\dumbfile.c">
+      <Filter>dumb\src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third-party\vc6\include\dumb\src\core\loadduh.c">
+      <Filter>dumb\src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third-party\vc6\include\dumb\src\core\makeduh.c">
+      <Filter>dumb\src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third-party\vc6\include\dumb\src\core\rawsig.c">
+      <Filter>dumb\src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third-party\vc6\include\dumb\src\core\readduh.c">
+      <Filter>dumb\src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third-party\vc6\include\dumb\src\core\register.c">
+      <Filter>dumb\src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third-party\vc6\include\dumb\src\core\rendduh.c">
+      <Filter>dumb\src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third-party\vc6\include\dumb\src\core\rendsig.c">
+      <Filter>dumb\src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third-party\vc6\include\dumb\src\core\unload.c">
+      <Filter>dumb\src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third-party\vc6\include\dumb\src\it\itload.c">
+      <Filter>dumb\src\it</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third-party\vc6\include\dumb\src\it\itload2.c">
+      <Filter>dumb\src\it</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third-party\vc6\include\dumb\src\it\itmisc.c">
+      <Filter>dumb\src\it</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third-party\vc6\include\dumb\src\it\itorder.c">
+      <Filter>dumb\src\it</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third-party\vc6\include\dumb\src\it\itread.c">
+      <Filter>dumb\src\it</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third-party\vc6\include\dumb\src\it\itread2.c">
+      <Filter>dumb\src\it</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third-party\vc6\include\dumb\src\it\itrender.c">
+      <Filter>dumb\src\it</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third-party\vc6\include\dumb\src\it\itunload.c">
+      <Filter>dumb\src\it</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third-party\vc6\include\dumb\src\it\loadmod.c">
+      <Filter>dumb\src\it</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third-party\vc6\include\dumb\src\it\loadmod2.c">
+      <Filter>dumb\src\it</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third-party\vc6\include\dumb\src\it\loads3m.c">
+      <Filter>dumb\src\it</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third-party\vc6\include\dumb\src\it\loads3m2.c">
+      <Filter>dumb\src\it</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third-party\vc6\include\dumb\src\it\loadxm.c">
+      <Filter>dumb\src\it</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third-party\vc6\include\dumb\src\it\loadxm2.c">
+      <Filter>dumb\src\it</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third-party\vc6\include\dumb\src\it\readmod.c">
+      <Filter>dumb\src\it</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third-party\vc6\include\dumb\src\it\readmod2.c">
+      <Filter>dumb\src\it</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third-party\vc6\include\dumb\src\it\reads3m.c">
+      <Filter>dumb\src\it</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third-party\vc6\include\dumb\src\it\reads3m2.c">
+      <Filter>dumb\src\it</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third-party\vc6\include\dumb\src\it\readxm.c">
+      <Filter>dumb\src\it</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third-party\vc6\include\dumb\src\it\readxm2.c">
+      <Filter>dumb\src\it</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third-party\vc6\include\dumb\src\it\xmeffect.c">
+      <Filter>dumb\src\it</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third-party\vc6\include\dumb\src\helpers\clickrem.c">
+      <Filter>dumb\src\helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third-party\vc6\include\dumb\src\helpers\memfile.c">
+      <Filter>dumb\src\helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third-party\vc6\include\dumb\src\helpers\resample.c">
+      <Filter>dumb\src\helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third-party\vc6\include\dumb\src\helpers\sampbuf.c">
+      <Filter>dumb\src\helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third-party\vc6\include\dumb\src\helpers\silence.c">
+      <Filter>dumb\src\helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third-party\vc6\include\dumb\src\helpers\stdfile.c">
+      <Filter>dumb\src\helpers</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

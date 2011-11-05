@@ -82,6 +82,18 @@ namespace Plum
 				return 0;
 			}
 
+            int getFramePixel(lua_State* L)
+            {
+                Wrapper<Spritesheet>* spr = PLUM_CHECK_DATA(L, 1, Spritesheet);
+				int f = luaL_checkint(L, 2);
+				int x = luaL_checkint(L, 3);
+				int y = luaL_checkint(L, 4);
+                int pixel = spr->data->getFramePixel(f, x, y);
+
+                lua_pushinteger(L, pixel);
+				return 1;
+            }
+
 			int getframeWidth(lua_State* L)
 			{
 				Wrapper<Spritesheet>* spr = PLUM_CHECK_DATA(L, 1, Spritesheet);
@@ -153,6 +165,7 @@ namespace Plum
 				PLUM_BIND_META(newindex)
 				PLUM_BIND_META(tostring)
 				PLUM_BIND_FUNC(blitFrame)
+                PLUM_BIND_FUNC(getFramePixel)
 				PLUM_BIND_FUNC(getframeWidth)
 				PLUM_BIND_FUNC(setframeWidth)
 				PLUM_BIND_FUNC(getframeHeight)

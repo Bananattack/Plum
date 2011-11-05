@@ -11,7 +11,15 @@ namespace Plum
 
 			if(argumentCount >= 1)
 			{
-				Script::getInstance(L)->engine->quit(lua_tostring(L, 1));
+                const char* message = lua_tostring(L, 1);
+                if(message)
+                {
+                    Script::getInstance(L)->engine->quit(message);
+                }
+                else
+                {
+                    Script::getInstance(L)->engine->quit("nil");
+                }
 			}
 			else
 			{
@@ -47,6 +55,18 @@ namespace Plum
 			int a = luaL_optint(L, 4, 255);
 			lua_pushinteger(L, Plum::rgba(r, g, b, a).value);
 			return 1;
+		}
+
+		int channels(lua_State* L)
+		{
+			int color = luaL_checkint(L, 1);
+			ColorChannel r, g, b, a;
+            Plum::getRGBA(color, r, g, b, a);
+			lua_pushinteger(L, r);
+            lua_pushinteger(L, g);
+            lua_pushinteger(L, b);
+            lua_pushinteger(L, a);
+			return 4;
 		}
 
 		int hsv(lua_State* L)
@@ -467,6 +487,9 @@ namespace Plum
 
 			lua_pushcfunction(L, hsv);
 			lua_setfield(L, -2, "hsv");
+
+            lua_pushcfunction(L, channels);
+            lua_setfield(L, -2, "channels");
 
 			// Done with 'color' now.
 			lua_pop(L, 1);
