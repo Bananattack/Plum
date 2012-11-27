@@ -57,7 +57,7 @@ namespace plum
             }
             if(speed != TimerSpeedFastForward)
             {
-                gap = PLUM_MIN(maxFrameGap, gap);
+                gap = std::min(maxFrameGap, gap);
             }
             tickLast = time;
             ticks += gap;

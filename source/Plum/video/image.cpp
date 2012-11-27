@@ -148,7 +148,7 @@ namespace plum
                     int destX, int destY, BlendMode mode, Color tint)
     {
         scaleBlitRegion(sourceX, sourceY, sourceX2, sourceY2, destX, destY,
-            PLUM_ABS(sourceX2 - sourceX) + 1, PLUM_ABS(sourceY2 - sourceY) + 1, mode, tint);
+            std::abs(sourceX2 - sourceX) + 1, std::abs(sourceY2 - sourceY) + 1, mode, tint);
     }
 
     void Image::scaleBlitRegion(int sourceX, int sourceY, int sourceX2, int sourceY2,
@@ -159,16 +159,16 @@ namespace plum
 
         if(sourceX > sourceX2)
         {
-            PLUM_SWAP(sourceX, sourceX2);
+            std::swap(sourceX, sourceX2);
         }
         if(sourceY > sourceY2)
         {
-            PLUM_SWAP(sourceY, sourceY2);
+            std::swap(sourceY, sourceY2);
         }
-        sourceX = PLUM_MIN(PLUM_MAX(0, sourceX), canvasWidth - 1);
-        sourceY = PLUM_MIN(PLUM_MAX(0, sourceY), canvasHeight - 1);
-        sourceX2 = PLUM_MIN(PLUM_MAX(0, sourceX2), canvasWidth - 1);
-        sourceY2 = PLUM_MIN(PLUM_MAX(0, sourceY2), canvasHeight - 1);
+        sourceX = std::min(std::max(0, sourceX), canvasWidth - 1);
+        sourceY = std::min(std::max(0, sourceY), canvasHeight - 1);
+        sourceX2 = std::min(std::max(0, sourceX2), canvasWidth - 1);
+        sourceY2 = std::min(std::max(0, sourceY2), canvasHeight - 1);
 
         double regionS = ((double) sourceX + 0.5) / textureWidth;
         double regionT = ((double) sourceY + 0.5) / textureHeight;
@@ -238,16 +238,16 @@ namespace plum
 
         if(sourceX > sourceX2)
         {
-            PLUM_SWAP(sourceX, sourceX2);
+            std::swap(sourceX, sourceX2);
         }
         if(sourceY > sourceY2)
         {
-            PLUM_SWAP(sourceY, sourceY2);
+            std::swap(sourceY, sourceY2);
         }
-        sourceX = PLUM_MIN(PLUM_MAX(0, sourceX), canvasWidth - 1);
-        sourceY = PLUM_MIN(PLUM_MAX(0, sourceY), canvasHeight - 1);
-        sourceX2 = PLUM_MIN(PLUM_MAX(0, sourceX2), canvasWidth - 1);
-        sourceY2 = PLUM_MIN(PLUM_MAX(0, sourceY2), canvasHeight - 1);
+        sourceX = std::min(std::max(0, sourceX), canvasWidth - 1);
+        sourceY = std::min(std::max(0, sourceY), canvasHeight - 1);
+        sourceX2 = std::min(std::max(0, sourceX2), canvasWidth - 1);
+        sourceY2 = std::min(std::max(0, sourceY2), canvasHeight - 1);
 
         double regionS = ((double) sourceX + 0.5) / textureWidth;
         double regionT = ((double) sourceY + 0.5) / textureHeight;
@@ -302,10 +302,10 @@ namespace plum
     void Image::rawBlitRegion(int sourceX, int sourceY, int sourceX2, int sourceY2,
                     int destX, int destY, double angle, double scale)
     {
-        sourceX = PLUM_MIN(PLUM_MAX(0, sourceX), canvasWidth - 1);
-        sourceY = PLUM_MIN(PLUM_MAX(0, sourceY), canvasHeight - 1);
-        sourceX2 = PLUM_MIN(PLUM_MAX(0, sourceX2), canvasWidth - 1);
-        sourceY2 = PLUM_MIN(PLUM_MAX(0, sourceY2), canvasHeight - 1);
+        sourceX = std::min(std::max(0, sourceX), canvasWidth - 1);
+        sourceY = std::min(std::max(0, sourceY), canvasHeight - 1);
+        sourceX2 = std::min(std::max(0, sourceX2), canvasWidth - 1);
+        sourceY2 = std::min(std::max(0, sourceY2), canvasHeight - 1);
 
         double regionS = ((double) sourceX + 0.5) / textureWidth;
         double regionT = ((double) sourceY + 0.5) / textureHeight;
@@ -351,10 +351,10 @@ namespace plum
 
         if(transform->clip)
         {
-            sourceX = PLUM_MIN(PLUM_MAX(0, transform->clip->x), canvasWidth - 1);
-            sourceY = PLUM_MIN(PLUM_MAX(0, transform->clip->y), canvasHeight - 1);
-            sourceX2 = PLUM_MIN(sourceX + transform->clip->width, canvasWidth) - 1;
-            sourceY2 = PLUM_MIN(sourceY + transform->clip->height, canvasHeight) - 1;
+            sourceX = std::min<double>(std::max<double>(0, transform->clip->x), canvasWidth - 1);
+            sourceY = std::min<double>(std::max<double>(0, transform->clip->y), canvasHeight - 1);
+            sourceX2 = std::min<double>(sourceX + transform->clip->width, canvasWidth) - 1;
+            sourceY2 = std::min<double>(sourceY + transform->clip->height, canvasHeight) - 1;
         }
         else
         {

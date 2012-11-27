@@ -120,12 +120,6 @@
     <ClCompile Include="script\video_object.cpp">
       <Filter>Source Files\script</Filter>
     </ClCompile>
-    <ClCompile Include="common\animation.cpp">
-      <Filter>Source Files\common</Filter>
-    </ClCompile>
-    <ClCompile Include="common\base64.cpp">
-      <Filter>Source Files\common</Filter>
-    </ClCompile>
     <ClCompile Include="common\common.cpp">
       <Filter>Source Files\common</Filter>
     </ClCompile>
@@ -139,12 +133,6 @@
       <Filter>Source Files\common</Filter>
     </ClCompile>
     <ClCompile Include="common\file.cpp">
-      <Filter>Source Files\common</Filter>
-    </ClCompile>
-    <ClCompile Include="common\path.cpp">
-      <Filter>Source Files\common</Filter>
-    </ClCompile>
-    <ClCompile Include="common\sha1.cpp">
       <Filter>Source Files\common</Filter>
     </ClCompile>
     <ClCompile Include="engine\engine.cpp">
@@ -191,12 +179,6 @@
     <ClInclude Include="script\script.h">
       <Filter>Header Files\script</Filter>
     </ClInclude>
-    <ClInclude Include="common\animation.h">
-      <Filter>Header Files\common</Filter>
-    </ClInclude>
-    <ClInclude Include="common\base64.h">
-      <Filter>Header Files\common</Filter>
-    </ClInclude>
     <ClInclude Include="common\common.h">
       <Filter>Header Files\common</Filter>
     </ClInclude>
@@ -210,12 +192,6 @@
       <Filter>Header Files\common</Filter>
     </ClInclude>
     <ClInclude Include="common\file.h">
-      <Filter>Header Files\common</Filter>
-    </ClInclude>
-    <ClInclude Include="common\path.h">
-      <Filter>Header Files\common</Filter>
-    </ClInclude>
-    <ClInclude Include="common\sha1.h">
       <Filter>Header Files\common</Filter>
     </ClInclude>
     <ClInclude Include="common\types.h">

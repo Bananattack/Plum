@@ -107,16 +107,16 @@ namespace plum
             {
                 if (x > x2)
                 {
-                    PLUM_SWAP(x, x2);
+                    std::swap(x, x2);
                 }
                 if (y > y2)
                 {
-                    PLUM_SWAP(y, y2);
+                    std::swap(y, y2);
                 }
-                clipX = PLUM_MIN(PLUM_MAX(0, x), occupiedWidth - 1);
-                clipY = PLUM_MIN(PLUM_MAX(0, y), occupiedHeight - 1);
-                clipX2 = PLUM_MIN(PLUM_MAX(0, x2), occupiedWidth - 1);
-                clipY2 = PLUM_MIN(PLUM_MAX(0, y2), occupiedHeight - 1);
+                clipX = std::min(std::max(0, x), occupiedWidth - 1);
+                clipY = std::min(std::max(0, y), occupiedHeight - 1);
+                clipX2 = std::min(std::max(0, x2), occupiedWidth - 1);
+                clipY2 = std::min(std::max(0, y2), occupiedHeight - 1);
             }
             
             Color getPixel(int x, int y)
@@ -283,7 +283,7 @@ namespace plum
                     // Put the coordinates in order.
                     if (x > x2)
                     {
-                        PLUM_SWAP(x, x2);
+                        std::swap(x, x2);
                     }
                     // Draw it.
                     for(int i = x; i <= x2; i++)
@@ -298,7 +298,7 @@ namespace plum
                     // Put the coordinates in order.
                     if (y > y2)
                     {
-                        PLUM_SWAP(y, y2);
+                        std::swap(y, y2);
                     }
                     // Draw it.
                     for(int i = y; i <= y2; i++)
@@ -374,11 +374,11 @@ namespace plum
                 // Put the coordinates in order.
                 if (x > x2)
                 {
-                    PLUM_SWAP(x, x2);
+                    std::swap(x, x2);
                 }
                 if (y > y2)
                 {
-                    PLUM_SWAP(y, y2);
+                    std::swap(y, y2);
                 }
                 // Don't draw if completely outside clipping regions.
                 if(x > clipX2 || y > clipY2 || x2 < clipX || y2 < clipY)
@@ -422,11 +422,11 @@ namespace plum
 
                 if (x > x2)
                 {
-                    PLUM_SWAP(x, x2);
+                    std::swap(x, x2);
                 }
                 if (y > y2)
                 {
-                    PLUM_SWAP(y, y2);
+                    std::swap(y, y2);
                 }
                 // Don't draw if completely outside clipping regions.
                 if(x > clipX2 || y > clipY2 || x2 < clipX || y2 < clipY)
@@ -634,8 +634,8 @@ namespace plum
                 {
                     if(lastY != y)
                     {
-                        plotX = PLUM_MAX(cx - x, clipX);
-                        plotX2 = PLUM_MIN(cx + x, clipX2);
+                        plotX = std::max(cx - x, clipX);
+                        plotX2 = std::min(cx + x, clipX2);
                         plotY = cy - y;
                         if(plotY >= clipY && plotY <= clipY2)
                         {
@@ -683,8 +683,8 @@ namespace plum
                 {
                     if(lastY != y)
                     {
-                        plotX = PLUM_MAX(cx - x, clipX);
-                        plotX2 = PLUM_MIN(cx + x, clipX2);
+                        plotX = std::max(cx - x, clipX);
+                        plotX2 = std::min(cx + x, clipX2);
                         plotY = cy - y;
                         if(plotY >= clipY && plotY <= clipY2)
                         {
@@ -785,11 +785,11 @@ namespace plum
 
                 if (sx > sx2)
                 {
-                    PLUM_SWAP(sx, sx2);
+                    std::swap(sx, sx2);
                 }
                 if (sy > sy2)
                 {
-                    PLUM_SWAP(sy, sy2);
+                    std::swap(sy, sy2);
                 }
 
                 dest->setClipRegion(dx, dy, dx + (sx2 - sx), dy + (sy2 - sy));
@@ -802,16 +802,16 @@ namespace plum
             {
                 if (sx > sx2)
                 {
-                    PLUM_SWAP(sx, sx2);
+                    std::swap(sx, sx2);
                 }
                 if (sy > sy2)
                 {
-                    PLUM_SWAP(sy, sy2);
+                    std::swap(sy, sy2);
                 }
-                sx = PLUM_MIN(PLUM_MAX(0, sx), occupiedWidth - 1);
-                sy = PLUM_MIN(PLUM_MAX(0, sy), occupiedHeight - 1);
-                sx2 = PLUM_MIN(PLUM_MAX(0, sx2), occupiedWidth - 1);
-                sy2 = PLUM_MIN(PLUM_MAX(0, sy2), occupiedHeight - 1);
+                sx = std::min(std::max(0, sx), occupiedWidth - 1);
+                sy = std::min(std::max(0, sy), occupiedHeight - 1);
+                sx2 = std::min(std::max(0, sx2), occupiedWidth - 1);
+                sy2 = std::min(std::max(0, sy2), occupiedHeight - 1);
 
                 int i, j;
                 int dx2 = dx + scw - 1;
@@ -877,20 +877,20 @@ namespace plum
 
                 // I like angles in degrees better when calling this.
                 // So now let's convert this to work all nice-like with C++'s math which is radians.
-                angle *= PLUM_PI / 180;
+                angle *= M_PI / 180;
 
                 if (sx > sx2)
                 {
-                    PLUM_SWAP(sx, sx2);
+                    std::swap(sx, sx2);
                 }
                 if (sy > sy2)
                 {
-                    PLUM_SWAP(sy, sy2);
+                    std::swap(sy, sy2);
                 }
-                sx = PLUM_MIN(PLUM_MAX(0, sx), occupiedWidth - 1);
-                sy = PLUM_MIN(PLUM_MAX(0, sy), occupiedHeight - 1);
-                sx2 = PLUM_MIN(PLUM_MAX(0, sx2), occupiedWidth - 1);
-                sy2 = PLUM_MIN(PLUM_MAX(0, sy2), occupiedHeight - 1);
+                sx = std::min(std::max(0, sx), occupiedWidth - 1);
+                sy = std::min(std::max(0, sy), occupiedHeight - 1);
+                sx2 = std::min(std::max(0, sx2), occupiedWidth - 1);
+                sy2 = std::min(std::max(0, sy2), occupiedHeight - 1);
 
                 cosine = (int) (cos(angle) * 65536);
                 sine = (int) (sin(angle) * 65536);
@@ -912,35 +912,35 @@ namespace plum
                 maxX = minX;
                 // Since cosCenterX - sinCenterY == -(cosCenterX + sinCenterY), save calculations.
                 a = -minX;
-                minX = PLUM_MIN(minX, a);
-                maxX = PLUM_MAX(maxX, a);
+                minX = std::min(minX, a);
+                maxX = std::max(maxX, a);
                 a = (cosCenterX - sinCenterY) >> 16;
-                minX = PLUM_MIN(minX, a);
-                maxX = PLUM_MAX(maxX, a);
+                minX = std::min(minX, a);
+                maxX = std::max(maxX, a);
                 // Since -cosCenterX + sinCenterY == -(cosCenterX - sinCenterY), save calculations.
                 a = -a;
-                minX = PLUM_MIN(minX, a);
-                maxX = PLUM_MAX(maxX, a);
+                minX = std::min(minX, a);
+                maxX = std::max(maxX, a);
                 // Finally, clipping
-                minX = PLUM_MAX(minX + dx, dest->clipX);
-                maxX = PLUM_MIN(maxX + dx, dest->clipX2);
+                minX = std::max(minX + dx, dest->clipX);
+                maxX = std::min(maxX + dx, dest->clipX2);
 
                 minY = (cosCenterY + sinCenterX) >> 16;
                 maxY = minY;
                 // Since cosCenterY - sinCenterX == -(cosCenterY + sinCenterX), save calculations.
                 a = -minY;
-                minY = PLUM_MIN(minY, a);
-                maxY = PLUM_MAX(maxY, a);
+                minY = std::min(minY, a);
+                maxY = std::max(maxY, a);
                 a = (cosCenterX - sinCenterY) >> 16;
-                minY = PLUM_MIN(minY, a);
-                maxY = PLUM_MAX(maxY, a);
+                minY = std::min(minY, a);
+                maxY = std::max(maxY, a);
                 // Since -cosCenterY + sinCenterX == -(cosCenterY - sinCenterX), save calculations.
                 a = -a;
-                minY = PLUM_MIN(minY, a);
-                maxY = PLUM_MAX(maxY, a);
+                minY = std::min(minY, a);
+                maxY = std::max(maxY, a);
                 // Finally, clipping
-                minY = PLUM_MAX(minY + dy, dest->clipY);
-                maxY = PLUM_MIN(maxY + dy, dest->clipY2);
+                minY = std::max(minY + dy, dest->clipY);
+                maxY = std::min(maxY + dy, dest->clipY2);
 
                 centerX = ((sx2 - sx) << 15) + (sx << 16); 
                 centerY = ((sy2 - sy) << 15) + (sy << 16);

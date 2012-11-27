@@ -67,9 +67,9 @@ namespace plum
                 Color result;
                 int sourceAlpha = source[AlphaChannel] * getOpacity() / 255;
 
-                result[RedChannel] = PLUM_MIN((sourceAlpha * source[RedChannel]) / 255 + dest[RedChannel], 255);
-                result[GreenChannel] = PLUM_MIN((sourceAlpha * source[GreenChannel]) / 255 + dest[GreenChannel], 255);
-                result[BlueChannel] = PLUM_MIN((sourceAlpha * source[BlueChannel]) / 255 + dest[BlueChannel], 255);
+                result[RedChannel] = std::min((sourceAlpha * source[RedChannel]) / 255 + dest[RedChannel], 255);
+                result[GreenChannel] = std::min((sourceAlpha * source[GreenChannel]) / 255 + dest[GreenChannel], 255);
+                result[BlueChannel] = std::min((sourceAlpha * source[BlueChannel]) / 255 + dest[BlueChannel], 255);
                 result[AlphaChannel] = dest[AlphaChannel];
                 return result;
         }
@@ -82,9 +82,9 @@ namespace plum
                 Color result;
                 int sourceAlpha = source[AlphaChannel] * getOpacity() / 255;
 
-                result[RedChannel] = PLUM_MAX((sourceAlpha * -source[RedChannel]) / 255 + dest[RedChannel], 0);
-                result[GreenChannel] = PLUM_MAX((sourceAlpha * -source[GreenChannel]) / 255 + dest[GreenChannel], 0);
-                result[BlueChannel] = PLUM_MAX((sourceAlpha * -source[BlueChannel]) / 255 + dest[BlueChannel], 0);
+                result[RedChannel] = std::max((sourceAlpha * -source[RedChannel]) / 255 + dest[RedChannel], 0);
+                result[GreenChannel] = std::max((sourceAlpha * -source[GreenChannel]) / 255 + dest[GreenChannel], 0);
+                result[BlueChannel] = std::max((sourceAlpha * -source[BlueChannel]) / 255 + dest[BlueChannel], 0);
                 result[AlphaChannel] = dest[AlphaChannel];
                 return result;
         }

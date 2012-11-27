@@ -64,11 +64,11 @@ namespace plum
                 int i;
                 if (tx > tx2)
                 {
-                    PLUM_SWAP(tx, tx2);
+                    std::swap(tx, tx2);
                 }
                 if (ty > ty2)
                 {
-                    PLUM_SWAP(ty, ty2);
+                    std::swap(ty, ty2);
                 }
                 // Don't draw if completely outside region.
                 if(tx >= width || ty >= height || tx2 < 0 || ty2 < 0)
@@ -111,11 +111,11 @@ namespace plum
                 int i, j;
                 if (tx > tx2)
                 {
-                    PLUM_SWAP(tx, tx2);
+                    std::swap(tx, tx2);
                 }
                 if (ty > ty2)
                 {
-                    PLUM_SWAP(ty, ty2);
+                    std::swap(ty, ty2);
                 }
                 // Don't draw if completely outside region.
                 if(tx >= width || ty >= height || tx2 < 0 || ty2 < 0)
@@ -250,7 +250,7 @@ namespace plum
                     // Put the coordinates in order.
                     if (tx > tx2)
                     {
-                        PLUM_SWAP(tx, tx2);
+                        std::swap(tx, tx2);
                     }
                     // Draw it.
                     for(int i = tx; i <= tx2; i++)
@@ -265,7 +265,7 @@ namespace plum
                     // Put the coordinates in order.
                     if (ty > ty2)
                     {
-                        PLUM_SWAP(ty, ty2);
+                        std::swap(ty, ty2);
                     }
                     // Draw it.
                     for(int i = ty; i <= ty2; i++)

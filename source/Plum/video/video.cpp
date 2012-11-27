@@ -125,11 +125,11 @@ namespace plum
 
         if(x > x2)
         {
-            PLUM_SWAP(x, x2);
+            std::swap(x, x2);
         }
         if(y > y2)
         {
-            PLUM_SWAP(y, y2);
+            std::swap(y, y2);
         }
 
         glDisable(GL_TEXTURE_2D);
@@ -160,11 +160,11 @@ namespace plum
 
         if(x > x2)
         {
-            PLUM_SWAP(x, x2);
+            std::swap(x, x2);
         }
         if(y > y2)
         {
-            PLUM_SWAP(y, y2);
+            std::swap(y, y2);
         }
 
         glDisable(GL_TEXTURE_2D);
@@ -190,11 +190,11 @@ namespace plum
 
         if(x > x2)
         {
-            PLUM_SWAP(x, x2);
+            std::swap(x, x2);
         }
         if(y > y2)
         {
-            PLUM_SWAP(y, y2);
+            std::swap(y, y2);
         }
 
         glDisable(GL_TEXTURE_2D);
@@ -226,11 +226,11 @@ namespace plum
 
         if(x > x2)
         {
-            PLUM_SWAP(x, x2);
+            std::swap(x, x2);
         }
         if(y > y2)
         {
-            PLUM_SWAP(y, y2);
+            std::swap(y, y2);
         }
 
         glDisable(GL_TEXTURE_2D);
@@ -264,7 +264,7 @@ namespace plum
         glPushMatrix();
         glBegin(GL_LINE_STRIP);            
             useHardwareColor(r, g, b, a);
-            for(angle = 0.0; angle <= 2.0 * PLUM_PI; angle += 0.01)
+            for(angle = 0.0; angle <= 2.0 * M_PI; angle += 0.01)
             {                
                 glVertex2d(x1, y1);
                 x1 = x + (horizontalRadius * (double) sin(angle));
@@ -290,7 +290,7 @@ namespace plum
         glPushMatrix();
         glBegin(GL_TRIANGLES);    
             useHardwareColor(r, g, b, a);
-            for(angle = 0.0; angle <= 2.0 * PLUM_PI; angle += 0.01)
+            for(angle = 0.0; angle <= 2.0 * M_PI; angle += 0.01)
             {    
                 glVertex2d(x, y);
                 glVertex2d(x1, y1);

@@ -212,7 +212,7 @@ namespace plum
         int w = 0;
         for(int i = 0; i < c; i++)
         {
-            w = PLUM_MAX(w, lineWidth(s, i));
+            w = std::max(w, lineWidth(s, i));
         }
         return w;
     }

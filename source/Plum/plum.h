@@ -1,17 +1,5 @@
 #pragma once
 
-#include <string>
-#include <sstream>
-#include <iomanip>
-#include <vector>
-#include <map>
-#include <cstdio>
-#include <cctype>
-#include <cmath>
-#include <exception>
-#include <algorithm>
-#include <memory>
-
 #if defined(WIN32) || defined(_WIN32)
 #    define PLUM_WIN32
 #elif defined(__linux__)
@@ -25,14 +13,30 @@
 #endif
 
 #ifdef PLUM_WIN32
-#    include <windows.h>
-#    include <delayimp.h>
-#    ifdef _DEBUG
-#        define CRTDBG_MAP_ALLOC
-#        include <stdlib.h>
-#        include <crtdbg.h>
-#    endif
+#define NOMINMAX
+#include <windows.h>
+#include <delayimp.h>
+
+#ifdef _DEBUG
+#define CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+#include <crtdbg.h>
 #endif
+
+#define _USE_MATH_DEFINES
+#endif
+
+#include <string>
+#include <sstream>
+#include <iomanip>
+#include <vector>
+#include <map>
+#include <cstdio>
+#include <cctype>
+#include <cmath>
+#include <exception>
+#include <algorithm>
+#include <memory>
 
 // zlib's for compression stuff!
 #include <zlib.h>
@@ -58,12 +62,9 @@ extern "C"
 
 #include "common/common.h"
 #include "common/types.h"
-#include "common/path.h"
 #include "common/file.h"
 #include "common/directory.h"
 #include "common/config.h"
-#include "common/base64.h"
-#include "common/sha1.h"
 #include "common/compression.h"
 
 #include "video/color.h"
@@ -74,8 +75,6 @@ extern "C"
 #include "video/video.h"
 
 #include "audio/audio_audiere.h"
-
-#include "common/animation.h"
 
 #include "engine/input.h"
 #include "engine/timer.h"
