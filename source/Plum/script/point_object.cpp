@@ -1,128 +1,132 @@
 #include "../plum.h"
 
-namespace Plum
+namespace plum
 {
-	namespace ScriptLibrary
-	{
-		namespace PointObject
-		{
-			SCRIPT_OBJ_GETTER(index, Wrapper<Point>*, libraryName)
-			SCRIPT_OBJ_SETTER(newindex, Wrapper<Point>*, libraryName)
+    namespace script
+    {
+        template<> const char* meta<Point>()
+        {
+            return "plum.Point";
+        }
+    }
 
-			int create(lua_State* L)
-			{
-				double x = luaL_checknumber(L, 1);
-				double y = luaL_checknumber(L, 2);
-				PLUM_PUSH_DATA(L, Point, new Point(x, y), LUA_NOREF);
-				return 1;
-			}
+    namespace
+    {
+        typedef Point Self;
+        int create(lua_State* L)
+        {
+            auto x = script::get<double>(L, 1);
+            auto y = script::get<double>(L, 2);
+            script::push(L, new Point(x, y), LUA_NOREF);
+            return 1;
+        }
 
-			int gc(lua_State* L)
-			{
-				Wrapper<Point>* p = PLUM_CHECK_DATA(L, 1, Point);
+        int gc(lua_State* L)
+        {
+            return script::wrapped<Self>(L, 1)->gc(L);
+        }
 
-				// Only delete if it doesn't belong to a parent of some sort.
-				if(p->parentRef == LUA_NOREF)
-				{
-					delete p->data;
-				}
-				else
-				{
-					luaL_unref(L, LUA_REGISTRYINDEX, p->parentRef);
-				}
+        int index(lua_State* L)
+        {
+            return script::wrapped<Self>(L, 1)->index(L);
+        }
 
-				return 0;
-			}
+        int newindex(lua_State* L)
+        {
+            return script::wrapped<Self>(L, 1)->newindex(L);
+        }
 
-			int tostring(lua_State* L)
-			{
-				Wrapper<Point>* p = PLUM_CHECK_DATA(L, 1, Point);
-				lua_pushfstring(L, "plum.Point(%f, %f)", p->data->x, p->data->y);
-				return 1;
-			}
+        int tostring(lua_State* L)
+        {
+            return script::wrapped<Self>(L, 1)->tostring(L);
+        }
 
-			int len(lua_State* L)
-			{
-				Wrapper<Point>* p = PLUM_CHECK_DATA(L, 1, Point);
-				lua_pushnumber(L, 2);
-				return 1;
-			}
+        int len(lua_State* L)
+        {
+            auto p = script::ptr<Point>(L, 1);
+            script::push(L, 2);
+            return 1;
+        }
 
-			int getx(lua_State* L)
-			{
-				Wrapper<Point>* p = PLUM_CHECK_DATA(L, 1, Point);
-				lua_pushnumber(L, p->data->x);
-				return 1;
-			}
+        int getx(lua_State* L)
+        {
+            auto p = script::ptr<Point>(L, 1);
+            script::push(L, p->x);
+            return 1;
+        }
 
-			int gety(lua_State* L)
-			{
-				Wrapper<Point>* p = PLUM_CHECK_DATA(L, 1, Point);
-				lua_pushnumber(L, p->data->y);
-				return 1;
-			}
+        int gety(lua_State* L)
+        {
+            auto p = script::ptr<Point>(L, 1);
+            script::push(L, p->y);
+            return 1;
+        }
 
-			int setx(lua_State* L)
-			{
-				Wrapper<Point>* p = PLUM_CHECK_DATA(L, 1, Point);
-				double val = luaL_checknumber(L, 2);
-				p->data->x = val;
-				return 0;
-			}
+        int setx(lua_State* L)
+        {
+            auto p = script::ptr<Point>(L, 1);
+            auto val = script::get<double>(L, 2);
+            p->x = val;
+            return 0;
+        }
 
-			int sety(lua_State* L)
-			{
-				Wrapper<Point>* p = PLUM_CHECK_DATA(L, 1, Point);
-				double val = luaL_checknumber(L, 2);
-				p->data->y = val;
-				return 0;
-			}
+        int sety(lua_State* L)
+        {
+            auto p = script::ptr<Point>(L, 1);
+            auto val = script::get<double>(L, 2);
+            p->y = val;
+            return 0;
+        }
 
-            int setLocation(lua_State* L)
-            {
-				Wrapper<Point>* p = PLUM_CHECK_DATA(L, 1, Point);
-				double x = luaL_checknumber(L, 2);
-                double y = luaL_checknumber(L, 3);
-                p->data->x = x;
-				p->data->y = y;
-				return 0;
-            }
+        int setLocation(lua_State* L)
+        {
+            auto p = script::ptr<Point>(L, 1);
+            auto x = script::get<double>(L, 2);
+            auto y = script::get<double>(L, 3);
+            p->x = x;
+            p->y = y;
+            return 0;
+        }
+    }
 
-			void openLibrary(lua_State* L)
-			{
-				luaL_newmetatable(L, libraryName);
-				// Duplicate the metatable on the stack.
-				lua_pushvalue(L, -1);
-				// metatable.__index = metatable
-				lua_setfield(L, -2, "__index");
+    namespace script
+    {
+        void initPointObject(lua_State* L)
+        {
+            luaL_newmetatable(L, meta<Self>());
+            // Duplicate the metatable on the stack.
+            lua_pushvalue(L, -1);
+            // metatable.__index = metatable
+            lua_setfield(L, -2, "__index");
 
-				// Put the members into the metatable.
-				PLUM_BIND_FUNC_BEGIN()
-				PLUM_BIND_META(gc)
-				PLUM_BIND_META(len)
-				PLUM_BIND_META(index)
-				PLUM_BIND_META(newindex)
-				PLUM_BIND_META(tostring)
-				PLUM_BIND_FUNC(getx)
-				PLUM_BIND_FUNC(gety)
-				PLUM_BIND_FUNC(setx)
-				PLUM_BIND_FUNC(sety)
-                PLUM_BIND_FUNC(setLocation)
-				PLUM_BIND_FUNC_END_NULL()
+            // Put the members into the metatable.
+            const luaL_Reg functions[] = {
+                {"__gc", gc},
+                {"__len", len},
+                {"__index", index},
+                {"__newindex", newindex},
+                {"__tostring", tostring},
+                {"getx", getx},
+                {"gety", gety},
+                {"setx", setx},
+                {"sety", sety},
+                {"setLocation", setLocation},
+                {nullptr, nullptr},
+            };
+            luaL_register(L, nullptr, functions);
 
-				lua_pop(L, 1);
-				
-				// Push plum namespace.
-				lua_getglobal(L, "plum");
+            lua_pop(L, 1);
+                
+            // Push plum namespace.
+            lua_getglobal(L, "plum");
 
-				// plum.Point = <function create>
-				lua_pushstring(L, "Point");
-				lua_pushcfunction(L, create);
-				lua_settable(L, -3);
+            // plum.Point = <function create>
+            lua_pushstring(L, "Point");
+            lua_pushcfunction(L, create);
+            lua_settable(L, -3);
 
-				// Pop plum namespace.
-				lua_pop(L, 1);
-			}
-		}
-	}
+            // Pop plum namespace.
+            lua_pop(L, 1);
+        }
+    }
 }

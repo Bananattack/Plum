@@ -105,16 +105,10 @@
     <ClCompile Include="script\sound_object.cpp">
       <Filter>Source Files\script</Filter>
     </ClCompile>
-    <ClCompile Include="script\sprite_object.cpp">
-      <Filter>Source Files\script</Filter>
-    </ClCompile>
     <ClCompile Include="script\spritesheet_object.cpp">
       <Filter>Source Files\script</Filter>
     </ClCompile>
     <ClCompile Include="script\tilemap_object.cpp">
-      <Filter>Source Files\script</Filter>
-    </ClCompile>
-    <ClCompile Include="script\tileset_object.cpp">
       <Filter>Source Files\script</Filter>
     </ClCompile>
     <ClCompile Include="script\timer_object.cpp">
@@ -160,12 +154,6 @@
       <Filter>Source Files\engine</Filter>
     </ClCompile>
     <ClCompile Include="engine\input.cpp">
-      <Filter>Source Files\engine</Filter>
-    </ClCompile>
-    <ClCompile Include="engine\sprite.cpp">
-      <Filter>Source Files\engine</Filter>
-    </ClCompile>
-    <ClCompile Include="engine\tileset.cpp">
       <Filter>Source Files\engine</Filter>
     </ClCompile>
     <ClCompile Include="engine\timer.cpp">
@@ -251,16 +239,10 @@
     <ClInclude Include="engine\mouse.h">
       <Filter>Header Files\engine</Filter>
     </ClInclude>
-    <ClInclude Include="engine\sprite.h">
-      <Filter>Header Files\engine</Filter>
-    </ClInclude>
     <ClInclude Include="engine\spritesheet.h">
       <Filter>Header Files\engine</Filter>
     </ClInclude>
     <ClInclude Include="engine\tilemap.h">
-      <Filter>Header Files\engine</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\tileset.h">
       <Filter>Header Files\engine</Filter>
     </ClInclude>
     <ClInclude Include="engine\timer.h">

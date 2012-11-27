@@ -1,198 +1,329 @@
 #pragma once
-namespace Plum
+namespace plum
 {
+    class Engine;
 
-#define SCRIPT_OBJ_GETTER(funcname, udtype, metaname) \
-	static int funcname(lua_State* L) \
-	{ \
-		udtype t = (udtype) luaL_checkudata(L, 1, metaname); \
-		std::string fieldName = luaL_checkstring(L, 2); \
-		\
-		if(luaL_getmetafield(L, 1, std::string("get" + fieldName).c_str())) \
-		{ \
-			lua_pushvalue(L, 1); \
-			lua_call(L, 1, 1); \
-			return 1; \
-		} \
-		return luaL_getmetafield(L, 1, fieldName.c_str()); \
-	}
+    class Script
+    {
+        private:
+            lua_State* L;
+            Engine* engine_;
 
-#define SCRIPT_OBJ_SETTER(funcname, udtype, metaname) \
-	static int funcname(lua_State* L) \
-	{ \
-		udtype t = (udtype) luaL_checkudata(L, 1, metaname); \
-		std::string fieldName = luaL_checkstring(L, 2); \
-		/* L, 3 is the value to set. */ \
-		if(luaL_getmetafield(L, 1, std::string("set" + fieldName).c_str())) \
-		{  \
-			lua_pushvalue(L, 1); \
-			lua_pushvalue(L, 3); \
-			lua_call(L, 2, 0); \
-			return 0; \
-		} \
-		if(luaL_getmetafield(L, 1, std::string("get" + fieldName).c_str())) \
-		{ \
-			luaL_error(L, "Attempt to modify readonly field '%s' on %s instance.", fieldName.c_str(), metaname); \
-			lua_pop(L, 1); \
-			return 0; \
-		} \
-		luaL_error(L, "Attempt to modify unknown field '%s' on %s instance.", fieldName.c_str(), metaname); \
-		return 0; \
-	}
+        public:
+            // A mapping of type: input reference -> function index
+            // Oh, and the function needs to be of form:
+            // void f(keyIndex);
+            // This way callbacks can be potentially used across several keys
+            // and determine which is pressed by the name passed
+            struct InputHook
+            {
+                int inputRef;
+                int callbackRef;
+            };
+            std::vector<InputHook> inputHooks;
 
-	class Engine;
+            Script(Engine& engine);
+            ~Script();
 
-	struct Script
-	{
-		typedef std::map<lua_State*, Script*> ScriptInstanceMap;
-		static ScriptInstanceMap scriptInstances;
+            Engine& engine()
+            {
+                return *engine_;
+            }
 
-		static Script* getInstance(lua_State* L);
+            void run(const std::string& filename);
+            void stepGarbageCollector();
+            void processInputHook(InputHook& hook);
+    };
 
-		lua_State* L;
-		Engine* engine;
+    namespace script
+    {
+        Script& instance(lua_State* L);
 
-		// A mapping of type: input reference -> function index
-		// Oh, and the function needs to be of form:
-		// void f(keyIndex);
-		// This way callbacks can be potentially used across several keys
-		// and determine which is pressed by the name passed
-		struct InputHook
-		{
-			int inputRef;
-			int callbackRef;
-		};
-		std::vector<InputHook> inputHooks;
+        template<typename T> struct Wrapper
+        {
+            T* data;
+            // The parent, if not NULL, is a registry index to the thing that manages this object's memory
+            // (ie. don't delete this, since you didn't allocate the memory.)
+            int parentRef;
+            // Reference to any 'extra' data that Lua needs to manage.
+            int attributeTableRef;
 
-		Script()
-			: L(0), engine(0)
-		{
-		}
+            void pushAttributeTable(lua_State* L)
+            {
+                // Create attribute table, if not defined.
+                if(attributeTableRef == LUA_NOREF)
+                {
+                    lua_newtable(L);
+                    attributeTableRef = luaL_ref(L, LUA_REGISTRYINDEX);
+                }
+                // Push ext object onto stack.
+                lua_rawgeti(L, LUA_REGISTRYINDEX, attributeTableRef);
+            }
 
-		void startup(Engine* engine);
-		void runScript(std::string filename);
-		void shutdown();
-		void stepGarbageCollector();
-		void processInputHook(InputHook& hook);
+            void getAttribute(lua_State* L, int key)
+            {
+                // Push attribute table.
+                pushAttributeTable(L);
+                // Get value.
+                lua_rawgeti(L, -1, key);
+                // Remove ext from stack, while keeping value on top of the stack.
+                lua_remove(L, -2);
+            }
 
-		static void initSpriteClass(lua_State* L);
-		static void initVideoClass(lua_State* L);
-		static void initFontClass(lua_State* L);
-		static void initTimerClass(lua_State* L);
-		static void initInputClass(lua_State* L);
-		static void initKeyboardClass(lua_State* L);
-		static void initMouseClass(lua_State* L);
-		static void initSoundClass(lua_State* L);
-		static void initSongClass(lua_State* L);
-		static void initFileClass(lua_State* L);
-		static void initTilesetClass(lua_State* L);
-	};
+            void setAttribute(lua_State* L, int key)
+            {
+                // Push attribute table.
+                pushAttributeTable(L);
+                // Push the value.
+                lua_pushvalue(L, -2);
+                // Set value.
+                lua_rawseti(L, -2, key);
+                // Pop ext.
+                lua_pop(L, 1);
+            }
+
+            int gc(lua_State* L)
+            {
+                // Discard ext table.
+                luaL_unref(L, LUA_REGISTRYINDEX, attributeTableRef);
+
+                // Only delete if it doesn't belong to a parent of some sort.
+                if(parentRef == LUA_NOREF)
+                {
+                    delete data;
+                }
+                else
+                {
+                    luaL_unref(L, LUA_REGISTRYINDEX, parentRef);
+                }
+                return 0;
+            }
+
+            int index(lua_State* L)
+            {
+                std::string fieldName(get<const char*>(L, 2));
+                if(luaL_getmetafield(L, 1, std::string("get" + fieldName).c_str()))
+                {
+                    lua_pushvalue(L, 1);
+                    lua_call(L, 1, 1);
+                    return 1;
+                }
+                return luaL_getmetafield(L, 1, fieldName.c_str());
+            }
+
+            int newindex(lua_State* L)
+            {
+                std::string fieldName(get<const char*>(L, 2));
+                /* L, 3 is the value to set. */
+                if(luaL_getmetafield(L, 1, std::string("set" + fieldName).c_str()))
+                {
+                    lua_pushvalue(L, 1);
+                    lua_pushvalue(L, 3);
+                    lua_call(L, 2, 0);
+                    return 0;
+                }
+                return 0;
+            }
+
+            int tostring(lua_State* L)
+            {
+                lua_pushstring(L, meta<T>());
+                return 1;
+            }
+        };
+
+        template<typename T> const char* meta();
+        template<typename T> T get(lua_State* L, int index);
+        template<typename T> T push(lua_State* L, T value);
+
+        template<typename T> bool is(lua_State* L, int index)
+        {
+            bool result = false;
+            // Value is userdata?
+            if(auto p = lua_touserdata(L, index))
+            {
+                // Has a metatable?
+                if(lua_getmetatable(L, index))
+                {
+                    // Get correct metatable
+                    lua_getfield(L, LUA_REGISTRYINDEX, meta<T>());
+                    if (lua_rawequal(L, -1, -2))
+                    {
+                        result = true;
+                    }
+                    lua_pop(L, 2);
+                }
+            }
+            return result;
+        }
+
+        template<> inline bool is<int>(lua_State* L, int index)
+        {
+            return lua_isnumber(L, index) != 0;
+        }
+
+        template<> inline bool is<double>(lua_State* L, int index)
+        {
+            return lua_isnumber(L, index) != 0;
+        }
+
+        template<> inline bool is<const char*>(lua_State* L, int index)
+        {
+            return lua_isstring(L, index) != 0;
+        }
+
+        template<> inline bool is<bool>(lua_State* L, int index)
+        {
+            return lua_isboolean(L, index) != 0;
+        }
+
+        template<> inline bool is<nullptr_t>(lua_State* L, int index)
+        {
+            return lua_isnil(L, index) != 0;
+        }
 
 
-#define PLUM_BIND_LIB(library_name) namespace library_name \
-	{ \
-		const char* const libraryName = "plum_"#library_name; \
-		void openLibrary(lua_State* L); \
-	}
+        template<typename T> Wrapper<T>* wrapped(lua_State* L, int index)
+        {
+            return (Wrapper<T>*) luaL_checkudata(L, index, meta<T>());
+        }
 
-#define PLUM_BIND_FUNC_BEGIN() static const luaL_Reg functionsToBind[] = {
-#define PLUM_BIND_META(name) { "__"#name, name },
-#define PLUM_BIND_FUNC(name) { #name, name },
-#define PLUM_BIND_FUNC_END() {NULL, NULL}, }; luaL_register(L, libraryName, functionsToBind);
-#define PLUM_BIND_FUNC_END_NULL() {NULL, NULL}, }; luaL_register(L, NULL, functionsToBind);
 
-#ifdef PLUM_DEBUG_GC
-#define PLUM_DEBUG_GC_PUSH(w, T) { printf("Pushed plum_"#T"Object instance at 0x%X (data: 0x%X, parentRef: %d)...\n", (size_t) w, (size_t) w->data, w->parentRef); }
-#define PLUM_DEBUG_GC_FREE(w, T) { printf("Freeing plum_"#T"Object instance at 0x%X (data: 0x%X, parentRef: %d)...\n", (size_t) w, (size_t) w->data, w->parentRef); }
-#else
-#define PLUM_DEBUG_GC_PUSH(w, T)
-#define PLUM_DEBUG_GC_FREE(w, T)
-#endif
+        template<typename T> T* ptr(lua_State* L, int index)
+        {
+            auto w = wrapped<T>(L, index);
+            return w ? w->data : nullptr;
+        }
 
-#define PLUM_IS_DATA(L, i, T) ScriptLibrary::_isWrapper<T>(L, i, "plum_"#T"Object")
-#define PLUM_CHECK_DATA(L, i, T) ScriptLibrary::_checkWrapper<T>(L, i, "plum_"#T"Object")
-#define PLUM_PUSH_DATA(L, T, data, parentRef) ScriptLibrary::_pushWrapperReference<T>(L, "plum_"#T"Object", data, parentRef)
-#define PLUM_GET_EXT(L, w, T) ScriptLibrary::_pushExtData<T>(L, w)
 
-	namespace ScriptLibrary
-	{
-		const char* const libraryName = "plum";
-		void openLibrary(lua_State* L);
+        template<> inline int get<int>(lua_State* L, int index)
+        {
+            return luaL_checkint(L, index);
+        }
 
-		template <typename T> struct Wrapper
-		{
-			T* data;
+        template<> inline const char* get<const char*>(lua_State* L, int index)
+        {
+            return luaL_checkstring(L, index);
+        }
 
-			// The parent, if not NULL, is a registry index to the thing that manages this object's memory
-			// (ie. don't delete this, since you didn't allocate the memory.)
-			int parentRef;
+        template<> inline double get<double>(lua_State* L, int index)
+        {
+            return luaL_checknumber(L, index);
+        }
 
-			// Reference to any 'extra' data that Lua needs to manage.
-			int extRef;
-		};
+        template<> inline bool get<bool>(lua_State* L, int index)
+        {
+            return lua_toboolean(L, index) != 0;
+        }
 
-		template <typename T> bool _isWrapper(lua_State* L, int index, const char* metaname)
-		{
-			void* p = lua_touserdata(L, index);
-			bool result = false;
-			// Value is userdata?
-			if (p != NULL)
-			{
-				// Has a metatable?
-				if(lua_getmetatable(L, index))
-				{
-					// Get correct metatable
-					lua_getfield(L, LUA_REGISTRYINDEX, metaname);
-					if (lua_rawequal(L, -1, -2))
-					{
-						result = true;
-					}
-					lua_pop(L, 2);
-				}
-			}
-			return result;
-		}
+        template<> inline char push<char>(lua_State* L, char value)
+        {
+            lua_pushinteger(L, value);
+            return value;
+        }
 
-		template <typename T> Wrapper<T>* _checkWrapper(lua_State* L, int index, const char* metaname)
-		{
-			return (Wrapper<T>*) luaL_checkudata(L, index, metaname);
-		}
+        template<> inline int8_t push<int8_t>(lua_State* L, int8_t value)
+        {
+            lua_pushinteger(L, value);
+            return value;
+        }
 
-		template <typename T> Wrapper<T>* _pushWrapperReference(lua_State* L, const char* metaname, T* data, int parentRef)
-		{
-			Wrapper<T>* w = (Wrapper<T>*) lua_newuserdata(L, sizeof(Wrapper<T>));
-			luaL_getmetatable(L, metaname);
-			lua_setmetatable(L, -2);
+        template<> inline int16_t push<int16_t>(lua_State* L, int16_t value)
+        {
+            lua_pushinteger(L, value);
+            return value;
+        }
 
-			w->data = data;
-			w->parentRef = parentRef;
-			w->extRef = LUA_NOREF;
+        template<> inline int32_t push<int32_t>(lua_State* L, int32_t value)
+        {
+            lua_pushinteger(L, value);
+            return value;
+        }
 
-			return w;
-		}
+        template<> inline uint8_t push<uint8_t>(lua_State* L, uint8_t value)
+        {
+            lua_pushinteger(L, value);
+            return value;
+        }
 
-		template <typename T> void _pushExtData(lua_State* L, Wrapper<T>* w)
-		{
-			// Create ext, if not defined.
-			if(w->extRef == LUA_NOREF)
-			{
-				lua_newtable(L);
-				w->extRef = luaL_ref(L, LUA_REGISTRYINDEX);
-			}
-			// Push ext object onto stack.
-			lua_rawgeti(L, LUA_REGISTRYINDEX, w->extRef);
-		}
+        template<> inline uint16_t push<uint16_t>(lua_State* L, uint16_t value)
+        {
+            lua_pushinteger(L, value);
+            return value;
+        }
 
-		PLUM_BIND_LIB(FileObject)
-		PLUM_BIND_LIB(DirectoryObject)
-		PLUM_BIND_LIB(PointObject)
-		PLUM_BIND_LIB(RectObject)
-		PLUM_BIND_LIB(TransformObject)
-		PLUM_BIND_LIB(CanvasObject)
-		PLUM_BIND_LIB(ImageObject)
-		PLUM_BIND_LIB(SpritesheetObject)
-		PLUM_BIND_LIB(FontObject)
-		PLUM_BIND_LIB(TilemapObject)
-	}
+        template<> inline uint32_t push<uint32_t>(lua_State* L, uint32_t value)
+        {
+            lua_pushinteger(L, value);
+            return value;
+        }
+
+        template<> inline const char* push<const char*>(lua_State* L, const char* value)
+        {
+            lua_pushstring(L, value);
+            return value;
+        }
+
+        template<> inline float push<float>(lua_State* L, float value)
+        {
+            lua_pushnumber(L, value);
+            return value;
+        }
+
+        template<> inline double push<double>(lua_State* L, double value)
+        {
+            lua_pushnumber(L, value);
+            return value;
+        }
+
+        template<> inline bool push<bool>(lua_State* L, bool value)
+        {
+            lua_pushboolean(L, value);
+            return value;
+        }
+
+        template<> inline nullptr_t push<nullptr_t>(lua_State* L, nullptr_t n)
+        {
+            lua_pushnil(L);
+            return n;
+        }
+
+        template<typename T> Wrapper<T>* push(lua_State* L, T* data, int parentRef)
+        {
+            Wrapper<T>* w = (Wrapper<T>*) lua_newuserdata(L, sizeof(Wrapper<T>));
+            luaL_getmetatable(L, meta<T>());
+            lua_setmetatable(L, -2);
+
+            w->data = data;
+            w->parentRef = parentRef;
+            w->attributeTableRef = LUA_NOREF;
+
+            return w;
+        }
+
+        void initLibrary(lua_State* L);
+
+        void initVideoModule(lua_State* L);
+        void initTimerModule(lua_State* L);
+
+        void initInputObject(lua_State* L);
+        void initKeyboardModule(lua_State* L);
+        void initMouseModule(lua_State* L);
+
+        void initFontObject(lua_State* L);
+        void initSoundObject(lua_State* L);
+        void initSongObject(lua_State* L);
+        void initFileObject(lua_State* L);
+        void initFileObject(lua_State* L);
+        void initDirectoryObject(lua_State* L);
+        void initCanvasObject(lua_State* L);
+        void initPointObject(lua_State* L);
+        void initRectObject(lua_State* L);
+        void initTransformObject(lua_State* L);
+        void initImageObject(lua_State* L);
+        void initSpritesheetObject(lua_State* L);
+        void initFontObject(lua_State* L);
+        void initTilemapObject(lua_State* L);
+    }
 
 }

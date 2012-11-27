@@ -1,89 +1,92 @@
 #include "../plum.h"
 
-namespace Plum
+namespace plum
 {
-	static Sound** checkValidSoundObject(lua_State* L, int index)
-	{
-		return (Sound**) luaL_checkudata(L, index, "plum_sound");
-	}
+    namespace script
+    {
+        template<> const char* meta<Sound>()
+        {
+            return "plum.Sound";
+        }
+    }
 
-	static int soundNew(lua_State* L)
-	{
-		const char* filename = lua_tostring(L, 1);
+    namespace
+    {
+        typedef Sound Self;
+        int create(lua_State* L)
+        {
+            auto filename = script::get<const char*>(L, 1);
+            script::push(L, script::instance(L).engine().audio.loadSound(filename), LUA_NOREF);
+            return 1;
+        }
 
-		Sound** s = (Sound**) lua_newuserdata(L, sizeof(Sound*));
-		luaL_getmetatable(L, "plum_sound");
-		lua_setmetatable(L, -2);
+        int gc(lua_State* L)
+        {
+            return script::wrapped<Self>(L, 1)->gc(L);
+        }
 
-		*s = Script::getInstance(L)->engine->audio.loadSound(filename);
-		
-		return 1;
-	}
+        int index(lua_State* L)
+        {
+            return script::wrapped<Self>(L, 1)->index(L);
+        }
 
-	static int soundGC(lua_State* L)
-	{
-		Sound** s = checkValidSoundObject(L, 1);
-		if(*s)
-		{
-			delete *s;
-		}
+        int newindex(lua_State* L)
+        {
+            return script::wrapped<Self>(L, 1)->newindex(L);
+        }
 
-		return 0;
-	}
+        int tostring(lua_State* L)
+        {
+            return script::wrapped<Self>(L, 1)->tostring(L);
+        }
 
-	SCRIPT_OBJ_GETTER(soundGetField, Sound**, "plum_sound")
-	SCRIPT_OBJ_SETTER(soundSetField, Sound**, "plum_sound")
+        int play(lua_State* L)
+        {
+            auto s = script::ptr<Sound>(L, 1);
+            if(!s)
+            {
+                script::push(L, 0);
+                return 1;
+            }
 
-	static int soundToString(lua_State* L)
-	{
-		checkValidSoundObject(L, 1);
-		lua_pushstring(L, "(plum.Sound object)");
-		return 1;
-	}
+            int volume = luaL_optint(L, 2, 100);
+            script::push(L, script::instance(L).engine().audio.playSound(s, volume));
+            return 1;
+        }
+    }
 
-	static int soundPlay(lua_State* L)
-	{
-		Sound** s = checkValidSoundObject(L, 1);
-		if(!*s)
-		{
-			lua_pushinteger(L, 0);	
-			return 1;
-		}
+    namespace script
+    {
+        void initSoundObject(lua_State* L)
+        {
+            luaL_newmetatable(L, meta<Sound>());
+            // Duplicate the metatable on the stack.
+            lua_pushvalue(L, -1);
+            // metatable.__index = metatable
+            lua_setfield(L, -2, "__index");
 
-		int volume = luaL_optint(L, 2, 100);
-		lua_pushinteger(L, Script::getInstance(L)->engine->audio.playSound(*s, volume));
-		return 1;
-	}
+            // Put the members into the metatable.
+            const luaL_Reg functions[] = {
+                {"__index", index},
+                {"__newindex", newindex},
+                {"__tostring", tostring},
+                {"__gc", gc},
+                {"play", play},
+                {nullptr, nullptr}
+            };
+            luaL_register(L, nullptr, functions);
+            lua_pop(L, 1);
 
-	static const luaL_Reg soundMembers[] = {
-		{ "__index", soundGetField },
-		{ "__newindex",	soundSetField },
-		{ "__tostring",	soundToString },
-		{ "__gc", soundGC },
-		{ "play", soundPlay },
-		{ NULL, NULL }
-	};
+            // Push plum namespace.
+            lua_getglobal(L, "plum");
 
-	void Script::initSoundClass(lua_State* L)
-	{
-		luaL_newmetatable(L, "plum_sound");
-		// Duplicate the metatable on the stack.
-		lua_pushvalue(L, -1);
-		// metatable.__index = metatable
-		lua_setfield(L, -2, "__index");
-		// Put the members into the metatable.
-		luaL_register(L, NULL, soundMembers);
-		lua_pop(L, 1);
+            // plum.sound = <function soundNew>
+            lua_pushstring(L, "Sound");
+            lua_pushcfunction(L, create);
+            lua_settable(L, -3);
 
-		// Push plum namespace.
-		lua_getglobal(L, "plum");
-
-		// plum.sound = <function soundNew>
-		lua_pushstring(L, "Sound");
-		lua_pushcfunction(L, soundNew);
-		lua_settable(L, -3);
-
-		// Pop plum namespace.
-		lua_pop(L, 1);
-	}
+            // Pop plum namespace.
+            lua_pop(L, 1);
+        }
+    }
 }

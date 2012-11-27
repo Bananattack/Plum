@@ -1,58 +1,54 @@
 #pragma once
 
-namespace Plum
+namespace plum
 {
-	class Engine
-	{
-		public:
-			class Exception : public std::exception
-			{
-				public:
-					Exception(const std::string& message)
-						: msg(message)
-					{
-					}
+    class SystemExit : public std::exception
+    {
+        public:
+            SystemExit(int status)
+                : status_(status)
+            {
+            }
 
-					virtual const char* what() const throw ()
-					{
-						return msg.c_str();
-					}
+            const char* what() const throw()
+            {
+                return "SystemExit";
+            }
 
-					virtual ~Exception() throw ()
-					{
-					}
+            int status()
+            {
+                return status_;
+            }
 
-				private:
-					std::string msg;
-			};
+        private:
+            int status_;
+    };
 
-		private:
-			std::string titlePrefix;
+    class Engine
+    {
+        private:
+            std::string titlePrefix;
 
-			bool initialized;
-			bool destroyed;
+            bool initialized;
+            bool destroyed;
+        public:
+            Config config;
+            Video video;
+            Audio audio;
+            Timer timer;
+            Mouse mouse;
+            KeyInput key[KEY_MAX_COUNT];
+        public:
+            Engine();
+            ~Engine();
 
-			SDL_Cursor* mouseCursor;
-		public:
-			Script script;
-			Config config;
-			Video video;
-			Audio audio;
-			Timer timer;
-			Mouse mouse;
-			KeyInput key[KEY_MAX_COUNT];
-		public:
-			Engine();
+            void quit(std::string message = "");
 
-			void startup();
-			void shutdown();
-			void quit(std::string message = "");
+            void handleMouseButtonEvent(SDL_MouseButtonEvent e);
+            void poll();
+            void refresh(Script& script);
 
-			void handleMouseButtonEvent(SDL_MouseButtonEvent e);
-			void poll();
-			void refresh();
-
-			void setTitle(std::string title);
-			void setResolution(int width, int height, bool windowed);
-	};
+            void setTitle(std::string title);
+            void setResolution(int width, int height, bool windowed);
+    };
 }

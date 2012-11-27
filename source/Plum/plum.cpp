@@ -1,44 +1,32 @@
 #include "plum.h"
 
-using namespace Plum;
+#include <cstdlib>
+#include <stdexcept>
 
 int main(int argc, char** argv)
 {
-	Engine engine;
+    try
+    {
+        plum::Engine engine;
+        plum::Script script(engine);
 
-	clearLog();
-//	freopen("stdout.log", "w", stdout);
-//	freopen("stderr.log", "w", stderr);
-	try
-	{
-		engine.startup();
-	}
-	catch(Audio::Exception& e)
-	{
-		engine.quit("Failure during audio system startup: " + std::string(e.what()));
-	}
-	catch(Video::Exception& e)
-	{
-		engine.quit("Failure during video system startup: " + std::string(e.what()));
-	}
-	catch(Engine::Exception& e)
-	{
-		engine.quit("Failure during internal startup: " + std::string(e.what()));
-	}
-	catch(std::exception& e)
-	{
-		engine.quit("Very unexpected error during startup: " + std::string(e.what()));
-	}
+        plum::clearLog();
+    //    freopen("stdout.log", "w", stdout);
+    //    freopen("stderr.log", "w", stderr);
+        try
+        {
+            script.run("system.lua");
+        }
+        catch(std::runtime_error& e)
+        {
+            engine.quit(e.what());
+        }
+        engine.quit();
+    }
+    catch(plum::SystemExit& e)
+    {
+        std::exit(e.status());
+    }
 
-	try
-	{
-		engine.script.runScript("system.lua");
-	}
-	catch(std::exception& e)
-	{
-		engine.quit(e.what());
-	}
-	engine.quit();
-
-	return 0;
+    return 0;
 }

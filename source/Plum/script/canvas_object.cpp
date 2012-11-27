@@ -1,648 +1,652 @@
 #include "../plum.h"
 
-namespace Plum
+namespace plum
 {
-	namespace ScriptLibrary
-	{
-		namespace CanvasObject
-		{
-			SCRIPT_OBJ_GETTER(index, Wrapper<Canvas>*, libraryName)
-			SCRIPT_OBJ_SETTER(newindex, Wrapper<Canvas>*, libraryName)
+    namespace script
+    {
+        template<> const char* meta<Canvas>()
+        {
+            return "plum.Canvas";
+        }
+    }
 
-			int create(lua_State* L)
-			{
-				if(lua_isnumber(L, 1) && lua_isnumber(L, 2))
-				{
-					int w = lua_tointeger(L, 1);
-					int h = lua_tointeger(L, 2);
+    namespace
+    {
+        typedef Canvas Self;
 
-					PLUM_PUSH_DATA(L, Canvas, new Canvas(w, h), LUA_NOREF);
-					
-					return 1;
-				}
-				else if(lua_isstring(L, 1))
-				{
-					const char* filename = lua_tostring(L, 1);
+        int create(lua_State* L)
+        {
+            if(lua_isnumber(L, 1) && lua_isnumber(L, 2))
+            {
+                auto w = script::get<int>(L, 1);
+                auto h = script::get<int>(L, 2);
 
-					PLUM_PUSH_DATA(L, Canvas, new Canvas(filename), LUA_NOREF);
-					
-					return 1;
-				}
-				else
-				{
-					luaL_error(L, "Attempt to call plum.Canvas constructor with invalid argument types.\r\nMust be (string filename) or (int w, int h).");
-					return 0;
-				}
-			}
+                script::push(L, new Self(w, h), LUA_NOREF);
+                    
+                return 1;
+            }
+            else if(lua_isstring(L, 1))
+            {
+                auto filename = script::get<const char*>(L, 1);
 
+                script::push(L, new Self(filename), LUA_NOREF);
+                    
+                return 1;
+            }
+            else
+            {
+                luaL_error(L, "Attempt to call plum.Canvas constructor with invalid argument types.\r\nMust be (string filename) or (int w, int h).");
+                return 0;
+            }
+        }
 
-			int gc(lua_State* L)
-			{
-				Wrapper<Canvas>* canvas = PLUM_CHECK_DATA(L, 1, Canvas);
+        int gc(lua_State* L)
+        {
+            return script::wrapped<Self>(L, 1)->gc(L);
+        }
 
-				// Only delete if it doesn't belong to a parent of some sort.
-				if(canvas->parentRef == LUA_NOREF)
-				{
-					delete canvas->data;
-				}
-				else
-				{
-					luaL_unref(L, LUA_REGISTRYINDEX, canvas->parentRef);
-				}
+        int index(lua_State* L)
+        {
+            return script::wrapped<Self>(L, 1)->index(L);
+        }
 
-				return 0;
-			}
+        int newindex(lua_State* L)
+        {
+            return script::wrapped<Self>(L, 1)->newindex(L);
+        }
 
-			int tostring(lua_State* L)
-			{
-				PLUM_CHECK_DATA(L, 1, Canvas);
-				lua_pushstring(L, "(plum.Canvas object)");
-				return 1;
-			}
+        int tostring(lua_State* L)
+        {
+            return script::wrapped<Self>(L, 1)->tostring(L);
+        }
 
-			int restoreClipRegion(lua_State* L)
-			{
-				Wrapper<Canvas>* canvas = PLUM_CHECK_DATA(L, 1, Canvas);
-				canvas->data->restoreClipRegion();
-				return 0;
-			}
+        int restoreClipRegion(lua_State* L)
+        {
+            auto canvas = script::ptr<Self>(L, 1);
+            canvas->restoreClipRegion();
+            return 0;
+        }
 
-			int setClipRegion(lua_State* L)
-			{
-				Wrapper<Canvas>* canvas = PLUM_CHECK_DATA(L, 1, Canvas);
-				int x = luaL_checkint(L, 2);
-				int y = luaL_checkint(L, 3);
-				int x2 = luaL_checkint(L, 4);
-				int y2 = luaL_checkint(L, 5);
-				canvas->data->setClipRegion(x, y, x2, y2);
-				return 0;
-			}
+        int setClipRegion(lua_State* L)
+        {
+            auto canvas = script::ptr<Self>(L, 1);
+            auto x = script::get<int>(L, 2);
+            auto y = script::get<int>(L, 3);
+            auto x2 = script::get<int>(L, 4);
+            auto y2 = script::get<int>(L, 5);
+            canvas->setClipRegion(x, y, x2, y2);
+            return 0;
+        }
 
-			int getPixel(lua_State* L)
-			{
-				Wrapper<Canvas>* canvas = PLUM_CHECK_DATA(L, 1, Canvas);
-				int x = luaL_checkint(L, 2);
-				int y = luaL_checkint(L, 3);
-				lua_pushinteger(L, canvas->data->getPixel(x, y));
-				return 1;
-			}
+        int getPixel(lua_State* L)
+        {
+            auto canvas = script::ptr<Self>(L, 1);
+            auto x = script::get<int>(L, 2);
+            auto y = script::get<int>(L, 3);
+            lua_pushinteger(L, canvas->getPixel(x, y));
+            return 1;
+        }
 
-			int setPixel(lua_State* L)
-			{
-				Wrapper<Canvas>* canvas = PLUM_CHECK_DATA(L, 1, Canvas);
-				int x = luaL_checkint(L, 2);
-				int y = luaL_checkint(L, 3);
-				Color color = luaL_checkint(L, 4);
-				BlendMode mode = (BlendMode) luaL_optint(L, 5, getBlendMode());
+        int setPixel(lua_State* L)
+        {
+            auto canvas = script::ptr<Self>(L, 1);
+            auto x = script::get<int>(L, 2);
+            auto y = script::get<int>(L, 3);
+            auto color = script::get<int>(L, 4);
+            BlendMode mode = (BlendMode) luaL_optint(L, 5, getBlendMode());
 
-				switch(mode)
-				{
-					case BlendOpaque:
-						canvas->data->setPixel<SoftOpaqueBlender>(x, y, color, SoftOpaqueBlender());
-						break;
-					case BlendMerge:
-						canvas->data->setPixel<SoftMergeBlender>(x, y, color, SoftMergeBlender());
-						break;
-					case BlendPreserve:
-						canvas->data->setPixel<SoftPreserveBlender>(x, y, color, SoftPreserveBlender());
-						break;
-					case BlendAdd:
-						canvas->data->setPixel<SoftAddBlender>(x, y, color, SoftAddBlender());
-						break;
-					case BlendSubtract:
-						canvas->data->setPixel<SoftSubtractBlender>(x, y, color, SoftSubtractBlender());
-						break;
-				}
-				return 0;
-			}
+            switch(mode)
+            {
+                case BlendOpaque:
+                    canvas->setPixel<SoftOpaqueBlender>(x, y, color, SoftOpaqueBlender());
+                    break;
+                case BlendMerge:
+                    canvas->setPixel<SoftMergeBlender>(x, y, color, SoftMergeBlender());
+                    break;
+                case BlendPreserve:
+                    canvas->setPixel<SoftPreserveBlender>(x, y, color, SoftPreserveBlender());
+                    break;
+                case BlendAdd:
+                    canvas->setPixel<SoftAddBlender>(x, y, color, SoftAddBlender());
+                    break;
+                case BlendSubtract:
+                    canvas->setPixel<SoftSubtractBlender>(x, y, color, SoftSubtractBlender());
+                    break;
+            }
+            return 0;
+        }
 
-			int clear(lua_State* L)
-			{
-				Wrapper<Canvas>* canvas = PLUM_CHECK_DATA(L, 1, Canvas);
-				Color color = luaL_checkint(L, 2);
+        int clear(lua_State* L)
+        {
+            auto canvas = script::ptr<Self>(L, 1);
+            auto color = script::get<int>(L, 2);
 
-				canvas->data->clear(color);
-				
-				return 0;
-			}
+            canvas->clear(color);
+                
+            return 0;
+        }
 
-			int replaceColor(lua_State* L)
-			{
-				Wrapper<Canvas>* canvas = PLUM_CHECK_DATA(L, 1, Canvas);
-				int find = luaL_checkint(L, 2);
-				int replace = luaL_checkint(L, 3);
-				canvas->data->replaceColor(find, replace);
-				return 0;
-			}
+        int replaceColor(lua_State* L)
+        {
+            auto canvas = script::ptr<Self>(L, 1);
+            auto find = script::get<int>(L, 2);
+            auto replace = script::get<int>(L, 3);
+            canvas->replaceColor(find, replace);
+            return 0;
+        }
 
-			int flip(lua_State* L)
-			{
-				Wrapper<Canvas>* canvas = PLUM_CHECK_DATA(L, 1, Canvas);
-				bool h = lua_toboolean(L, 2) != 0;
-				bool v = lua_toboolean(L, 3) != 0;
-				canvas->data->flip(h, v);
-				return 0;
-			}
+        int flip(lua_State* L)
+        {
+            auto canvas = script::ptr<Self>(L, 1);
+            auto h = script::get<bool>(L, 2) != 0;
+            auto v = script::get<bool>(L, 3) != 0;
+            canvas->flip(h, v);
+            return 0;
+        }
 
-			int line(lua_State* L)
-			{
-				Wrapper<Canvas>* canvas = PLUM_CHECK_DATA(L, 1, Canvas);
-				int x = luaL_checkint(L, 2);
-				int y = luaL_checkint(L, 3);
-				int x2 = luaL_checkint(L, 4);
-				int y2 = luaL_checkint(L, 5);
-				Color color = luaL_checkint(L, 6);
-				BlendMode mode = (BlendMode) luaL_optint(L, 7, getBlendMode());
+        int line(lua_State* L)
+        {
+            auto canvas = script::ptr<Self>(L, 1);
+            auto x = script::get<int>(L, 2);
+            auto y = script::get<int>(L, 3);
+            auto x2 = script::get<int>(L, 4);
+            auto y2 = script::get<int>(L, 5);
+            auto color = script::get<int>(L, 6);
+            BlendMode mode = (BlendMode) luaL_optint(L, 7, getBlendMode());
 
-				switch(mode)
-				{
-					case BlendOpaque:
-						canvas->data->line<SoftOpaqueBlender>(x, y, x2, y2, color, SoftOpaqueBlender());
-						break;
-					case BlendMerge:
-						canvas->data->line<SoftMergeBlender>(x, y, x2, y2, color, SoftMergeBlender());
-						break;
-					case BlendPreserve:
-						canvas->data->line<SoftPreserveBlender>(x, y, x2, y2, color, SoftPreserveBlender());
-						break;
-					case BlendAdd:
-						canvas->data->line<SoftAddBlender>(x, y, x2, y2, color, SoftAddBlender());
-						break;
-					case BlendSubtract:
-						canvas->data->line<SoftSubtractBlender>(x, y, x2, y2, color, SoftSubtractBlender());
-						break;
-				}
-				return 0;
-			}
+            switch(mode)
+            {
+                case BlendOpaque:
+                    canvas->line<SoftOpaqueBlender>(x, y, x2, y2, color, SoftOpaqueBlender());
+                    break;
+                case BlendMerge:
+                    canvas->line<SoftMergeBlender>(x, y, x2, y2, color, SoftMergeBlender());
+                    break;
+                case BlendPreserve:
+                    canvas->line<SoftPreserveBlender>(x, y, x2, y2, color, SoftPreserveBlender());
+                    break;
+                case BlendAdd:
+                    canvas->line<SoftAddBlender>(x, y, x2, y2, color, SoftAddBlender());
+                    break;
+                case BlendSubtract:
+                    canvas->line<SoftSubtractBlender>(x, y, x2, y2, color, SoftSubtractBlender());
+                    break;
+            }
+            return 0;
+        }
 
-			int rect(lua_State* L)
-			{
-				Wrapper<Canvas>* canvas = PLUM_CHECK_DATA(L, 1, Canvas);
-				int x = luaL_checkint(L, 2);
-				int y = luaL_checkint(L, 3);
-				int x2 = luaL_checkint(L, 4);
-				int y2 = luaL_checkint(L, 5);
-				Color color = luaL_checkint(L, 6);
-				BlendMode mode = (BlendMode) luaL_optint(L, 7, getBlendMode());
+        int rect(lua_State* L)
+        {
+            auto canvas = script::ptr<Self>(L, 1);
+            auto x = script::get<int>(L, 2);
+            auto y = script::get<int>(L, 3);
+            auto x2 = script::get<int>(L, 4);
+            auto y2 = script::get<int>(L, 5);
+            Color color = script::get<int>(L, 6);
+            BlendMode mode = (BlendMode) luaL_optint(L, 7, getBlendMode());
 
-				switch(mode)
-				{
-					case BlendOpaque:
-						canvas->data->rect<SoftOpaqueBlender>(x, y, x2, y2, color, SoftOpaqueBlender());
-						break;
-					case BlendMerge:
-						canvas->data->rect<SoftMergeBlender>(x, y, x2, y2, color, SoftMergeBlender());
-						break;
-					case BlendPreserve:
-						canvas->data->rect<SoftPreserveBlender>(x, y, x2, y2, color, SoftPreserveBlender());
-						break;
-					case BlendAdd:
-						canvas->data->rect<SoftAddBlender>(x, y, x2, y2, color, SoftAddBlender());
-						break;
-					case BlendSubtract:
-						canvas->data->rect<SoftSubtractBlender>(x, y, x2, y2, color, SoftSubtractBlender());
-						break;
-				}
-				return 0;
-			}
+            switch(mode)
+            {
+                case BlendOpaque:
+                    canvas->rect<SoftOpaqueBlender>(x, y, x2, y2, color, SoftOpaqueBlender());
+                    break;
+                case BlendMerge:
+                    canvas->rect<SoftMergeBlender>(x, y, x2, y2, color, SoftMergeBlender());
+                    break;
+                case BlendPreserve:
+                    canvas->rect<SoftPreserveBlender>(x, y, x2, y2, color, SoftPreserveBlender());
+                    break;
+                case BlendAdd:
+                    canvas->rect<SoftAddBlender>(x, y, x2, y2, color, SoftAddBlender());
+                    break;
+                case BlendSubtract:
+                    canvas->rect<SoftSubtractBlender>(x, y, x2, y2, color, SoftSubtractBlender());
+                    break;
+            }
+            return 0;
+        }
 
-			int solidRect(lua_State* L)
-			{
-				Wrapper<Canvas>* canvas = PLUM_CHECK_DATA(L, 1, Canvas);
-				int x = luaL_checkint(L, 2);
-				int y = luaL_checkint(L, 3);
-				int x2 = luaL_checkint(L, 4);
-				int y2 = luaL_checkint(L, 5);
-				Color color = luaL_checkint(L, 6);
-				BlendMode mode = (BlendMode) luaL_optint(L, 7, getBlendMode());
+        int solidRect(lua_State* L)
+        {
+            auto canvas = script::ptr<Self>(L, 1);
+            auto x = script::get<int>(L, 2);
+            auto y = script::get<int>(L, 3);
+            auto x2 = script::get<int>(L, 4);
+            auto y2 = script::get<int>(L, 5);
+            Color color = script::get<int>(L, 6);
+            BlendMode mode = (BlendMode) luaL_optint(L, 7, getBlendMode());
 
-				switch(mode)
-				{
-					case BlendOpaque:
-						canvas->data->solidRect<SoftOpaqueBlender>(x, y, x2, y2, color, SoftOpaqueBlender());
-						break;
-					case BlendMerge:
-						canvas->data->solidRect<SoftMergeBlender>(x, y, x2, y2, color, SoftMergeBlender());
-						break;
-					case BlendPreserve:
-						canvas->data->solidRect<SoftPreserveBlender>(x, y, x2, y2, color, SoftPreserveBlender());
-						break;
-					case BlendAdd:
-						canvas->data->solidRect<SoftAddBlender>(x, y, x2, y2, color, SoftAddBlender());
-						break;
-					case BlendSubtract:
-						canvas->data->solidRect<SoftSubtractBlender>(x, y, x2, y2, color, SoftSubtractBlender());
-						break;
-				}
-				return 0;
-			}
+            switch(mode)
+            {
+                case BlendOpaque:
+                    canvas->solidRect<SoftOpaqueBlender>(x, y, x2, y2, color, SoftOpaqueBlender());
+                    break;
+                case BlendMerge:
+                    canvas->solidRect<SoftMergeBlender>(x, y, x2, y2, color, SoftMergeBlender());
+                    break;
+                case BlendPreserve:
+                    canvas->solidRect<SoftPreserveBlender>(x, y, x2, y2, color, SoftPreserveBlender());
+                    break;
+                case BlendAdd:
+                    canvas->solidRect<SoftAddBlender>(x, y, x2, y2, color, SoftAddBlender());
+                    break;
+                case BlendSubtract:
+                    canvas->solidRect<SoftSubtractBlender>(x, y, x2, y2, color, SoftSubtractBlender());
+                    break;
+            }
+            return 0;
+        }
 
-			int circle(lua_State* L)
-			{
-				Wrapper<Canvas>* canvas = PLUM_CHECK_DATA(L, 1, Canvas);
-				int cx = luaL_checkint(L, 2);
-				int cy = luaL_checkint(L, 3);
-				int xRadius = luaL_checkint(L, 4);
-				int yRadius = luaL_checkint(L, 5);
-				Color color = luaL_checkint(L, 6);
-				BlendMode mode = (BlendMode) luaL_optint(L, 7, getBlendMode());
+        int circle(lua_State* L)
+        {
+            auto canvas = script::ptr<Self>(L, 1);
+            auto cx = script::get<int>(L, 2);
+            auto cy = script::get<int>(L, 3);
+            auto xRadius = script::get<int>(L, 4);
+            auto yRadius = script::get<int>(L, 5);
+            auto color = script::get<int>(L, 6);
+            BlendMode mode = (BlendMode) luaL_optint(L, 7, getBlendMode());
 
-				switch(mode)
-				{
-					case BlendOpaque:
-						canvas->data->circle<SoftOpaqueBlender>(cx, cy, xRadius, yRadius, color, SoftOpaqueBlender());
-						break;
-					case BlendMerge:
-						canvas->data->circle<SoftMergeBlender>(cx, cy, xRadius, yRadius, color, SoftMergeBlender());
-						break;
-					case BlendPreserve:
-						canvas->data->circle<SoftPreserveBlender>(cx, cy, xRadius, yRadius, color, SoftPreserveBlender());
-						break;
-					case BlendAdd:
-						canvas->data->circle<SoftAddBlender>(cx, cy, xRadius, yRadius, color, SoftAddBlender());
-						break;
-					case BlendSubtract:
-						canvas->data->circle<SoftSubtractBlender>(cx, cy, xRadius, yRadius, color, SoftSubtractBlender());
-						break;
-				}
-				return 0;
-			}
+            switch(mode)
+            {
+                case BlendOpaque:
+                    canvas->circle<SoftOpaqueBlender>(cx, cy, xRadius, yRadius, color, SoftOpaqueBlender());
+                    break;
+                case BlendMerge:
+                    canvas->circle<SoftMergeBlender>(cx, cy, xRadius, yRadius, color, SoftMergeBlender());
+                    break;
+                case BlendPreserve:
+                    canvas->circle<SoftPreserveBlender>(cx, cy, xRadius, yRadius, color, SoftPreserveBlender());
+                    break;
+                case BlendAdd:
+                    canvas->circle<SoftAddBlender>(cx, cy, xRadius, yRadius, color, SoftAddBlender());
+                    break;
+                case BlendSubtract:
+                    canvas->circle<SoftSubtractBlender>(cx, cy, xRadius, yRadius, color, SoftSubtractBlender());
+                    break;
+            }
+            return 0;
+        }
 
-			int solidCircle(lua_State* L)
-			{
-				Wrapper<Canvas>* canvas = PLUM_CHECK_DATA(L, 1, Canvas);
-				int cx = luaL_checkint(L, 2);
-				int cy = luaL_checkint(L, 3);
-				int xRadius = luaL_checkint(L, 4);
-				int yRadius = luaL_checkint(L, 5);
-				Color color = luaL_checkint(L, 6);
-				BlendMode mode = (BlendMode) luaL_optint(L, 7, getBlendMode());
+        int solidCircle(lua_State* L)
+        {
+            auto canvas = script::ptr<Self>(L, 1);
+            auto cx = script::get<int>(L, 2);
+            auto cy = script::get<int>(L, 3);
+            auto xRadius = script::get<int>(L, 4);
+            auto yRadius = script::get<int>(L, 5);
+            auto color = script::get<int>(L, 6);
+            BlendMode mode = (BlendMode) luaL_optint(L, 7, getBlendMode());
 
-				switch(mode)
-				{
-					case BlendOpaque:
-						canvas->data->solidCircle<SoftOpaqueBlender>(cx, cy, xRadius, yRadius, color, SoftOpaqueBlender());
-						break;
-					case BlendMerge:
-						canvas->data->solidCircle<SoftMergeBlender>(cx, cy, xRadius, yRadius, color, SoftMergeBlender());
-						break;
-					case BlendPreserve:
-						canvas->data->solidCircle<SoftPreserveBlender>(cx, cy, xRadius, yRadius, color, SoftPreserveBlender());
-						break;
-					case BlendAdd:
-						canvas->data->solidCircle<SoftAddBlender>(cx, cy, xRadius, yRadius, color, SoftAddBlender());
-						break;
-					case BlendSubtract:
-						canvas->data->solidCircle<SoftSubtractBlender>(cx, cy, xRadius, yRadius, color, SoftSubtractBlender());
-						break;
-				}
-				return 0;
-			}
+            switch(mode)
+            {
+                case BlendOpaque:
+                    canvas->solidCircle<SoftOpaqueBlender>(cx, cy, xRadius, yRadius, color, SoftOpaqueBlender());
+                    break;
+                case BlendMerge:
+                    canvas->solidCircle<SoftMergeBlender>(cx, cy, xRadius, yRadius, color, SoftMergeBlender());
+                    break;
+                case BlendPreserve:
+                    canvas->solidCircle<SoftPreserveBlender>(cx, cy, xRadius, yRadius, color, SoftPreserveBlender());
+                    break;
+                case BlendAdd:
+                    canvas->solidCircle<SoftAddBlender>(cx, cy, xRadius, yRadius, color, SoftAddBlender());
+                    break;
+                case BlendSubtract:
+                    canvas->solidCircle<SoftSubtractBlender>(cx, cy, xRadius, yRadius, color, SoftSubtractBlender());
+                    break;
+            }
+            return 0;
+        }
 
-			int blit(lua_State* L)
-			{
-				Wrapper<Canvas>* canvas = PLUM_CHECK_DATA(L, 1, Canvas);
-				int x = luaL_checkint(L, 2);
-				int y = luaL_checkint(L, 3);
-				Wrapper<Canvas>* dest = PLUM_CHECK_DATA(L, 4, Canvas);
-				BlendMode mode = (BlendMode) luaL_optint(L, 5, getBlendMode());
-				
-				switch(mode)
-				{
-					case BlendOpaque:
-						canvas->data->blit<SoftOpaqueBlender>(x, y, dest->data, SoftOpaqueBlender());
-						break;
-					case BlendMerge:
-						canvas->data->blit<SoftMergeBlender>(x, y, dest->data, SoftMergeBlender());
-						break;
-					case BlendPreserve:
-						canvas->data->blit<SoftPreserveBlender>(x, y, dest->data, SoftPreserveBlender());
-						break;
-					case BlendAdd:
-						canvas->data->blit<SoftAddBlender>(x, y, dest->data, SoftAddBlender());
-						break;
-					case BlendSubtract:
-						canvas->data->blit<SoftSubtractBlender>(x, y, dest->data, SoftSubtractBlender());
-						break;
-				}
-				return 0;
-			}
+        int blit(lua_State* L)
+        {
+            auto canvas = script::ptr<Self>(L, 1);
+            auto x = script::get<int>(L, 2);
+            auto y = script::get<int>(L, 3);
+            auto dest = script::ptr<Self>(L, 4);
+            BlendMode mode = (BlendMode) luaL_optint(L, 5, getBlendMode());
+                
+            switch(mode)
+            {
+                case BlendOpaque:
+                    canvas->blit<SoftOpaqueBlender>(x, y, dest, SoftOpaqueBlender());
+                    break;
+                case BlendMerge:
+                    canvas->blit<SoftMergeBlender>(x, y, dest, SoftMergeBlender());
+                    break;
+                case BlendPreserve:
+                    canvas->blit<SoftPreserveBlender>(x, y, dest, SoftPreserveBlender());
+                    break;
+                case BlendAdd:
+                    canvas->blit<SoftAddBlender>(x, y, dest, SoftAddBlender());
+                    break;
+                case BlendSubtract:
+                    canvas->blit<SoftSubtractBlender>(x, y, dest, SoftSubtractBlender());
+                    break;
+            }
+            return 0;
+        }
 
-			int scaleBlit(lua_State* L)
-			{
-				Wrapper<Canvas>* canvas = PLUM_CHECK_DATA(L, 1, Canvas);
-				int x = luaL_checkint(L, 2);
-				int y = luaL_checkint(L, 3);
-				int scaledWidth = luaL_checkint(L, 4);
-				int scaledHeight = luaL_checkint(L, 5);
-				Wrapper<Canvas>* dest = PLUM_CHECK_DATA(L, 6, Canvas);
-				BlendMode mode = (BlendMode) luaL_optint(L, 7, getBlendMode());
-				
-				switch(mode)
-				{
-					case BlendOpaque:
-						canvas->data->scaleBlit<SoftOpaqueBlender>(x, y, scaledWidth, scaledHeight, dest->data, SoftOpaqueBlender());
-						break;
-					case BlendMerge:
-						canvas->data->scaleBlit<SoftMergeBlender>(x, y, scaledWidth, scaledHeight, dest->data, SoftMergeBlender());
-						break;
-					case BlendPreserve:
-						canvas->data->scaleBlit<SoftPreserveBlender>(x, y, scaledWidth, scaledHeight, dest->data, SoftPreserveBlender());
-						break;
-					case BlendAdd:
-						canvas->data->scaleBlit<SoftAddBlender>(x, y, scaledWidth, scaledHeight, dest->data, SoftAddBlender());
-						break;
-					case BlendSubtract:
-						canvas->data->scaleBlit<SoftSubtractBlender>(x, y, scaledWidth, scaledHeight, dest->data, SoftSubtractBlender());
-						break;
-				}
-				return 0;
-			}
+        int scaleBlit(lua_State* L)
+        {
+            auto canvas = script::ptr<Self>(L, 1);
+            auto x = script::get<int>(L, 2);
+            auto y = script::get<int>(L, 3);
+            auto scaledWidth = script::get<int>(L, 4);
+            auto scaledHeight = script::get<int>(L, 5);
+            auto dest = script::ptr<Self>(L, 6);
+            BlendMode mode = (BlendMode) luaL_optint(L, 7, getBlendMode());
+                
+            switch(mode)
+            {
+                case BlendOpaque:
+                    canvas->scaleBlit<SoftOpaqueBlender>(x, y, scaledWidth, scaledHeight, dest, SoftOpaqueBlender());
+                    break;
+                case BlendMerge:
+                    canvas->scaleBlit<SoftMergeBlender>(x, y, scaledWidth, scaledHeight, dest, SoftMergeBlender());
+                    break;
+                case BlendPreserve:
+                    canvas->scaleBlit<SoftPreserveBlender>(x, y, scaledWidth, scaledHeight, dest, SoftPreserveBlender());
+                    break;
+                case BlendAdd:
+                    canvas->scaleBlit<SoftAddBlender>(x, y, scaledWidth, scaledHeight, dest, SoftAddBlender());
+                    break;
+                case BlendSubtract:
+                    canvas->scaleBlit<SoftSubtractBlender>(x, y, scaledWidth, scaledHeight, dest, SoftSubtractBlender());
+                    break;
+            }
+            return 0;
+        }
 
-			int rotateBlit(lua_State* L)
-			{
-				Wrapper<Canvas>* canvas = PLUM_CHECK_DATA(L, 1, Canvas);
-				int x = luaL_checkint(L, 2);
-				int y = luaL_checkint(L, 3);
-				double angle = luaL_checknumber(L, 4);
-				Wrapper<Canvas>* dest = PLUM_CHECK_DATA(L, 5, Canvas);
-				BlendMode mode = (BlendMode) luaL_optint(L, 6, getBlendMode());
-				
-				switch(mode)
-				{
-					case BlendOpaque:
-						canvas->data->rotateBlit<SoftOpaqueBlender>(x, y, angle, dest->data, SoftOpaqueBlender());
-						break;
-					case BlendMerge:
-						canvas->data->rotateBlit<SoftMergeBlender>(x, y, angle, dest->data, SoftMergeBlender());
-						break;
-					case BlendPreserve:
-						canvas->data->rotateBlit<SoftPreserveBlender>(x, y, angle, dest->data, SoftPreserveBlender());
-						break;
-					case BlendAdd:
-						canvas->data->rotateBlit<SoftAddBlender>(x, y, angle, dest->data, SoftAddBlender());
-						break;
-					case BlendSubtract:
-						canvas->data->rotateBlit<SoftSubtractBlender>(x, y, angle, dest->data, SoftSubtractBlender());
-						break;
-				}
-				return 0;
-			}
+        int rotateBlit(lua_State* L)
+        {
+            auto canvas = script::ptr<Self>(L, 1);
+            auto x = script::get<int>(L, 2);
+            auto y = script::get<int>(L, 3);
+            auto angle = script::get<double>(L, 4);
+            auto dest = script::ptr<Self>(L, 5);
+            BlendMode mode = (BlendMode) luaL_optint(L, 6, getBlendMode());
+                
+            switch(mode)
+            {
+                case BlendOpaque:
+                    canvas->rotateBlit<SoftOpaqueBlender>(x, y, angle, dest, SoftOpaqueBlender());
+                    break;
+                case BlendMerge:
+                    canvas->rotateBlit<SoftMergeBlender>(x, y, angle, dest, SoftMergeBlender());
+                    break;
+                case BlendPreserve:
+                    canvas->rotateBlit<SoftPreserveBlender>(x, y, angle, dest, SoftPreserveBlender());
+                    break;
+                case BlendAdd:
+                    canvas->rotateBlit<SoftAddBlender>(x, y, angle, dest, SoftAddBlender());
+                    break;
+                case BlendSubtract:
+                    canvas->rotateBlit<SoftSubtractBlender>(x, y, angle, dest, SoftSubtractBlender());
+                    break;
+            }
+            return 0;
+        }
 
-			int rotateScaleBlit(lua_State* L)
-			{
-				Wrapper<Canvas>* canvas = PLUM_CHECK_DATA(L, 1, Canvas);
-				int x = luaL_checkint(L, 2);
-				int y = luaL_checkint(L, 3);
-				double angle = luaL_checknumber(L, 4);
-				double scale = luaL_checknumber(L, 5);
-				Wrapper<Canvas>* dest = PLUM_CHECK_DATA(L, 6, Canvas);
-				BlendMode mode = (BlendMode) luaL_optint(L, 7, getBlendMode());
-				
-				switch(mode)
-				{
-					case BlendOpaque:
-						canvas->data->rotateScaleBlit<SoftOpaqueBlender>(x, y, angle, scale, dest->data, SoftOpaqueBlender());
-						break;
-					case BlendMerge:
-						canvas->data->rotateScaleBlit<SoftMergeBlender>(x, y, angle, scale, dest->data, SoftMergeBlender());
-						break;
-					case BlendPreserve:
-						canvas->data->rotateScaleBlit<SoftPreserveBlender>(x, y, angle, scale, dest->data, SoftPreserveBlender());
-						break;
-					case BlendAdd:
-						canvas->data->rotateScaleBlit<SoftAddBlender>(x, y, angle, scale, dest->data, SoftAddBlender());
-						break;
-					case BlendSubtract:
-						canvas->data->rotateScaleBlit<SoftSubtractBlender>(x, y, angle, scale, dest->data, SoftSubtractBlender());
-						break;
-				}
-				return 0;
-			}
+        int rotateScaleBlit(lua_State* L)
+        {
+            auto canvas = script::ptr<Self>(L, 1);
+            auto x = script::get<int>(L, 2);
+            auto y = script::get<int>(L, 3);
+            auto angle = script::get<double>(L, 4);
+            auto scale = script::get<double>(L, 5);
+            auto dest = script::ptr<Self>(L, 6);
+            BlendMode mode = (BlendMode) luaL_optint(L, 7, getBlendMode());
+                
+            switch(mode)
+            {
+                case BlendOpaque:
+                    canvas->rotateScaleBlit<SoftOpaqueBlender>(x, y, angle, scale, dest, SoftOpaqueBlender());
+                    break;
+                case BlendMerge:
+                    canvas->rotateScaleBlit<SoftMergeBlender>(x, y, angle, scale, dest, SoftMergeBlender());
+                    break;
+                case BlendPreserve:
+                    canvas->rotateScaleBlit<SoftPreserveBlender>(x, y, angle, scale, dest, SoftPreserveBlender());
+                    break;
+                case BlendAdd:
+                    canvas->rotateScaleBlit<SoftAddBlender>(x, y, angle, scale, dest, SoftAddBlender());
+                    break;
+                case BlendSubtract:
+                    canvas->rotateScaleBlit<SoftSubtractBlender>(x, y, angle, scale, dest, SoftSubtractBlender());
+                    break;
+            }
+            return 0;
+        }
 
-			int blitRegion(lua_State* L)
-			{
-				Wrapper<Canvas>* canvas = PLUM_CHECK_DATA(L, 1, Canvas);
-				int sx = luaL_checkint(L, 2);
-				int sy = luaL_checkint(L, 3);
-				int sx2 = luaL_checkint(L, 4);
-				int sy2 = luaL_checkint(L, 5);
-				int dx = luaL_checkint(L, 6);
-				int dy = luaL_checkint(L, 7);
-				Wrapper<Canvas>* dest = PLUM_CHECK_DATA(L, 8, Canvas);
-				BlendMode mode = (BlendMode) luaL_optint(L, 9, getBlendMode());
-				
-				switch(mode)
-				{
-					case BlendOpaque:
-						canvas->data->blitRegion<SoftOpaqueBlender>(sx, sy, sx2, sy2, dx, dy, dest->data, SoftOpaqueBlender());
-						break;
-					case BlendMerge:
-						canvas->data->blitRegion<SoftMergeBlender>(sx, sy, sx2, sy2, dx, dy, dest->data, SoftMergeBlender());
-						break;
-					case BlendPreserve:
-						canvas->data->blitRegion<SoftPreserveBlender>(sx, sy, sx2, sy2, dx, dy, dest->data, SoftPreserveBlender());
-						break;
-					case BlendAdd:
-						canvas->data->blitRegion<SoftAddBlender>(sx, sy, sx2, sy2, dx, dy, dest->data, SoftAddBlender());
-						break;
-					case BlendSubtract:
-						canvas->data->blitRegion<SoftSubtractBlender>(sx, sy, sx2, sy2, dx, dy, dest->data, SoftSubtractBlender());
-						break;
-				}
-				return 0;
-			}
+        int blitRegion(lua_State* L)
+        {
+            auto canvas = script::ptr<Self>(L, 1);
+            auto sx = script::get<int>(L, 2);
+            auto sy = script::get<int>(L, 3);
+            auto sx2 = script::get<int>(L, 4);
+            auto sy2 = script::get<int>(L, 5);
+            auto dx = script::get<int>(L, 6);
+            auto dy = script::get<int>(L, 7);
+            auto dest = script::ptr<Self>(L, 8);
+            BlendMode mode = (BlendMode) luaL_optint(L, 9, getBlendMode());
+                
+            switch(mode)
+            {
+                case BlendOpaque:
+                    canvas->blitRegion<SoftOpaqueBlender>(sx, sy, sx2, sy2, dx, dy, dest, SoftOpaqueBlender());
+                    break;
+                case BlendMerge:
+                    canvas->blitRegion<SoftMergeBlender>(sx, sy, sx2, sy2, dx, dy, dest, SoftMergeBlender());
+                    break;
+                case BlendPreserve:
+                    canvas->blitRegion<SoftPreserveBlender>(sx, sy, sx2, sy2, dx, dy, dest, SoftPreserveBlender());
+                    break;
+                case BlendAdd:
+                    canvas->blitRegion<SoftAddBlender>(sx, sy, sx2, sy2, dx, dy, dest, SoftAddBlender());
+                    break;
+                case BlendSubtract:
+                    canvas->blitRegion<SoftSubtractBlender>(sx, sy, sx2, sy2, dx, dy, dest, SoftSubtractBlender());
+                    break;
+            }
+            return 0;
+        }
 
-			int scaleBlitRegion(lua_State* L)
-			{
-				Wrapper<Canvas>* canvas = PLUM_CHECK_DATA(L, 1, Canvas);
-				int sx = luaL_checkint(L, 2);
-				int sy = luaL_checkint(L, 3);
-				int sx2 = luaL_checkint(L, 4);
-				int sy2 = luaL_checkint(L, 5);
-				int dx = luaL_checkint(L, 6);
-				int dy = luaL_checkint(L, 7);
-				int scw = luaL_checkint(L, 8);
-				int sch = luaL_checkint(L, 9);
-				Wrapper<Canvas>* dest = PLUM_CHECK_DATA(L, 10, Canvas);
-				BlendMode mode = (BlendMode) luaL_optint(L, 11, getBlendMode());
-				
-				switch(mode)
-				{
-					case BlendOpaque:
-						canvas->data->scaleBlitRegion<SoftOpaqueBlender>(sx, sy, sx2, sy2, dx, dy, scw, sch, dest->data, SoftOpaqueBlender());
-						break;
-					case BlendMerge:
-						canvas->data->scaleBlitRegion<SoftMergeBlender>(sx, sy, sx2, sy2, dx, dy, scw, sch, dest->data, SoftMergeBlender());
-						break;
-					case BlendPreserve:
-						canvas->data->scaleBlitRegion<SoftPreserveBlender>(sx, sy, sx2, sy2, dx, dy, scw, sch, dest->data, SoftPreserveBlender());
-						break;
-					case BlendAdd:
-						canvas->data->scaleBlitRegion<SoftAddBlender>(sx, sy, sx2, sy2, dx, dy, scw, sch, dest->data, SoftAddBlender());
-						break;
-					case BlendSubtract:
-						canvas->data->scaleBlitRegion<SoftSubtractBlender>(sx, sy, sx2, sy2, dx, dy, scw, sch, dest->data, SoftSubtractBlender());
-						break;
-				}
-				return 0;
-			}
+        int scaleBlitRegion(lua_State* L)
+        {
+            auto canvas = script::ptr<Self>(L, 1);
+            auto sx = script::get<int>(L, 2);
+            auto sy = script::get<int>(L, 3);
+            auto sx2 = script::get<int>(L, 4);
+            auto sy2 = script::get<int>(L, 5);
+            auto dx = script::get<int>(L, 6);
+            auto dy = script::get<int>(L, 7);
+            auto scw = script::get<int>(L, 8);
+            auto sch = script::get<int>(L, 9);
+            auto dest = script::ptr<Self>(L, 10);
+            BlendMode mode = (BlendMode) luaL_optint(L, 11, getBlendMode());
+                
+            switch(mode)
+            {
+                case BlendOpaque:
+                    canvas->scaleBlitRegion<SoftOpaqueBlender>(sx, sy, sx2, sy2, dx, dy, scw, sch, dest, SoftOpaqueBlender());
+                    break;
+                case BlendMerge:
+                    canvas->scaleBlitRegion<SoftMergeBlender>(sx, sy, sx2, sy2, dx, dy, scw, sch, dest, SoftMergeBlender());
+                    break;
+                case BlendPreserve:
+                    canvas->scaleBlitRegion<SoftPreserveBlender>(sx, sy, sx2, sy2, dx, dy, scw, sch, dest, SoftPreserveBlender());
+                    break;
+                case BlendAdd:
+                    canvas->scaleBlitRegion<SoftAddBlender>(sx, sy, sx2, sy2, dx, dy, scw, sch, dest, SoftAddBlender());
+                    break;
+                case BlendSubtract:
+                    canvas->scaleBlitRegion<SoftSubtractBlender>(sx, sy, sx2, sy2, dx, dy, scw, sch, dest, SoftSubtractBlender());
+                    break;
+            }
+            return 0;
+        }
 
-			int rotateBlitRegion(lua_State* L)
-			{
-				Wrapper<Canvas>* canvas = PLUM_CHECK_DATA(L, 1, Canvas);
-				int sx = luaL_checkint(L, 2);
-				int sy = luaL_checkint(L, 3);
-				int sx2 = luaL_checkint(L, 4);
-				int sy2 = luaL_checkint(L, 5);
-				int dx = luaL_checkint(L, 6);
-				int dy = luaL_checkint(L, 7);
-				double angle = luaL_checkint(L, 8);
-				Wrapper<Canvas>* dest = PLUM_CHECK_DATA(L, 9, Canvas);
-				BlendMode mode = (BlendMode) luaL_optint(L, 10, getBlendMode());
-				
-				switch(mode)
-				{
-					case BlendOpaque:
-						canvas->data->rotateBlitRegion<SoftOpaqueBlender>(sx, sy, sx2, sy2, dx, dy, angle, dest->data, SoftOpaqueBlender());
-						break;
-					case BlendMerge:
-						canvas->data->rotateBlitRegion<SoftMergeBlender>(sx, sy, sx2, sy2, dx, dy, angle, dest->data, SoftMergeBlender());
-						break;
-					case BlendPreserve:
-						canvas->data->rotateBlitRegion<SoftPreserveBlender>(sx, sy, sx2, sy2, dx, dy, angle, dest->data, SoftPreserveBlender());
-						break;
-					case BlendAdd:
-						canvas->data->rotateBlitRegion<SoftAddBlender>(sx, sy, sx2, sy2, dx, dy, angle, dest->data, SoftAddBlender());
-						break;
-					case BlendSubtract:
-						canvas->data->rotateBlitRegion<SoftSubtractBlender>(sx, sy, sx2, sy2, dx, dy, angle, dest->data, SoftSubtractBlender());
-						break;
-				}
-				return 0;
-			}
+        int rotateBlitRegion(lua_State* L)
+        {
+            auto canvas = script::ptr<Self>(L, 1);
+            auto sx = script::get<int>(L, 2);
+            auto sy = script::get<int>(L, 3);
+            auto sx2 = script::get<int>(L, 4);
+            auto sy2 = script::get<int>(L, 5);
+            auto dx = script::get<int>(L, 6);
+            auto dy = script::get<int>(L, 7);
+            auto angle = script::get<double>(L, 8);
+            auto dest = script::ptr<Self>(L, 9);
+            BlendMode mode = (BlendMode) luaL_optint(L, 10, getBlendMode());
+                
+            switch(mode)
+            {
+                case BlendOpaque:
+                    canvas->rotateBlitRegion<SoftOpaqueBlender>(sx, sy, sx2, sy2, dx, dy, angle, dest, SoftOpaqueBlender());
+                    break;
+                case BlendMerge:
+                    canvas->rotateBlitRegion<SoftMergeBlender>(sx, sy, sx2, sy2, dx, dy, angle, dest, SoftMergeBlender());
+                    break;
+                case BlendPreserve:
+                    canvas->rotateBlitRegion<SoftPreserveBlender>(sx, sy, sx2, sy2, dx, dy, angle, dest, SoftPreserveBlender());
+                    break;
+                case BlendAdd:
+                    canvas->rotateBlitRegion<SoftAddBlender>(sx, sy, sx2, sy2, dx, dy, angle, dest, SoftAddBlender());
+                    break;
+                case BlendSubtract:
+                    canvas->rotateBlitRegion<SoftSubtractBlender>(sx, sy, sx2, sy2, dx, dy, angle, dest, SoftSubtractBlender());
+                    break;
+            }
+            return 0;
+        }
 
-			int rotateScaleBlitRegion(lua_State* L)
-			{
-				Wrapper<Canvas>* canvas = PLUM_CHECK_DATA(L, 1, Canvas);
-				int sx = luaL_checkint(L, 2);
-				int sy = luaL_checkint(L, 3);
-				int sx2 = luaL_checkint(L, 4);
-				int sy2 = luaL_checkint(L, 5);
-				int dx = luaL_checkint(L, 6);
-				int dy = luaL_checkint(L, 7);
-				double angle = luaL_checkint(L, 8);
-				double scale = luaL_checkint(L, 9);
-				Wrapper<Canvas>* dest = PLUM_CHECK_DATA(L, 10, Canvas);
-				BlendMode mode = (BlendMode) luaL_optint(L, 11, getBlendMode());
-				
-				switch(mode)
-				{
-					case BlendOpaque:
-						canvas->data->rotateScaleBlitRegion<SoftOpaqueBlender>(sx, sy, sx2, sy2, dx, dy, angle, scale, dest->data, SoftOpaqueBlender());
-						break;
-					case BlendMerge:
-						canvas->data->rotateScaleBlitRegion<SoftMergeBlender>(sx, sy, sx2, sy2, dx, dy, angle, scale, dest->data, SoftMergeBlender());
-						break;
-					case BlendPreserve:
-						canvas->data->rotateScaleBlitRegion<SoftPreserveBlender>(sx, sy, sx2, sy2, dx, dy, angle, scale, dest->data, SoftPreserveBlender());
-						break;
-					case BlendAdd:
-						canvas->data->rotateScaleBlitRegion<SoftAddBlender>(sx, sy, sx2, sy2, dx, dy, angle, scale, dest->data, SoftAddBlender());
-						break;
-					case BlendSubtract:
-						canvas->data->rotateScaleBlitRegion<SoftSubtractBlender>(sx, sy, sx2, sy2, dx, dy, angle, scale, dest->data, SoftSubtractBlender());
-						break;
-				}
-				return 0;
-			}
+        int rotateScaleBlitRegion(lua_State* L)
+        {
+            auto canvas = script::ptr<Self>(L, 1);
+            auto sx = script::get<int>(L, 2);
+            auto sy = script::get<int>(L, 3);
+            auto sx2 = script::get<int>(L, 4);
+            auto sy2 = script::get<int>(L, 5);
+            auto dx = script::get<int>(L, 6);
+            auto dy = script::get<int>(L, 7);
+            auto angle = script::get<double>(L, 8);
+            auto scale = script::get<double>(L, 9);
+            auto dest = script::ptr<Self>(L, 10);
+            BlendMode mode = (BlendMode) luaL_optint(L, 11, getBlendMode());
+                
+            switch(mode)
+            {
+                case BlendOpaque:
+                    canvas->rotateScaleBlitRegion<SoftOpaqueBlender>(sx, sy, sx2, sy2, dx, dy, angle, scale, dest, SoftOpaqueBlender());
+                    break;
+                case BlendMerge:
+                    canvas->rotateScaleBlitRegion<SoftMergeBlender>(sx, sy, sx2, sy2, dx, dy, angle, scale, dest, SoftMergeBlender());
+                    break;
+                case BlendPreserve:
+                    canvas->rotateScaleBlitRegion<SoftPreserveBlender>(sx, sy, sx2, sy2, dx, dy, angle, scale, dest, SoftPreserveBlender());
+                    break;
+                case BlendAdd:
+                    canvas->rotateScaleBlitRegion<SoftAddBlender>(sx, sy, sx2, sy2, dx, dy, angle, scale, dest, SoftAddBlender());
+                    break;
+                case BlendSubtract:
+                    canvas->rotateScaleBlitRegion<SoftSubtractBlender>(sx, sy, sx2, sy2, dx, dy, angle, scale, dest, SoftSubtractBlender());
+                    break;
+            }
+            return 0;
+        }
 
-			int gettrueWidth(lua_State* L)
-			{
-				Wrapper<Canvas>* canvas = PLUM_CHECK_DATA(L, 1, Canvas);
-				lua_pushnumber(L, canvas->data->width);
+        int gettrueWidth(lua_State* L)
+        {
+            auto canvas = script::ptr<Self>(L, 1);
+            script::push(L, canvas->width);
 
-				return 1;
-			}
+            return 1;
+        }
 
-			int gettrueHeight(lua_State* L)
-			{
-				Wrapper<Canvas>* canvas = PLUM_CHECK_DATA(L, 1, Canvas);
-				lua_pushnumber(L, canvas->data->height);
+        int gettrueHeight(lua_State* L)
+        {
+            auto canvas = script::ptr<Self>(L, 1);
+            script::push(L, canvas->height);
 
-				return 1;
-			}
+            return 1;
+        }
 
-			int getwidth(lua_State* L)
-			{
-				Wrapper<Canvas>* canvas = PLUM_CHECK_DATA(L, 1, Canvas);
-				lua_pushnumber(L, canvas->data->occupiedWidth);
+        int getwidth(lua_State* L)
+        {
+            auto canvas = script::ptr<Self>(L, 1);
+            script::push(L, canvas->occupiedWidth);
 
-				return 1;
-			}
+            return 1;
+        }
 
-			int getheight(lua_State* L)
-			{
-				Wrapper<Canvas>* canvas = PLUM_CHECK_DATA(L, 1, Canvas);
-				lua_pushnumber(L, canvas->data->occupiedHeight);
+        int getheight(lua_State* L)
+        {
+            auto canvas = script::ptr<Self>(L, 1);
+            script::push(L, canvas->occupiedHeight);
 
-				return 1;
-			}
+            return 1;
+        }
+    }
 
-			void openLibrary(lua_State* L)
-			{
-				luaL_newmetatable(L, libraryName);
-				// Duplicate the metatable on the stack.
-				lua_pushvalue(L, -1);
-				// metatable.__index = metatable
-				lua_setfield(L, -2, "__index");
+    namespace script
+    {
+        void initCanvasObject(lua_State* L)
+        {
+            luaL_newmetatable(L, meta<Self>());
+            // Duplicate the metatable on the stack.
+            lua_pushvalue(L, -1);
+            // metatable.__index = metatable
+            lua_setfield(L, -2, "__index");
 
-				// Put the members into the metatable.
-				PLUM_BIND_FUNC_BEGIN()
-				PLUM_BIND_META(gc)
-				PLUM_BIND_META(index)
-				PLUM_BIND_META(newindex)
-				PLUM_BIND_META(tostring)
-				PLUM_BIND_FUNC(restoreClipRegion)
-				PLUM_BIND_FUNC(setClipRegion)
-				PLUM_BIND_FUNC(getPixel)
-				PLUM_BIND_FUNC(setPixel)
-				PLUM_BIND_FUNC(clear)
-				PLUM_BIND_FUNC(flip)
-				PLUM_BIND_FUNC(replaceColor)
-				PLUM_BIND_FUNC(line)
-				PLUM_BIND_FUNC(rect)
-				PLUM_BIND_FUNC(solidRect)
-				PLUM_BIND_FUNC(circle)
-				PLUM_BIND_FUNC(solidCircle)
-				PLUM_BIND_FUNC(blit)
-				PLUM_BIND_FUNC(scaleBlit)
-				PLUM_BIND_FUNC(rotateBlit)
-				PLUM_BIND_FUNC(rotateScaleBlit)
-				PLUM_BIND_FUNC(blitRegion)
-				PLUM_BIND_FUNC(scaleBlitRegion)
-				PLUM_BIND_FUNC(rotateBlitRegion)
-				PLUM_BIND_FUNC(rotateScaleBlitRegion)
-				PLUM_BIND_FUNC(gettrueWidth)
-				PLUM_BIND_FUNC(gettrueHeight)
-				PLUM_BIND_FUNC(getwidth)
-				PLUM_BIND_FUNC(getheight)
-				PLUM_BIND_FUNC_END_NULL()
+            // Put the members into the metatable.
+            const luaL_Reg functions[] = {
+                {"__gc", gc},
+                {"__index", index},
+                {"__newindex", newindex},
+                {"__tostring", tostring},
+                {"restoreClipRegion", restoreClipRegion},
+                {"setClipRegion", setClipRegion},
+                {"getPixel", getPixel},
+                {"setPixel", setPixel},
+                {"clear", clear},
+                {"flip", flip},
+                {"replaceColor", replaceColor},
+                {"line", line},
+                {"rect", rect},
+                {"solidRect", solidRect},
+                {"circle", circle},
+                {"solidCircle", solidCircle},
+                {"blit", blit},
+                {"scaleBlit", scaleBlit},
+                {"rotateBlit", rotateBlit},
+                {"rotateScaleBlit", rotateScaleBlit},
+                {"blitRegion", blitRegion},
+                {"scaleBlitRegion", scaleBlitRegion},
+                {"rotateBlitRegion", rotateBlitRegion},
+                {"rotateScaleBlitRegion", rotateScaleBlitRegion},
+                {"gettrueWidth", gettrueWidth},
+                {"gettrueHeight", gettrueHeight},
+                {"getwidth", getwidth},
+                {"getheight", getheight},
+                {nullptr, nullptr}
+            };
+            luaL_register(L, nullptr, functions);
 
-				lua_pop(L, 1);
+            lua_pop(L, 1);
 
-				// Push plum namespace.
-				lua_getglobal(L, "plum");
+            // Push plum namespace.
+            lua_getglobal(L, "plum");
 
-				// plum[classname] = create
-				lua_pushstring(L, "Canvas");
-				lua_pushcfunction(L, create);
-				lua_settable(L, -3);
+            // plum[classname] = create
+            lua_pushstring(L, "Canvas");
+            lua_pushcfunction(L, create);
+            lua_settable(L, -3);
 
-				// Pop plum namespace.
-				lua_pop(L, 1);
+            // Pop plum namespace.
+            lua_pop(L, 1);
 
-			}
-		}
-	}
+        }
+    }
 }

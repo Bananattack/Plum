@@ -13,9 +13,9 @@
 #include <memory>
 
 #if defined(WIN32) || defined(_WIN32)
-#	define PLUM_WIN32
+#    define PLUM_WIN32
 #elif defined(__linux__)
-#	define PLUM_LINUX
+#    define PLUM_LINUX
 #endif
 
 #ifdef PLUM_WIN32
@@ -25,13 +25,13 @@
 #endif
 
 #ifdef PLUM_WIN32
-#	include <windows.h>
-#	include <delayimp.h>
-#	ifdef _DEBUG
-#		define CRTDBG_MAP_ALLOC
-#		include <stdlib.h>
-#		include <crtdbg.h>
-#	endif
+#    include <windows.h>
+#    include <delayimp.h>
+#    ifdef _DEBUG
+#        define CRTDBG_MAP_ALLOC
+#        include <stdlib.h>
+#        include <crtdbg.h>
+#    endif
 #endif
 
 // zlib's for compression stuff!
@@ -47,13 +47,13 @@
 
 extern "C"
 {
-	// Lua!
-	#include <lua/lua.h>
-	#include <lua/lualib.h>
-	#include <lua/lauxlib.h>
+    // Lua!
+    #include <lua/lua.h>
+    #include <lua/lualib.h>
+    #include <lua/lauxlib.h>
 
-	// zziplib's for zip files!
-	#include <zzip/lib.h>
+    // zziplib's for zip files!
+    #include <zzip/lib.h>
 }
 
 #include "common/common.h"
@@ -79,9 +79,7 @@ extern "C"
 
 #include "engine/input.h"
 #include "engine/timer.h"
-#include "engine/sprite.h" // REMOVEME later.
 #include "engine/font.h"
-#include "engine/tileset.h" // REMOVEME later.
 #include "engine/spritesheet.h"
 #include "engine/camera.h"
 #include "engine/tilemap.h"

@@ -1,31 +1,31 @@
 #pragma once
 
-namespace Plum
+namespace plum
 {
-	class Directory
-	{
-		private:
-			bool closed;
+    class Directory
+    {
+        private:
+            bool closed;
 
-			bool real;
-			ZZIP_DIR* dir;
-		public:
-			Directory(const char* filename);
-			~Directory();
+            bool real;
+            ZZIP_DIR* dir;
+        public:
+            Directory(const char* filename);
+            ~Directory();
 
-			bool close();
+            bool close();
 
-			bool isReal()
-			{
-				return real;
-			}
+            bool isReal()
+            {
+                return real;
+            }
 
-			bool active()
-			{
-				return !closed && dir != NULL;
-			}
+            bool active()
+            {
+                return !closed && dir != NULL;
+            }
 
-			bool read(std::string& value);
+            bool read(std::string& value);
 
-	};
+    };
 }

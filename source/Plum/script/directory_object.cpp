@@ -1,114 +1,116 @@
 #include "../plum.h"
 
 
-namespace Plum
+namespace plum
 {
-	namespace ScriptLibrary
-	{
-		namespace DirectoryObject
-		{
-			SCRIPT_OBJ_GETTER(index, Wrapper<Directory>*, libraryName)
-			SCRIPT_OBJ_SETTER(newindex, Wrapper<Directory>*, libraryName)
+    namespace script
+    {
+        template<> const char* meta<Directory>()
+        {
+            return "plum.Directory";
+        }
+    }
 
-			int create(lua_State* L)
-			{
-				const char* filename = lua_tostring(L, 1);
+    namespace
+    {
+        typedef Directory Self;
+        int create(lua_State* L)
+        {
+            auto filename = script::get<const char*>(L, 1);
+            auto dir = new Directory(filename);
+            // Failure.
+            if(!dir->active())
+            {    
+                delete dir;
+                return 0;
+            }
+            script::push(L, dir, LUA_NOREF);
+            return 1;
+        }
 
-				Directory* dir = new Directory(filename);
-				// Failure.
-				if(!dir->active())
-				{	
-					delete dir;
-					return 0;
-				}
+        int gc(lua_State* L)
+        {
+            return script::wrapped<Self>(L, 1)->gc(L);
+        }
 
-				PLUM_PUSH_DATA(L, Directory, dir, LUA_NOREF);
-				return 1;
-			}
+        int index(lua_State* L)
+        {
+            return script::wrapped<Self>(L, 1)->index(L);
+        }
 
-			int gc(lua_State* L)
-			{
-				Wrapper<Directory>* dir = PLUM_CHECK_DATA(L, 1, Directory);
+        int newindex(lua_State* L)
+        {
+            return script::wrapped<Self>(L, 1)->newindex(L);
+        }
 
-				// Only delete if it doesn't belong to a parent of some sort.
-				if(dir->parentRef == LUA_NOREF)
-				{
-					delete dir->data;
-				}
-				else
-				{
-					luaL_unref(L, LUA_REGISTRYINDEX, dir->parentRef);
-				}
+        int tostring(lua_State* L)
+        {
+            return script::wrapped<Self>(L, 1)->tostring(L);
+        }
 
-				return 0;
-			}
+        int close(lua_State* L)
+        {
+            auto dir = script::ptr<Directory>(L, 1);
+            dir->close();
+            return 0;
+        }
 
-			int close(lua_State* L)
-			{
-				Wrapper<Directory>* dir = PLUM_CHECK_DATA(L, 1, Directory);
-				dir->data->close();
-				return 0;
-			}
+        int getreal(lua_State* L)
+        {
+            auto dir = script::ptr<Directory>(L, 1);
+            script::push(L, dir->isReal());
+            return 1;
+        }
 
-			int tostring(lua_State* L)
-			{
-				PLUM_CHECK_DATA(L, 1, Directory);
-				lua_pushstring(L, "(plum.Directory object)");
-				return 1;
-			}
+        int next(lua_State* L)
+        {
+            auto dir = script::ptr<Directory>(L, 1);
 
-			int getreal(lua_State* L)
-			{
-				Wrapper<Directory>* dir = PLUM_CHECK_DATA(L, 1, Directory);
-				lua_pushboolean(L, dir->data->isReal());
-				return 1;
-			}
+            std::string value;
+            if(dir->read(value))
+            {
+                script::push(L, value.c_str());
+                return 1;
+            }
+            return 0;
+        }
+    }
 
-			int next(lua_State* L)
-			{
-				Wrapper<Directory>* dir = PLUM_CHECK_DATA(L, 1, Directory);
+    namespace script
+    {
+        void initDirectoryObject(lua_State* L)
+        {
+            luaL_newmetatable(L, meta<Directory>());
+            // Duplicate the metatable on the stack.
+            lua_pushvalue(L, -1);
+            // metatable.__index = metatable
+            lua_setfield(L, -2, "__index");
 
-				std::string value;
-				if(dir->data->read(value))
-				{
-					lua_pushstring(L, value.c_str());
-					return 1;
-				}
-				return 0;
-			}
+            // Put the members into the metatable.
+            const luaL_Reg functions[] = {
+                {"__gc", gc},
+                {"__index", index},
+                {"__newindex", newindex},
+                {"__tostring", tostring},
+                {"close", close},
+                {"next", next},
+                {"getreal", getreal},
+                {nullptr, nullptr},
+            };
+            luaL_register(L, nullptr, functions);
 
-			void openLibrary(lua_State* L)
-			{
-				luaL_newmetatable(L, libraryName);
-				// Duplicate the metatable on the stack.
-				lua_pushvalue(L, -1);
-				// metatable.__index = metatable
-				lua_setfield(L, -2, "__index");
+            lua_pop(L, 1);
+                
+            // Push plum namespace.
+            lua_getglobal(L, "plum");
 
-				// Put the members into the metatable.
-				PLUM_BIND_FUNC_BEGIN()
-				PLUM_BIND_META(gc)
-				PLUM_BIND_META(index)
-				PLUM_BIND_META(newindex)
-				PLUM_BIND_META(tostring)
-				PLUM_BIND_FUNC(close)
-				PLUM_BIND_FUNC(next)
-				PLUM_BIND_FUNC(getreal)
-				PLUM_BIND_FUNC_END_NULL()
+            // plum[classname] = <function create>
+            lua_pushstring(L, "Directory");
+            lua_pushcfunction(L, create);
+            lua_settable(L, -3);
 
-				lua_pop(L, 1);
-				
-				// Push plum namespace.
-				lua_getglobal(L, "plum");
-
-				// plum[classname] = <function create>
-				lua_pushstring(L, "Directory");
-				lua_pushcfunction(L, create);
-				lua_settable(L, -3);
-
-				// Pop plum namespace.
-				lua_pop(L, 1);
-			}
-		}
-	}
+            // Pop plum namespace.
+            lua_pop(L, 1);
+        }
+    }
 }

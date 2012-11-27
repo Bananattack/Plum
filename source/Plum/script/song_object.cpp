@@ -1,162 +1,169 @@
 #include "../plum.h"
 
-namespace Plum
+namespace plum
 {
-	static Song** checkValidSongObject(lua_State* L, int index)
-	{
-		return (Song**) luaL_checkudata(L, index, "plum_song");
-	}
+    namespace script
+    {
+        template<> const char* meta<Song>()
+        {
+            return "plum.Song";
+        }
+    }
 
-	static int songNew(lua_State* L)
-	{
-		const char* filename = lua_tostring(L, 1);
+    namespace
+    {
+        typedef Song Self;
 
-		Song** s = (Song**) lua_newuserdata(L, sizeof(Song*));
-		luaL_getmetatable(L, "plum_song");
-		lua_setmetatable(L, -2);
+        int create(lua_State* L)
+        {
+            auto filename = script::get<const char*>(L, 1);
+            script::push(L, script::instance(L).engine().audio.loadSong(filename), LUA_NOREF);
+            return 1;
+        }
 
-		*s = Script::getInstance(L)->engine->audio.loadSong(filename);
-		return 1;
-	}
+        int gc(lua_State* L)
+        {
+            return script::wrapped<Self>(L, 1)->gc(L);
+        }
 
-	static int songGC(lua_State* L)
-	{
-		Song** s = checkValidSongObject(L, 1);
-		if(*s)
-		{
-			delete *s;
-		}
+        int index(lua_State* L)
+        {
+            return script::wrapped<Self>(L, 1)->index(L);
+        }
 
-		return 0;
-	}
+        int newindex(lua_State* L)
+        {
+            return script::wrapped<Self>(L, 1)->newindex(L);
+        }
 
-	SCRIPT_OBJ_GETTER(songGetField, Song**, "plum_song")
-	SCRIPT_OBJ_SETTER(songSetField, Song**, "plum_song")
+        int tostring(lua_State* L)
+        {
+            return script::wrapped<Self>(L, 1)->tostring(L);
+        }
 
-	static int songToString(lua_State* L)
-	{
-		checkValidSongObject(L, 1);
-		lua_pushstring(L, "(plum.Song object)");
-		return 1;
-	}
+        int play(lua_State* L)
+        {
+            auto s = script::ptr<Song>(L, 1);
+            if(!s)
+            {
+                return 0;
+            }
 
-	static int songPlay(lua_State* L)
-	{
-		Song** s = checkValidSongObject(L, 1);
-		if(!*s)
-		{
-			return 0;
-		}
+            int volume = luaL_optint(L, 2, 100);
+            script::instance(L).engine().audio.playSong(s);
+            return 0;
+        }
 
-		int volume = luaL_optint(L, 2, 100);
-		Script::getInstance(L)->engine->audio.playSong(*s);
-		return 0;
-	}
+        int stop(lua_State* L)
+        {
+            auto s = script::ptr<Song>(L, 1);
+            if(!s)
+            {
+                return 0;
+            }
 
-	static int songStop(lua_State* L)
-	{
-		Song** s = checkValidSongObject(L, 1);
-		if(!*s)
-		{
-			return 0;
-		}
-		(*s)->stop();
-		return 0;
-	}
+            s->stop();
+            return 0;
+        }
 
-	static int songIsPlaying(lua_State* L)
-	{
-		Song** s = checkValidSongObject(L, 1);
-		if(!*s)
-		{
-			lua_pushboolean(L, false);
-			return 1;
-		}
+        int getplaying(lua_State* L)
+        {
+            auto s = script::ptr<Song>(L, 1);
+            if(!s)
+            {
+                script::push(L, false);
+                return 1;
+            }
 
-		lua_pushboolean(L, (*s)->isPlaying());
-		return 1;
-	}
+            script::push(L, s->isPlaying());
+            return 1;
+        }
 
-	static int songSetPlaying(lua_State* L)
-	{
-		Song** s = checkValidSongObject(L, 1);
-		if(!*s)
-		{
-			return 0;
-		}
+        int setplaying(lua_State* L)
+        {
+            auto s = script::ptr<Song>(L, 1);
+            if(!s)
+            {
+                return 0;
+            }
 
-		bool playing = lua_toboolean(L, 2) != 0;
-		if(!playing && (*s)->isPlaying())
-		{
-			(*s)->stop();
-		}
-		else if(playing && !(*s)->isPlaying())
-		{
-			Script::getInstance(L)->engine->audio.playSong(*s);
-		}
-		return 0;
-	}
+            auto playing = script::get<bool>(L, 2);
+            if(!playing && s->isPlaying())
+            {
+                s->stop();
+            }
+            else if(playing && !s->isPlaying())
+            {
+                script::instance(L).engine().audio.playSong(s);
+            }
 
-	static int songGetVolume(lua_State* L)
-	{
-		Song** s = checkValidSongObject(L, 1);
-		if(!*s)
-		{
-			lua_pushnumber(L, 0);
-			return 1;
-		}
+            return 0;
+        }
 
-		lua_pushnumber(L, (*s)->getVolume());
-		return 1;
-	}
+        int getvolume(lua_State* L)
+        {
+            auto s = script::ptr<Song>(L, 1);
+            if(!s)
+            {
+                script::push(L, 0);
+                return 1;
+            }
 
-	static int songSetVolume(lua_State* L)
-	{
-		Song** s = checkValidSongObject(L, 1);
-		if(!*s)
-		{
-			return 0;
-		}
+            script::push(L, s->getVolume());
+            return 1;
+        }
 
-		double value = luaL_checknumber(L, 2);
-		(*s)->setVolume(value);
-		return 0;
-	}
+        int setvolume(lua_State* L)
+        {
+            auto s = script::ptr<Song>(L, 1);
+            if(!s)
+            {
+                return 0;
+            }
 
-	static const luaL_Reg songMembers[] = {
-		{ "__index", songGetField },
-		{ "__newindex",	songSetField },
-		{ "__tostring",	songToString },
-		{ "__gc", songGC },
-		{ "play", songPlay },
-		{ "stop", songStop },
-		{ "getplaying", songIsPlaying },
-		{ "setplaying", songSetPlaying },
-		{ "getvolume", songGetVolume },
-		{ "setvolume", songSetVolume },
-		{ NULL, NULL }
-	};
+            auto value = script::get<double>(L, 2);
+            s->setVolume(value);
+            return 0;
+        }
+    }
 
-	void Script::initSongClass(lua_State* L)
-	{
-		luaL_newmetatable(L, "plum_song");
-		// Duplicate the metatable on the stack.
-		lua_pushvalue(L, -1);
-		// metatable.__index = metatable
-		lua_setfield(L, -2, "__index");
-		// Put the members into the metatable.
-		luaL_register(L, NULL, songMembers);
-		lua_pop(L, 1);
+    namespace script
+    {
+        void initSongObject(lua_State* L)
+        {
+            luaL_newmetatable(L, meta<Song>());
+            // Duplicate the metatable on the stack.
+            lua_pushvalue(L, -1);
+            // metatable.__index = metatable
+            lua_setfield(L, -2, "__index");
 
-		// Push plum namespace.
-		lua_getglobal(L, "plum");
+            // Put the members into the metatable.
+            const luaL_Reg functions[] = {
+                {"__index", index},
+                {"__newindex", newindex},
+                {"__tostring", tostring},
+                {"__gc", gc},
+                {"play", play},
+                {"stop", stop},
+                {"getplaying", getplaying},
+                {"setplaying", setplaying},
+                {"getvolume", getvolume},
+                {"setvolume", setvolume},
+                {nullptr, nullptr}
+            };
+            luaL_register(L, nullptr, functions);
+            lua_pop(L, 1);
 
-		// plum.song = <function songNew>
-		lua_pushstring(L, "Song");
-		lua_pushcfunction(L, songNew);
-		lua_settable(L, -3);
+            // Push plum namespace.
+            lua_getglobal(L, "plum");
 
-		// Pop plum namespace.
-		lua_pop(L, 1);
-	}
+            // plum.song = <function songNew>
+            lua_pushstring(L, "Song");
+            lua_pushcfunction(L, create);
+            lua_settable(L, -3);
+
+            // Pop plum namespace.
+            lua_pop(L, 1);
+        }
+    }
 }

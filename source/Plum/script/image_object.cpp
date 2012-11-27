@@ -1,294 +1,297 @@
 #include "../plum.h"
 
-namespace Plum
+namespace plum
 {
-	namespace ScriptLibrary
-	{
-		namespace ImageObject
-		{
-			SCRIPT_OBJ_GETTER(index, Wrapper<Image>*, libraryName)
-			SCRIPT_OBJ_SETTER(newindex, Wrapper<Image>*, libraryName)
+    namespace script
+    {
+        template<> const char* meta<Image>()
+        {
+            return "plum.Image";
+        }
+    }
 
-			int create(lua_State* L)
-			{
-				if(lua_isstring(L, 1))
-				{
-					const char* filename = lua_tostring(L, 1);
+    namespace
+    {
+        typedef Image Self;
+        int create(lua_State* L)
+        {
+            if(lua_isstring(L, 1))
+            {
+                auto filename = script::get<const char*>(L, 1);
+                script::push(L, new Image(filename), LUA_NOREF);
 
-					PLUM_PUSH_DATA(L, Image, new Image(filename), LUA_NOREF);
+                return 1;
+            }
+            else if(script::is<Canvas>(L, 1))
+            {
+                auto canvas = script::ptr<Canvas>(L, 1);
+                script::push(L, new Image(canvas), LUA_NOREF);
 
-					return 1;
-				}
-				else if(PLUM_IS_DATA(L, 1, Canvas))
-				{
-					Wrapper<Canvas>* canvas = PLUM_CHECK_DATA(L, 1, Canvas);
-					PLUM_PUSH_DATA(L, Image, new Image(canvas->data), LUA_NOREF);
+                return 1;
+            }
+            luaL_error(L, "Attempt to call plum.Image constructor with invalid argument types.\r\nMust be (string filename) or (plum.Canvas canvas).");
+            return 0;
+        }
 
-					return 1;
-				}
-				luaL_error(L, "Attempt to call plum.Image constructor with invalid argument types.\r\nMust be (string filename) or (plum.Canvas canvas).");
-				return 0;
-			}
+        int gc(lua_State* L)
+        {
+            return script::wrapped<Self>(L, 1)->gc(L);
+        }
 
-			int gc(lua_State* L)
-			{
-				Wrapper<Image>* t = PLUM_CHECK_DATA(L, 1, Image);
+        int index(lua_State* L)
+        {
+            return script::wrapped<Self>(L, 1)->index(L);
+        }
 
-				// Only delete if it doesn't belong to a parent of some sort.
-				if(t->parentRef == LUA_NOREF)
-				{
-					delete t->data;
-				}
-				else
-				{
-					luaL_unref(L, LUA_REGISTRYINDEX, t->parentRef);
-				}
+        int newindex(lua_State* L)
+        {
+            return script::wrapped<Self>(L, 1)->newindex(L);
+        }
 
-				return 0;
-			}
+        int tostring(lua_State* L)
+        {
+            return script::wrapped<Self>(L, 1)->tostring(L);
+        }
 
-			int tostring(lua_State* L)
-			{
-				PLUM_CHECK_DATA(L, 1, Image);
-				lua_pushstring(L, "(plum.Image object)");
-				return 1;
-			}
+        int blit(lua_State* L)
+        {
+            auto img = script::ptr<Self>(L, 1);
+            auto x = script::get<int>(L, 2);
+            auto y = script::get<int>(L, 3);
+            BlendMode mode = (BlendMode) luaL_optint(L, 4, BlendUnspecified);
+            Color tint = luaL_optint(L, 5, Color::White);
 
-			int blit(lua_State* L)
-			{
-				Wrapper<Image>* img = PLUM_CHECK_DATA(L, 1, Image);
-				int x = luaL_checkint(L, 2);
-				int y = luaL_checkint(L, 3);
-				BlendMode mode = (BlendMode) luaL_optint(L, 4, BlendUnspecified);
-				Color tint = luaL_optint(L, 5, Color::White);
+            img->blit(x, y, mode, tint);
 
-				img->data->blit(x, y, mode, tint);
+            return 0;
+        }
 
-				return 0;
-			}
+        int draw(lua_State* L)
+        {
+            auto img = script::ptr<Self>(L, 1);
+            auto transform = script::ptr<Transform>(L, 2);
 
-			int draw(lua_State* L)
-			{
-				Wrapper<Image>* img = PLUM_CHECK_DATA(L, 1, Image);
-				Wrapper<Transform>* transform = PLUM_CHECK_DATA(L, 2, Transform);
+            img->transformBlit(transform);
 
-				img->data->transformBlit(transform->data);
+            return 0;
+        }
 
-				return 0;
-			}
+        int blitRegion(lua_State* L)
+        {
+            auto img = script::ptr<Self>(L, 1);
+            auto sx = script::get<int>(L, 2);
+            auto sy = script::get<int>(L, 3);
+            auto sx2 = script::get<int>(L, 4);
+            auto sy2 = script::get<int>(L, 5);
+            auto dx = script::get<int>(L, 6);
+            auto dy = script::get<int>(L, 7);
+            BlendMode mode = (BlendMode) luaL_optint(L, 8, BlendUnspecified);
+            Color tint = luaL_optint(L, 9, Color::White);
 
-			int blitRegion(lua_State* L)
-			{
-				Wrapper<Image>* t = PLUM_CHECK_DATA(L, 1, Image);
-				int sx = luaL_checkint(L, 2);
-				int sy = luaL_checkint(L, 3);
-				int sx2 = luaL_checkint(L, 4);
-				int sy2 = luaL_checkint(L, 5);
-				int dx = luaL_checkint(L, 6);
-				int dy = luaL_checkint(L, 7);
-				BlendMode mode = (BlendMode) luaL_optint(L, 8, BlendUnspecified);
-				Color tint = luaL_optint(L, 9, Color::White);
+            img->blitRegion(sx, sy, sx2, sy2, dx, dy, mode, tint);
 
-				t->data->blitRegion(sx, sy, sx2, sy2, dx, dy, mode, tint);
+            return 0;
+        }
 
-				return 0;
-			}
+        int scaleBlit(lua_State* L)
+        {
+            auto img = script::ptr<Self>(L, 1);
+            auto x = script::get<int>(L, 2);
+            auto y = script::get<int>(L, 3);
+            auto width = script::get<int>(L, 4);
+            auto height = script::get<int>(L, 5);
+            BlendMode mode = (BlendMode) luaL_optint(L, 6, BlendUnspecified);
+            Color tint = luaL_optint(L, 7, Color::White);
 
-			int scaleBlit(lua_State* L)
-			{
-				Wrapper<Image>* t = PLUM_CHECK_DATA(L, 1, Image);
-				int x = luaL_checkint(L, 2);
-				int y = luaL_checkint(L, 3);
-				int width = luaL_checkint(L, 4);
-				int height = luaL_checkint(L, 5);
-				BlendMode mode = (BlendMode) luaL_optint(L, 6, BlendUnspecified);
-				Color tint = luaL_optint(L, 7, Color::White);
+            img->scaleBlit(x, y, width, height, mode, tint);
 
-				t->data->scaleBlit(x, y, width, height, mode, tint);
+            return 0;
+        }
 
-				return 0;
-			}
+        int scaleBlitRegion(lua_State* L)
+        {
+            auto img = script::ptr<Self>(L, 1);
+            auto sx = script::get<int>(L, 2);
+            auto sy = script::get<int>(L, 3);
+            auto sx2 = script::get<int>(L, 4);
+            auto sy2 = script::get<int>(L, 5);
+            auto dx = script::get<int>(L, 6);
+            auto dy = script::get<int>(L, 7);
+            auto scaledWidth = script::get<int>(L, 8);
+            auto scaledHeight = script::get<int>(L, 9);
+            BlendMode mode = (BlendMode) luaL_optint(L, 10, BlendUnspecified);
+            Color tint = luaL_optint(L, 11, Color::White);
 
-			int scaleBlitRegion(lua_State* L)
-			{
-				Wrapper<Image>* t = PLUM_CHECK_DATA(L, 1, Image);
-				int sx = luaL_checkint(L, 2);
-				int sy = luaL_checkint(L, 3);
-				int sx2 = luaL_checkint(L, 4);
-				int sy2 = luaL_checkint(L, 5);
-				int dx = luaL_checkint(L, 6);
-				int dy = luaL_checkint(L, 7);
-				int scaledWidth = luaL_checkint(L, 8);
-				int scaledHeight = luaL_checkint(L, 9);
-				BlendMode mode = (BlendMode) luaL_optint(L, 10, BlendUnspecified);
-				Color tint = luaL_optint(L, 11, Color::White);
+            img->scaleBlitRegion(sx, sy, sx2, sy2, dx, dy, scaledWidth, scaledHeight, mode, tint);
 
-				t->data->scaleBlitRegion(sx, sy, sx2, sy2, dx, dy, scaledWidth, scaledHeight, mode, tint);
+            return 0;
+        }
 
-				return 0;
-			}
+        int rotateBlit(lua_State* L)
+        {
+            auto img = script::ptr<Self>(L, 1);
+            auto x = script::get<int>(L, 2);
+            auto y = script::get<int>(L, 3);
+            auto angle = script::get<double>(L, 4);
+            BlendMode mode = (BlendMode) luaL_optint(L, 5, BlendUnspecified);
+            Color tint = luaL_optint(L, 6, Color::White);
 
-			int rotateBlit(lua_State* L)
-			{
-				Wrapper<Image>* t = PLUM_CHECK_DATA(L, 1, Image);
-				int x = luaL_checkint(L, 2);
-				int y = luaL_checkint(L, 3);
-				double angle = luaL_checknumber(L, 4);
-				BlendMode mode = (BlendMode) luaL_optint(L, 5, BlendUnspecified);
-				Color tint = luaL_optint(L, 6, Color::White);
+            img->rotateBlit(x, y, angle, mode, tint);
 
-				t->data->rotateBlit(x, y, angle, mode, tint);
+            return 0;
+        }
 
-				return 0;
-			}
+        int rotateBlitRegion(lua_State* L)
+        {
+            auto img = script::ptr<Self>(L, 1);
+            auto sx = script::get<int>(L, 2);
+            auto sy = script::get<int>(L, 3);
+            auto sx2 = script::get<int>(L, 4);
+            auto sy2 = script::get<int>(L, 5);
+            auto dx = script::get<int>(L, 6);
+            auto dy = script::get<int>(L, 7);
+            auto angle = script::get<double>(L, 8);
+            BlendMode mode = (BlendMode) luaL_optint(L, 9, BlendUnspecified);
+            Color tint = luaL_optint(L, 10, Color::White);
 
-			int rotateBlitRegion(lua_State* L)
-			{
-				Wrapper<Image>* t = PLUM_CHECK_DATA(L, 1, Image);
-				int sx = luaL_checkint(L, 2);
-				int sy = luaL_checkint(L, 3);
-				int sx2 = luaL_checkint(L, 4);
-				int sy2 = luaL_checkint(L, 5);
-				int dx = luaL_checkint(L, 6);
-				int dy = luaL_checkint(L, 7);
-				double angle = luaL_checknumber(L, 8);
-				BlendMode mode = (BlendMode) luaL_optint(L, 9, BlendUnspecified);
-				Color tint = luaL_optint(L, 10, Color::White);
+            img->rotateBlitRegion(sx, sy, sx2, sy2, dx, dy, angle, mode, tint);
+            return 0;
+        }
 
-				t->data->rotateBlitRegion(sx, sy, sx2, sy2, dx, dy, angle, mode, tint);
-				return 0;
-			}
+        int rotateScaleBlit(lua_State* L)
+        {
+            auto img = script::ptr<Self>(L, 1);
+            auto x = script::get<int>(L, 2);
+            auto y = script::get<int>(L, 3);
+            auto angle = script::get<double>(L, 4);
+            auto scale = script::get<double>(L, 5);
+            BlendMode mode = (BlendMode) luaL_optint(L, 6, BlendUnspecified);
+            Color tint = luaL_optint(L, 7, Color::White);
 
-			int rotateScaleBlit(lua_State* L)
-			{
-				Wrapper<Image>* t = PLUM_CHECK_DATA(L, 1, Image);
-				int x = luaL_checkint(L, 2);
-				int y = luaL_checkint(L, 3);
-				double angle = luaL_checknumber(L, 4);
-				double scale = luaL_checknumber(L, 5);
-				BlendMode mode = (BlendMode) luaL_optint(L, 6, BlendUnspecified);
-				Color tint = luaL_optint(L, 7, Color::White);
+            img->rotateScaleBlit(x, y, angle, scale, mode, tint);
 
-				t->data->rotateScaleBlit(x, y, angle, scale, mode, tint);
+            return 0;
+        }
 
-				return 0;
-			}
+        int rotateScaleBlitRegion(lua_State* L)
+        {
+            auto img = script::ptr<Self>(L, 1);
+            auto sx = script::get<int>(L, 2);
+            auto sy = script::get<int>(L, 3);
+            auto sx2 = script::get<int>(L, 4);
+            auto sy2 = script::get<int>(L, 5);
+            auto dx = script::get<int>(L, 6);
+            auto dy = script::get<int>(L, 7);
+            auto angle = script::get<double>(L, 8);
+            auto scale = script::get<double>(L, 9);
+            BlendMode mode = (BlendMode) luaL_optint(L, 10, BlendUnspecified);
+            Color tint = luaL_optint(L, 11, Color::White);
 
-			int rotateScaleBlitRegion(lua_State* L)
-			{
-				Wrapper<Image>* t = PLUM_CHECK_DATA(L, 1, Image);
-				int sx = luaL_checkint(L, 2);
-				int sy = luaL_checkint(L, 3);
-				int sx2 = luaL_checkint(L, 4);
-				int sy2 = luaL_checkint(L, 5);
-				int dx = luaL_checkint(L, 6);
-				int dy = luaL_checkint(L, 7);
-				double angle = luaL_checknumber(L, 8);
-				double scale = luaL_checknumber(L, 9);
-				BlendMode mode = (BlendMode) luaL_optint(L, 10, BlendUnspecified);
-				Color tint = luaL_optint(L, 11, Color::White);
+            img->rotateScaleBlitRegion(sx, sy, sx2, sy2, dx, dy, angle, scale, mode, tint);
+            return 0;
+        }
 
-				t->data->rotateScaleBlitRegion(sx, sy, sx2, sy2, dx, dy, angle, scale, mode, tint);
-				return 0;
-			}
+        int refresh(lua_State* L)
+        {
+            auto img = script::ptr<Self>(L, 1);
+            img->refresh();
 
-			int refresh(lua_State* L)
-			{
-				Wrapper<Image>* t = PLUM_CHECK_DATA(L, 1, Image);
-				t->data->refresh();
+            return 1;
+        }
 
-				return 1;
-			}
+        int getwidth(lua_State* L)
+        {
+            auto img = script::ptr<Self>(L, 1);
+            script::push(L, img->getCanvasWidth());
 
-			int getwidth(lua_State* L)
-			{
-				Wrapper<Image>* t = PLUM_CHECK_DATA(L, 1, Image);
-				lua_pushnumber(L, t->data->getCanvasWidth());
+            return 1;
+        }
 
-				return 1;
-			}
+        int getheight(lua_State* L)
+        {
+            auto img = script::ptr<Self>(L, 1);
+            script::push(L, img->getCanvasHeight());
 
-			int getheight(lua_State* L)
-			{
-				Wrapper<Image>* t = PLUM_CHECK_DATA(L, 1, Image);
-				lua_pushnumber(L, t->data->getCanvasHeight());
+            return 1;
+        }
 
-				return 1;
-			}
+        int gettrueWidth(lua_State* L)
+        {
+            auto img = script::ptr<Self>(L, 1);
+            script::push(L, img->getTextureWidth());
 
-			int gettrueWidth(lua_State* L)
-			{
-				Wrapper<Image>* t = PLUM_CHECK_DATA(L, 1, Image);
-				lua_pushnumber(L, t->data->getTextureWidth());
+            return 1;
+        }
 
-				return 1;
-			}
+        int gettrueHeight(lua_State* L)
+        {
+            auto img = script::ptr<Self>(L, 1);
+            script::push(L, img->getTextureHeight());
 
-			int gettrueHeight(lua_State* L)
-			{
-				Wrapper<Image>* t = PLUM_CHECK_DATA(L, 1, Image);
-				lua_pushnumber(L, t->data->getTextureHeight());
+            return 1;
+        }
 
-				return 1;
-			}
+        int getcanvas(lua_State* L)
+        {
+            auto img = script::ptr<Self>(L, 1); 
 
-			int getcanvas(lua_State* L)
-			{
-				Wrapper<Image>* t = PLUM_CHECK_DATA(L, 1, Image); 
+            // Push reference to this, so the image stays around
+            // as long as it's required for the child.
+            lua_pushvalue(L, 1);
+            int ref = luaL_ref(L, LUA_REGISTRYINDEX);
 
-				// Push reference to this, so the image stays around
-				// as long as it's required for the child.
-				lua_pushvalue(L, 1);
-				int ref = luaL_ref(L, LUA_REGISTRYINDEX);
+            script::push(L, img->getCanvas(), ref);
+            return 1;
+        }
+    }
 
-				PLUM_PUSH_DATA(L, Canvas, t->data->getCanvas(), ref);
-				return 1;
-			}
+    namespace script
+    {
+        void initImageObject(lua_State* L)
+        {
+            luaL_newmetatable(L, meta<Self>());
+            // Duplicate the metatable on the stack.
+            lua_pushvalue(L, -1);
+            // metatable.__index = metatable
+            lua_setfield(L, -2, "__index");
 
-			void openLibrary(lua_State* L)
-			{
-				luaL_newmetatable(L, libraryName);
-				// Duplicate the metatable on the stack.
-				lua_pushvalue(L, -1);
-				// metatable.__index = metatable
-				lua_setfield(L, -2, "__index");
+            // Put the members into the metatable.
+            const luaL_Reg functions[] = {
+                {"__gc", gc},
+                {"__index", index},
+                {"__newindex", newindex},
+                {"__tostring", tostring},
+                {"blit", blit},
+                {"draw", draw},
+                {"blitRegion", blitRegion},
+                {"scaleBlit", scaleBlit},
+                {"scaleBlitRegion", scaleBlitRegion},
+                {"rotateBlit", rotateBlit},
+                {"rotateBlitRegion", rotateBlitRegion},
+                {"rotateScaleBlit", rotateScaleBlit},
+                {"rotateScaleBlitRegion", rotateScaleBlitRegion},
+                {"refresh", refresh},
+                {"getwidth", getwidth},
+                {"getheight", getheight},
+                {"getcanvas", getcanvas},
+                {"gettrueWidth", gettrueWidth},
+                {"gettrueHeight", gettrueHeight},
+                {nullptr, nullptr}
+            };
+            luaL_register(L, nullptr, functions);
 
-				// Put the members into the metatable.
-				PLUM_BIND_FUNC_BEGIN()
-				PLUM_BIND_META(gc)
-				PLUM_BIND_META(index)
-				PLUM_BIND_META(newindex)
-				PLUM_BIND_META(tostring)
-				PLUM_BIND_FUNC(blit)
-				PLUM_BIND_FUNC(draw)
-				PLUM_BIND_FUNC(blitRegion)
-				PLUM_BIND_FUNC(scaleBlit)
-				PLUM_BIND_FUNC(scaleBlitRegion)
-				PLUM_BIND_FUNC(rotateBlit)
-				PLUM_BIND_FUNC(rotateBlitRegion)
-				PLUM_BIND_FUNC(rotateScaleBlit)
-				PLUM_BIND_FUNC(rotateScaleBlitRegion)
-				PLUM_BIND_FUNC(refresh)
-				PLUM_BIND_FUNC(getwidth)
-				PLUM_BIND_FUNC(getheight)
-				PLUM_BIND_FUNC(getcanvas)
-				PLUM_BIND_FUNC(gettrueWidth)
-				PLUM_BIND_FUNC(gettrueHeight)
-				PLUM_BIND_FUNC_END_NULL()
+            lua_pop(L, 1);
+                
+            // Push plum namespace.
+            lua_getglobal(L, "plum");
 
-				lua_pop(L, 1);
-				
-				// Push plum namespace.
-				lua_getglobal(L, "plum");
+            // plum.Image = <function create>
+            lua_pushstring(L, "Image");
+            lua_pushcfunction(L, create);
+            lua_settable(L, -3);
 
-				// plum.Image = <function create>
-				lua_pushstring(L, "Image");
-				lua_pushcfunction(L, create);
-				lua_settable(L, -3);
-
-				// Pop plum namespace.
-				lua_pop(L, 1);
-			}
-		}
-	}
+            // Pop plum namespace.
+            lua_pop(L, 1);
+        }
+    }
 }

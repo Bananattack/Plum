@@ -1,10 +1,10 @@
 #include "../plum.h"
 
-namespace Plum
+namespace plum
 {
-	// This stuff was shamelessly adapted from ika.
+    // This stuff was shamelessly adapted from ika.
 
-	int Compression::compressData(const u8* src, int srclen, u8* dest, int destlen)
+    int Compression::compressData(const uint8_t* src, int srclen, uint8_t* dest, int destlen)
     {
         z_stream stream;
 
@@ -25,7 +25,7 @@ namespace Plum
         // TODO: error returns
     }
 
-    void Compression::decompressData(const u8* src, int srclen, u8* dest, int destlen)
+    void Compression::decompressData(const uint8_t* src, int srclen, uint8_t* dest, int destlen)
     {
         z_stream stream;
 

@@ -122,10 +122,8 @@
     <ClCompile Include="script\script.cpp" />
     <ClCompile Include="script\song_object.cpp" />
     <ClCompile Include="script\sound_object.cpp" />
-    <ClCompile Include="script\sprite_object.cpp" />
     <ClCompile Include="script\spritesheet_object.cpp" />
     <ClCompile Include="script\tilemap_object.cpp" />
-    <ClCompile Include="script\tileset_object.cpp" />
     <ClCompile Include="script\timer_object.cpp" />
     <ClCompile Include="script\transform_object.cpp" />
     <ClCompile Include="script\video_object.cpp" />
@@ -141,8 +139,6 @@
     <ClCompile Include="engine\engine.cpp" />
     <ClCompile Include="engine\font.cpp" />
     <ClCompile Include="engine\input.cpp" />
-    <ClCompile Include="engine\sprite.cpp" />
-    <ClCompile Include="engine\tileset.cpp" />
     <ClCompile Include="engine\timer.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -172,10 +168,8 @@
     <ClInclude Include="engine\input.h" />
     <ClInclude Include="engine\keyboard.h" />
     <ClInclude Include="engine\mouse.h" />
-    <ClInclude Include="engine\sprite.h" />
     <ClInclude Include="engine\spritesheet.h" />
     <ClInclude Include="engine\tilemap.h" />
-    <ClInclude Include="engine\tileset.h" />
     <ClInclude Include="engine\timer.h" />
   </ItemGroup>
   <ItemGroup>

@@ -13,12 +13,12 @@
 
 #include <string>
 
-namespace Plum
+namespace plum
 {
-	class Base64
-	{
-	public:
-		static std::string encode(const std::string& data);
-		static std::string decode(const std::string& data);
-	};
+    class Base64
+    {
+    public:
+        static std::string encode(const std::string& data);
+        static std::string decode(const std::string& data);
+    };
 }

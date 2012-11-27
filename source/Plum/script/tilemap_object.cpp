@@ -1,224 +1,210 @@
 #include "../plum.h"
 
 
-namespace Plum
+namespace plum
 {
-	namespace ScriptLibrary
-	{
-		namespace TilemapObject
-		{
-			const int TILEMAP_SPRITESHEET_REF = 1;
+    namespace script
+    {
+        template<> const char* meta<Tilemap>()
+        {
+            return "plum.Tilemap";
+        }
+    }
 
-			SCRIPT_OBJ_GETTER(index, Wrapper<Tilemap>*, libraryName)
-			SCRIPT_OBJ_SETTER(newindex, Wrapper<Tilemap>*, libraryName)
+    namespace
+    {
+        typedef Tilemap Self;
+        const int TILEMAP_SPRITESHEET_REF = 1;
 
-			int create(lua_State* L)
-			{
-				if(lua_isnumber(L, 1) && lua_isnumber(L, 2))
-				{
-					int w = lua_tointeger(L, 1);
-					int h = lua_tointeger(L, 2);
-					PLUM_PUSH_DATA(L, Tilemap, new Tilemap(w, h), LUA_NOREF);
+        int create(lua_State* L)
+        {
+            if(lua_isnumber(L, 1) && lua_isnumber(L, 2))
+            {
+                int w = lua_tointeger(L, 1);
+                int h = lua_tointeger(L, 2);
+                script::push(L, new Tilemap(w, h), LUA_NOREF);
 
-					return 1;
-				}
-				luaL_error(L, "Attempt to call plum.Tilemap constructor with invalid argument types.\r\nMust be (int w, int h).");
-				return 0;
-			}
+                return 1;
+            }
+            luaL_error(L, "Attempt to call plum.Tilemap constructor with invalid argument types.\r\nMust be (int w, int h).");
+            return 0;
+        }
 
-			int gc(lua_State* L)
-			{
-				Wrapper<Tilemap>* m = PLUM_CHECK_DATA(L, 1, Tilemap);
+        int gc(lua_State* L)
+        {
+            return script::wrapped<Self>(L, 1)->gc(L);
+        }
 
-				// Discard ext table.
-				luaL_unref(L, LUA_REGISTRYINDEX, m->extRef);
+        int index(lua_State* L)
+        {
+            return script::wrapped<Self>(L, 1)->index(L);
+        }
 
-				// Only delete if it doesn't belong to a parent of some sort.
-				if(m->parentRef == LUA_NOREF)
-				{
-					delete m->data;
-				}
-				else
-				{
-					luaL_unref(L, LUA_REGISTRYINDEX, m->parentRef);
-				}
-				return 0;
-			}
+        int newindex(lua_State* L)
+        {
+            return script::wrapped<Self>(L, 1)->newindex(L);
+        }
 
-			int tostring(lua_State* L)
-			{
-				PLUM_CHECK_DATA(L, 1, Tilemap);
-				lua_pushstring(L, "(plum.Tilemap object)");
-				return 1;
-			}
+        int tostring(lua_State* L)
+        {
+            return script::wrapped<Self>(L, 1)->tostring(L);
+        }
 
-			int getspritesheet(lua_State* L)
-			{
-				Wrapper<Tilemap>* m = PLUM_CHECK_DATA(L, 1, Tilemap);
+        int getspritesheet(lua_State* L)
+        {
+            auto wrapper = script::wrapped<Tilemap>(L, 1);
+            wrapper->getAttribute(L, TILEMAP_SPRITESHEET_REF);
+            return 1;
+        }
 
-				// Push ext table.
-				PLUM_GET_EXT(L, m, Tilemap);
-				// Push value.
-				lua_rawgeti(L, -1, TILEMAP_SPRITESHEET_REF);
-				// Remove ext from stack, while keeping value on top of the stack.
-				lua_remove(L, -2);
+        int setspritesheet(lua_State* L)
+        {
+            auto wrapper = script::wrapped<Tilemap>(L, 1);
+            auto spritesheet = script::ptr<Spritesheet>(L, 2);
 
-				return 1;
-			}
+            // Change the spritesheet
+            wrapper->data->spr = spritesheet;
+            // Update reference table, so the value will remain in memory as long as it's required.
+            wrapper->setAttribute(L, TILEMAP_SPRITESHEET_REF);
+            return 0;
+        }
 
-			int setspritesheet(lua_State* L)
-			{
-				Wrapper<Tilemap>* m = PLUM_CHECK_DATA(L, 1, Tilemap);
-				Wrapper<Spritesheet>* spritesheet = PLUM_CHECK_DATA(L, 2, Spritesheet);
+        int getwidth(lua_State* L)
+        {
+            auto m = script::ptr<Tilemap>(L, 1);
+            script::push(L, m->getWidth());
+            return 1;
+        }
 
-				// Change the spritesheet
-				m->data->spr = spritesheet->data;
+        int getheight(lua_State* L)
+        {
+            auto m = script::ptr<Tilemap>(L, 1);
+            script::push(L, m->getHeight());
+            return 1;
+        }
 
-				// Update reference table, so the value will remain in memory as long as it's required.
-				// Push ext table.
-				PLUM_GET_EXT(L, m, Tilemap);
-				// Push the value.
-				lua_pushvalue(L, 2);
-				// Set value.
-				lua_rawseti(L, -2, TILEMAP_SPRITESHEET_REF);
-				// Pop ext from stack.
-				lua_pop(L, 1);
+        int getTile(lua_State* L)
+        {
+            auto m = script::ptr<Tilemap>(L, 1);
+            int tx = luaL_checkint(L, 2);
+            int ty = luaL_checkint(L, 3);
+            Tile t = m->getTile(tx, ty);
 
-				return 0;
-			}
+            if(t != Tilemap::InvalidTile)
+            {
+                script::push(L, t);
+            }
+            else
+            {
+                script::push(L, nullptr);
+            }
+                
+            return 1;
+        }
 
-			int getwidth(lua_State* L)
-			{
-				Wrapper<Tilemap>* m = PLUM_CHECK_DATA(L, 1, Tilemap);
-				lua_pushinteger(L, m->data->getWidth());
-				return 1;
-			}
+        int setTile(lua_State* L)
+        {
+            auto m = script::ptr<Tilemap>(L, 1);
+            int tx = luaL_checkint(L, 2);
+            int ty = luaL_checkint(L, 3);
+            Tile tileIndex = (Tile) luaL_checkint(L, 4);
+            m->setTile(tx, ty, tileIndex);
+            return 0;
+        }
 
-			int getheight(lua_State* L)
-			{
-				Wrapper<Tilemap>* m = PLUM_CHECK_DATA(L, 1, Tilemap);
-				lua_pushinteger(L, m->data->getHeight());
-				return 1;
-			}
+        int rect(lua_State* L)
+        {
+            auto m = script::ptr<Tilemap>(L, 1);
+            int tx = luaL_checkint(L, 2);
+            int ty = luaL_checkint(L, 3);
+            int tx2 = luaL_checkint(L, 4);
+            int ty2 = luaL_checkint(L, 5);
+            Tile tileIndex = (Tile) luaL_checkint(L, 6);
+            m->rect(tx, ty, tx2, ty2, tileIndex);
+            return 0;
+        }
 
-			int getTile(lua_State* L)
-			{
-				Wrapper<Tilemap>* m = PLUM_CHECK_DATA(L, 1, Tilemap);
-				int tx = luaL_checkint(L, 2);
-				int ty = luaL_checkint(L, 3);
-                Tile t = m->data->getTile(tx, ty);
+        int solidRect(lua_State* L)
+        {
+            auto m = script::ptr<Tilemap>(L, 1);
+            int tx = luaL_checkint(L, 2);
+            int ty = luaL_checkint(L, 3);
+            int tx2 = luaL_checkint(L, 4);
+            int ty2 = luaL_checkint(L, 5);
+            Tile tileIndex = (Tile) luaL_checkint(L, 6);
+            m->solidRect(tx, ty, tx2, ty2, tileIndex);
+            return 0;
+        }
 
-                if(t != Tilemap::InvalidTile)
-                {
-                    lua_pushinteger(L, t);
-                }
-                else
-                {
-                    lua_pushnil(L);
-                }
-				
-				return 1;
-			}
+        int stamp(lua_State* L)
+        {
+            auto m = script::ptr<Tilemap>(L, 1);
+            int tx = luaL_checkint(L, 2);
+            int ty = luaL_checkint(L, 3);
+            auto dest = script::ptr<Tilemap>(L, 4);
+            m->stamp(tx, ty, dest);
+            return 0;
+        }
 
-			int setTile(lua_State* L)
-			{
-				Wrapper<Tilemap>* m = PLUM_CHECK_DATA(L, 1, Tilemap);
-				int tx = luaL_checkint(L, 2);
-				int ty = luaL_checkint(L, 3);
-				Tile tileIndex = (Tile) luaL_checkint(L, 4);
-				m->data->setTile(tx, ty, tileIndex);
-				return 0;
-			}
+        int blit(lua_State* L)
+        {
+            auto m = script::ptr<Tilemap>(L, 1);
+            int worldX = luaL_checkint(L, 2);
+            int worldY = luaL_checkint(L, 3);
+            int destX = luaL_checkint(L, 4);
+            int destY = luaL_checkint(L, 5);
+            int tilesWide = luaL_checkint(L, 6);
+            int tilesHigh = luaL_checkint(L, 7);
+            BlendMode mode = (BlendMode) luaL_optint(L, 8, BlendUnspecified);
+            Color tint = luaL_optint(L, 9, Color::White);
 
-			int rect(lua_State* L)
-			{
-				Wrapper<Tilemap>* m = PLUM_CHECK_DATA(L, 1, Tilemap);
-				int tx = luaL_checkint(L, 2);
-				int ty = luaL_checkint(L, 3);
-				int tx2 = luaL_checkint(L, 4);
-				int ty2 = luaL_checkint(L, 5);
-				Tile tileIndex = (Tile) luaL_checkint(L, 6);
-				m->data->rect(tx, ty, tx2, ty2, tileIndex);
-				return 0;
-			}
+            m->blit(worldX, worldY, destX, destY, tilesWide, tilesHigh, mode, tint);
+            return 0;
+        }
+    }
 
-			int solidRect(lua_State* L)
-			{
-				Wrapper<Tilemap>* m = PLUM_CHECK_DATA(L, 1, Tilemap);
-				int tx = luaL_checkint(L, 2);
-				int ty = luaL_checkint(L, 3);
-				int tx2 = luaL_checkint(L, 4);
-				int ty2 = luaL_checkint(L, 5);
-				Tile tileIndex = (Tile) luaL_checkint(L, 6);
-				m->data->solidRect(tx, ty, tx2, ty2, tileIndex);
-				return 0;
-			}
+    namespace script
+    {
+        void initTilemapObject(lua_State* L)
+        {
+            luaL_newmetatable(L, meta<Self>());
+            // Duplicate the metatable on the stack.
+            lua_pushvalue(L, -1);
+            // metatable.__index = metatable
+            lua_setfield(L, -2, "__index");
 
-			int stamp(lua_State* L)
-			{
-				Wrapper<Tilemap>* m = PLUM_CHECK_DATA(L, 1, Tilemap);
-				int tx = luaL_checkint(L, 2);
-				int ty = luaL_checkint(L, 3);
-				Wrapper<Tilemap>* dest = PLUM_CHECK_DATA(L, 4, Tilemap);
-				m->data->stamp(tx, ty, dest->data);
-				return 0;
-			}
+            // Put the members into the metatable.
+            const luaL_Reg functions[] = {
+                {"__gc", gc},
+                {"__index", index},
+                {"__newindex", newindex},
+                {"__tostring", tostring},
+                {"getspritesheet", getspritesheet},
+                {"setspritesheet", setspritesheet},
+                {"getwidth", getwidth},
+                {"getheight", getheight},
+                {"getTile", getTile},
+                {"setTile", setTile},
+                {"rect", rect},
+                {"solidRect", solidRect},
+                {"stamp", stamp},
+                {"blit", blit},
+                {nullptr, nullptr}
+            };
+            luaL_register(L, nullptr, functions);
 
-			int blit(lua_State* L)
-			{
-				Wrapper<Tilemap>* m = PLUM_CHECK_DATA(L, 1, Tilemap);
-				int worldX = luaL_checkint(L, 2);
-				int worldY = luaL_checkint(L, 3);
-				int destX = luaL_checkint(L, 4);
-				int destY = luaL_checkint(L, 5);
-				int tilesWide = luaL_checkint(L, 6);
-				int tilesHigh = luaL_checkint(L, 7);
-				BlendMode mode = (BlendMode) luaL_optint(L, 8, BlendUnspecified);
-				Color tint = luaL_optint(L, 9, Color::White);
+            lua_pop(L, 1);
 
-				m->data->blit(worldX, worldY, destX, destY, tilesWide, tilesHigh, mode, tint);
-				return 0;
-			}
+            // Push plum namespace.
+            lua_getglobal(L, "plum");
 
-			void openLibrary(lua_State* L)
-			{
-				luaL_newmetatable(L, libraryName);
-				// Duplicate the metatable on the stack.
-				lua_pushvalue(L, -1);
-				// metatable.__index = metatable
-				lua_setfield(L, -2, "__index");
+            // plum[classname] = create
+            lua_pushstring(L, "Tilemap");
+            lua_pushcfunction(L, create);
+            lua_settable(L, -3);
 
-				// Put the members into the metatable.
-				PLUM_BIND_FUNC_BEGIN()
-				PLUM_BIND_META(gc)
-				PLUM_BIND_META(index)
-				PLUM_BIND_META(newindex)
-				PLUM_BIND_META(tostring)
-				PLUM_BIND_FUNC(getspritesheet)
-				PLUM_BIND_FUNC(setspritesheet)
-				PLUM_BIND_FUNC(getwidth)
-				PLUM_BIND_FUNC(getheight)
-				PLUM_BIND_FUNC(getTile)
-				PLUM_BIND_FUNC(setTile)
-				PLUM_BIND_FUNC(rect)
-				PLUM_BIND_FUNC(solidRect)
-				PLUM_BIND_FUNC(stamp)
-				PLUM_BIND_FUNC(blit)
-				PLUM_BIND_FUNC_END_NULL()
-
-				lua_pop(L, 1);
-
-				// Push plum namespace.
-				lua_getglobal(L, "plum");
-
-				// plum[classname] = create
-				lua_pushstring(L, "Tilemap");
-				lua_pushcfunction(L, create);
-				lua_settable(L, -3);
-
-				// Pop plum namespace.
-				lua_pop(L, 1);
-			}
-		}
-	}
+            // Pop plum namespace.
+            lua_pop(L, 1);
+        }
+    }
 }
