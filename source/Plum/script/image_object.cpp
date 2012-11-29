@@ -1,4 +1,7 @@
 #include "../plum.h"
+#include "script.h"
+#include "../video/canvas.h"
+#include "../video/image.h"
 
 namespace plum
 {
@@ -58,8 +61,8 @@ namespace plum
             auto img = script::ptr<Self>(L, 1);
             auto x = script::get<int>(L, 2);
             auto y = script::get<int>(L, 3);
-            BlendMode mode = (BlendMode) luaL_optint(L, 4, BlendUnspecified);
-            Color tint = luaL_optint(L, 5, Color::White);
+            auto mode = BlendMode(script::get<int>(L, 4, BlendUnspecified));
+            auto tint = Color(script::get<int>(L, 5, Color::White));
 
             img->blit(x, y, mode, tint);
 
@@ -85,8 +88,8 @@ namespace plum
             auto sy2 = script::get<int>(L, 5);
             auto dx = script::get<int>(L, 6);
             auto dy = script::get<int>(L, 7);
-            BlendMode mode = (BlendMode) luaL_optint(L, 8, BlendUnspecified);
-            Color tint = luaL_optint(L, 9, Color::White);
+            auto mode = BlendMode(script::get<int>(L, 8, BlendUnspecified));
+            auto tint = Color(script::get<int>(L, 9, Color::White));
 
             img->blitRegion(sx, sy, sx2, sy2, dx, dy, mode, tint);
 
@@ -100,8 +103,8 @@ namespace plum
             auto y = script::get<int>(L, 3);
             auto width = script::get<int>(L, 4);
             auto height = script::get<int>(L, 5);
-            BlendMode mode = (BlendMode) luaL_optint(L, 6, BlendUnspecified);
-            Color tint = luaL_optint(L, 7, Color::White);
+            auto mode = BlendMode(script::get<int>(L, 6, BlendUnspecified));
+            auto tint = Color(script::get<int>(L, 7, Color::White));
 
             img->scaleBlit(x, y, width, height, mode, tint);
 
@@ -119,8 +122,8 @@ namespace plum
             auto dy = script::get<int>(L, 7);
             auto scaledWidth = script::get<int>(L, 8);
             auto scaledHeight = script::get<int>(L, 9);
-            BlendMode mode = (BlendMode) luaL_optint(L, 10, BlendUnspecified);
-            Color tint = luaL_optint(L, 11, Color::White);
+            auto mode = BlendMode(script::get<int>(L, 10, BlendUnspecified));
+            auto tint = Color(script::get<int>(L, 11, Color::White));
 
             img->scaleBlitRegion(sx, sy, sx2, sy2, dx, dy, scaledWidth, scaledHeight, mode, tint);
 
@@ -133,8 +136,8 @@ namespace plum
             auto x = script::get<int>(L, 2);
             auto y = script::get<int>(L, 3);
             auto angle = script::get<double>(L, 4);
-            BlendMode mode = (BlendMode) luaL_optint(L, 5, BlendUnspecified);
-            Color tint = luaL_optint(L, 6, Color::White);
+            auto mode = BlendMode(script::get<int>(L, 5, BlendUnspecified));
+            auto tint = Color(script::get<int>(L, 6, Color::White));
 
             img->rotateBlit(x, y, angle, mode, tint);
 
@@ -151,8 +154,8 @@ namespace plum
             auto dx = script::get<int>(L, 6);
             auto dy = script::get<int>(L, 7);
             auto angle = script::get<double>(L, 8);
-            BlendMode mode = (BlendMode) luaL_optint(L, 9, BlendUnspecified);
-            Color tint = luaL_optint(L, 10, Color::White);
+            auto mode = BlendMode(script::get<int>(L, 9, BlendUnspecified));
+            auto tint = Color(script::get<int>(L, 10, Color::White));
 
             img->rotateBlitRegion(sx, sy, sx2, sy2, dx, dy, angle, mode, tint);
             return 0;
@@ -165,8 +168,8 @@ namespace plum
             auto y = script::get<int>(L, 3);
             auto angle = script::get<double>(L, 4);
             auto scale = script::get<double>(L, 5);
-            BlendMode mode = (BlendMode) luaL_optint(L, 6, BlendUnspecified);
-            Color tint = luaL_optint(L, 7, Color::White);
+            auto mode = BlendMode(script::get<int>(L, 6, BlendUnspecified));
+            auto tint = Color(script::get<int>(L, 7, Color::White));
 
             img->rotateScaleBlit(x, y, angle, scale, mode, tint);
 
@@ -184,8 +187,8 @@ namespace plum
             auto dy = script::get<int>(L, 7);
             auto angle = script::get<double>(L, 8);
             auto scale = script::get<double>(L, 9);
-            BlendMode mode = (BlendMode) luaL_optint(L, 10, BlendUnspecified);
-            Color tint = luaL_optint(L, 11, Color::White);
+            auto mode = BlendMode(script::get<int>(L, 10, BlendUnspecified));
+            auto tint = Color(script::get<int>(L, 11, Color::White));
 
             img->rotateScaleBlitRegion(sx, sy, sx2, sy2, dx, dy, angle, scale, mode, tint);
             return 0;

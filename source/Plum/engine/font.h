@@ -1,7 +1,12 @@
 #pragma once
 
+#include <string>
+#include "../video/color.h"
+#include "../video/blending.h"
+
 namespace plum
 {
+    class Image;
     class Font
     {
         public:
@@ -13,23 +18,12 @@ namespace plum
             int letterSpacing;
             int glyphWidth[FONT_COLUMNS * FONT_ROWS];
 
-            Font(std::string filename)
-            {
-                init(filename.c_str());
-            }
+            Font(const std::string& filename);
+            ~Font();
 
-            Font(const char* filename)
-            {
-                init(filename);
-            }
-
-            ~Font()
-            {
-                delete image;
-            }
         private:
-            void init(const char* filename);
             bool isColumnEmpty(int cell, int column);
+
         public:
             void enableVariableWidth();
             void printChar(int x, int y, char c, BlendMode mode, Color tint);

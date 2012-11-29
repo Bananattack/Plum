@@ -1,5 +1,10 @@
 #pragma once
 
+#include <string>
+#include "color.h"
+#include "blending.h"
+
+struct SDL_Surface;
 namespace plum
 {
     class Video

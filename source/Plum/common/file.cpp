@@ -1,4 +1,5 @@
 #include "../plum.h"
+#include "file.h"
 
 namespace plum
 {
@@ -59,23 +60,23 @@ namespace plum
         return zzip_open_ext_io(filename, o_flags, o_modes, PLUM_PIT_EXT, 0);
     }
 
-    File::File(const char* filename, FileOpenMode mode)
+    File::File(const std::string& filename, FileOpenMode mode)
     {
         closed = false;
         if(mode == FileWrite)
         {
             writing = true;
-            physicalFile = fopen(filename, "wb");
+            physicalFile = fopen(filename.c_str(), "wb");
         }
         else if(mode == FileAppend)
         {
             writing = true;
-            physicalFile = fopen(filename, "ab");
+            physicalFile = fopen(filename.c_str(), "ab");
         }
         else if(mode == FileRead)
         {
             writing = false;
-            zzipFile = zzip_fopen_plum(filename, "rb");
+            zzipFile = zzip_fopen_plum(filename.c_str(), "rb");
         }
     }
 
@@ -304,32 +305,6 @@ namespace plum
         return fwrite(buffer, 1, size, physicalFile);
     }
 
-    bool File::readVergeCompressed(void* buffer, size_t expectedSize)
-    {
-        uint32_t actualSize;
-        uLong destSize = expectedSize;
-
-        readU32(actualSize);
-        if (actualSize != destSize)
-        {
-            return false;
-        }
-
-        uint32_t compressedLength;
-        readU32(compressedLength);
-
-        uint8_t* chunk = new uint8_t[compressedLength];
-        uint8_t* dest = (uint8_t*) buffer;
-        readRaw(chunk, compressedLength);
-
-        int result = uncompress(dest, &destSize, chunk, compressedLength);
-
-        delete [] chunk;
-
-        return result == Z_OK;
-        // TODO: proper error handling, since zlib explosions are messy.
-    }
-
     bool File::seek(int position, FileSeekMode mode)
     {
         // Can't seek in write mode. Shoo.
@@ -442,25 +417,25 @@ namespace plum
         return fwrite(&value, sizeof(double), 1, physicalFile) == 1;
     }
 
-    bool File::writeString(const char* value, size_t size)
+    bool File::writeString(const std::string& value, size_t size)
     {
         // Can't do this in read mode. Shoo.
         if(!writing || !active())
         {
             return false;
         }
-        fwrite(value, size, 1, physicalFile);
+        fwrite(value.data(), size, 1, physicalFile);
         return true;
     }
 
-    bool File::writeLine(const char* value, size_t size)
+    bool File::writeLine(const std::string& value, size_t size)
     {
         // Can't do this in read mode. Shoo.
         if(!writing || !active())
         {
             return false;
         }
-        fwrite(value, size, 1, physicalFile);
+        fwrite(value.data(), size, 1, physicalFile);
         fputs("\r\n", physicalFile);
         return true;
     }

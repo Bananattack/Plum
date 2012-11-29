@@ -1,6 +1,8 @@
 #include <vector>
 #include <unordered_map>
 #include "../plum.h"
+#include "../common/file.h"
+#include "script.h"
 
 namespace plum
 {
@@ -82,6 +84,20 @@ namespace plum
         if(luaL_loadbuffer(L, buf.data(), buf.size(), scriptname.c_str()) || lua_pcall(L, 0, LUA_MULTRET, 0))
         {
             throw std::runtime_error("Error found in script:\r\n" + std::string(lua_tostring(L, -1)));
+        }
+    }
+
+    void Script::update()
+    {
+        stepGarbageCollector();
+        //std::string cap = titlePrefix + " - FPS: " + integerToString(timer.fps);
+        //SDL_WM_SetCaption(cap.c_str(), cap.c_str());
+
+        // Update the input hooks, one by one.
+        // The input hook wrapper stuff makes me sick inside somewhat.
+        for(auto it = inputHooks.begin(), end = inputHooks.end(); it != end; ++it)
+        {
+            processInputHook(*it);
         }
     }
 

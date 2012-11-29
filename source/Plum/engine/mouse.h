@@ -1,5 +1,7 @@
 #pragma once
 
+#include "input.h"
+
 namespace plum
 {
     const int MOUSE_LEFT = 0;

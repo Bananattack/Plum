@@ -1,5 +1,8 @@
 #include "../plum.h"
-
+#include "../video/canvas.h"
+#include "../video/image.h"
+#include "../engine/spritesheet.h"
+#include "script.h"
 
 namespace plum
 {
@@ -78,8 +81,8 @@ namespace plum
             int x = script::get<int>(L, 2);
             int y = script::get<int>(L, 3);
             int f = script::get<int>(L, 4);
-            BlendMode mode = (BlendMode) luaL_optint(L, 5, BlendUnspecified);
-            Color tint = luaL_optint(L, 6, Color::White);
+            BlendMode mode = (BlendMode) script::get<int>(L, 5, BlendUnspecified);
+            Color tint = script::get<int>(L, 6, Color::White);
 
             spr->blitFrame(x, y, f, mode, tint);
             return 0;

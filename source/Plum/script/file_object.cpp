@@ -1,5 +1,6 @@
 #include "../plum.h"
-
+#include "script.h"
+#include "../common/file.h"
 
 namespace plum
 {
@@ -259,21 +260,6 @@ namespace plum
             return 1;
         }
 
-        int readVergeCompressed(lua_State* L)
-        {
-            auto file = script::ptr<File>(L, 1);
-            auto blockSize = script::get<int>(L, 2);
-
-            std::vector<char> buffer(blockSize);
-            bool success = file->readVergeCompressed(buffer.data(), buffer.size());
-
-            if(success)
-            {
-                lua_pushlstring(L, buffer.data(), buffer.size());
-            }
-            return success;
-        }
-
         int writeU8(lua_State* L)
         {
             auto file = script::ptr<File>(L, 1);
@@ -396,7 +382,6 @@ namespace plum
                 {"readFixedString", readFixedString},
                 {"readLine", readLine},
                 {"readFully", readFully},
-                {"readVergeCompressed", readVergeCompressed},
                 {"writeU8", writeU8},
                 {"writeU16", writeU16},
                 {"writeU32", writeU32},

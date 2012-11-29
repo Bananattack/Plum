@@ -1,5 +1,8 @@
 #pragma once
 
+#include <SDL.h>
+#include "input.h"
+
 namespace plum
 {
     const int KEY_MAX_COUNT = SDLK_LAST;

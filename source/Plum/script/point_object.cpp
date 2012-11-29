@@ -1,4 +1,6 @@
 #include "../plum.h"
+#include "../video/transform.h"
+#include "script.h"
 
 namespace plum
 {

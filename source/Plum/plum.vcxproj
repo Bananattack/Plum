@@ -46,7 +46,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>../SDL-1.2.13/include;../zlib;../corona;../audiere/src;..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;_CRT_SECURE_NO_DEPRECATE;_USE_MATH_DEFINES;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -72,7 +72,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <AdditionalIncludeDirectories>../SDL-1.2.13/include;../zlib;../corona;../audiere/src;..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;_USE_MATH_DEFINES;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
@@ -103,8 +103,11 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="engine\spritesheet.cpp" />
+    <ClCompile Include="engine\tilemap.cpp" />
     <ClCompile Include="plum.cpp" />
     <ClCompile Include="video\blending.cpp" />
+    <ClCompile Include="video\canvas.cpp" />
     <ClCompile Include="video\image.cpp" />
     <ClCompile Include="video\video.cpp" />
     <ClCompile Include="audio\audio_audiere.cpp" />
@@ -128,7 +131,6 @@
     <ClCompile Include="script\transform_object.cpp" />
     <ClCompile Include="script\video_object.cpp" />
     <ClCompile Include="common\common.cpp" />
-    <ClCompile Include="common\compression.cpp" />
     <ClCompile Include="common\config.cpp" />
     <ClCompile Include="common\directory.cpp" />
     <ClCompile Include="common\file.cpp" />
@@ -149,12 +151,9 @@
     <ClInclude Include="audio\audio_audiere.h" />
     <ClInclude Include="script\script.h" />
     <ClInclude Include="common\common.h" />
-    <ClInclude Include="common\compression.h" />
     <ClInclude Include="common\config.h" />
     <ClInclude Include="common\directory.h" />
     <ClInclude Include="common\file.h" />
-    <ClInclude Include="common\types.h" />
-    <ClInclude Include="engine\camera.h" />
     <ClInclude Include="engine\engine.h" />
     <ClInclude Include="engine\font.h" />
     <ClInclude Include="engine\input.h" />

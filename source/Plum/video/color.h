@@ -1,5 +1,7 @@
 #pragma once
 
+#include <stdint.h>
+
 namespace plum
 {
     int getOpacity();
@@ -11,7 +13,7 @@ namespace plum
         BlueChannel = 2,
         AlphaChannel = 3
     };
-    typedef unsigned char ColorChannel;
+    typedef uint8_t ColorChannel;
 
     class Color
     {
@@ -30,9 +32,9 @@ namespace plum
             };
 
 
-            int value;
+            uint32_t value;
 
-            inline operator int() const
+            inline operator uint32_t() const
             {
                 return value;
             }
@@ -57,7 +59,7 @@ namespace plum
                 this->value = 0;
             }
 
-            Color(unsigned int value)
+            Color(uint32_t value)
             {
                 this->value = value;
             }

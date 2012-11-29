@@ -1,4 +1,12 @@
 #pragma once
+
+#include <string>
+extern "C"
+{
+    #include <zzip/lib.h>
+}
+#include <cstdint>
+
 namespace plum
 {
     enum FileOpenMode
@@ -32,7 +40,7 @@ namespace plum
             };
 
         public:
-            File(const char* filename, FileOpenMode mode);
+            File(const std::string& filename, FileOpenMode mode);
             ~File();
 
             bool close();
@@ -54,8 +62,6 @@ namespace plum
             int readRaw(void* buffer, size_t size);
             int writeRaw(const void* buffer, size_t size);
 
-            bool readVergeCompressed(void* buffer, size_t size);
-
             bool seek(int position, FileSeekMode mode);
             int tell();
 
@@ -67,97 +73,7 @@ namespace plum
             bool writeInt32(int32_t value);
             bool writeFloat(float value);
             bool writeDouble(double value);
-            bool writeString(const char* value, size_t size);
-            bool writeLine(const char* value, size_t size);
+            bool writeString(const std::string& value, size_t size);
+            bool writeLine(const std::string& value, size_t size);
     };
-
-    class CoronaPlumFile : public corona::DLLImplementation<corona::File>
-    {
-        public:
-            CoronaPlumFile(plum::File* f)
-            {
-                file = f;
-            }
-
-            virtual ~CoronaPlumFile()
-            {
-                delete file;
-            }
-
-            virtual int COR_CALL read(void* buffer, int size)
-            {
-                return file->readRaw(buffer, size);
-            }
-
-            virtual int COR_CALL write(const void *buffer, int size)
-            {
-                return file->writeRaw(buffer, size);
-            }
-
-            virtual bool COR_CALL seek(int position, corona::File::SeekMode mode)
-            {
-                FileSeekMode m;
-                switch (mode)
-                {
-                    case BEGIN: m = SeekStart; break;
-                    case CURRENT: m = SeekCurrent; break;
-                    case END: m = SeekEnd; break;
-                    default: return false;
-                }
-                return file->seek(position, m);
-            }
-
-            virtual int COR_CALL tell()
-            {
-                return file->tell();
-            }
-        private:
-            plum::File* file;
-    };
-    
-    class AudierePlumFile : public audiere::RefImplementation<audiere::File>
-    {
-        public:
-            AudierePlumFile(plum::File* f) 
-            {
-                file = f;
-            }
-
-            virtual ~AudierePlumFile()
-            {
-                delete file;
-            }
-
-            virtual int ADR_CALL read(void* buffer, int size)
-            {
-                return file->readRaw(buffer, size);
-            }
-
-            virtual bool ADR_CALL seek(int position, audiere::File::SeekMode mode)
-            {
-                FileSeekMode m;
-                switch (mode)
-                {
-                    case BEGIN: m = SeekStart; break;
-                    case CURRENT: m = SeekCurrent; break;
-                    case END: m = SeekEnd; break;
-                    default: return false;
-                }
-                return file->seek(position, m);
-            }
-
-            virtual int ADR_CALL tell()
-            {
-                return file->tell();
-            }
-        private:
-            plum::File* file;
-    };
-
-
-    // Useful helper for opening Corona and Audiere files.
-    template<typename T> T* OpenLibraryFileWrapper(const char* filename, bool writeable)
-    {
-        return new T(new File(filename, writeable ? FileWrite : FileRead));
-    }
 }

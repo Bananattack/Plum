@@ -1,4 +1,7 @@
+#include <algorithm>
+
 #include "../plum.h"
+#include "timer.h"
 
 namespace plum
 {

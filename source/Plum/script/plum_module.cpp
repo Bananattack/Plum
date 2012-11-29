@@ -1,5 +1,5 @@
 #include "../plum.h"
-
+#include "script.h"
 
 namespace plum
 {
@@ -34,7 +34,7 @@ namespace plum
         int refresh(lua_State* L)
         {
             auto& script = script::instance(L);
-            script.engine().refresh(script);
+            script.engine().refresh();
             return 0;
         }
 
@@ -55,8 +55,8 @@ namespace plum
             int r = luaL_checkint(L, 1);
             int g = luaL_checkint(L, 2);
             int b = luaL_checkint(L, 3);
-            int a = luaL_optint(L, 4, 255);
-            lua_pushinteger(L, plum::rgba(r, g, b, a).value);
+            int a = script::get<int>(L, 4, 255);
+            script::push(L, plum::rgba(r, g, b, a).value);
             return 1;
         }
 
@@ -65,10 +65,10 @@ namespace plum
             int color = luaL_checkint(L, 1);
             ColorChannel r, g, b, a;
             plum::getRGBA(color, r, g, b, a);
-            lua_pushinteger(L, r);
-            lua_pushinteger(L, g);
-            lua_pushinteger(L, b);
-            lua_pushinteger(L, a);
+            script::push(L, r);
+            script::push(L, g);
+            script::push(L, b);
+            script::push(L, a);
             return 4;
         }
 
@@ -77,17 +77,8 @@ namespace plum
             int h = luaL_checkint(L, 1);
             int s = luaL_checkint(L, 2);
             int v = luaL_checkint(L, 3);
-            int a = luaL_optint(L, 4, 255);
-            lua_pushinteger(L, plum::hsv(h, s, v, a).value);
-            return 1;
-        }
-
-        int loadConfig(lua_State* L)
-        {
-            Config cfg;
-            cfg.init("plum.cfg", "config", L);
-            lua_pushvalue(cfg.lua, -1);
-            lua_xmove(cfg.lua, L, 1);
+            int a = script::get<int>(L, 4, 255);
+            script::push(L, (int) plum::hsv(h, s, v, a).value);
             return 1;
         }
 
@@ -157,119 +148,6 @@ namespace plum
             hooks.clear();
             return 0;
         }
-
-        int vergeReadTilemap8(lua_State* L)
-        {
-            auto file = script::ptr<File>(L, 1);
-            int width = luaL_checkinteger(L, 2);
-            int height = luaL_checkinteger(L, 3);
-
-            int blockSize = width * height;
-            uint8_t* buffer = new uint8_t[blockSize];
-            bool success = file->readVergeCompressed(buffer, blockSize);
-
-            if(success)
-            {
-                Tilemap* tilemap = new Tilemap(width, height);
-
-                // Read bytes.
-                for(int t = 0; t < width * height; t++)
-                {
-                    tilemap->data[t] = buffer[t];
-                }
-
-                // Push tilemap.
-                script::push(L, tilemap, LUA_NOREF);
-            }
-
-            delete [] buffer;
-            return success;
-        }
-
-        int vergeReadTilemap16(lua_State* L)
-        {
-            auto file = script::ptr<File>(L, 1);
-            int width = luaL_checkinteger(L, 2);
-            int height = luaL_checkinteger(L, 3);
-
-            int blockSize = width * height * 2;
-            uint8_t* buffer = new uint8_t[blockSize];
-            bool success = file->readVergeCompressed(buffer, blockSize);
-
-            if(success)
-            {
-                Tilemap* tilemap = new Tilemap(width, height);
-
-                // Read little-endian 16-bit ints.
-                for(int t = 0; t < width * height; t++)
-                {
-                    tilemap->data[t] = buffer[t * 2 + 1] << 8 | buffer[t * 2];
-                }
-
-                // Push tilemap.
-                script::push(L, tilemap, LUA_NOREF);
-            }
-
-            delete [] buffer;
-            return success;
-        }
-
-        int vergeReadObstructionCanvas(lua_State* L)
-        {
-            auto file = script::ptr<File>(L, 1);
-            int width = luaL_checkinteger(L, 2);
-            int height = luaL_checkinteger(L, 3);
-
-            int blockSize = width * height;
-            uint8_t* buffer = new uint8_t[blockSize];
-            bool success = file->readVergeCompressed(buffer, blockSize);
-
-            if(success)
-            {
-                Canvas* canvas = new Canvas(width, height);
-
-                // Read bytes. Verge stores one pixel per byte, no bitwise packing.
-                for(int t = 0; t < width * height; t++)
-                { 
-                    // White = obs, transparent = nothing
-                    canvas->data[t] = (buffer[t] != 0) * Color::White;
-                }
-                // Push image.
-                script::push(L, canvas, LUA_NOREF);
-            }
-
-            delete [] buffer;
-            return success;
-        }
-
-        int vergeReadRGBCanvas(lua_State* L)
-        {
-            auto file = script::ptr<File>(L, 1);
-            int width = luaL_checkinteger(L, 2);
-            int height = luaL_checkinteger(L, 3);
-
-            int blockSize = width * height * 3;
-            uint8_t* buffer = new uint8_t[blockSize];
-            bool success = file->readVergeCompressed(buffer, blockSize);
-
-            if(success)
-            {
-                Canvas* canvas = new Canvas(width, height);
-
-                // Read bytes.
-                for(int t = 0; t < width * height; t++)
-                { 
-                    // Pixels are stored in RGB format.
-                    canvas->data[t] = Color(buffer[t * 3], buffer[t * 3 + 1], buffer[t * 3 + 2]);
-                }
-
-                // Push image.
-                script::push(L, canvas, LUA_NOREF);
-            }
-
-            delete [] buffer;
-            return success;
-        }
     }
 
     namespace script
@@ -280,7 +158,6 @@ namespace plum
                 {"exit", exit},
                 {"refresh", refresh},
                 {"setTitle", setTitle},
-                {"loadConfig", loadConfig},
                 {"hookInput", hookInput},
                 {"unhookAllInput", unhookAllInput},
                 {nullptr, nullptr},
@@ -340,24 +217,6 @@ namespace plum
             lua_setfield(L, -2, "Subtract");
 
             // Done with 'blend' now.
-            lua_pop(L, 1);
-
-
-            // Create the 'verge' table.
-            lua_newtable(L);
-            lua_pushvalue(L, -1);
-            lua_setfield(L, -3, "verge");
-
-            lua_pushcfunction(L, vergeReadTilemap8);
-            lua_setfield(L, -2, "readTilemap8");
-            lua_pushcfunction(L, vergeReadTilemap16);
-            lua_setfield(L, -2, "readTilemap16");
-            lua_pushcfunction(L, vergeReadObstructionCanvas);
-            lua_setfield(L, -2, "readObstructionCanvas");
-            lua_pushcfunction(L, vergeReadRGBCanvas);
-            lua_setfield(L, -2, "readRGBCanvas");
-
-            // Done with 'verge' now.
             lua_pop(L, 1);
 
             // Pop the library.

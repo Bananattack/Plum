@@ -1,7 +1,12 @@
 #pragma once
 
+#include <string>
+#include <audiere.h>
+
 namespace plum
 {
+    class File;
+    class AudierePlumFile;
 
     struct Sound
     {
@@ -151,59 +156,36 @@ namespace plum
 
     struct Audio
     {
-        class Exception : public std::exception
-        {
-            public:
-                Exception(const std::string& message)
-                    : msg(message)
-                {
-                }
+        private:
+            static const int STEPS_TO_CLEANUP = 50;
+            int cleanupSteps;
 
-                virtual const char* what() const throw ()
-                {
-                    return msg.c_str();
-                }
+            double masterPitch;
 
-                virtual ~Exception() throw ()
-                {
-                }
+            bool disableSound;
+            audiere::AudioDevicePtr audioDevice;
+            std::vector<audiere::OutputStreamPtr> soundStreamPool;
+            std::vector<Channel*> activeChannels;
 
-            private:
-                std::string msg;
-        };
+            int addSoundStream(audiere::OutputStreamPtr stream);
+            Channel* createChannel(audiere::OutputStreamPtr stream);
+        public:
+            Audio()
+                : audioDevice(0)
+            {
+            }
 
-    private:
-        static const int STEPS_TO_CLEANUP = 50;
-        int cleanupSteps;
+            void startup(bool disableSound = false);
+            void shutdown();
+            void update();
+            void setMasterPitch(double pitch);
 
-        double masterPitch;
+            Sound* loadSound(const std::string& filename);
+            int playSound(Sound* sound, double volume = 1.0);
 
-        bool disableSound;
-        audiere::AudioDevicePtr audioDevice;
-        std::vector<audiere::OutputStreamPtr> soundStreamPool;
-        std::vector<Channel*> activeChannels;
+            Channel* createChannel(int handle);
 
-        int addSoundStream(audiere::OutputStreamPtr stream);
-        Channel* createChannel(audiere::OutputStreamPtr stream);
-    public:
-        Audio()
-            : audioDevice(0)
-        {
-        }
-
-        void startup(bool disableSound = false);
-        void shutdown();
-        void update();
-        void setMasterPitch(double pitch);
-
-        Sound* loadSound(std::string filename);
-        Sound* loadSound(const char* filename);
-        int playSound(Sound* sound, double volume = 1.0);
-
-        Channel* createChannel(int handle);
-
-        Song* loadSong(std::string filename);
-        Song* loadSong(const char* filename);
-        void playSong(Song* song);
+            Song* loadSong(const std::string& filename);
+            void playSong(Song* song);
     };
 }

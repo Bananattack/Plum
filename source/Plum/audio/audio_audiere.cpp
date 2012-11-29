@@ -1,7 +1,48 @@
 #include "../plum.h"
+#include "../common/file.h"
+#include "../audio/audio_audiere.h"
 
 namespace plum
 {
+    class AudierePlumFile : public audiere::RefImplementation<audiere::File>
+    {
+        public:
+            AudierePlumFile(plum::File* f) 
+            {
+                file = f;
+            }
+
+            virtual ~AudierePlumFile()
+            {
+                delete file;
+            }
+
+            virtual int ADR_CALL read(void* buffer, int size)
+            {
+                return file->readRaw(buffer, size);
+            }
+
+            virtual bool ADR_CALL seek(int position, audiere::File::SeekMode mode)
+            {
+                FileSeekMode m;
+                switch (mode)
+                {
+                    case BEGIN: m = SeekStart; break;
+                    case CURRENT: m = SeekCurrent; break;
+                    case END: m = SeekEnd; break;
+                    default: return false;
+                }
+                return file->seek(position, m);
+            }
+
+            virtual int ADR_CALL tell()
+            {
+                return file->tell();
+            }
+        private:
+            plum::File* file;
+    };
+
     void Audio::startup(bool disableSound)
     {
         this->cleanupSteps = 0;
@@ -70,19 +111,14 @@ namespace plum
         return;
     }
 
-    Sound* Audio::loadSound(std::string filename)
-    {
-        return loadSound(filename.c_str());
-    }
-
-    Sound* Audio::loadSound(const char* filename)
+    Sound* Audio::loadSound(const std::string& filename)
     {
         if(disableSound)
         {
             return NULL;
         }
 
-        audiere::FilePtr file = OpenLibraryFileWrapper<AudierePlumFile>(filename, false);
+        audiere::FilePtr file = new AudierePlumFile(new File(filename, FileRead));
         if(!file.get())
         {
             return NULL;
@@ -199,19 +235,14 @@ namespace plum
         return chan;
     }
 
-    Song* Audio::loadSong(std::string filename)
-    {
-        return loadSong(filename.c_str());
-    }
-
-    Song* Audio::loadSong(const char* filename)
+    Song* Audio::loadSong(const std::string& filename)
     {
         if(disableSound)
         {
             return NULL;
         }
 
-        audiere::FilePtr file = OpenLibraryFileWrapper<AudierePlumFile>(filename, false);
+        audiere::FilePtr file = new AudierePlumFile(new File(filename, FileRead));
         if(!file)
         {
             return NULL;

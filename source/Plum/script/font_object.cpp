@@ -1,4 +1,6 @@
 #include "../plum.h"
+#include "../engine/font.h"
+#include "script.h"
 
 namespace plum
 {
@@ -51,8 +53,8 @@ namespace plum
             auto x = script::get<int>(L, 2);
             auto y = script::get<int>(L, 3);
             auto message = script::get<const char*>(L, 4);
-            BlendMode mode = (BlendMode) luaL_optint(L, 5, BlendUnspecified);
-            Color tint = luaL_optint(L, 6, Color::White);
+            BlendMode mode = (BlendMode) script::get<int>(L, 5, BlendUnspecified);
+            Color tint = script::get<int>(L, 6, Color::White);
 
             font->print(x, y, message, mode, tint);
             return 0;
@@ -64,8 +66,8 @@ namespace plum
             auto x = script::get<int>(L, 2);
             auto y = script::get<int>(L, 3);
             auto message = script::get<const char*>(L, 4);
-            BlendMode mode = (BlendMode) luaL_optint(L, 5, BlendUnspecified);
-            Color tint = luaL_optint(L, 6, Color::White);
+            BlendMode mode = (BlendMode) script::get<int>(L, 5, BlendUnspecified);
+            Color tint = script::get<int>(L, 6, Color::White);
 
             font->printRight(x, y, message, mode, tint);
             return 0;
@@ -77,8 +79,8 @@ namespace plum
             auto x = script::get<int>(L, 2);
             auto y = script::get<int>(L, 3);
             auto message = script::get<const char*>(L, 4);
-            BlendMode mode = (BlendMode) luaL_optint(L, 5, BlendUnspecified);
-            Color tint = luaL_optint(L, 6, Color::White);
+            BlendMode mode = (BlendMode) script::get<int>(L, 5, BlendUnspecified);
+            Color tint = script::get<int>(L, 6, Color::White);
 
             font->printCenter(x, y, message, mode, tint);
             return 0;

@@ -1,4 +1,6 @@
 #include "../plum.h"
+#include "script.h"
+#include "../video/canvas.h"
 
 namespace plum
 {
@@ -21,7 +23,7 @@ namespace plum
                 auto w = script::get<int>(L, 1);
                 auto h = script::get<int>(L, 2);
 
-                script::push(L, new Self(w, h), LUA_NOREF);
+                script::push(L, new Canvas(w, h), LUA_NOREF);
                     
                 return 1;
             }
@@ -29,7 +31,7 @@ namespace plum
             {
                 auto filename = script::get<const char*>(L, 1);
 
-                script::push(L, new Self(filename), LUA_NOREF);
+                script::push(L, Canvas::load(filename), LUA_NOREF);
                     
                 return 1;
             }
@@ -92,8 +94,8 @@ namespace plum
             auto canvas = script::ptr<Self>(L, 1);
             auto x = script::get<int>(L, 2);
             auto y = script::get<int>(L, 3);
-            auto color = script::get<int>(L, 4);
-            BlendMode mode = (BlendMode) luaL_optint(L, 5, getBlendMode());
+            auto color = Color(script::get<int>(L, 4, Color::White));
+            auto mode = BlendMode(script::get<int>(L, 5, getBlendMode()));
 
             switch(mode)
             {
@@ -129,8 +131,8 @@ namespace plum
         int replaceColor(lua_State* L)
         {
             auto canvas = script::ptr<Self>(L, 1);
-            auto find = script::get<int>(L, 2);
-            auto replace = script::get<int>(L, 3);
+            auto find = Color(script::get<int>(L, 2));
+            auto replace = Color(script::get<int>(L, 3));
             canvas->replaceColor(find, replace);
             return 0;
         }
@@ -151,8 +153,8 @@ namespace plum
             auto y = script::get<int>(L, 3);
             auto x2 = script::get<int>(L, 4);
             auto y2 = script::get<int>(L, 5);
-            auto color = script::get<int>(L, 6);
-            BlendMode mode = (BlendMode) luaL_optint(L, 7, getBlendMode());
+            auto color = Color(script::get<int>(L, 6, Color::White));
+            auto mode = BlendMode(script::get<int>(L, 7, getBlendMode()));
 
             switch(mode)
             {
@@ -182,8 +184,8 @@ namespace plum
             auto y = script::get<int>(L, 3);
             auto x2 = script::get<int>(L, 4);
             auto y2 = script::get<int>(L, 5);
-            Color color = script::get<int>(L, 6);
-            BlendMode mode = (BlendMode) luaL_optint(L, 7, getBlendMode());
+            auto color = Color(script::get<int>(L, 6, Color::White));
+            auto mode = BlendMode(script::get<int>(L, 7, getBlendMode()));
 
             switch(mode)
             {
@@ -213,8 +215,8 @@ namespace plum
             auto y = script::get<int>(L, 3);
             auto x2 = script::get<int>(L, 4);
             auto y2 = script::get<int>(L, 5);
-            Color color = script::get<int>(L, 6);
-            BlendMode mode = (BlendMode) luaL_optint(L, 7, getBlendMode());
+            auto color = Color(script::get<int>(L, 6, Color::White));
+            auto mode = BlendMode(script::get<int>(L, 7, getBlendMode()));
 
             switch(mode)
             {
@@ -244,8 +246,8 @@ namespace plum
             auto cy = script::get<int>(L, 3);
             auto xRadius = script::get<int>(L, 4);
             auto yRadius = script::get<int>(L, 5);
-            auto color = script::get<int>(L, 6);
-            BlendMode mode = (BlendMode) luaL_optint(L, 7, getBlendMode());
+            auto color = Color(script::get<int>(L, 6, Color::White));
+            auto mode = BlendMode(script::get<int>(L, 7, getBlendMode()));
 
             switch(mode)
             {
@@ -275,8 +277,8 @@ namespace plum
             auto cy = script::get<int>(L, 3);
             auto xRadius = script::get<int>(L, 4);
             auto yRadius = script::get<int>(L, 5);
-            auto color = script::get<int>(L, 6);
-            BlendMode mode = (BlendMode) luaL_optint(L, 7, getBlendMode());
+            auto color = Color(script::get<int>(L, 6, Color::White));
+            auto mode = BlendMode(script::get<int>(L, 7, getBlendMode()));
 
             switch(mode)
             {
@@ -305,7 +307,7 @@ namespace plum
             auto x = script::get<int>(L, 2);
             auto y = script::get<int>(L, 3);
             auto dest = script::ptr<Self>(L, 4);
-            BlendMode mode = (BlendMode) luaL_optint(L, 5, getBlendMode());
+            auto mode = BlendMode(script::get<int>(L, 5, getBlendMode()));
                 
             switch(mode)
             {
@@ -336,7 +338,7 @@ namespace plum
             auto scaledWidth = script::get<int>(L, 4);
             auto scaledHeight = script::get<int>(L, 5);
             auto dest = script::ptr<Self>(L, 6);
-            BlendMode mode = (BlendMode) luaL_optint(L, 7, getBlendMode());
+            auto mode = BlendMode(script::get<int>(L, 7, getBlendMode()));
                 
             switch(mode)
             {
@@ -366,7 +368,7 @@ namespace plum
             auto y = script::get<int>(L, 3);
             auto angle = script::get<double>(L, 4);
             auto dest = script::ptr<Self>(L, 5);
-            BlendMode mode = (BlendMode) luaL_optint(L, 6, getBlendMode());
+            auto mode = BlendMode(script::get<int>(L, 6, getBlendMode()));
                 
             switch(mode)
             {
@@ -397,7 +399,7 @@ namespace plum
             auto angle = script::get<double>(L, 4);
             auto scale = script::get<double>(L, 5);
             auto dest = script::ptr<Self>(L, 6);
-            BlendMode mode = (BlendMode) luaL_optint(L, 7, getBlendMode());
+            auto mode = BlendMode(script::get<int>(L, 7, getBlendMode()));
                 
             switch(mode)
             {
@@ -430,7 +432,7 @@ namespace plum
             auto dx = script::get<int>(L, 6);
             auto dy = script::get<int>(L, 7);
             auto dest = script::ptr<Self>(L, 8);
-            BlendMode mode = (BlendMode) luaL_optint(L, 9, getBlendMode());
+            auto mode = BlendMode(script::get<int>(L, 9, getBlendMode()));
                 
             switch(mode)
             {
@@ -465,7 +467,7 @@ namespace plum
             auto scw = script::get<int>(L, 8);
             auto sch = script::get<int>(L, 9);
             auto dest = script::ptr<Self>(L, 10);
-            BlendMode mode = (BlendMode) luaL_optint(L, 11, getBlendMode());
+            auto mode = BlendMode(script::get<int>(L, 11, getBlendMode()));
                 
             switch(mode)
             {
@@ -499,7 +501,7 @@ namespace plum
             auto dy = script::get<int>(L, 7);
             auto angle = script::get<double>(L, 8);
             auto dest = script::ptr<Self>(L, 9);
-            BlendMode mode = (BlendMode) luaL_optint(L, 10, getBlendMode());
+            auto mode = BlendMode(script::get<int>(L, 10, getBlendMode()));
                 
             switch(mode)
             {
@@ -534,7 +536,7 @@ namespace plum
             auto angle = script::get<double>(L, 8);
             auto scale = script::get<double>(L, 9);
             auto dest = script::ptr<Self>(L, 10);
-            BlendMode mode = (BlendMode) luaL_optint(L, 11, getBlendMode());
+            auto mode = BlendMode(script::get<int>(L, 11, getBlendMode()));
                 
             switch(mode)
             {

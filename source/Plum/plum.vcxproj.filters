@@ -24,9 +24,6 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
-    <Filter Include="Header Files\3rd_party">
-      <UniqueIdentifier>{40cc13eb-6ba5-4c64-91e2-9b56db3aa908}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\video">
       <UniqueIdentifier>{15525378-d5a1-454b-b2d9-1388f0b72828}</UniqueIdentifier>
     </Filter>
@@ -123,9 +120,6 @@
     <ClCompile Include="common\common.cpp">
       <Filter>Source Files\common</Filter>
     </ClCompile>
-    <ClCompile Include="common\compression.cpp">
-      <Filter>Source Files\common</Filter>
-    </ClCompile>
     <ClCompile Include="common\config.cpp">
       <Filter>Source Files\common</Filter>
     </ClCompile>
@@ -146,6 +140,15 @@
     </ClCompile>
     <ClCompile Include="engine\timer.cpp">
       <Filter>Source Files\engine</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\spritesheet.cpp">
+      <Filter>Source Files\engine</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\tilemap.cpp">
+      <Filter>Source Files\engine</Filter>
+    </ClCompile>
+    <ClCompile Include="video\canvas.cpp">
+      <Filter>Source Files\video</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -170,9 +173,6 @@
     <ClInclude Include="video\transform.h">
       <Filter>Header Files\video</Filter>
     </ClInclude>
-    <ClInclude Include="video\video.h">
-      <Filter>Header Files\video</Filter>
-    </ClInclude>
     <ClInclude Include="audio\audio_audiere.h">
       <Filter>Header Files\audio</Filter>
     </ClInclude>
@@ -180,9 +180,6 @@
       <Filter>Header Files\script</Filter>
     </ClInclude>
     <ClInclude Include="common\common.h">
-      <Filter>Header Files\common</Filter>
-    </ClInclude>
-    <ClInclude Include="common\compression.h">
       <Filter>Header Files\common</Filter>
     </ClInclude>
     <ClInclude Include="common\config.h">
@@ -193,12 +190,6 @@
     </ClInclude>
     <ClInclude Include="common\file.h">
       <Filter>Header Files\common</Filter>
-    </ClInclude>
-    <ClInclude Include="common\types.h">
-      <Filter>Header Files\common</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\camera.h">
-      <Filter>Header Files\engine</Filter>
     </ClInclude>
     <ClInclude Include="engine\engine.h">
       <Filter>Header Files\engine</Filter>
@@ -223,6 +214,9 @@
     </ClInclude>
     <ClInclude Include="engine\timer.h">
       <Filter>Header Files\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="video\video.h">
+      <Filter>Header Files\video</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -1,12 +1,13 @@
+#include "font.h"
 #include "../plum.h"
+#include "../video/canvas.h"
+#include "../video/image.h"
 
 namespace plum
 {
-    void Font::init(const char* filename)
+    Font::Font(const std::string& filename)
+        : image(new Image(filename)), letterSpacing(1)
     {
-        image = new Image(filename);
-        letterSpacing = 1;
-
         Canvas* canvas = image->getCanvas();
 
         // Try to automatically detect the font size based on the border edges.
@@ -33,6 +34,11 @@ namespace plum
         {
             glyphWidth[i] = width;
         }
+    }
+
+    Font::~Font()
+    {
+        delete image;
     }
 
     bool Font::isColumnEmpty(int cell, int column)

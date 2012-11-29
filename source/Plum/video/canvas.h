@@ -1,32 +1,21 @@
 #pragma once
+
+#include <cmath>
+#include <string>
+#include <corona.h>
+
+#include "color.h"
+#include "blending.h"
+#include "../common/file.h"
+
 namespace plum
 {
-    class CanvasNotFoundException : public std::exception
-    {
-        public:
-            CanvasNotFoundException(const std::string& message)
-                : msg(message)
-            {
-            }
-
-            virtual const char* what() const throw ()
-            {
-                return msg.c_str();
-            }
-
-            virtual ~CanvasNotFoundException() throw ()
-            {
-            }
-
-        private:
-            std::string msg;
-    };
-
     class Canvas
     {
         public:
-            int width;
-            int height;
+            static Canvas* load(const std::string& filename);
+
+            int width, height;
             // For textures
             int occupiedWidth, occupiedHeight;
 
@@ -35,66 +24,20 @@ namespace plum
 
             Color* data;
 
-            Canvas(const char* filename)
-            {
-                init(filename);
-                replaceColor(Color::Magenta, 0);
-            }
-
-            Canvas(const std::string& filename)
-            {
-                init(filename.c_str());
-                replaceColor(Color::Magenta, 0);
-            }
-
             Canvas(int width, int height)
+                : width(width), height(height),
+                occupiedWidth(width), occupiedHeight(height),
+                data(new Color[width * height])
             {
-                init(width, height);
-                clear(Color::Black);
-            }
-
-            Canvas(int width, int height, Color* pixels)
-            {
-                this->occupiedWidth = this->width = width;
-                this->occupiedHeight = this->height = height; 
-                this->data = pixels;
                 restoreClipRegion();
-                replaceColor(Color::Magenta, 0);
+                clear(Color::Black);
             }
 
             ~Canvas()
             {
                 delete[] data;    
             }
-        private:
-            void init(const char* filename)
-            {
-                int i;
-                std::auto_ptr<corona::File> file(OpenLibraryFileWrapper<CoronaPlumFile>(filename, false));
-                std::auto_ptr<corona::Image> image(corona::OpenImage(file.get(), corona::PF_R8G8B8A8, corona::FF_AUTODETECT));
-                if(!image.get())
-                {
-                    std::string s = "Couldn't open image '" + std::string(filename) + "'!\r\n";
-                    throw CanvasNotFoundException(s);
-                }
 
-                Color* pixels = (Color*) image->getPixels();
-                init(image->getWidth(), image->getHeight());
-            
-                for(i = 0; i < width * height; i++)
-                {
-                    data[i] = pixels[i];
-                }
-            }
-
-            void init(int width, int height)
-            {
-                this->occupiedWidth = this->width = width;
-                this->occupiedHeight = this->height = height;
-                this->data = new Color[width * height];
-                restoreClipRegion();
-            }
-        public:
             void restoreClipRegion()
             {
                 clipX = 0;
@@ -190,14 +133,14 @@ namespace plum
                 int c2 = 0;
 
                 // Silly region code things to start us off
-                if(x < clipX)    c1 |= 1;
-                if(x > clipX2)    c1 |= 2;
-                if(y < clipY)    c1 |= 4;
-                if(y > clipY2)    c1 |= 8;
-                if(x2 < clipX)    c2 |= 1;
-                if(x2 > clipX2)    c2 |= 2;
-                if(y2 < clipY)    c2 |= 4;
-                if(y2 > clipY2)    c2 |= 8;
+                if(x < clipX) c1 |= 1;
+                if(x > clipX2) c1 |= 2;
+                if(y < clipY) c1 |= 4;
+                if(y > clipY2) c1 |= 8;
+                if(x2 < clipX) c2 |= 1;
+                if(x2 > clipX2) c2 |= 2;
+                if(y2 < clipY) c2 |= 4;
+                if(y2 > clipY2) c2 |= 8;
 
                 // Keep clipping until we either accept or reject this line.
                 while((c1 & c2) == 0 && (c1 | c2) != 0)
@@ -230,10 +173,10 @@ namespace plum
                         }
                         // Recheck all the region codes for this side of the line.
                         c1 = 0;
-                        if(x < clipX)    c1 |= 1;
-                        if(x > clipX2)    c1 |= 2;
-                        if(y < clipY)    c1 |= 4;
-                        if(y > clipY2)    c1 |= 8;
+                        if(x < clipX) c1 |= 1;
+                        if(x > clipX2) c1 |= 2;
+                        if(y < clipY) c1 |= 4;
+                        if(y > clipY2) c1 |= 8;
                     }
                     else
                     {
@@ -263,10 +206,10 @@ namespace plum
                         }
                         // Recheck all the region codes for this side of the line.
                         c2 = 0;
-                        if(x2 < clipX)    c2 |= 1;
-                        if(x2 > clipX2)    c2 |= 2;
-                        if(y2 < clipY)    c2 |= 4;
-                        if(y2 > clipY2)    c2 |= 8;
+                        if(x2 < clipX) c2 |= 1;
+                        if(x2 > clipX2) c2 |= 2;
+                        if(y2 < clipY) c2 |= 4;
+                        if(y2 > clipY2) c2 |= 8;
                     }
                 }
                 // Re-jected!

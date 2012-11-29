@@ -1,13 +1,23 @@
 #pragma once
+
+extern "C"
+{
+    // Lua!
+    #include <lua/lua.h>
+    #include <lua/lualib.h>
+    #include <lua/lauxlib.h>
+}
+
+#include "../engine/engine.h"
+
 namespace plum
 {
-    class Engine;
-
     class Script
     {
         private:
             lua_State* L;
             Engine* engine_;
+            size_t updateHookRef;
 
         public:
             // A mapping of type: input reference -> function index
@@ -31,6 +41,7 @@ namespace plum
             }
 
             void run(const std::string& filename);
+            void update();
             void stepGarbageCollector();
             void processInputHook(InputHook& hook);
     };
@@ -134,6 +145,7 @@ namespace plum
 
         template<typename T> const char* meta();
         template<typename T> T get(lua_State* L, int index);
+        template<typename T> T get(lua_State* L, int index, T fallback);
         template<typename T> T push(lua_State* L, T value);
 
         template<typename T> bool is(lua_State* L, int index)
@@ -201,14 +213,29 @@ namespace plum
             return luaL_checkint(L, index);
         }
 
+        template<> inline int get<int>(lua_State* L, int index, int fallback)
+        {
+            return luaL_optint(L, index, fallback);
+        }
+
         template<> inline const char* get<const char*>(lua_State* L, int index)
         {
             return luaL_checkstring(L, index);
         }
 
+        template<> inline const char* get<const char*>(lua_State* L, int index, const char* fallback)
+        {
+            return luaL_optstring(L, index, fallback);
+        }
+
         template<> inline double get<double>(lua_State* L, int index)
         {
             return luaL_checknumber(L, index);
+        }
+
+        template<> inline double get<double>(lua_State* L, int index, double fallback)
+        {
+            return luaL_optnumber(L, index, fallback);
         }
 
         template<> inline bool get<bool>(lua_State* L, int index)

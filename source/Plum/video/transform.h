@@ -1,4 +1,7 @@
 #pragma once
+#include "color.h"
+#include "blending.h"
+
 namespace plum
 {
     struct Point

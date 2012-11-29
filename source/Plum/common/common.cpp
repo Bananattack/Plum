@@ -1,4 +1,5 @@
-#include "../plum.h"
+#include <cstdio>
+#include <cstdarg>
 
 namespace plum
 {
@@ -6,12 +7,12 @@ namespace plum
 
     void clearLog()
     {
-        fclose(fopen(LOG_FILE, "wb"));
+        fclose(fopen(LOG_FILE, "w"));
     }
 
     void logFormat(const char* format, ...)
     {
-        FILE* f = fopen(LOG_FILE, "ab");
+        FILE* f = fopen(LOG_FILE, "a");
         if(!f)
         {
             return;

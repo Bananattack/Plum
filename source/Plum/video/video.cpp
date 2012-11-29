@@ -1,4 +1,10 @@
+#include <cmath>
+
+#include <SDL.h>
+#include <SDL_opengl.h>
+
 #include "../plum.h"
+#include "../video/video.h"
 
 namespace plum
 {
@@ -39,12 +45,6 @@ namespace plum
         }
         windowWidth = frontSurface->w;
         windowHeight = frontSurface->h;
-
-        glBlendEquationEXT = (void (PLUM_CALLBACK *)(int)) SDL_GL_GetProcAddress("glBlendEquationEXT");
-        if(!glBlendEquationEXT)
-        {
-            glBlendEquationEXT = NoBlendExtension;
-        }
 
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

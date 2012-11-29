@@ -1,26 +1,30 @@
 #include "../plum.h"
+#include "engine.h"
+
+#ifdef PLUM_WIN32
+#define NOMINMAX
+#include <SDL_syswm.h>
+#endif
+
+#include <SDL.h>
 
 namespace plum
 {
     Engine::Engine()
-        : initialized(false)
+        : initialized(false), config("plum.cfg")
     {
-        logFormat(">> Initializing...\r\n");
+        logFormat(">> Initializing...\n");
 
-        logFormat("    Loading config settings...");
-        config.init("plum.cfg", "config");
+        auto xres = config.get<int>("xres", 320);
+        auto yres = config.get<int>("yres", 240);
+        auto windowed = config.get<bool>("windowed", true);
 
-        auto xres = config.hasValue("xres") ? config.getIntValue("xres") : 320;
-        auto yres = config.hasValue("yres") ? config.getIntValue("yres") : 240;
-        auto windowed = config.hasValue("windowed") ? config.getBoolValue("windowed") : true;
-
-        logFormat(" OK!\r\n");
-        logFormat("    (Settings: %dx%d resolution, %s mode)\r\n\r\n", xres, yres, windowed ? "windowed" : "fullscreen");
+        logFormat("    (Settings: %dx%d resolution, %s mode)\n\n", xres, yres, windowed ? "windowed" : "fullscreen");
 
         logFormat("    Initializing SDL...");
         if(SDL_Init(SDL_INIT_TIMER | SDL_INIT_VIDEO | SDL_INIT_JOYSTICK | SDL_INIT_NOPARACHUTE) != 0)
         {
-            quit("Couldn't initialize SDL.\r\n");
+            quit("Couldn't initialize SDL.\n");
         }
 
 #ifdef PLUM_WIN32
@@ -35,52 +39,52 @@ namespace plum
         }
 #endif
 
-        SDL_ShowCursor((config.hasValue("hide_cursor") && config.getBoolValue("hide_cursor")) ? SDL_DISABLE : SDL_ENABLE);
+        SDL_ShowCursor(config.get<bool>("hide_cursor", false) ? SDL_DISABLE : SDL_ENABLE);
 
-        logFormat(" OK!\r\n");
+        logFormat(" OK!\n");
 
         logFormat("    Initializing video engine...");
         setTitle("Plum");
         video.startup();
         video.setResolution(xres, yres, windowed);
-        logFormat(" OK!\r\n");
+        logFormat(" OK!\n");
 
         logFormat("    Initializing sound engine...");
-        audio.startup((config.hasValue("no_sound") && config.getBoolValue("no_sound")));
-        logFormat(" OK!\r\n");
+        audio.startup(config.get<bool>("no_sound", false));
+        logFormat(" OK!\n");
 
         destroyed = false;
         initialized = true;
-        logFormat(">> Initialization complete!\r\n\r\n");
+        logFormat(">> Initialization complete!\n\n");
     }
 
     Engine::~Engine()
     {
         if(!initialized)
         {
-            logFormat("\r\n>> Shutdown before program was fully initialized, probably means fatal errors. Uh oh!\r\n");
+            logFormat("\n>> Shutdown before program was fully initialized, probably means fatal errors. Uh oh!\n");
             return;
         }
-        logFormat("\r\n>> Destroying...\r\n");
+        logFormat("\n>> Destroying...\n");
 
         logFormat("    Destroying sound engine...");
         audio.shutdown();
-        logFormat(" OK!\r\n");
+        logFormat(" OK!\n");
 
         logFormat("    Destroying video engine...");
         video.shutdown();
-        logFormat(" OK!\r\n");
+        logFormat(" OK!\n");
 
         logFormat("    Destroying SDL...");
         SDL_Quit();
-        logFormat(" OK!\r\n");
+        logFormat(" OK!\n");
 
-        logFormat(">> Destroyed!\r\n");
+        logFormat(">> Destroyed!\n");
     }
 
     void Engine::quit(std::string message) 
     {
-        logFormat("\r\n>> Shutdown requested");
+        logFormat("\n>> Shutdown requested");
         if(message.length())
         {
             // If we're initialized enough, we can draw the error on-screen!
@@ -88,7 +92,7 @@ namespace plum
             {
             }
 
-            logFormat(", with quit message:\r\n%s", message.c_str());
+            logFormat(", with quit message:\n%s", message.c_str());
             fprintf(stderr, "%s", message.c_str());
 #ifdef PLUM_WIN32
             SDL_SysWMinfo info;
@@ -99,8 +103,26 @@ namespace plum
 #endif
             throw SystemExit(1);
         }
-        logFormat(".\r\n");
+        logFormat(".\n");
         throw SystemExit(0);
+    }
+
+    size_t Engine::addUpdateHook(const std::function<void()>& hook)
+    {
+        updateHooks.push_back(hook);
+        return updateHooks.size() - 1;
+    }
+
+    void Engine::removeUpdateHook(size_t index)
+    {
+        if(index < 0 && index >= updateHooks.size())
+        {
+            throw std::out_of_range("attempt to remove invalid index");
+        }
+        else
+        {
+            updateHooks.erase(updateHooks.begin() + index);
+        }
     }
 
     void Engine::handleMouseButtonEvent(SDL_MouseButtonEvent e)
@@ -173,7 +195,7 @@ namespace plum
         }
     }
 
-    void Engine::refresh(Script& script)
+    void Engine::refresh()
     {
         poll();
         SDL_GL_SwapBuffers();
@@ -194,16 +216,9 @@ namespace plum
         audio.update();
         timer.update();
 
-
-        script.stepGarbageCollector();
-        //std::string cap = titlePrefix + " - FPS: " + integerToString(timer.fps);
-        //SDL_WM_SetCaption(cap.c_str(), cap.c_str());
-
-        // Update the input hooks, one by one.
-        // The input hook wrapper stuff makes me sick inside somewhat.
-        for(uint32_t i = 0; i < script.inputHooks.size(); i++)
+        for(auto it = updateHooks.begin(), end = updateHooks.end(); it != end; ++it)
         {
-            script.processInputHook(script.inputHooks[i]);
+            (*it)();
         }
 
         if((key[KEY_LALT].isPressed() || key[KEY_RALT].isPressed()) && (key[KEY_F4].isPressed() || key[KEY_X].isPressed()))

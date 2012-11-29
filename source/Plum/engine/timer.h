@@ -1,5 +1,7 @@
 #pragma once
 
+#include "input.h"
+
 namespace plum
 {
     const int TIMER_FAST_MULTIPLIER = 4;

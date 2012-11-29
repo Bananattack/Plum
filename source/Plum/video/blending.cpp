@@ -1,33 +1,61 @@
+#include <SDL_opengl.h>
+
 #include "../plum.h"
+#include "blending.h"
 
 namespace plum
 {
-    int _globalAlpha = 255;
-    BlendMode _blendMode = BlendPreserve;
-
-    void (PLUM_CALLBACK *glBlendEquationEXT)(int);
-
-    void PLUM_CALLBACK NoBlendExtension(int a)
+    namespace
     {
+        int globalAlpha = 255;
+        BlendMode blendMode = BlendPreserve;
     }
 
     BlendMode getBlendMode()
     {
-        return _blendMode;
+        return blendMode;
     }
 
     void setBlendMode(BlendMode mode)
     {
-        _blendMode = mode;
+        blendMode = mode;
     }
 
     int getOpacity()
     {
-        return _globalAlpha;
+        return globalAlpha;
     }
 
     void setOpacity(int alpha)
     {
-        _globalAlpha = alpha;
+        globalAlpha = alpha;
+    }
+
+    void useHardwareBlender(BlendMode mode)
+    {
+        switch(mode)
+        {
+            case BlendOpaque:
+                glDisable(GL_BLEND);
+                break;
+            case BlendMerge:
+            case BlendPreserve:
+            default:
+                glEnable(GL_BLEND);
+                glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                break;
+            case BlendAdd:
+                glEnable(GL_BLEND);
+                glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+                break;
+            case BlendSubtract:
+                glDisable(GL_BLEND);
+                break;
+        }
+    }
+
+    void useHardwareColor(int r, int g, int b, int a) 
+    {
+        return glColor4ub(r, g, b, a * globalAlpha / 255);
     }
 }

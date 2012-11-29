@@ -1,4 +1,6 @@
 #include "../plum.h"
+#include "../video/video.h"
+#include "script.h"
 
 namespace plum
 {
@@ -63,7 +65,7 @@ namespace plum
             int x = luaL_checkint(L, 2);
             int y = luaL_checkint(L, 3);
             Color color = luaL_checkint(L, 4);
-            BlendMode mode = (BlendMode) luaL_optint(L, 5, BlendUnspecified);
+            BlendMode mode = (BlendMode) script::get<int>(L, 5, BlendUnspecified);
 
             script::instance(L).engine().video.setPixel(x, y, color, mode);
             return 0;
@@ -77,7 +79,7 @@ namespace plum
             int x2 = luaL_checkint(L, 4);
             int y2 = luaL_checkint(L, 5);
             Color color = luaL_checkint(L, 6);
-            BlendMode mode = (BlendMode) luaL_optint(L, 7, BlendUnspecified);
+            BlendMode mode = (BlendMode) script::get<int>(L, 7, BlendUnspecified);
 
             script::instance(L).engine().video.rect(x, y, x2, y2, color, mode);
             return 0;
@@ -91,7 +93,7 @@ namespace plum
             int x2 = luaL_checkint(L, 4);
             int y2 = luaL_checkint(L, 5);
             Color color = luaL_checkint(L, 6);
-            BlendMode mode = (BlendMode) luaL_optint(L, 7, BlendUnspecified);
+            BlendMode mode = (BlendMode) script::get<int>(L, 7, BlendUnspecified);
 
             script::instance(L).engine().video.solidRect(x, y, x2, y2, color, mode);
             return 0;
@@ -105,7 +107,7 @@ namespace plum
             int x2 = luaL_checkint(L, 4);
             int y2 = luaL_checkint(L, 5);
             Color color = luaL_checkint(L, 6);
-            BlendMode mode = (BlendMode) luaL_optint(L, 7, BlendUnspecified);
+            BlendMode mode = (BlendMode) script::get<int>(L, 7, BlendUnspecified);
 
             script::instance(L).engine().video.line(x, y, x2, y2, color, mode);
             return 0;
@@ -120,7 +122,7 @@ namespace plum
             int y2 = luaL_checkint(L, 5);
             Color color = luaL_checkint(L, 6);
             Color color2 = luaL_checkint(L, 7);
-            BlendMode mode = (BlendMode) luaL_optint(L, 8, BlendUnspecified);
+            BlendMode mode = (BlendMode) script::get<int>(L, 8, BlendUnspecified);
 
             script::instance(L).engine().video.horizontalGradientRect(x, y, x2, y2, color, color2, mode);
             return 0;
@@ -135,7 +137,7 @@ namespace plum
             int y2 = luaL_checkint(L, 5);
             Color color = luaL_checkint(L, 6);
             Color color2 = luaL_checkint(L, 7);
-            BlendMode mode = (BlendMode) luaL_optint(L, 8, BlendUnspecified);
+            BlendMode mode = (BlendMode) script::get<int>(L, 8, BlendUnspecified);
 
             script::instance(L).engine().video.verticalGradientRect(x, y, x2, y2, color, color2, mode);
             return 0;
@@ -150,7 +152,7 @@ namespace plum
             int xrad = luaL_checkint(L, 4);
             int yrad = luaL_checkint(L, 5);
             Color color = luaL_checkint(L, 6);
-            BlendMode mode = (BlendMode) luaL_optint(L, 7, BlendUnspecified);
+            BlendMode mode = (BlendMode) script::get<int>(L, 7, BlendUnspecified);
 
             script::instance(L).engine().video.circle(x, y, xrad, yrad, color, mode);
             return 0;
@@ -164,7 +166,7 @@ namespace plum
             int xrad = luaL_checkint(L, 4);
             int yrad = luaL_checkint(L, 5);
             Color color = luaL_checkint(L, 6);
-            BlendMode mode = (BlendMode) luaL_optint(L, 7, BlendUnspecified);
+            BlendMode mode = (BlendMode) script::get<int>(L, 7, BlendUnspecified);
 
             script::instance(L).engine().video.solidCircle(x, y, xrad, yrad, color, mode);
             return 0;

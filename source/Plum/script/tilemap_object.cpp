@@ -1,5 +1,6 @@
 #include "../plum.h"
-
+#include "../engine/tilemap.h"
+#include "script.h"
 
 namespace plum
 {
@@ -88,7 +89,7 @@ namespace plum
             auto m = script::ptr<Tilemap>(L, 1);
             int tx = luaL_checkint(L, 2);
             int ty = luaL_checkint(L, 3);
-            Tile t = m->getTile(tx, ty);
+            unsigned int t = m->getTile(tx, ty);
 
             if(t != Tilemap::InvalidTile)
             {
@@ -107,7 +108,7 @@ namespace plum
             auto m = script::ptr<Tilemap>(L, 1);
             int tx = luaL_checkint(L, 2);
             int ty = luaL_checkint(L, 3);
-            Tile tileIndex = (Tile) luaL_checkint(L, 4);
+            unsigned int tileIndex = luaL_checkint(L, 4);
             m->setTile(tx, ty, tileIndex);
             return 0;
         }
@@ -119,7 +120,7 @@ namespace plum
             int ty = luaL_checkint(L, 3);
             int tx2 = luaL_checkint(L, 4);
             int ty2 = luaL_checkint(L, 5);
-            Tile tileIndex = (Tile) luaL_checkint(L, 6);
+            unsigned int tileIndex = luaL_checkint(L, 6);
             m->rect(tx, ty, tx2, ty2, tileIndex);
             return 0;
         }
@@ -131,7 +132,7 @@ namespace plum
             int ty = luaL_checkint(L, 3);
             int tx2 = luaL_checkint(L, 4);
             int ty2 = luaL_checkint(L, 5);
-            Tile tileIndex = (Tile) luaL_checkint(L, 6);
+            unsigned int tileIndex = luaL_checkint(L, 6);
             m->solidRect(tx, ty, tx2, ty2, tileIndex);
             return 0;
         }
@@ -155,8 +156,8 @@ namespace plum
             int destY = luaL_checkint(L, 5);
             int tilesWide = luaL_checkint(L, 6);
             int tilesHigh = luaL_checkint(L, 7);
-            BlendMode mode = (BlendMode) luaL_optint(L, 8, BlendUnspecified);
-            Color tint = luaL_optint(L, 9, Color::White);
+            BlendMode mode = (BlendMode) script::get<int>(L, 8, BlendUnspecified);
+            Color tint = script::get<int>(L, 9, Color::White);
 
             m->blit(worldX, worldY, destX, destY, tilesWide, tilesHigh, mode, tint);
             return 0;

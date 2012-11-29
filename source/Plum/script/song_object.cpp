@@ -1,4 +1,5 @@
 #include "../plum.h"
+#include "script.h"
 
 namespace plum
 {
@@ -49,7 +50,7 @@ namespace plum
                 return 0;
             }
 
-            int volume = luaL_optint(L, 2, 100);
+            int volume = script::get<int>(L, 2, 100);
             script::instance(L).engine().audio.playSong(s);
             return 0;
         }

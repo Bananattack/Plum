@@ -1,6 +1,14 @@
 #pragma once
+
+#include <string>
+
+#include "color.h"
+#include "blending.h"
+
 namespace plum
 {
+    class Canvas;
+    struct Transform;
     class Image
     {
         private:
@@ -30,7 +38,7 @@ namespace plum
             // The GL target type
             int target; 
             // The GL texture ID
-            GLuint textureID;
+            unsigned int textureID;
             // The width and height of the canvas
             int canvasWidth, canvasHeight;
             // The width and height of the texture (usually is a power of two)
@@ -44,7 +52,6 @@ namespace plum
             void setTextureHeight(int height);
         public:
             Image(const std::string& filename);
-            Image(const char* filename);
             Image(Canvas* canvas);
 
             ~Image();

@@ -1,16 +1,18 @@
 #include "plum.h"
+#include "engine/engine.h"
+#include "script/script.h"
 
 #include <cstdlib>
 #include <stdexcept>
 
 int main(int argc, char** argv)
 {
+    plum::clearLog();
     try
     {
         plum::Engine engine;
         plum::Script script(engine);
 
-        plum::clearLog();
     //    freopen("stdout.log", "w", stdout);
     //    freopen("stderr.log", "w", stderr);
         try

@@ -1,15 +1,18 @@
+#include <SDL_opengl.h>
+
+#include "image.h"
+
 #include "../plum.h"
+#include "canvas.h"
+#include "transform.h"
 
 namespace plum
 {
     Image::Image(const std::string& filename)
     {
-        init(filename.c_str());
-    }
-
-    Image::Image(const char* filename)
-    {
-        init(filename);
+        Canvas* canvas = Canvas::load(filename);
+        init(canvas);
+        delete canvas;
     }
 
     Image::Image(Canvas* canvas)
@@ -21,13 +24,6 @@ namespace plum
     {
         glDeleteTextures(1, &textureID);
         delete textureCanvas;
-    }
-
-    void Image::init(const char* filename)
-    {
-        Canvas* canvas = new Canvas(filename);
-        init(canvas);
-        delete canvas;
     }
 
     void Image::init(Canvas* canvas)
