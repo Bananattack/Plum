@@ -1,6 +1,8 @@
 #include "../plum.h"
 #include "../common/file.h"
-#include "../audio/audio_audiere.h"
+#include "audio.h"
+
+#include <audiere.h>
 
 namespace plum
 {
@@ -39,37 +41,213 @@ namespace plum
             {
                 return file->tell();
             }
+
         private:
             plum::File* file;
     };
 
-    void Audio::startup(bool disableSound)
+    class AudiereSound : public Sound
     {
-        this->cleanupSteps = 0;
-        this->disableSound = disableSound;
-        if(!disableSound)
+        public:
+            audiere::SampleBufferPtr buffer;
+            AudiereSound(audiere::SampleBufferPtr buffer)
+                : buffer(buffer)
+            {
+            }
+    };
+
+    class AudiereChannel : public Channel
+    {
+        public:
+            audiere::OutputStreamPtr stream;
+            bool shouldDispose;
+
+            AudiereChannel(audiere::OutputStreamPtr channel)
+            {
+                this->stream = channel;
+                shouldDispose = false;
+            }
+
+            void dispose()
+            {
+                shouldDispose = true;
+            }
+
+            void resume()
+            {
+                stream->play();
+            }
+
+            void pause()
+            {
+                stream->stop();
+            }
+       
+            void stop()
+            {
+                stream->stop();
+                stream->reset();
+            }
+
+            bool isPlaying() const
+            {
+                return stream->isPlaying();
+            }
+
+            double getVolume() const
+            {
+                return stream->getVolume();
+            }
+
+            double getPitch() const
+            {
+                return stream->getPitchShift();
+            }
+
+            void setVolume(double volume)
+            {
+                stream->setVolume((float) volume);
+            }
+
+            void setPitch(double pitch)
+            {
+                stream->setPitchShift((float) pitch);
+            }
+    };
+
+    class AudiereSong : public Song
+    {
+        public:
+            audiere::SampleSourcePtr sample;
+            Channel* channel;
+            double volume;
+
+            AudiereSong() : sample(0), channel(0), volume(1.0)
+            {
+            }
+
+            ~AudiereSong()
+            {
+                stop();
+            }
+
+            void resume()
+            {
+                if(channel)
+                {
+                    channel->resume();
+                }
+            }
+
+            void pause()
+            {
+                if(channel)
+                {
+                    channel->pause();
+                }
+            }
+
+            void stop()
+            {
+                if(channel)
+                {
+                    channel->stop();
+                    channel->dispose();
+                    channel = NULL;
+                }
+            }
+
+            bool isPlaying() const
+            {
+                return channel && channel->isPlaying();
+            }
+
+            double getVolume() const
+            {
+                return this->volume;
+            }
+
+            double getPitch() const
+            {
+                return channel->getPitch();
+            }
+
+            void setVolume(double volume)
+            {
+                this->volume = volume;
+                if(channel)
+                {
+                    channel->setVolume(volume);
+                }
+            }
+
+            void setPitch(double pitch)
+            {
+                channel->setPitch(pitch);
+            }
+    };
+
+    class AudiereAudio : public Audio
+    {
+        private:
+            static const int STEPS_TO_CLEANUP = 50;
+            int cleanupSteps;
+
+            double masterPitch;
+
+            bool disabled;
+            audiere::AudioDevicePtr device;
+            std::vector<audiere::OutputStreamPtr> soundStreamPool;
+            std::vector<AudiereChannel*> activeChannels;
+
+            int addSoundStream(audiere::OutputStreamPtr stream);
+            Channel* loadChannel(audiere::OutputStreamPtr stream);
+
+        public:
+            AudiereAudio(audiere::AudioDevicePtr device, bool disabled);
+            ~AudiereAudio();
+
+            double getMasterPitch() const;
+            void setMasterPitch(double pitch);
+
+            Sound* loadSound(const std::string& filename);
+            Song* loadSong(const std::string& filename);
+            Channel* loadChannel(int handle);
+
+            int playSound(Sound* sound, double volume = 1.0);
+            void playSong(Song* song);
+
+            void update();
+    };
+
+    Audio* Audio::create(bool disabled)
+    {
+        audiere::AudioDevicePtr device;
+        if(!disabled)
         {
-            audioDevice = audiere::OpenDevice();
+            device = audiere::OpenDevice();
         }
-        // Failure (or sound disabled). Give no sound instead.
-        if (!audioDevice)
+        if(!device)
         {
-            audioDevice = audiere::OpenDevice("null", "");
+            device = audiere::OpenDevice("null", "");
         }
-        if (!audioDevice)
-        {
-            throw std::runtime_error("Audiere must be broken. Failed to initialize, even with no sound.");
-        }
+        return new AudiereAudio(device, disabled);
     }
 
-    void Audio::shutdown()
+    AudiereAudio::AudiereAudio(audiere::AudioDevicePtr device, bool disabled)
+        : cleanupSteps(0), masterPitch(1.0),
+        disabled(disabled), device(device)
     {
-        audioDevice = 0;
     }
 
-    void Audio::update()
+    AudiereAudio::~AudiereAudio()
     {
-        if(!disableSound)
+        device = nullptr;
+    }
+
+    void AudiereAudio::update()
+    {
+        if(!disabled)
         {
             if(++cleanupSteps == STEPS_TO_CLEANUP)
             {
@@ -87,11 +265,16 @@ namespace plum
             }
 
             // Update the audio device.
-            audioDevice->update();
+            device->update();
         }
     }
 
-    void Audio::setMasterPitch(double pitch)
+    double AudiereAudio::getMasterPitch() const
+    {
+        return masterPitch;
+    }
+
+    void AudiereAudio::setMasterPitch(double pitch)
     {
         masterPitch = pitch;
         for(uint32_t i = 0; i < activeChannels.size(); i++)
@@ -111,43 +294,41 @@ namespace plum
         return;
     }
 
-    Sound* Audio::loadSound(const std::string& filename)
+    Sound* AudiereAudio::loadSound(const std::string& filename)
     {
-        if(disableSound)
+        if(disabled)
         {
-            return NULL;
+            return nullptr;
         }
 
         audiere::FilePtr file = new AudierePlumFile(new File(filename, FileRead));
         if(!file.get())
         {
-            return NULL;
+            return nullptr;
         }
-        audiere::SampleSourcePtr sample = audiere::OpenSampleSource(file, audiere::FF_AUTODETECT);
 
+        audiere::SampleSourcePtr sample = audiere::OpenSampleSource(file, audiere::FF_AUTODETECT);
         if(!sample)
         {
-            return NULL;
+            return nullptr;
         }
 
         audiere::SampleBufferPtr buffer = audiere::CreateSampleBuffer(sample);
         if(!buffer)
         {
-            return NULL;
+            return nullptr;
         }
 
-        Sound* sound = new Sound();
-        sound->buffer = buffer;
-        return sound;
+        return new AudiereSound(buffer);
     }
 
     // Attempt to allocate a new stream for a sound effect,
     // reusing an existing array slot, where possible
     // Returns the handle index for the added stream, or -1 on failure (no sound, bad stream).
     // Handle may become invalidated if the stream becomes null, or the sound stream finishes playing.
-    int Audio::addSoundStream(audiere::OutputStreamPtr stream)
+    int AudiereAudio::addSoundStream(audiere::OutputStreamPtr stream)
     {
-        if(disableSound)
+        if(disabled)
         {
             return -1;
         }
@@ -187,9 +368,9 @@ namespace plum
         }
     }
 
-    int Audio::playSound(Sound* sound, double volume)
+    int AudiereAudio::playSound(Sound* sound, double volume)
     {
-        if(disableSound)
+        if(disabled)
         {
             return 0;
         }
@@ -198,7 +379,8 @@ namespace plum
             return 0;
         }
 
-        audiere::OutputStreamPtr stream = audioDevice->openStream(sound->buffer->openStream());
+        auto audiereSound = (AudiereSound*) sound;
+        auto stream = device->openStream(audiereSound->buffer->openStream());
         if(!stream)
         {
             return 0;
@@ -209,81 +391,71 @@ namespace plum
         return handle;
     }
 
-    Channel* Audio::createChannel(int handle)
+    Channel* AudiereAudio::loadChannel(int handle)
     {
         if(handle >= 0 && (size_t) handle < soundStreamPool.size())
         {
-            return createChannel(soundStreamPool[handle]);
+            return loadChannel(soundStreamPool[handle]);
         }
-        return NULL;
+        return nullptr;
     }
 
-    Channel* Audio::createChannel(audiere::OutputStreamPtr stream)
+    Channel* AudiereAudio::loadChannel(audiere::OutputStreamPtr stream)
     {
-        if(disableSound)
+        if(disabled || !stream)
         {
-            return NULL;
-        }
-        if(!stream)
-        {
-            return NULL;
+            return nullptr;
         }
 
-
-        Channel* chan = new Channel(stream);
+        auto chan = new AudiereChannel(stream);
         activeChannels.push_back(chan);
         return chan;
     }
 
-    Song* Audio::loadSong(const std::string& filename)
+    Song* AudiereAudio::loadSong(const std::string& filename)
     {
-        if(disableSound)
+        if(disabled)
         {
-            return NULL;
+            return nullptr;
         }
 
-        audiere::FilePtr file = new AudierePlumFile(new File(filename, FileRead));
+        auto file = new AudierePlumFile(new File(filename, FileRead));
         if(!file)
         {
-            return NULL;
+            return nullptr;
         }
 
-        audiere::SampleSourcePtr sample = audiere::OpenSampleSource(file, audiere::FF_AUTODETECT);
-
+        auto sample = audiere::OpenSampleSource(file, audiere::FF_AUTODETECT);
         if(!sample)
         {
-            return NULL;
+            return nullptr;
         }
 
-        Song* song = new Song();
+        auto song = new AudiereSong();
         song->sample = sample;
         song->volume = 1.0;
         song->channel = NULL;
         return song;
     }
 
-    void Audio::playSong(Song* song)
+    void AudiereAudio::playSong(Song* song)
     {
-        if(disableSound)
+        AudiereSong* audiereSong = (AudiereSong*) song;
+        if(disabled || !song)
         {
             return;
         }
-        if(!song)
-        {
-            return;
-        }
-        song->stop();
+        audiereSong->stop();
 
-        audiere::OutputStreamPtr stream = audioDevice->openStream(song->sample.get());
-
+        auto stream = device->openStream(audiereSong->sample.get());
         if(!stream)
         {
             return;
         }
 
-        song->channel = createChannel(stream);
+        audiereSong->channel = loadChannel(stream);
         stream->setRepeat(true);
-        stream->setVolume((float) song->getVolume());
+        stream->setVolume((float) audiereSong->getVolume());
         stream->play();
     }
 }

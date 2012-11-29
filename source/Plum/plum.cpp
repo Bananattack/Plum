@@ -11,7 +11,7 @@ int main(int argc, char** argv)
     try
     {
         plum::Engine engine;
-        plum::Script script(engine);
+        plum::Script script(&engine);
 
     //    freopen("stdout.log", "w", stdout);
     //    freopen("stderr.log", "w", stderr);

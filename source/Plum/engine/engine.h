@@ -6,7 +6,6 @@
 
 #include "../common/config.h"
 #include "../video/video.h"
-#include "../audio/audio_audiere.h"
 #include "timer.h"
 #include "mouse.h"
 #include "keyboard.h"
@@ -35,6 +34,7 @@ namespace plum
             int status_;
     };
 
+    class Audio;
     class Engine
     {
         private:
@@ -48,7 +48,7 @@ namespace plum
         public:
             Config config;
             Video video;
-            Audio audio;
+            Audio* audio;
             Timer timer;
             Mouse mouse;
             KeyInput key[KEY_MAX_COUNT];

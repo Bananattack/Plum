@@ -1,5 +1,9 @@
 #pragma once
 
+#include <string>
+#include <vector>
+#include <cstdint>
+
 extern "C"
 {
     // Lua!
@@ -8,10 +12,9 @@ extern "C"
     #include <lua/lauxlib.h>
 }
 
-#include "../engine/engine.h"
-
 namespace plum
 {
+    class Engine;
     class Script
     {
         private:
@@ -32,7 +35,7 @@ namespace plum
             };
             std::vector<InputHook> inputHooks;
 
-            Script(Engine& engine);
+            Script(Engine* engine);
             ~Script();
 
             Engine& engine()

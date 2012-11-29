@@ -140,6 +140,7 @@
     <ClCompile Include="engine\timer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="audio\audio.h" />
     <ClInclude Include="plum.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="video\blending.h" />
@@ -148,7 +149,6 @@
     <ClInclude Include="video\image.h" />
     <ClInclude Include="video\transform.h" />
     <ClInclude Include="video\video.h" />
-    <ClInclude Include="audio\audio_audiere.h" />
     <ClInclude Include="script\script.h" />
     <ClInclude Include="common\common.h" />
     <ClInclude Include="common\config.h" />

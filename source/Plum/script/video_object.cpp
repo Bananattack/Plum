@@ -1,5 +1,6 @@
 #include "../plum.h"
 #include "../video/video.h"
+#include "../engine/engine.h"
 #include "script.h"
 
 namespace plum

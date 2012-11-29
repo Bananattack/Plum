@@ -1,4 +1,5 @@
 #include "../plum.h"
+#include "../audio/audio.h"
 #include "engine.h"
 
 #ifdef PLUM_WIN32
@@ -50,7 +51,7 @@ namespace plum
         logFormat(" OK!\n");
 
         logFormat("    Initializing sound engine...");
-        audio.startup(config.get<bool>("no_sound", false));
+        audio = Audio::create(config.get<bool>("no_sound", false));
         logFormat(" OK!\n");
 
         destroyed = false;
@@ -68,7 +69,7 @@ namespace plum
         logFormat("\n>> Destroying...\n");
 
         logFormat("    Destroying sound engine...");
-        audio.shutdown();
+        delete audio;
         logFormat(" OK!\n");
 
         logFormat("    Destroying video engine...");
@@ -203,17 +204,17 @@ namespace plum
         timer.processInput(key[KEY_TILDE], key[KEY_LSHIFT]);
         if(key[KEY_TILDE].isPressed())
         {
-            audio.setMasterPitch(1.0 * TIMER_FAST_MULTIPLIER);
+            audio->setMasterPitch(1.0 * TIMER_FAST_MULTIPLIER);
         }
         else if(key[KEY_LSHIFT].isPressed())
         {
-            audio.setMasterPitch(1.0 / TIMER_SLOW_DIVISOR);
+            audio->setMasterPitch(1.0 / TIMER_SLOW_DIVISOR);
         }
         else
         {
-            audio.setMasterPitch(1.0);
+            audio->setMasterPitch(1.0);
         }
-        audio.update();
+        audio->update();
         timer.update();
 
         for(auto it = updateHooks.begin(), end = updateHooks.end(); it != end; ++it)

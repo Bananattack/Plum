@@ -1,4 +1,5 @@
 #include "../plum.h"
+#include "../engine/engine.h"
 #include "script.h"
 
 namespace plum

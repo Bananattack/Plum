@@ -1,7 +1,9 @@
 #include <vector>
 #include <unordered_map>
+
 #include "../plum.h"
 #include "../common/file.h"
+#include "../engine/engine.h"
 #include "script.h"
 
 namespace plum
@@ -17,8 +19,8 @@ namespace plum
         }
     }
 
-    Script::Script(Engine& engine)
-        : L(luaL_newstate()), engine_(&engine)
+    Script::Script(Engine* engine)
+        : L(luaL_newstate()), engine_(engine)
     {
         //lua_atpanic(lua, panic);
         luaL_openlibs(L);

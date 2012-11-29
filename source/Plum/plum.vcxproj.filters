@@ -173,9 +173,6 @@
     <ClInclude Include="video\transform.h">
       <Filter>Header Files\video</Filter>
     </ClInclude>
-    <ClInclude Include="audio\audio_audiere.h">
-      <Filter>Header Files\audio</Filter>
-    </ClInclude>
     <ClInclude Include="script\script.h">
       <Filter>Header Files\script</Filter>
     </ClInclude>
@@ -217,6 +214,9 @@
     </ClInclude>
     <ClInclude Include="video\video.h">
       <Filter>Header Files\video</Filter>
+    </ClInclude>
+    <ClInclude Include="audio\audio.h">
+      <Filter>Header Files\audio</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
