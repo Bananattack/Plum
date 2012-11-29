@@ -1,8 +1,8 @@
-#include "../plum.h"
-#include "../audio/audio.h"
+#include "log.h"
 #include "engine.h"
+#include "../audio/audio.h"
 
-#ifdef PLUM_WIN32
+#ifdef _WIN32
 #define NOMINMAX
 #include <SDL_syswm.h>
 #endif
@@ -28,7 +28,7 @@ namespace plum
             quit("Couldn't initialize SDL.\n");
         }
 
-#ifdef PLUM_WIN32
+#ifdef _WIN32
         {
             SDL_SysWMinfo info;
             SDL_VERSION(&info.version);
@@ -95,7 +95,7 @@ namespace plum
 
             logFormat(", with quit message:\n%s", message.c_str());
             fprintf(stderr, "%s", message.c_str());
-#ifdef PLUM_WIN32
+#ifdef _WIN32
             SDL_SysWMinfo info;
             SDL_VERSION(&info.version);
             HWND hWnd = SDL_GetWMInfo(&info) ? info.window : HWND_DESKTOP;

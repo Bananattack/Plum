@@ -2,7 +2,7 @@
 
 #include "image.h"
 
-#include "../plum.h"
+
 #include "canvas.h"
 #include "transform.h"
 

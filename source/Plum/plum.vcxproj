@@ -103,6 +103,10 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="engine\config.cpp" />
+    <ClCompile Include="engine\directory.cpp" />
+    <ClCompile Include="engine\file.cpp" />
+    <ClCompile Include="engine\log.cpp" />
     <ClCompile Include="engine\spritesheet.cpp" />
     <ClCompile Include="engine\tilemap.cpp" />
     <ClCompile Include="plum.cpp" />
@@ -130,10 +134,6 @@
     <ClCompile Include="script\timer_object.cpp" />
     <ClCompile Include="script\transform_object.cpp" />
     <ClCompile Include="script\video_object.cpp" />
-    <ClCompile Include="common\common.cpp" />
-    <ClCompile Include="common\config.cpp" />
-    <ClCompile Include="common\directory.cpp" />
-    <ClCompile Include="common\file.cpp" />
     <ClCompile Include="engine\engine.cpp" />
     <ClCompile Include="engine\font.cpp" />
     <ClCompile Include="engine\input.cpp" />
@@ -141,7 +141,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="audio\audio.h" />
-    <ClInclude Include="plum.h" />
+    <ClInclude Include="engine\config.h" />
+    <ClInclude Include="engine\directory.h" />
+    <ClInclude Include="engine\file.h" />
+    <ClInclude Include="engine\log.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="video\blending.h" />
     <ClInclude Include="video\canvas.h" />
@@ -150,10 +153,6 @@
     <ClInclude Include="video\transform.h" />
     <ClInclude Include="video\video.h" />
     <ClInclude Include="script\script.h" />
-    <ClInclude Include="common\common.h" />
-    <ClInclude Include="common\config.h" />
-    <ClInclude Include="common\directory.h" />
-    <ClInclude Include="common\file.h" />
     <ClInclude Include="engine\engine.h" />
     <ClInclude Include="engine\font.h" />
     <ClInclude Include="engine\input.h" />

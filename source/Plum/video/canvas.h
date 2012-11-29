@@ -6,7 +6,6 @@
 
 #include "color.h"
 #include "blending.h"
-#include "../common/file.h"
 
 namespace plum
 {

@@ -14,9 +14,6 @@
     <Filter Include="Source Files\script">
       <UniqueIdentifier>{8a97e8be-3fa4-4d2d-974c-70dc2c2397b8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\common">
-      <UniqueIdentifier>{1c7772f4-c0f7-44fc-89f5-d169aab442f1}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\engine">
       <UniqueIdentifier>{51e1dbba-1bb7-4a45-a20d-721c2dda7b0f}</UniqueIdentifier>
     </Filter>
@@ -32,9 +29,6 @@
     </Filter>
     <Filter Include="Header Files\script">
       <UniqueIdentifier>{38adebc1-9a33-4662-9abd-d5249c8333de}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\common">
-      <UniqueIdentifier>{624fe78e-87e9-42d0-aa2a-d2a29f0dd7c8}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\engine">
       <UniqueIdentifier>{d726bf1a-d4e2-4f7d-8faf-134cabbc905d}</UniqueIdentifier>
@@ -117,18 +111,6 @@
     <ClCompile Include="script\video_object.cpp">
       <Filter>Source Files\script</Filter>
     </ClCompile>
-    <ClCompile Include="common\common.cpp">
-      <Filter>Source Files\common</Filter>
-    </ClCompile>
-    <ClCompile Include="common\config.cpp">
-      <Filter>Source Files\common</Filter>
-    </ClCompile>
-    <ClCompile Include="common\directory.cpp">
-      <Filter>Source Files\common</Filter>
-    </ClCompile>
-    <ClCompile Include="common\file.cpp">
-      <Filter>Source Files\common</Filter>
-    </ClCompile>
     <ClCompile Include="engine\engine.cpp">
       <Filter>Source Files\engine</Filter>
     </ClCompile>
@@ -150,11 +132,20 @@
     <ClCompile Include="video\canvas.cpp">
       <Filter>Source Files\video</Filter>
     </ClCompile>
+    <ClCompile Include="engine\config.cpp">
+      <Filter>Source Files\engine</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\directory.cpp">
+      <Filter>Source Files\engine</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\file.cpp">
+      <Filter>Source Files\engine</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\log.cpp">
+      <Filter>Source Files\engine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="plum.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -175,18 +166,6 @@
     </ClInclude>
     <ClInclude Include="script\script.h">
       <Filter>Header Files\script</Filter>
-    </ClInclude>
-    <ClInclude Include="common\common.h">
-      <Filter>Header Files\common</Filter>
-    </ClInclude>
-    <ClInclude Include="common\config.h">
-      <Filter>Header Files\common</Filter>
-    </ClInclude>
-    <ClInclude Include="common\directory.h">
-      <Filter>Header Files\common</Filter>
-    </ClInclude>
-    <ClInclude Include="common\file.h">
-      <Filter>Header Files\common</Filter>
     </ClInclude>
     <ClInclude Include="engine\engine.h">
       <Filter>Header Files\engine</Filter>
@@ -217,6 +196,18 @@
     </ClInclude>
     <ClInclude Include="audio\audio.h">
       <Filter>Header Files\audio</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\config.h">
+      <Filter>Header Files\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\directory.h">
+      <Filter>Header Files\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\file.h">
+      <Filter>Header Files\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\log.h">
+      <Filter>Header Files\engine</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

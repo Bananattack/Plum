@@ -3,7 +3,6 @@
 #include <sstream>
 #include <string>
 
-#include "../plum.h"
 #include "config.h"
 
 namespace plum

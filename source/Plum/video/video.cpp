@@ -3,7 +3,7 @@
 #include <SDL.h>
 #include <SDL_opengl.h>
 
-#include "../plum.h"
+
 #include "../video/video.h"
 
 namespace plum

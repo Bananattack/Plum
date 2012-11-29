@@ -1,4 +1,4 @@
-#include "../plum.h"
+
 #include "script.h"
 #include "../video/canvas.h"
 

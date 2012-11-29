@@ -4,7 +4,7 @@
 
 #include "tilemap.h"
 
-#include "../plum.h"
+
 #include "spritesheet.h"
 
 namespace plum

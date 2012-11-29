@@ -4,11 +4,11 @@
 #include <stdexcept>
 #include <functional>
 
-#include "../common/config.h"
-#include "../video/video.h"
-#include "timer.h"
 #include "mouse.h"
+#include "timer.h"
+#include "config.h"
 #include "keyboard.h"
+#include "../video/video.h"
 
 namespace plum
 {
