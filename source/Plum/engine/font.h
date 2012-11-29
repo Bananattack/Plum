@@ -28,9 +28,9 @@ namespace plum
             void enableVariableWidth();
             void printChar(int x, int y, char c, BlendMode mode, Color tint);
 
-            void print(int x, int y, const std::string& s, BlendMode mode = BlendUnspecified, Color tint = Color::White);
-            void printRight(int x, int y, const std::string& s, BlendMode mode = BlendUnspecified, Color tint = Color::White);
-            void printCenter(int x, int y, const std::string& s, BlendMode mode = BlendUnspecified, Color tint = Color::White);
+            void print(int x, int y, const std::string& s, BlendMode mode = BlendAlpha, Color tint = Color::White);
+            void printRight(int x, int y, const std::string& s, BlendMode mode = BlendAlpha, Color tint = Color::White);
+            void printCenter(int x, int y, const std::string& s, BlendMode mode = BlendAlpha, Color tint = Color::White);
             
             int lineWidth(const std::string& s, int lineIndex);
             int lineCount(const std::string& s);

@@ -113,7 +113,6 @@
     <ClCompile Include="video\blending.cpp" />
     <ClCompile Include="video\canvas.cpp" />
     <ClCompile Include="video\image.cpp" />
-    <ClCompile Include="video\video.cpp" />
     <ClCompile Include="audio\audio_audiere.cpp" />
     <ClCompile Include="script\canvas_object.cpp" />
     <ClCompile Include="script\directory_object.cpp" />
@@ -138,6 +137,7 @@
     <ClCompile Include="engine\font.cpp" />
     <ClCompile Include="engine\input.cpp" />
     <ClCompile Include="engine\timer.cpp" />
+    <ClCompile Include="video\video_sdl.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="audio\audio.h" />

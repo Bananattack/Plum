@@ -212,7 +212,7 @@ namespace plum
             lua_setfield(L, -2, "Merge");
             lua_pushinteger(L, BlendMerge);
             lua_setfield(L, -2, "Alpha");
-            lua_pushinteger(L, BlendPreserve);
+            lua_pushinteger(L, BlendAlpha);
             lua_setfield(L, -2, "Preserve");
             lua_pushinteger(L, BlendAdd);
             lua_setfield(L, -2, "Add");

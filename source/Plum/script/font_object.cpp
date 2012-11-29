@@ -53,7 +53,7 @@ namespace plum
             auto x = script::get<int>(L, 2);
             auto y = script::get<int>(L, 3);
             auto message = script::get<const char*>(L, 4);
-            BlendMode mode = (BlendMode) script::get<int>(L, 5, BlendUnspecified);
+            BlendMode mode = (BlendMode) script::get<int>(L, 5, BlendAlpha);
             Color tint = script::get<int>(L, 6, Color::White);
 
             font->print(x, y, message, mode, tint);
@@ -66,7 +66,7 @@ namespace plum
             auto x = script::get<int>(L, 2);
             auto y = script::get<int>(L, 3);
             auto message = script::get<const char*>(L, 4);
-            BlendMode mode = (BlendMode) script::get<int>(L, 5, BlendUnspecified);
+            BlendMode mode = (BlendMode) script::get<int>(L, 5, BlendAlpha);
             Color tint = script::get<int>(L, 6, Color::White);
 
             font->printRight(x, y, message, mode, tint);
@@ -79,7 +79,7 @@ namespace plum
             auto x = script::get<int>(L, 2);
             auto y = script::get<int>(L, 3);
             auto message = script::get<const char*>(L, 4);
-            BlendMode mode = (BlendMode) script::get<int>(L, 5, BlendUnspecified);
+            BlendMode mode = (BlendMode) script::get<int>(L, 5, BlendAlpha);
             Color tint = script::get<int>(L, 6, Color::White);
 
             font->printCenter(x, y, message, mode, tint);

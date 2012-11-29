@@ -1,8 +1,6 @@
 #include <SDL_opengl.h>
 
 #include "image.h"
-
-
 #include "canvas.h"
 #include "transform.h"
 
@@ -171,7 +169,6 @@ namespace plum
         double regionS2 = ((double) sourceX2 + 0.5) / textureWidth;
         double regionT2 = ((double) sourceY2 + 0.5) / textureHeight;
 
-        mode = (mode == BlendUnspecified) ? getBlendMode() : mode;
         useHardwareBlender(mode);
 
         glEnable(GL_TEXTURE_2D);
@@ -253,7 +250,6 @@ namespace plum
         double width = ((double) sourceX2 - sourceX) * scale;
         double height = ((double) sourceY2 - sourceY) * scale;
 
-        mode = (mode == BlendUnspecified) ? getBlendMode() : mode;
         useHardwareBlender(mode);
 
         glEnable(GL_TEXTURE_2D);
@@ -367,7 +363,7 @@ namespace plum
         double width = ((double) sourceX2 - sourceX);
         double height = ((double) sourceY2 - sourceY);
 
-        useHardwareBlender((transform->mode == BlendUnspecified) ? getBlendMode() : transform->mode);
+        useHardwareBlender(transform->mode);
 
         glEnable(GL_TEXTURE_2D);
         glPushMatrix();

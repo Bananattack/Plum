@@ -8,13 +8,15 @@ namespace plum
 {
     enum BlendMode
     {
-        BlendUnspecified,    // Used internally to allow optional arguments on blitters.
-        BlendOpaque,        // Direct copy to destination
-        BlendMerge,        // Combines two images, altering alpha as needed.
-        BlendPreserve,    // Combines two images, preserving alpha of the destination.
+        BlendOpaque,     // Direct copy to destination
+        BlendMerge,      // Combines two images, altering alpha as needed.
+        BlendAlpha,      // Combines two images, preserving alpha of the destination.
         BlendAdd,        // Adds the RGB value of the source to the dest
         BlendSubtract    // Subtracts the RGB value of the source from the dest
     };
+
+    int getOpacity();
+    void setOpacity(int alpha);
 
     struct SoftOpaqueBlender
     {
@@ -86,12 +88,4 @@ namespace plum
             return result;
         }
     };
-
-    BlendMode getBlendMode();
-    void setBlendMode(BlendMode mode);
-    int getOpacity();
-    void setOpacity(int alpha);
-    void useHardwareBlender(BlendMode mode);
-    void useHardwareColor(int r, int g, int b, int a);
-
 }

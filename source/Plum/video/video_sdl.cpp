@@ -3,27 +3,99 @@
 #include <SDL.h>
 #include <SDL_opengl.h>
 
-
 #include "../video/video.h"
 
 namespace plum
 {
-    Video::Video()
+    void useHardwareBlender(BlendMode mode)
     {
+        switch(mode)
+        {
+            case BlendOpaque:
+                glDisable(GL_BLEND);
+                break;
+            case BlendMerge:
+            case BlendAlpha:
+            default:
+                glEnable(GL_BLEND);
+                glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                break;
+            case BlendAdd:
+                glEnable(GL_BLEND);
+                glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+                break;
+            case BlendSubtract:
+                glDisable(GL_BLEND);
+                break;
+        }
     }
 
-    void Video::startup()
+    void useHardwareColor(int r, int g, int b, int a) 
+    {
+        return glColor4ub(r, g, b, a * getOpacity() / 255);
+    }
+
+    class SDLVideo : public Video
+    {
+        private:
+            bool windowed;
+
+            int windowWidth, windowHeight;
+            int xres, yres;
+            int desktopWidth, desktopHeight;
+
+            SDL_Surface* frontSurface;
+        public:
+            SDLVideo(int width, int height, bool win);
+            ~SDLVideo() {}
+
+            void setResolution(int width, int height, bool win);
+
+            int getScreenWidth() const
+            {
+                return xres;
+            }
+
+            int getScreenHeight() const
+            {
+                return yres;
+            }
+
+            int getWindowWidth() const
+            {
+                return windowWidth;
+            }
+
+            int getWindowHeight() const
+            {
+                return windowHeight;
+            }
+
+            void clear(Color color);
+            void setPixel(int x, int y, Color color, BlendMode mode = BlendAlpha);
+            void line(int x, int y, int x2, int y2, Color color, BlendMode mode = BlendAlpha);
+            void rect(int x, int y, int x2, int y2, Color color, BlendMode mode = BlendAlpha);
+            void solidRect(int x, int y, int x2, int y2, Color color, BlendMode mode = BlendAlpha);
+            void horizontalGradientRect(int x, int y, int x2, int y2, Color color, Color color2, BlendMode mode = BlendAlpha);
+            void verticalGradientRect(int x, int y, int x2, int y2, Color color, Color color2, BlendMode mode = BlendAlpha);
+            void circle(int x, int y, int horizontalRadius, int verticalRadius, Color color, BlendMode mode = BlendAlpha);
+            void solidCircle(int x, int y, int horizontalRadius, int verticalRadius, Color color, BlendMode mode = BlendAlpha);
+    };
+
+    Video* Video::create(int width, int height, bool win)
+    {
+        return new SDLVideo(width, height, win);
+    }
+
+    SDLVideo::SDLVideo(int width, int height, bool win)
     {
         const SDL_VideoInfo* vidinfo = SDL_GetVideoInfo();
         desktopWidth = vidinfo->current_w;
         desktopHeight = vidinfo->current_h;
+        setResolution(width, height, win);
     }
 
-    void Video::shutdown()
-    {
-    }
-
-    void Video::setResolution(int width, int height, bool win)
+    void SDLVideo::setResolution(int width, int height, bool win)
     {
         windowed = win;
 
@@ -65,7 +137,7 @@ namespace plum
         glLoadIdentity();
     }
 
-    void Video::clear(Color color)
+    void SDLVideo::clear(Color color)
     {
         ColorChannel r, g, b, a;
         getRGBA(color, r, g, b, a);
@@ -79,12 +151,11 @@ namespace plum
     }
 
     // Dear god I hope nobody uses this for anything intensive.
-    void Video::setPixel(int x, int y, Color color, BlendMode mode)
+    void SDLVideo::setPixel(int x, int y, Color color, BlendMode mode)
     {
         ColorChannel r, g, b, a;
         getRGBA(color, r, g, b, a);
 
-        mode = (mode == BlendUnspecified) ? getBlendMode() : mode;
         useHardwareBlender(mode);
 
         GLdouble vertexArray[] = { x, y };
@@ -97,12 +168,11 @@ namespace plum
         glDisableClientState(GL_VERTEX_ARRAY);
     }
 
-    void Video::line(int x, int y, int x2, int y2, Color color, BlendMode mode)
+    void SDLVideo::line(int x, int y, int x2, int y2, Color color, BlendMode mode)
     {
         ColorChannel r, g, b, a;
         getRGBA(color, r, g, b, a);
 
-        mode = (mode == BlendUnspecified) ? getBlendMode() : mode;
         useHardwareBlender(mode);
 
         GLdouble vertexArray[] = { x, y - 1, x2 + 1, y2 };
@@ -115,12 +185,11 @@ namespace plum
         glDisableClientState(GL_VERTEX_ARRAY);
     }
 
-    void Video::rect(int x, int y, int x2, int y2, Color color, BlendMode mode)
+    void SDLVideo::rect(int x, int y, int x2, int y2, Color color, BlendMode mode)
     {
         ColorChannel r, g, b, a;
         getRGBA(color, r, g, b, a);
 
-        mode = (mode == BlendUnspecified) ? getBlendMode() : mode;
         useHardwareBlender(mode);
 
         if(x > x2)
@@ -150,12 +219,11 @@ namespace plum
     }
 
 
-    void Video::solidRect(int x, int y, int x2, int y2, Color color, BlendMode mode)
+    void SDLVideo::solidRect(int x, int y, int x2, int y2, Color color, BlendMode mode)
     {
         ColorChannel r, g, b, a;
         getRGBA(color, r, g, b, a);    
 
-        mode = (mode == BlendUnspecified) ? getBlendMode() : mode;
         useHardwareBlender(mode);
 
         if(x > x2)
@@ -180,12 +248,11 @@ namespace plum
         glPopMatrix();
     }
 
-    void Video::horizontalGradientRect(int x, int y, int x2, int y2, Color color, Color color2, BlendMode mode)
+    void SDLVideo::horizontalGradientRect(int x, int y, int x2, int y2, Color color, Color color2, BlendMode mode)
     {
         ColorChannel r, g, b, a;
         getRGBA(color, r, g, b, a);
 
-        mode = (mode == BlendUnspecified) ? getBlendMode() : mode;
         useHardwareBlender(mode);
 
         if(x > x2)
@@ -216,12 +283,11 @@ namespace plum
         glPopMatrix();
     }
 
-    void Video::verticalGradientRect(int x, int y, int x2, int y2, Color color, Color color2, BlendMode mode)
+    void SDLVideo::verticalGradientRect(int x, int y, int x2, int y2, Color color, Color color2, BlendMode mode)
     {
         ColorChannel r, g, b, a;
         getRGBA(color, r, g, b, a);
 
-        mode = (mode == BlendUnspecified) ? getBlendMode() : mode;
         useHardwareBlender(mode);
 
         if(x > x2)
@@ -248,12 +314,11 @@ namespace plum
         glPopMatrix();
     }
 
-    void Video::circle(int x, int y, int horizontalRadius, int verticalRadius, Color color, BlendMode mode)
+    void SDLVideo::circle(int x, int y, int horizontalRadius, int verticalRadius, Color color, BlendMode mode)
     {
         ColorChannel r, g, b, a;
         getRGBA(color, r, g, b, a);
 
-        mode = (mode == BlendUnspecified) ? getBlendMode() : mode;
         useHardwareBlender(mode);
 
         double x1 = x;
@@ -274,12 +339,11 @@ namespace plum
         glPopMatrix();
     }
 
-    void Video::solidCircle(int x, int y, int horizontalRadius, int verticalRadius, Color color, BlendMode mode)
+    void SDLVideo::solidCircle(int x, int y, int horizontalRadius, int verticalRadius, Color color, BlendMode mode)
     {
         ColorChannel r, g, b, a;
         getRGBA(color, r, g, b, a);
 
-        mode = (mode == BlendUnspecified) ? getBlendMode() : mode;
         useHardwareBlender(mode);
 
         double x1 = x;

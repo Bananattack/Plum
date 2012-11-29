@@ -91,7 +91,6 @@ namespace plum
 
     void Font::print(int x1, int y, const std::string& s, BlendMode mode, Color tint)
     {
-        mode = (mode == BlendUnspecified) ? getBlendMode() : mode;
         int x = x1;
         for (unsigned int i = 0; i < s.length(); i++)
         {
@@ -114,7 +113,6 @@ namespace plum
 
     void Font::printRight(int x1, int y, const std::string& s, BlendMode mode, Color tint)
     {
-        mode = (mode == BlendUnspecified) ? getBlendMode() : mode;
         int x = x1;
         int lineIndex = 0;
         int ofs = lineWidth(s, 0);
@@ -142,7 +140,6 @@ namespace plum
 
     void Font::printCenter(int x1, int y, const std::string& s, BlendMode mode, Color tint)
     {
-        mode = (mode == BlendUnspecified) ? getBlendMode() : mode;
         int x = x1;
         int lineIndex = 0;
         int ofs = lineWidth(s, 0) / 2;

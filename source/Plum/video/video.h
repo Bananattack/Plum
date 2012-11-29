@@ -7,74 +7,31 @@
 struct SDL_Surface;
 namespace plum
 {
+    void useHardwareBlender(BlendMode mode);
+    void useHardwareColor(int r, int g, int b, int a);
+
     class Video
     {
         public:
-            class Exception : public std::exception
-            {
-                public:
-                    Exception(const std::string& message)
-                        : msg(message)
-                    {
-                    }
+            static Video* create(int width, int height, bool win);
 
-                    virtual const char* what() const throw ()
-                    {
-                        return msg.c_str();
-                    }
+            virtual ~Video() {}
 
-                    virtual ~Exception() throw ()
-                    {
-                    }
+            virtual void setResolution(int width, int height, bool win) = 0;
+            virtual int getScreenWidth() const = 0;
+            virtual int getScreenHeight() const = 0;
+            virtual int getWindowWidth() const = 0;
+            virtual int getWindowHeight() const = 0;
 
-                private:
-                    std::string msg;
-            };
-        private:
-            bool windowed;
-
-            int windowWidth, windowHeight;
-            int xres, yres;
-            int desktopWidth, desktopHeight;
-
-            SDL_Surface* frontSurface;
-        public:
-            Video();
-
-            void startup();
-            void shutdown();
-
-            void setResolution(int width, int height, bool win);
-
-            int getScreenWidth()
-            {
-                return xres;
-            }
-
-            int getScreenHeight()
-            {
-                return yres;
-            }
-
-            int getWindowWidth()
-            {
-                return windowWidth;
-            }
-
-            int getWindowHeight()
-            {
-                return windowHeight;
-            }
-
-            void clear(Color color);
-            void setPixel(int x, int y, Color color, BlendMode mode = BlendUnspecified);
-            void line(int x, int y, int x2, int y2, Color color, BlendMode mode = BlendUnspecified);
-            void rect(int x, int y, int x2, int y2, Color color, BlendMode mode = BlendUnspecified);
-            void solidRect(int x, int y, int x2, int y2, Color color, BlendMode mode = BlendUnspecified);
-            void horizontalGradientRect(int x, int y, int x2, int y2, Color color, Color color2, BlendMode mode = BlendUnspecified);
-            void verticalGradientRect(int x, int y, int x2, int y2, Color color, Color color2, BlendMode mode = BlendUnspecified);
-            void circle(int x, int y, int horizontalRadius, int verticalRadius, Color color, BlendMode mode = BlendUnspecified);
-            void solidCircle(int x, int y, int horizontalRadius, int verticalRadius, Color color, BlendMode mode = BlendUnspecified);
+            virtual void clear(Color color) = 0;
+            virtual void setPixel(int x, int y, Color color, BlendMode mode = BlendAlpha) = 0;
+            virtual void line(int x, int y, int x2, int y2, Color color, BlendMode mode = BlendAlpha) = 0;
+            virtual void rect(int x, int y, int x2, int y2, Color color, BlendMode mode = BlendAlpha) = 0;
+            virtual void solidRect(int x, int y, int x2, int y2, Color color, BlendMode mode = BlendAlpha) = 0;
+            virtual void horizontalGradientRect(int x, int y, int x2, int y2, Color color, Color color2, BlendMode mode = BlendAlpha) = 0;
+            virtual void verticalGradientRect(int x, int y, int x2, int y2, Color color, Color color2, BlendMode mode = BlendAlpha) = 0;
+            virtual void circle(int x, int y, int horizontalRadius, int verticalRadius, Color color, BlendMode mode = BlendAlpha) = 0;
+            virtual void solidCircle(int x, int y, int horizontalRadius, int verticalRadius, Color color, BlendMode mode = BlendAlpha) = 0;
     };
 }
 

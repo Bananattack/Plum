@@ -1,6 +1,7 @@
 #include "log.h"
 #include "engine.h"
 #include "../audio/audio.h"
+#include "../video/video.h"
 
 #ifdef _WIN32
 #define NOMINMAX
@@ -46,8 +47,7 @@ namespace plum
 
         logFormat("    Initializing video engine...");
         setTitle("Plum");
-        video.startup();
-        video.setResolution(xres, yres, windowed);
+        video = Video::create(xres, yres, windowed);
         logFormat(" OK!\n");
 
         logFormat("    Initializing sound engine...");
@@ -73,7 +73,7 @@ namespace plum
         logFormat(" OK!\n");
 
         logFormat("    Destroying video engine...");
-        video.shutdown();
+        delete video;
         logFormat(" OK!\n");
 
         logFormat("    Destroying SDL...");
@@ -172,8 +172,8 @@ namespace plum
                     }
                     break;*/
                 case SDL_MOUSEMOTION:
-                    mouse.x = (double) event.motion.x * (double) video.getScreenWidth() / (double) video.getWindowWidth();
-                    mouse.y = (double) event.motion.y * (double) video.getScreenHeight() / (double) video.getWindowHeight();
+                    mouse.x = (double) event.motion.x * (double) video->getScreenWidth() / (double) video->getWindowWidth();
+                    mouse.y = (double) event.motion.y * (double) video->getScreenHeight() / (double) video->getWindowHeight();
                     break;
                 case SDL_MOUSEBUTTONDOWN:
                 case SDL_MOUSEBUTTONUP:

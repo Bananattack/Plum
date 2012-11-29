@@ -156,7 +156,7 @@ namespace plum
             int destY = luaL_checkint(L, 5);
             int tilesWide = luaL_checkint(L, 6);
             int tilesHigh = luaL_checkint(L, 7);
-            BlendMode mode = (BlendMode) script::get<int>(L, 8, BlendUnspecified);
+            BlendMode mode = (BlendMode) script::get<int>(L, 8, BlendAlpha);
             Color tint = script::get<int>(L, 9, Color::White);
 
             m->blit(worldX, worldY, destX, destY, tilesWide, tilesHigh, mode, tint);

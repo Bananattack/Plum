@@ -8,7 +8,6 @@
 #include "timer.h"
 #include "config.h"
 #include "keyboard.h"
-#include "../video/video.h"
 
 namespace plum
 {
@@ -35,6 +34,7 @@ namespace plum
     };
 
     class Audio;
+    class Video;
     class Engine
     {
         private:
@@ -47,7 +47,7 @@ namespace plum
 
         public:
             Config config;
-            Video video;
+            Video* video;
             Audio* audio;
             Timer timer;
             Mouse mouse;

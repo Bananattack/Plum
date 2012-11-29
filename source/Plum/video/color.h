@@ -1,6 +1,6 @@
 #pragma once
 
-#include <stdint.h>
+#include <cstdint>
 
 namespace plum
 {
@@ -30,7 +30,6 @@ namespace plum
                 Yellow = 0xFF00FFFF,
                 Black = 0xFF000000
             };
-
 
             uint32_t value;
 

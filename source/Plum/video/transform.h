@@ -59,7 +59,7 @@ namespace plum
         {
             mirror = false;
             angle = 0;
-            mode = BlendUnspecified;
+            mode = BlendAlpha;
             tint = Color::White;
 
             position = NULL;

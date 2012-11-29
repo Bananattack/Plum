@@ -42,13 +42,7 @@
     <ClCompile Include="plum.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="video\blending.cpp">
-      <Filter>Source Files\video</Filter>
-    </ClCompile>
     <ClCompile Include="video\image.cpp">
-      <Filter>Source Files\video</Filter>
-    </ClCompile>
-    <ClCompile Include="video\video.cpp">
       <Filter>Source Files\video</Filter>
     </ClCompile>
     <ClCompile Include="audio\audio_audiere.cpp">
@@ -143,6 +137,12 @@
     </ClCompile>
     <ClCompile Include="engine\log.cpp">
       <Filter>Source Files\engine</Filter>
+    </ClCompile>
+    <ClCompile Include="video\blending.cpp">
+      <Filter>Source Files\video</Filter>
+    </ClCompile>
+    <ClCompile Include="video\video_sdl.cpp">
+      <Filter>Source Files\video</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

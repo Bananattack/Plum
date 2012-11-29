@@ -3,9 +3,8 @@
 #include <SDL_opengl.h>
 
 #include "tilemap.h"
-
-
 #include "spritesheet.h"
+#include "../video/video.h"
 
 namespace plum
 {
@@ -404,9 +403,7 @@ namespace plum
         glEnableClientState(GL_TEXTURE_COORD_ARRAY);
         spr->bind();
 
-        mode = (mode == BlendUnspecified) ? getBlendMode() : mode;
         useHardwareBlender(mode);
-
         useHardwareColor(255, 255, 255, 255);
         for(i = 0; i < tilesHigh; i++)
         {

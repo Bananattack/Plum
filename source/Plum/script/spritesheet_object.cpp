@@ -81,7 +81,7 @@ namespace plum
             int x = script::get<int>(L, 2);
             int y = script::get<int>(L, 3);
             int f = script::get<int>(L, 4);
-            BlendMode mode = (BlendMode) script::get<int>(L, 5, BlendUnspecified);
+            BlendMode mode = (BlendMode) script::get<int>(L, 5, BlendAlpha);
             Color tint = script::get<int>(L, 6, Color::White);
 
             spr->blitFrame(x, y, f, mode, tint);
