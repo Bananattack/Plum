@@ -3,6 +3,7 @@
 #include <SDL.h>
 #include <SDL_opengl.h>
 
+#include "../engine/engine.h"
 #include "../video/video.h"
 
 namespace plum
@@ -35,9 +36,12 @@ namespace plum
         return glColor4ub(r, g, b, a * getOpacity() / 255);
     }
 
-    class SDLVideo : public Video
+    class Video::Impl
     {
-        private:
+        public:
+            Engine& engine;
+            size_t update;
+
             bool windowed;
 
             int windowWidth, windowHeight;
@@ -45,78 +49,84 @@ namespace plum
             int desktopWidth, desktopHeight;
 
             SDL_Surface* frontSurface;
-        public:
-            SDLVideo(int width, int height, bool win);
-            ~SDLVideo() {}
 
-            void setResolution(int width, int height, bool win);
-
-            int getScreenWidth() const
+            Impl(Engine& engine)
+                : engine(engine)
             {
-                return xres;
+                const SDL_VideoInfo* vidinfo = SDL_GetVideoInfo();
+                desktopWidth = vidinfo->current_w;
+                desktopHeight = vidinfo->current_h;
+
+                update = engine.addUpdateHook([&]() {
+                    SDL_GL_SwapBuffers();
+                });
             }
 
-            int getScreenHeight() const
+            ~Impl()
             {
-                return yres;
+                engine.removeUpdateHook(update);
             }
-
-            int getWindowWidth() const
-            {
-                return windowWidth;
-            }
-
-            int getWindowHeight() const
-            {
-                return windowHeight;
-            }
-
-            void clear(Color color);
-            void setPixel(int x, int y, Color color, BlendMode mode = BlendAlpha);
-            void line(int x, int y, int x2, int y2, Color color, BlendMode mode = BlendAlpha);
-            void rect(int x, int y, int x2, int y2, Color color, BlendMode mode = BlendAlpha);
-            void solidRect(int x, int y, int x2, int y2, Color color, BlendMode mode = BlendAlpha);
-            void horizontalGradientRect(int x, int y, int x2, int y2, Color color, Color color2, BlendMode mode = BlendAlpha);
-            void verticalGradientRect(int x, int y, int x2, int y2, Color color, Color color2, BlendMode mode = BlendAlpha);
-            void circle(int x, int y, int horizontalRadius, int verticalRadius, Color color, BlendMode mode = BlendAlpha);
-            void solidCircle(int x, int y, int horizontalRadius, int verticalRadius, Color color, BlendMode mode = BlendAlpha);
     };
 
-    Video* Video::create(int width, int height, bool win)
+    Video::Video(Engine& engine, int width, int height, bool win)
+        : impl(new Impl(engine))
     {
-        return new SDLVideo(width, height, win);
-    }
-
-    SDLVideo::SDLVideo(int width, int height, bool win)
-    {
-        const SDL_VideoInfo* vidinfo = SDL_GetVideoInfo();
-        desktopWidth = vidinfo->current_w;
-        desktopHeight = vidinfo->current_h;
+        setTitle("");
         setResolution(width, height, win);
     }
 
-    void SDLVideo::setResolution(int width, int height, bool win)
+    Video::~Video()
     {
-        windowed = win;
+    }
 
-        xres = width;
-        yres = height;
+    int Video::getScreenWidth() const
+    {
+        return impl->xres;
+    }
+
+    int Video::getScreenHeight() const
+    {
+        return impl->yres;
+    }
+
+    int Video::getWindowWidth() const
+    {
+        return impl->windowWidth;
+    }
+
+    int Video::getWindowHeight() const
+    {
+        return impl->windowHeight;
+    }
+
+    void Video::setTitle(const std::string& title)
+    {
+        SDL_WM_SetCaption(title.c_str(), title.c_str());
+    }
+
+    void Video::setResolution(int width, int height, bool win)
+    {
+        impl->windowed = win;
+
+        impl->xres = width;
+        impl->yres = height;
 
         // Fullscreen is usually not supported for low-res, so upscale everything!
-        if(!windowed && (width < 640 || height < 480))
+        if(!impl->windowed && (width < 640 || height < 480))
         {
             width = 640;
             height = 480;
         }
 
         SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-        frontSurface = SDL_SetVideoMode(width, height, 32, (windowed ? 0 : SDL_FULLSCREEN) | SDL_OPENGL);
-        if(!frontSurface)
+        impl->frontSurface = SDL_SetVideoMode(width, height, 32, (impl->windowed ? 0 : SDL_FULLSCREEN) | SDL_OPENGL);
+
+        if(!impl->frontSurface)
         {
             throw std::runtime_error("Video settings were not compatible your graphics card.\r\n");
         }
-        windowWidth = frontSurface->w;
-        windowHeight = frontSurface->h;
+        impl->windowWidth = impl->frontSurface->w;
+        impl->windowHeight = impl->frontSurface->h;
 
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -124,11 +134,11 @@ namespace plum
 
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
-        glOrtho(0, xres, yres, 0, -1, 1);
+        glOrtho(0, impl->xres, impl->yres, 0, -1, 1);
 
         glDisable(GL_DEPTH_TEST);
 
-        glScissor(0, 0, xres, yres);
+        glScissor(0, 0, impl->xres, impl->yres);
         glEnable(GL_SCISSOR_TEST);
 
         glClearColor(0.0, 0.0, 0.0, 1.0);
@@ -137,7 +147,7 @@ namespace plum
         glLoadIdentity();
     }
 
-    void SDLVideo::clear(Color color)
+    void Video::clear(Color color)
     {
         ColorChannel r, g, b, a;
         getRGBA(color, r, g, b, a);
@@ -151,7 +161,7 @@ namespace plum
     }
 
     // Dear god I hope nobody uses this for anything intensive.
-    void SDLVideo::setPixel(int x, int y, Color color, BlendMode mode)
+    void Video::setPixel(int x, int y, Color color, BlendMode mode)
     {
         ColorChannel r, g, b, a;
         getRGBA(color, r, g, b, a);
@@ -168,7 +178,7 @@ namespace plum
         glDisableClientState(GL_VERTEX_ARRAY);
     }
 
-    void SDLVideo::line(int x, int y, int x2, int y2, Color color, BlendMode mode)
+    void Video::line(int x, int y, int x2, int y2, Color color, BlendMode mode)
     {
         ColorChannel r, g, b, a;
         getRGBA(color, r, g, b, a);
@@ -185,7 +195,7 @@ namespace plum
         glDisableClientState(GL_VERTEX_ARRAY);
     }
 
-    void SDLVideo::rect(int x, int y, int x2, int y2, Color color, BlendMode mode)
+    void Video::rect(int x, int y, int x2, int y2, Color color, BlendMode mode)
     {
         ColorChannel r, g, b, a;
         getRGBA(color, r, g, b, a);
@@ -219,7 +229,7 @@ namespace plum
     }
 
 
-    void SDLVideo::solidRect(int x, int y, int x2, int y2, Color color, BlendMode mode)
+    void Video::solidRect(int x, int y, int x2, int y2, Color color, BlendMode mode)
     {
         ColorChannel r, g, b, a;
         getRGBA(color, r, g, b, a);    
@@ -248,7 +258,7 @@ namespace plum
         glPopMatrix();
     }
 
-    void SDLVideo::horizontalGradientRect(int x, int y, int x2, int y2, Color color, Color color2, BlendMode mode)
+    void Video::horizontalGradientRect(int x, int y, int x2, int y2, Color color, Color color2, BlendMode mode)
     {
         ColorChannel r, g, b, a;
         getRGBA(color, r, g, b, a);
@@ -283,7 +293,7 @@ namespace plum
         glPopMatrix();
     }
 
-    void SDLVideo::verticalGradientRect(int x, int y, int x2, int y2, Color color, Color color2, BlendMode mode)
+    void Video::verticalGradientRect(int x, int y, int x2, int y2, Color color, Color color2, BlendMode mode)
     {
         ColorChannel r, g, b, a;
         getRGBA(color, r, g, b, a);
@@ -314,7 +324,7 @@ namespace plum
         glPopMatrix();
     }
 
-    void SDLVideo::circle(int x, int y, int horizontalRadius, int verticalRadius, Color color, BlendMode mode)
+    void Video::circle(int x, int y, int horizontalRadius, int verticalRadius, Color color, BlendMode mode)
     {
         ColorChannel r, g, b, a;
         getRGBA(color, r, g, b, a);
@@ -339,7 +349,7 @@ namespace plum
         glPopMatrix();
     }
 
-    void SDLVideo::solidCircle(int x, int y, int horizontalRadius, int verticalRadius, Color color, BlendMode mode)
+    void Video::solidCircle(int x, int y, int horizontalRadius, int verticalRadius, Color color, BlendMode mode)
     {
         ColorChannel r, g, b, a;
         getRGBA(color, r, g, b, a);

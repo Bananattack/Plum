@@ -88,7 +88,7 @@ namespace audiere {
     m_callbacks.clear();
   }
 
-  void AbstractDevice::fireStopEvent(OutputStreamPtr stream, StopEvent::Reason reason) {
+  void AbstractDevice::fireStopEvent(OutputStream* stream, StopEvent::Reason reason) {
     StopEventPtr event = new StopEventImpl(stream, reason);
     fireStopEvent(event);
   }

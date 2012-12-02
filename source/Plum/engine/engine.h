@@ -24,7 +24,7 @@ namespace plum
                 return "SystemExit";
             }
 
-            int status()
+            int status() const
             {
                 return status_;
             }
@@ -33,27 +33,16 @@ namespace plum
             int status_;
     };
 
-    class Audio;
-    class Video;
     class Engine
     {
         private:
-            std::string titlePrefix;
-
-            bool initialized;
-            bool destroyed;
-
             std::vector<std::function<void()>> updateHooks;
 
         public:
-            Config config;
-            Video* video;
-            Audio* audio;
             Timer timer;
             Mouse mouse;
             KeyInput key[KEY_MAX_COUNT];
 
-        public:
             Engine();
             ~Engine();
 
@@ -66,7 +55,8 @@ namespace plum
             void poll();
             void refresh();
 
-            void setTitle(std::string title);
-            void setResolution(int width, int height, bool windowed);
+        private:
+            Engine(const Engine&);
+            void operator =(const Engine&);
     };
 }

@@ -15,13 +15,10 @@ extern "C"
 namespace plum
 {
     class Engine;
+    class Video;
+    class Audio;
     class Script
     {
-        private:
-            lua_State* L;
-            Engine* engine_;
-            size_t updateHookRef;
-
         public:
             // A mapping of type: input reference -> function index
             // Oh, and the function needs to be of form:
@@ -35,18 +32,35 @@ namespace plum
             };
             std::vector<InputHook> inputHooks;
 
-            Script(Engine* engine);
+            Script(Engine& engine, Audio& audio, Video& video);
             ~Script();
 
             Engine& engine()
             {
-                return *engine_;
+                return engine_;
+            }
+
+            Audio& audio()
+            {
+                return audio_;
+            }
+
+            Video& video()
+            {
+                return video_;
             }
 
             void run(const std::string& filename);
-            void update();
-            void stepGarbageCollector();
-            void processInputHook(InputHook& hook);
+
+        private:
+            lua_State* L;
+            Engine& engine_;
+            Audio& audio_;
+            Video& video_;
+            size_t update;
+
+            Script(const Script&);
+            void operator =(const Script&);
     };
 
     namespace script

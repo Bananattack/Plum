@@ -1,66 +1,75 @@
-#pragma once
+#ifndef PLUM_AUDIO_H
+#define PLUM_AUDIO_H
 
 #include <string>
+#include <memory>
 
 namespace plum
 {
-    class Sound 
-    {
-        public:
-            virtual ~Sound() {}
-    };
+    class Engine;
+    class Channel;
+    class Sound;
+    class Audio;
 
-    // Channel data.
-    // Do not allocate this yourself. Instead, use the audio class to do it for you.
-    // When done, don't use delete. Use the dispose() function.
     class Channel
     {
         public:
-            virtual ~Channel() {}
+            Channel();
+            ~Channel();
 
-            virtual void dispose() = 0;
-            virtual void resume() = 0;
-            virtual void pause() = 0;
-            virtual void stop() = 0;
+            void play();
+            void pause();
+            void stop();
 
-            virtual bool isPlaying() const = 0;
-            virtual double getVolume() const = 0;
-            virtual double getPitch() const = 0;
-            virtual void setVolume(double volume) = 0;
-            virtual void setPitch(double pitch) = 0;
+            bool isPlaying() const;
+            bool isLooped() const;
+            double getPan() const;
+            double getPitch() const;
+            double getVolume() const;
+            void setPan(double value);
+            void setPitch(double value);
+            void setVolume(double value);
+            void setLooped(bool value);
+
+        private:
+            friend class Sound;
+            friend class Audio;
+            class Impl;
+            std::shared_ptr<Impl> impl;
     };
 
-    class Song
+    class Sound 
     {
         public:
-            virtual ~Song() {}
-            virtual void resume() = 0;
-            virtual void pause() = 0;
-            virtual void stop() = 0;
+            Sound();
+            ~Sound();
 
-            virtual bool isPlaying() const = 0;
-            virtual double getVolume() const = 0;
-            virtual double getPitch() const = 0;
-            virtual void setVolume(double volume) = 0;
-            virtual void setPitch(double pitch) = 0;
+        private:
+            friend class Audio;
+            class Impl;
+            std::shared_ptr<Impl> impl;
     };
 
     class Audio
     {
         public:
-            static Audio* create(bool disabled);
+            Audio(Engine& engine, bool disabled);
+            ~Audio();
 
-            virtual ~Audio() {}
-            virtual double getMasterPitch() const = 0;
-            virtual void setMasterPitch(double pitch) = 0;
+            void loadSound(const std::string& filename, bool streamed, Sound& sound);
+            void loadChannel(const Sound& sound, Channel& channel);
 
-            virtual Sound* loadSound(const std::string& filename) = 0;
-            virtual Song* loadSong(const std::string& filename) = 0;
-            virtual Channel* loadChannel(int handle) = 0;
+            double getPan() const;
+            double getPitch() const;
+            double getVolume() const;
+            void setPan(double value);
+            void setPitch(double value);
+            void setVolume(double value);
 
-            virtual int playSound(Sound* sound, double volume = 1.0) = 0;
-            virtual void playSong(Song* song) = 0;
-
-            virtual void update() = 0;
+        private:
+            class Impl;
+            std::shared_ptr<Impl> impl;
     };
 }
+
+#endif

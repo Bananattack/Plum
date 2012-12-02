@@ -1,6 +1,5 @@
 
 #include "../video/video.h"
-#include "../engine/engine.h"
 #include "script.h"
 
 namespace plum
@@ -56,7 +55,7 @@ namespace plum
             luaL_checkudata(L, 1, METANAME);
             Color color = luaL_checkint(L, 2);
 
-            script::instance(L).engine().video->clear(color);
+            script::instance(L).video().clear(color);
             return 0;
         }
 
@@ -68,7 +67,7 @@ namespace plum
             Color color = luaL_checkint(L, 4);
             BlendMode mode = (BlendMode) script::get<int>(L, 5, BlendAlpha);
 
-            script::instance(L).engine().video->setPixel(x, y, color, mode);
+            script::instance(L).video().setPixel(x, y, color, mode);
             return 0;
         }
 
@@ -82,7 +81,7 @@ namespace plum
             Color color = luaL_checkint(L, 6);
             BlendMode mode = (BlendMode) script::get<int>(L, 7, BlendAlpha);
 
-            script::instance(L).engine().video->rect(x, y, x2, y2, color, mode);
+            script::instance(L).video().rect(x, y, x2, y2, color, mode);
             return 0;
         }
 
@@ -96,7 +95,7 @@ namespace plum
             Color color = luaL_checkint(L, 6);
             BlendMode mode = (BlendMode) script::get<int>(L, 7, BlendAlpha);
 
-            script::instance(L).engine().video->solidRect(x, y, x2, y2, color, mode);
+            script::instance(L).video().solidRect(x, y, x2, y2, color, mode);
             return 0;
         }
 
@@ -110,7 +109,7 @@ namespace plum
             Color color = luaL_checkint(L, 6);
             BlendMode mode = (BlendMode) script::get<int>(L, 7, BlendAlpha);
 
-            script::instance(L).engine().video->line(x, y, x2, y2, color, mode);
+            script::instance(L).video().line(x, y, x2, y2, color, mode);
             return 0;
         }
 
@@ -125,7 +124,7 @@ namespace plum
             Color color2 = luaL_checkint(L, 7);
             BlendMode mode = (BlendMode) script::get<int>(L, 8, BlendAlpha);
 
-            script::instance(L).engine().video->horizontalGradientRect(x, y, x2, y2, color, color2, mode);
+            script::instance(L).video().horizontalGradientRect(x, y, x2, y2, color, color2, mode);
             return 0;
         }
 
@@ -140,7 +139,7 @@ namespace plum
             Color color2 = luaL_checkint(L, 7);
             BlendMode mode = (BlendMode) script::get<int>(L, 8, BlendAlpha);
 
-            script::instance(L).engine().video->verticalGradientRect(x, y, x2, y2, color, color2, mode);
+            script::instance(L).video().verticalGradientRect(x, y, x2, y2, color, color2, mode);
             return 0;
         }
 
@@ -155,7 +154,7 @@ namespace plum
             Color color = luaL_checkint(L, 6);
             BlendMode mode = (BlendMode) script::get<int>(L, 7, BlendAlpha);
 
-            script::instance(L).engine().video->circle(x, y, xrad, yrad, color, mode);
+            script::instance(L).video().circle(x, y, xrad, yrad, color, mode);
             return 0;
         }
 
@@ -169,21 +168,21 @@ namespace plum
             Color color = luaL_checkint(L, 6);
             BlendMode mode = (BlendMode) script::get<int>(L, 7, BlendAlpha);
 
-            script::instance(L).engine().video->solidCircle(x, y, xrad, yrad, color, mode);
+            script::instance(L).video().solidCircle(x, y, xrad, yrad, color, mode);
             return 0;
         }
 
         int video_getWidth(lua_State* L)
         {
             luaL_checkudata(L, 1, METANAME);
-            lua_pushinteger(L, script::instance(L).engine().video->getScreenWidth());
+            lua_pushinteger(L, script::instance(L).video().getScreenWidth());
             return 1;
         }
 
         int video_getHeight(lua_State* L)
         {
             luaL_checkudata(L, 1, METANAME);
-            lua_pushinteger(L, script::instance(L).engine().video->getScreenHeight());
+            lua_pushinteger(L, script::instance(L).video().getScreenHeight());
             return 1;
         }
 

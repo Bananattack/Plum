@@ -1,12 +1,11 @@
 #include "../audio/audio.h"
-#include "../engine/engine.h"
 #include "script.h"
 
 namespace plum
 {
     namespace script
     {
-        template<> const char* meta<Song>()
+        template<> const char* meta<Channel>()
         {
             return "plum.Song";
         }
@@ -14,12 +13,20 @@ namespace plum
 
     namespace
     {
-        typedef Song Self;
+        typedef Channel Self;
 
         int create(lua_State* L)
         {
             auto filename = script::get<const char*>(L, 1);
-            script::push(L, script::instance(L).engine().audio->loadSong(filename), LUA_NOREF);
+
+            Sound sound;
+            script::instance(L).audio().loadSound(filename, true, sound);
+
+            auto chan = new Channel();
+            script::instance(L).audio().loadChannel(sound, *chan);
+            chan->setLooped(true);
+
+            script::push(L, chan, LUA_NOREF);
             return 1;
         }
 
@@ -45,58 +52,36 @@ namespace plum
 
         int play(lua_State* L)
         {
-            auto s = script::ptr<Song>(L, 1);
-            if(!s)
-            {
-                return 0;
-            }
-
-            int volume = script::get<int>(L, 2, 100);
-            script::instance(L).engine().audio->playSong(s);
+            auto chan = script::ptr<Self>(L, 1);
+            chan->play();
             return 0;
         }
 
         int stop(lua_State* L)
         {
-            auto s = script::ptr<Song>(L, 1);
-            if(!s)
-            {
-                return 0;
-            }
-
-            s->stop();
+            auto chan = script::ptr<Self>(L, 1);
+            chan->stop();
             return 0;
         }
 
         int getplaying(lua_State* L)
         {
-            auto s = script::ptr<Song>(L, 1);
-            if(!s)
-            {
-                script::push(L, false);
-                return 1;
-            }
-
-            script::push(L, s->isPlaying());
+            auto chan = script::ptr<Self>(L, 1);
+            script::push(L, chan->isPlaying());
             return 1;
         }
 
         int setplaying(lua_State* L)
         {
-            auto s = script::ptr<Song>(L, 1);
-            if(!s)
-            {
-                return 0;
-            }
-
+            auto chan = script::ptr<Self>(L, 1);
             auto playing = script::get<bool>(L, 2);
-            if(!playing && s->isPlaying())
+            if(!playing && chan->isPlaying())
             {
-                s->stop();
+                chan->stop();
             }
-            else if(playing && !s->isPlaying())
+            else if(playing && !chan->isPlaying())
             {
-                script::instance(L).engine().audio->playSong(s);
+                chan->play();
             }
 
             return 0;
@@ -104,27 +89,16 @@ namespace plum
 
         int getvolume(lua_State* L)
         {
-            auto s = script::ptr<Song>(L, 1);
-            if(!s)
-            {
-                script::push(L, 0);
-                return 1;
-            }
-
-            script::push(L, s->getVolume());
+            auto chan = script::ptr<Self>(L, 1);
+            script::push(L, chan->getVolume());
             return 1;
         }
 
         int setvolume(lua_State* L)
         {
-            auto s = script::ptr<Song>(L, 1);
-            if(!s)
-            {
-                return 0;
-            }
-
+            auto chan = script::ptr<Self>(L, 1);
             auto value = script::get<double>(L, 2);
-            s->setVolume(value);
+            chan->setVolume(value);
             return 0;
         }
     }
@@ -133,7 +107,7 @@ namespace plum
     {
         void initSongObject(lua_State* L)
         {
-            luaL_newmetatable(L, meta<Song>());
+            luaL_newmetatable(L, meta<Self>());
             // Duplicate the metatable on the stack.
             lua_pushvalue(L, -1);
             // metatable.__index = metatable

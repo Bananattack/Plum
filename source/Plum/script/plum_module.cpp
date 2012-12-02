@@ -2,6 +2,7 @@
 #include "../engine/engine.h"
 #include "../video/color.h"
 #include "../video/blending.h"
+#include "../video/video.h"
 #include "script.h"
 
 namespace plum
@@ -47,7 +48,7 @@ namespace plum
 
             if(argumentCount >= 1)
             {
-                script::instance(L).engine().setTitle(lua_tostring(L, 1));
+                script::instance(L).video().setTitle(lua_tostring(L, 1));
             }
             
             return 0;

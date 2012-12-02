@@ -1,5 +1,4 @@
 #include "../audio/audio.h"
-#include "../engine/engine.h"
 #include "script.h"
 
 namespace plum
@@ -18,7 +17,9 @@ namespace plum
         int create(lua_State* L)
         {
             auto filename = script::get<const char*>(L, 1);
-            script::push(L, script::instance(L).engine().audio->loadSound(filename), LUA_NOREF);
+            auto sound = new Sound();
+            script::instance(L).audio().loadSound(filename, false, *sound);
+            script::push(L, sound, LUA_NOREF);
             return 1;
         }
 
@@ -45,15 +46,13 @@ namespace plum
         int play(lua_State* L)
         {
             auto s = script::ptr<Sound>(L, 1);
-            if(!s)
-            {
-                script::push(L, 0);
-                return 1;
-            }
 
-            int volume = script::get<int>(L, 2, 100);
-            script::push(L, script::instance(L).engine().audio->playSound(s, volume));
-            return 1;
+            Channel c;
+            script::instance(L).audio().loadChannel(*s, c);
+            c.play();
+
+            // TODO: push channel reference;
+            return 0;
         }
     }
 

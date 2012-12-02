@@ -1,7 +1,5 @@
 #include "log.h"
 #include "engine.h"
-#include "../audio/audio.h"
-#include "../video/video.h"
 
 #ifdef _WIN32
 #define NOMINMAX
@@ -13,17 +11,8 @@
 namespace plum
 {
     Engine::Engine()
-        : initialized(false), config("plum.cfg")
     {
         logFormat(">> Initializing...\n");
-
-        auto xres = config.get<int>("xres", 320);
-        auto yres = config.get<int>("yres", 240);
-        auto windowed = config.get<bool>("windowed", true);
-
-        logFormat("    (Settings: %dx%d resolution, %s mode)\n\n", xres, yres, windowed ? "windowed" : "fullscreen");
-
-        logFormat("    Initializing SDL...");
         if(SDL_Init(SDL_INIT_TIMER | SDL_INIT_VIDEO | SDL_INIT_JOYSTICK | SDL_INIT_NOPARACHUTE) != 0)
         {
             quit("Couldn't initialize SDL.\n");
@@ -40,41 +29,14 @@ namespace plum
             }
         }
 #endif
-
-        SDL_ShowCursor(config.get<bool>("hide_cursor", false) ? SDL_DISABLE : SDL_ENABLE);
-
         logFormat(" OK!\n");
 
-        logFormat("    Initializing video engine...");
-        setTitle("Plum");
-        video = Video::create(xres, yres, windowed);
-        logFormat(" OK!\n");
-
-        logFormat("    Initializing sound engine...");
-        audio = Audio::create(config.get<bool>("no_sound", false));
-        logFormat(" OK!\n");
-
-        destroyed = false;
-        initialized = true;
         logFormat(">> Initialization complete!\n\n");
     }
 
     Engine::~Engine()
     {
-        if(!initialized)
-        {
-            logFormat("\n>> Shutdown before program was fully initialized, probably means fatal errors. Uh oh!\n");
-            return;
-        }
         logFormat("\n>> Destroying...\n");
-
-        logFormat("    Destroying sound engine...");
-        delete audio;
-        logFormat(" OK!\n");
-
-        logFormat("    Destroying video engine...");
-        delete video;
-        logFormat(" OK!\n");
 
         logFormat("    Destroying SDL...");
         SDL_Quit();
@@ -88,11 +50,6 @@ namespace plum
         logFormat("\n>> Shutdown requested");
         if(message.length())
         {
-            // If we're initialized enough, we can draw the error on-screen!
-            if(initialized)
-            {
-            }
-
             logFormat(", with quit message:\n%s", message.c_str());
             fprintf(stderr, "%s", message.c_str());
 #ifdef _WIN32
@@ -160,7 +117,7 @@ namespace plum
     {
         SDL_Event event;
         //ControlMap::iterator it;
-        while (!destroyed && SDL_PollEvent(&event))
+        while (SDL_PollEvent(&event))
         {
             switch (event.type)
             {
@@ -172,8 +129,8 @@ namespace plum
                     }
                     break;*/
                 case SDL_MOUSEMOTION:
-                    mouse.x = (double) event.motion.x * (double) video->getScreenWidth() / (double) video->getWindowWidth();
-                    mouse.y = (double) event.motion.y * (double) video->getScreenHeight() / (double) video->getWindowHeight();
+                    mouse.x = (double) event.motion.x;
+                    mouse.y = (double) event.motion.y;
                     break;
                 case SDL_MOUSEBUTTONDOWN:
                 case SDL_MOUSEBUTTONUP:
@@ -199,22 +156,20 @@ namespace plum
     void Engine::refresh()
     {
         poll();
-        SDL_GL_SwapBuffers();
-
+        
         timer.processInput(key[KEY_TILDE], key[KEY_LSHIFT]);
-        if(key[KEY_TILDE].isPressed())
+        /*if(key[KEY_TILDE].isPressed())
         {
-            audio->setMasterPitch(1.0 * TIMER_FAST_MULTIPLIER);
+            audio.setPitch(1.0 * TIMER_FAST_MULTIPLIER);
         }
         else if(key[KEY_LSHIFT].isPressed())
         {
-            audio->setMasterPitch(1.0 / TIMER_SLOW_DIVISOR);
+            audio.setPitch(1.0 / TIMER_SLOW_DIVISOR);
         }
         else
         {
-            audio->setMasterPitch(1.0);
-        }
-        audio->update();
+            audio.setPitch(1.0);
+        }*/
         timer.update();
 
         for(auto it = updateHooks.begin(), end = updateHooks.end(); it != end; ++it)
@@ -230,11 +185,5 @@ namespace plum
         {
             SDL_Delay(10);
         }
-    }
-
-    void Engine::setTitle(std::string title)
-    {
-        titlePrefix = title;
-        SDL_WM_SetCaption(title.c_str(), title.c_str());
     }
 }

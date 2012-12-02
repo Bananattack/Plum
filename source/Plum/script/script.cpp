@@ -18,8 +18,8 @@ namespace plum
         }
     }
 
-    Script::Script(Engine* engine)
-        : L(luaL_newstate()), engine_(engine)
+    Script::Script(Engine& engine, Audio& audio, Video& video)
+        : L(luaL_newstate()), engine_(engine), audio_(audio), video_(video)
     {
         //lua_atpanic(lua, panic);
         luaL_openlibs(L);
@@ -29,6 +29,27 @@ namespace plum
         // Allow the static script methods to be able to use instance variables,
         // by looking up with the lua_State.
         instances[L] = this;
+
+        update = engine_.addUpdateHook([&]() {
+            /*
+            // Update the input hooks, one by one.
+            // The input hook wrapper stuff makes me sick inside somewhat.
+            for(auto it = inputHooks.begin(), end = inputHooks.end(); it != end; ++it)
+            {
+                auto& hook(*it);
+                // Okay, convert our reference number input to userdata.
+                lua_rawgeti(L, LUA_REGISTRYINDEX, hook.inputRef);
+                Input** inp = (Input**) luaL_checkudata(L, -1, "plum_input");
+
+                // If the button's presed, we can call the hook callback.
+                if((*inp)->isPressed())
+                {
+                    lua_rawgeti(L, LUA_REGISTRYINDEX, hook.callbackRef);
+                    lua_rawgeti(L, LUA_REGISTRYINDEX, hook.inputRef);
+                    lua_call(L, 1, 0);
+                }
+            }*/
+        });
 
         // Load library functions.
         script::initLibrary(L);
@@ -62,6 +83,7 @@ namespace plum
 
     Script::~Script()
     {
+        engine_.removeUpdateHook(update);
         lua_close(L);
         instances.erase(L);
     }
@@ -85,40 +107,6 @@ namespace plum
         if(luaL_loadbuffer(L, buf.data(), buf.size(), scriptname.c_str()) || lua_pcall(L, 0, LUA_MULTRET, 0))
         {
             throw std::runtime_error("Error found in script:\r\n" + std::string(lua_tostring(L, -1)));
-        }
-    }
-
-    void Script::update()
-    {
-        stepGarbageCollector();
-        //std::string cap = titlePrefix + " - FPS: " + integerToString(timer.fps);
-        //SDL_WM_SetCaption(cap.c_str(), cap.c_str());
-
-        // Update the input hooks, one by one.
-        // The input hook wrapper stuff makes me sick inside somewhat.
-        for(auto it = inputHooks.begin(), end = inputHooks.end(); it != end; ++it)
-        {
-            processInputHook(*it);
-        }
-    }
-
-    void Script::stepGarbageCollector()
-    {
-        lua_gc(L, LUA_GCSTEP, 1); 
-    }
-
-    void Script::processInputHook(Script::InputHook& hook)
-    {
-        // Okay, convert our reference number input to userdata.
-        lua_rawgeti(L, LUA_REGISTRYINDEX, hook.inputRef);
-        Input** inp = (Input**) luaL_checkudata(L, -1, "plum_input");
-
-        // If the button's presed, we can call the hook callback.
-        if((*inp)->isPressed())
-        {
-            lua_rawgeti(L, LUA_REGISTRYINDEX, hook.callbackRef);
-            lua_rawgeti(L, LUA_REGISTRYINDEX, hook.inputRef);
-            lua_call(L, 1, 0);
         }
     }
 
