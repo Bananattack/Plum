@@ -1,4 +1,5 @@
-#pragma once
+#ifndef PLUM_CONFIG_H
+#define PLUM_CONFIG_H
 
 #include <unordered_map>
 
@@ -14,3 +15,4 @@ namespace plum
     };
 }
 
+#endif

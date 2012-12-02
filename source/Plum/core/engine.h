@@ -1,4 +1,5 @@
-#pragma once
+#ifndef PLUM_ENGINE_H
+#define PLUM_ENGINE_H
 
 #include <vector>
 #include <stdexcept>
@@ -59,3 +60,5 @@ namespace plum
             void operator =(const Engine&);
     };
 }
+
+#endif

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef PLUM_TILEMAP_H
+#define PLUM_TILEMAP_H
 #include "color.h"
 #include "blending.h"
 
@@ -35,3 +36,5 @@ namespace plum
             void blit(int worldX, int worldY, int destX, int destY, int tilesWide, int tilesHigh, BlendMode mode = BlendAlpha, Color tint = Color::White);
     };
 }
+
+#endif

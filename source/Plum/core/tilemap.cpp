@@ -1,5 +1,3 @@
-#pragma once
-
 #include <SDL_opengl.h>
 
 #include "video.h"

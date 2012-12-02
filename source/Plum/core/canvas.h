@@ -1,4 +1,5 @@
-#pragma once
+#ifndef PLUM_CANVAS_H
+#define PLUM_CANVAS_H
 
 #include <cmath>
 #include <string>
@@ -1040,3 +1041,5 @@ namespace plum
             Color* data;
     };
 }
+
+#endif

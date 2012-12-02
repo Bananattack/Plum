@@ -1,4 +1,5 @@
-#pragma once
+#ifndef PLUM_MOUSE_H
+#define PLUM_MOUSE_H
 
 #include "input.h"
 
@@ -30,3 +31,5 @@ namespace plum
         }
     };
 }
+
+#endif

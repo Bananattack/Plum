@@ -1,4 +1,5 @@
-#pragma once
+#ifndef PLUM_COLOR_H
+#define PLUM_COLOR_H
 
 #include <cstdint>
 
@@ -151,3 +152,5 @@ namespace plum
         return Color(r, g, b, a);
     }
 }
+
+#endif

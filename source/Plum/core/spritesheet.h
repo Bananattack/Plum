@@ -1,4 +1,5 @@
-#pragma once
+#ifndef PLUM_SPRITESHEET_H
+#define PLUM_SPRITESHEET_H
 
 #include "color.h"
 #include "blending.h"
@@ -27,3 +28,5 @@ namespace plum
             void rawBlitFrame(int x, int y, int f, double angle, double scale);
     };
 }
+
+#endif

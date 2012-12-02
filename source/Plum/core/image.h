@@ -1,4 +1,5 @@
-#pragma once
+#ifndef PLUM_IMAGE_H
+#define PLUM_IMAGE_H
 
 #include <string>
 #include "color.h"
@@ -48,3 +49,5 @@ namespace plum
             unsigned int textureID;
     };
 }
+
+#endif

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef PLUM_FONT_H
+#define PLUM_FONT_H
 
 #include <string>
 #include "../core/color.h"
@@ -39,3 +40,5 @@ namespace plum
             std::string wrapText(const std::string& input, int lineLength);
     };
 }
+
+#endif

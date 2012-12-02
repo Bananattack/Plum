@@ -1,4 +1,5 @@
-#pragma once
+#ifndef PLUM_KEYBOARD_H
+#define PLUM_KEYBOARD_H
 
 #include <SDL.h>
 #include "input.h"
@@ -140,3 +141,5 @@ namespace plum
     const int KEY_LALT = SDLK_LALT;
     const int KEY_BREAK = SDLK_BREAK;
 }
+
+#endif

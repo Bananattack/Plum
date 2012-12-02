@@ -1,4 +1,5 @@
-#pragma once
+#ifndef PLUM_SCRIPT_H
+#define PLUM_SCRIPT_H
 
 #include <string>
 #include <vector>
@@ -371,3 +372,5 @@ namespace plum
     }
 
 }
+
+#endif

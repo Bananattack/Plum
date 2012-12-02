@@ -1,5 +1,3 @@
-#pragma once
-
 #include <cstdlib>
 #include <memory>
 #include <corona.h>

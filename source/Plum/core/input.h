@@ -1,4 +1,5 @@
-#pragma once
+#ifndef PLUM_INPUT_H
+#define PLUM_INPUT_H
 
 namespace plum
 {
@@ -15,3 +16,5 @@ namespace plum
 
 #include "keyboard.h"
 #include "mouse.h"
+
+#endif

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef PLUM_FILE_H
+#define PLUM_FILE_H
 
 #include <string>
 extern "C"
@@ -77,3 +78,5 @@ namespace plum
             bool writeLine(const std::string& value, size_t size);
     };
 }
+
+#endif

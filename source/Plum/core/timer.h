@@ -1,4 +1,5 @@
-#pragma once
+#ifndef PLUM_TIMER_H
+#define PLUM_TIMER_H
 
 #include "input.h"
 
@@ -33,3 +34,5 @@ namespace plum
         void update();
     };
 }
+
+#endif

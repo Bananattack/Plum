@@ -1,4 +1,6 @@
-#pragma once
+#ifndef PLUM_TRANSFORM_H
+#define PLUM_TRANSFORM_H
+
 #include "color.h"
 #include "blending.h"
 
@@ -69,3 +71,5 @@ namespace plum
         }
     };
 }
+
+#endif

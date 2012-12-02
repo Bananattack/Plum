@@ -1,4 +1,5 @@
-#pragma once
+#ifndef PLUM_DIRECTORY_H
+#define PLUM_DIRECTORY_H
 
 #include <string>
 extern "C"
@@ -35,3 +36,5 @@ namespace plum
 
     };
 }
+
+#endif
