@@ -4,28 +4,18 @@
 
 namespace plum
 {
-    Spritesheet::Spritesheet(Canvas* canvas, int w, int h)
+    Spritesheet::Spritesheet(const Canvas& canvas, int w, int h)
+        : image(new Image(canvas)),
+        frameWidth(w),
+        frameHeight(h),
+        padding(0),
+        columns(canvas.getWidth() / w)
     {
-        init(canvas, w, h);
-    }
-
-    Spritesheet::Spritesheet(Image* img, int w, int h)
-    {
-        init(img->getCanvas(), w, h);
     }
             
     Spritesheet::~Spritesheet()
     {
         delete image;
-    }
-
-    void Spritesheet::init(Canvas* canvas, int w, int h)
-    {
-        image = new Image(canvas);
-        frameWidth = w;
-        frameHeight = h;
-        padding = 0;
-        columns = image->getCanvas()->getWidth() / w;
     }
 
     Image* Spritesheet::getImage()
@@ -44,7 +34,7 @@ namespace plum
 
         int fx = (f % columns) * (frameWidth + padding) + padding;
         int fy = (f / columns) * (frameHeight + padding) + padding;
-        return image->getCanvas()->getPixel(fx + x, fy + y);
+        return image->canvas().getPixel(fx + x, fy + y);
     }
 
     void Spritesheet::blitFrame(int x, int y, int f, BlendMode mode, Color tint)

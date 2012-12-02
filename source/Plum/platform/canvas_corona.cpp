@@ -55,7 +55,7 @@ namespace
 
 namespace plum
 {
-    Canvas* Canvas::load(const std::string& filename)
+    Canvas Canvas::load(const std::string& filename)
     {
         std::unique_ptr<corona::File> file(new FileWrapper(new File(filename, FileRead)));
         std::unique_ptr<corona::Image> image(corona::OpenImage(file.get(), corona::PF_R8G8B8A8, corona::FF_AUTODETECT));
@@ -64,9 +64,9 @@ namespace plum
             throw std::runtime_error("Couldn't open image '" + filename + "'!\r\n");
         }
 
-        Canvas* canvas = new Canvas(image->getWidth(), image->getHeight());
-        memcpy(canvas->data, image->getPixels(), sizeof(Color) * image->getWidth() * image->getHeight());
-        canvas->replaceColor(Color::Magenta, 0);
+        Canvas canvas(image->getWidth(), image->getHeight());
+        std::memcpy(canvas.data, image->getPixels(), sizeof(Color) * image->getWidth() * image->getHeight());
+        canvas.replaceColor(Color::Magenta, 0);
         return canvas;
     }
 }

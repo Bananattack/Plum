@@ -3,6 +3,7 @@
 #include <string>
 #include "color.h"
 #include "video.h"
+#include "canvas.h"
 #include "blending.h"
 
 namespace plum
@@ -12,12 +13,10 @@ namespace plum
     class Image
     {
         public:
-            Image(const std::string& filename);
-            Image(Canvas* source);
-
+            Image(const Canvas& source);
             ~Image();
 
-            Canvas* getCanvas() const;
+            Canvas& canvas();
             void refresh();
 
             void bind();
@@ -40,11 +39,9 @@ namespace plum
             void transformBlit(Transform* transform);
 
         private:
-            void init(Canvas* canvas);
-
             // A backend software canvas that this image's raw texture copies.
             // Useful if the textures need to be refreshed later.
-            Canvas* canvas;
+            Canvas canvas_;
             // The GL target type
             int target; 
             // The GL texture ID

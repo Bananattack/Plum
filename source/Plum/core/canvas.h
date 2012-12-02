@@ -2,6 +2,7 @@
 
 #include <cmath>
 #include <string>
+#include <vector>
 
 #include "color.h"
 #include "blending.h"
@@ -11,7 +12,20 @@ namespace plum
     class Canvas
     {
         public:
-            static Canvas* load(const std::string& filename);
+            static Canvas load(const std::string& filename);
+
+            Canvas()
+                : width(0),
+                height(0),
+                trueWidth(0),
+                trueHeight(0),
+                clipX(0),
+                clipY(0),
+                clipX2(0),
+                clipY2(0),
+                data(nullptr)
+            {
+            }
 
             Canvas(int width, int height)
                 : width(width),
@@ -32,6 +46,8 @@ namespace plum
                 height(height),
                 trueWidth(trueWidth),
                 trueHeight(trueHeight),
+                clipX(0),
+                clipY(0),
                 clipX2(width - 1),
                 clipY2(height - 1),
                 data(new Color[trueWidth * trueHeight])
@@ -39,9 +55,63 @@ namespace plum
                 clear(Color::Black);
             }
 
+            Canvas(const Canvas& other)
+                : width(other.width),
+                height(other.height),
+                trueWidth(other.trueWidth),
+                trueHeight(other.trueHeight),
+                clipX(other.clipX),
+                clipY(other.clipY),
+                clipX2(other.clipX2),
+                clipY2(other.clipY2),
+                data(new Color[other.trueWidth * other.trueHeight])
+            {
+                std::memcpy(data, other.data, sizeof(Color) * other.width * other.height);
+            }
+
+            Canvas(Canvas&& other)
+                : width(other.width),
+                height(other.height),
+                trueWidth(other.trueWidth),
+                trueHeight(other.trueHeight),
+                clipX(other.clipX),
+                clipY(other.clipY),
+                clipX2(other.clipX2),
+                clipY2(other.clipY2),
+                data(other.data)
+            {
+                other.data = nullptr;
+            }
+
             ~Canvas()
             {
-                delete[] data;    
+                delete[] data;
+            }
+
+            Canvas& operator =(const Canvas& other)
+            {
+                Canvas temp(other);
+                swap(temp);
+                return *this;
+            }
+
+            Canvas& operator =(Canvas&& other)
+            {
+                swap(other);
+                return *this;
+            }
+
+            void swap(Canvas& other) throw()
+            {
+                std::swap(width, other.width);
+                std::swap(height, other.height);
+                std::swap(trueWidth, other.trueWidth);
+                std::swap(trueHeight, other.trueHeight);
+                std::swap(clipX, other.clipX);
+                std::swap(clipY, other.clipY);
+                std::swap(clipX2, other.clipX2);
+                std::swap(clipY2, other.clipY2);
+                std::swap(data, other.data);
             }
 
             int getTrueWidth() const
@@ -103,18 +173,19 @@ namespace plum
             
             Color getPixel(int x, int y) const
             {
-                if(x < clipX || x >= clipX2 || y < clipY || y >= clipY2) return 0;
+                if(!data || x < clipX || x >= clipX2 || y < clipY || y >= clipY2) return 0;
                 else return data[y * trueWidth + x];
             }
 
             template <typename BlendCallback> void setPixel(int x, int y, Color color, const BlendCallback& blend)
             {
-                if(x < clipX || x > clipX2 || y < clipY || y > clipY2) return;
+                if(!data || x < clipX || x > clipX2 || y < clipY || y > clipY2) return;
                 else data[y * trueWidth + x] = blend(color, data[y * trueWidth + x]);
             }
 
             void clear(Color color)
             {
+                if(!data) return;
                 for(int i = 0; i < trueWidth * trueHeight; i++)
                 {
                     data[i] = color;
@@ -123,6 +194,7 @@ namespace plum
 
             void replaceColor(Color find, Color replacement)
             {
+                if(!data) return;
                 for(int i = 0; i < trueWidth * trueHeight; i++)
                 {
                     if(data[i] == find)
@@ -134,6 +206,7 @@ namespace plum
 
             void flip(bool horizontal, bool vertical)
             {
+                if(!data) return;
                 if(horizontal)
                 {
                     for(int x = 0; x < width / 2; x++)
@@ -162,6 +235,7 @@ namespace plum
 
             template <typename BlendCallback> void line(int x, int y, int x2, int y2, Color color, const BlendCallback& blend)
             {
+                if(!data) return;
                 // Now we'll clip the line using Cohen-Sutherland clipping
                 // (this source adapted from ika)
                 int c1 = 0;
@@ -347,6 +421,7 @@ namespace plum
 
             template <typename BlendCallback> void rect(int x, int y, int x2, int y2, Color color, const BlendCallback& blend)
             {
+                if(!data) return;
                 int i;
 
                 // Put the coordinates in order.
@@ -396,6 +471,7 @@ namespace plum
 
             template <typename BlendCallback> void solidRect(int x, int y, int x2, int y2, Color color, const BlendCallback& blend)
             {
+                if(!data) return;
                 int i, j;
 
                 if (x > x2)
@@ -447,6 +523,7 @@ namespace plum
             // rkennedy@ix.netcom.com
             template <typename BlendCallback> void circle(int cx, int cy, int xRadius, int yRadius, Color color, const BlendCallback& blend)
             {
+                if(!data) return;
                 int x, y, plotX, plotY;
                 int xChange, yChange;
                 int ellipseError;
@@ -590,6 +667,7 @@ namespace plum
             // rkennedy@ix.netcom.com
             template <typename BlendCallback> void solidCircle(int cx, int cy, int xRadius, int yRadius, Color color, const BlendCallback& blend)
             {
+                if(!data) return;
                 int i, plotX, plotX2, plotY;
                 int x, y;
                 int xChange, yChange;
@@ -696,8 +774,9 @@ namespace plum
                 }
             }
 
-            template <typename BlendCallback> void blit(int x, int y, Canvas* dest, const BlendCallback& blend) const
+            template <typename BlendCallback> void blit(int x, int y, Canvas& dest, const BlendCallback& blend) const
             {
+                if(!data) return;
                 int i, j;
                 int x2 = x + trueWidth - 1;
                 int y2 = y + trueHeight -1;
@@ -707,59 +786,63 @@ namespace plum
                 int sourceY2 = trueHeight - 1;
 
                 // Don't draw if completely outside clipping regions.
-                if(x > dest->clipX2 || y > dest->clipY2 || x2 < dest->clipX || y2 < dest->clipY)
+                if(x > dest.clipX2 || y > dest.clipY2 || x2 < dest.clipX || y2 < dest.clipY)
                 {
                     return;
                 }
                 // Keep rectangle inside clipping regions
-                if(x < dest->clipX)
+                if(x < dest.clipX)
                 {
-                    sourceX += dest->clipX - x;
+                    sourceX += dest.clipX - x;
                 }
-                if(x2 > dest->clipX2)
+                if(x2 > dest.clipX2)
                 {
-                    sourceX2 -= x2 - dest->clipX2;
+                    sourceX2 -= x2 - dest.clipX2;
                 }
-                if(y < dest->clipY)
+                if(y < dest.clipY)
                 {
-                    sourceY += dest->clipY - y;
+                    sourceY += dest.clipY - y;
                 }
-                if(y2 > dest->clipY2)
+                if(y2 > dest.clipY2)
                 {
-                    sourceY2 -= y2 - dest->clipY2;
+                    sourceY2 -= y2 - dest.clipY2;
                 }
                 // Draw the image, pixel for pixel
                 for(i = sourceY; i <= sourceY2; i++)
                 {
                     for(j = sourceX; j <= sourceX2; j++)
                     {
-                        dest->data[(i + y) * dest->trueWidth + (j + x)] = blend(data[i * trueWidth + j], dest->data[(i + y) * dest->trueWidth + (j + x)]);
+                        dest.data[(i + y) * dest.trueWidth + (j + x)] = blend(data[i * trueWidth + j], dest.data[(i + y) * dest.trueWidth + (j + x)]);
                     }
                 }
             }
 
-            template <typename BlendCallback> void scaleBlit(int x, int y, int scaledWidth, int scaledHeight, Canvas* dest, const BlendCallback& blend) const
+            template <typename BlendCallback> void scaleBlit(int x, int y, int scaledWidth, int scaledHeight, Canvas& dest, const BlendCallback& blend) const
             {
+                if(!data) return;
                 scaleBlitRegion(0, 0, width, height, x, y, scaledWidth, scaledHeight, dest, blend);
             }
 
-            template <typename BlendCallback> void rotateBlit(int x, int y, double angle, Canvas* dest, const BlendCallback& blend) const
+            template <typename BlendCallback> void rotateBlit(int x, int y, double angle, Canvas& dest, const BlendCallback& blend) const
             {
+                if(!data) return;
                 rotateScaleBlitRegion(0, 0, width, height, x, y, angle, 1, dest, blend);
             }
 
-            template <typename BlendCallback> void rotateScaleBlit(int x, int y, double angle, double scale, Canvas* dest, const BlendCallback& blend) const
+            template <typename BlendCallback> void rotateScaleBlit(int x, int y, double angle, double scale, Canvas& dest, const BlendCallback& blend) const
             {
+                if(!data) return;
                 rotateScaleBlitRegion(0, 0, width, height, x, y, angle, scale, dest, blend);
             }
 
             template <typename BlendCallback> void blitRegion(int sx, int sy, int sx2, int sy2,
-                    int dx, int dy, Canvas* dest, const BlendCallback& blend) const
+                    int dx, int dy, Canvas& dest, const BlendCallback& blend) const
             {
-                int cx = dest->clipX;
-                int cy = dest->clipY;
-                int cx2 = dest->clipX2;
-                int cy2 = dest->clipY2;
+                if(!data) return;
+                int cx = dest.clipX;
+                int cy = dest.clipY;
+                int cx2 = dest.clipX2;
+                int cy2 = dest.clipY2;
 
                 if (sx > sx2)
                 {
@@ -770,14 +853,15 @@ namespace plum
                     std::swap(sy, sy2);
                 }
 
-                dest->setClipRegion(dx, dy, dx + (sx2 - sx), dy + (sy2 - sy));
+                dest.setClipRegion(dx, dy, dx + (sx2 - sx), dy + (sy2 - sy));
                 blit(dx - sx, dy - sy, dest, blend);
-                dest->setClipRegion(cx, cy, cx2, cy2);
+                dest.setClipRegion(cx, cy, cx2, cy2);
             }
 
             template <typename BlendCallback> void scaleBlitRegion(int sx, int sy, int sx2, int sy2,
-                    int dx, int dy, int scw, int sch, Canvas* dest, const BlendCallback& blend) const
+                    int dx, int dy, int scw, int sch, Canvas& dest, const BlendCallback& blend) const
             {
+                if(!data) return;
                 if (sx > sx2)
                 {
                     std::swap(sx, sx2);
@@ -802,46 +886,48 @@ namespace plum
                 int yRatio = ((sy2 - sy + 1) << 16) / sch;
 
                 // Don't draw if completely outside clipping regions.
-                if(dx > dest->clipX2 || dy > dest->clipY2 || dx2 < dest->clipX || dy2 < dest->clipY)
+                if(dx > dest.clipX2 || dy > dest.clipY2 || dx2 < dest.clipX || dy2 < dest.clipY)
                 {
                     return;
                 }
                 // Keep rectangle inside clipping regions
-                if(dx < dest->clipX)
+                if(dx < dest.clipX)
                 {
-                    sourceX += dest->clipX - dx;
+                    sourceX += dest.clipX - dx;
                 }
-                if(dx2 > dest->clipX2)
+                if(dx2 > dest.clipX2)
                 {
-                    sourceX2 -= dx2 - dest->clipX2;
+                    sourceX2 -= dx2 - dest.clipX2;
                 }
-                if(dy < dest->clipY)
+                if(dy < dest.clipY)
                 {
-                    sourceY += dest->clipY - dy;
+                    sourceY += dest.clipY - dy;
                 }
-                if(dy2 > dest->clipY2)
+                if(dy2 > dest.clipY2)
                 {
-                    sourceY2 -= dy2 - dest->clipY2;
+                    sourceY2 -= dy2 - dest.clipY2;
                 }
                 // Draw the scaled image, pixel for pixel
                 for(i = sourceY; i <= sourceY2; i++)
                 {
                     for(j = sourceX; j <= sourceX2; j++)
                     {
-                        dest->data[(i + dy) * dest->trueWidth + (j + dx)] = blend(data[(((i * yRatio + sy) >> 16) + sy) * trueWidth + ((j * xRatio + sx) >> 16) + sx], dest->data[(i + dy) * dest->trueWidth + (j + dx)]);
+                        dest.data[(i + dy) * dest.trueWidth + (j + dx)] = blend(data[(((i * yRatio + sy) >> 16) + sy) * trueWidth + ((j * xRatio + sx) >> 16) + sx], dest.data[(i + dy) * dest.trueWidth + (j + dx)]);
                     }
                 }        
             }
 
             template <typename BlendCallback> void rotateBlitRegion(int sx, int sy, int sx2, int sy2,
-                    int dx, int dy, double angle, Canvas* dest, const BlendCallback& blend) const
+                    int dx, int dy, double angle, Canvas& dest, const BlendCallback& blend) const
             {
+                if(!data) return;
                 rotateScaleBlitRegion(sx, sy, sx2, sy2, dx, dy, angle, 1.0, dest, blend);
             }
 
             template <typename BlendCallback> void rotateScaleBlitRegion(int sx, int sy, int sx2, int sy2,
-                    int dx, int dy, double angle, double scale, Canvas* dest, const BlendCallback& blend) const
+                    int dx, int dy, double angle, double scale, Canvas& dest, const BlendCallback& blend) const
             {
+                if(!data) return;
                 int minX, minY;
                 int maxX, maxY;
                 int destX, destY;
@@ -900,8 +986,8 @@ namespace plum
                 minX = std::min(minX, a);
                 maxX = std::max(maxX, a);
                 // Finally, clipping
-                minX = std::max(minX + dx, dest->clipX);
-                maxX = std::min(maxX + dx, dest->clipX2);
+                minX = std::max(minX + dx, dest.clipX);
+                maxX = std::min(maxX + dx, dest.clipX2);
 
                 minY = (cosCenterY + sinCenterX) >> 16;
                 maxY = minY;
@@ -917,8 +1003,8 @@ namespace plum
                 minY = std::min(minY, a);
                 maxY = std::max(maxY, a);
                 // Finally, clipping
-                minY = std::max(minY + dy, dest->clipY);
-                maxY = std::min(maxY + dy, dest->clipY2);
+                minY = std::max(minY + dy, dest.clipY);
+                maxY = std::min(maxY + dy, dest.clipY2);
 
                 centerX = ((sx2 - sx) << 15) + (sx << 16); 
                 centerY = ((sy2 - sy) << 15) + (sy << 16);
@@ -936,7 +1022,7 @@ namespace plum
                         sourceY = plotY >> 16;
                         if(sourceX >= sx && sourceX <= sx2 && sourceY >= sy && sourceY <= sy2)
                         {
-                            dest->data[destY * dest->trueWidth + destX] = blend(data[sourceY * trueWidth + sourceX], dest->data[destY * dest->trueWidth + destX]);
+                            dest.data[destY * dest.trueWidth + destX] = blend(data[sourceY * trueWidth + sourceX], dest.data[destY * dest.trueWidth + destX]);
                         }
                         plotX += cosine;
                         plotY -= sine;
@@ -952,8 +1038,5 @@ namespace plum
             int clipX2, clipY2;
 
             Color* data;
-
-            Canvas(const Canvas&);
-            void operator =(const Canvas&);
     };
 }

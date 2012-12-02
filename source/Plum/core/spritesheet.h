@@ -16,12 +16,8 @@ namespace plum
             int padding;
             int columns;
 
-            Spritesheet(Canvas* canvas, int w, int h);
-            Spritesheet(Image* img, int w, int h);
+            Spritesheet(const Canvas& canvas, int w, int h);
             ~Spritesheet();
-
-        private:
-            void init(Canvas* canvas, int w, int h);
 
         public:
             Image* getImage();

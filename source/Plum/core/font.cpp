@@ -5,23 +5,23 @@
 namespace plum
 {
     Font::Font(const std::string& filename)
-        : image(new Image(filename)), letterSpacing(1)
+        : image(new Image(Canvas::load(filename))), letterSpacing(1)
     {
-        Canvas* canvas = image->getCanvas();
+        Canvas& canvas(image->canvas());
 
         // Try to automatically detect the font size based on the border edges.
         int w = 0;
         int h = 0;
-        Color c = canvas->getPixel(0, 0);
-        for (w = 1; w < canvas->getWidth(); w++)
+        Color c = canvas.getPixel(0, 0);
+        for (w = 1; w < canvas.getWidth(); w++)
         {
-            Color z = canvas->getPixel(w, 1);
+            Color z = canvas.getPixel(w, 1);
             if (z == c)
                 break;
         }
-        for (h = 1; h < canvas->getHeight(); h++)
+        for (h = 1; h < canvas.getHeight(); h++)
         {
-            Color z = canvas->getPixel(1, h);
+            Color z = canvas.getPixel(1, h);
             if (z == c)
                 break;
         }
@@ -44,10 +44,10 @@ namespace plum
     {
         int fx = (cell % FONT_COLUMNS) * (width + 1) + 1;
         int fy = (cell / FONT_COLUMNS) * (height + 1) + 1;
-        Canvas* canvas = image->getCanvas();
+        Canvas& canvas(image->canvas());
         for(int y = 0; y < height; y++)
         {
-            if(canvas->getPixel(fx + column, fy + y)[AlphaChannel] > 0)
+            if(canvas.getPixel(fx + column, fy + y)[AlphaChannel] > 0)
             {
                 return false;
             }

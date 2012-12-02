@@ -30,7 +30,7 @@ namespace plum
             {
                 auto filename = script::get<const char*>(L, 1);
 
-                script::push(L, Canvas::load(filename), LUA_NOREF);
+                script::push(L, new Canvas(Canvas::load(filename)), LUA_NOREF);
                     
                 return 1;
             }
@@ -311,19 +311,19 @@ namespace plum
             switch(mode)
             {
                 case BlendOpaque:
-                    canvas->blit<SoftOpaqueBlender>(x, y, dest, SoftOpaqueBlender());
+                    canvas->blit<SoftOpaqueBlender>(x, y, *dest, SoftOpaqueBlender());
                     break;
                 case BlendMerge:
-                    canvas->blit<SoftMergeBlender>(x, y, dest, SoftMergeBlender());
+                    canvas->blit<SoftMergeBlender>(x, y, *dest, SoftMergeBlender());
                     break;
                 case BlendAlpha:
-                    canvas->blit<SoftPreserveBlender>(x, y, dest, SoftPreserveBlender());
+                    canvas->blit<SoftPreserveBlender>(x, y, *dest, SoftPreserveBlender());
                     break;
                 case BlendAdd:
-                    canvas->blit<SoftAddBlender>(x, y, dest, SoftAddBlender());
+                    canvas->blit<SoftAddBlender>(x, y, *dest, SoftAddBlender());
                     break;
                 case BlendSubtract:
-                    canvas->blit<SoftSubtractBlender>(x, y, dest, SoftSubtractBlender());
+                    canvas->blit<SoftSubtractBlender>(x, y, *dest, SoftSubtractBlender());
                     break;
             }
             return 0;
@@ -342,19 +342,19 @@ namespace plum
             switch(mode)
             {
                 case BlendOpaque:
-                    canvas->scaleBlit<SoftOpaqueBlender>(x, y, scaledWidth, scaledHeight, dest, SoftOpaqueBlender());
+                    canvas->scaleBlit<SoftOpaqueBlender>(x, y, scaledWidth, scaledHeight, *dest, SoftOpaqueBlender());
                     break;
                 case BlendMerge:
-                    canvas->scaleBlit<SoftMergeBlender>(x, y, scaledWidth, scaledHeight, dest, SoftMergeBlender());
+                    canvas->scaleBlit<SoftMergeBlender>(x, y, scaledWidth, scaledHeight, *dest, SoftMergeBlender());
                     break;
                 case BlendAlpha:
-                    canvas->scaleBlit<SoftPreserveBlender>(x, y, scaledWidth, scaledHeight, dest, SoftPreserveBlender());
+                    canvas->scaleBlit<SoftPreserveBlender>(x, y, scaledWidth, scaledHeight, *dest, SoftPreserveBlender());
                     break;
                 case BlendAdd:
-                    canvas->scaleBlit<SoftAddBlender>(x, y, scaledWidth, scaledHeight, dest, SoftAddBlender());
+                    canvas->scaleBlit<SoftAddBlender>(x, y, scaledWidth, scaledHeight, *dest, SoftAddBlender());
                     break;
                 case BlendSubtract:
-                    canvas->scaleBlit<SoftSubtractBlender>(x, y, scaledWidth, scaledHeight, dest, SoftSubtractBlender());
+                    canvas->scaleBlit<SoftSubtractBlender>(x, y, scaledWidth, scaledHeight, *dest, SoftSubtractBlender());
                     break;
             }
             return 0;
@@ -372,19 +372,19 @@ namespace plum
             switch(mode)
             {
                 case BlendOpaque:
-                    canvas->rotateBlit<SoftOpaqueBlender>(x, y, angle, dest, SoftOpaqueBlender());
+                    canvas->rotateBlit<SoftOpaqueBlender>(x, y, angle, *dest, SoftOpaqueBlender());
                     break;
                 case BlendMerge:
-                    canvas->rotateBlit<SoftMergeBlender>(x, y, angle, dest, SoftMergeBlender());
+                    canvas->rotateBlit<SoftMergeBlender>(x, y, angle, *dest, SoftMergeBlender());
                     break;
                 case BlendAlpha:
-                    canvas->rotateBlit<SoftPreserveBlender>(x, y, angle, dest, SoftPreserveBlender());
+                    canvas->rotateBlit<SoftPreserveBlender>(x, y, angle, *dest, SoftPreserveBlender());
                     break;
                 case BlendAdd:
-                    canvas->rotateBlit<SoftAddBlender>(x, y, angle, dest, SoftAddBlender());
+                    canvas->rotateBlit<SoftAddBlender>(x, y, angle, *dest, SoftAddBlender());
                     break;
                 case BlendSubtract:
-                    canvas->rotateBlit<SoftSubtractBlender>(x, y, angle, dest, SoftSubtractBlender());
+                    canvas->rotateBlit<SoftSubtractBlender>(x, y, angle, *dest, SoftSubtractBlender());
                     break;
             }
             return 0;
@@ -403,19 +403,19 @@ namespace plum
             switch(mode)
             {
                 case BlendOpaque:
-                    canvas->rotateScaleBlit<SoftOpaqueBlender>(x, y, angle, scale, dest, SoftOpaqueBlender());
+                    canvas->rotateScaleBlit<SoftOpaqueBlender>(x, y, angle, scale, *dest, SoftOpaqueBlender());
                     break;
                 case BlendMerge:
-                    canvas->rotateScaleBlit<SoftMergeBlender>(x, y, angle, scale, dest, SoftMergeBlender());
+                    canvas->rotateScaleBlit<SoftMergeBlender>(x, y, angle, scale, *dest, SoftMergeBlender());
                     break;
                 case BlendAlpha:
-                    canvas->rotateScaleBlit<SoftPreserveBlender>(x, y, angle, scale, dest, SoftPreserveBlender());
+                    canvas->rotateScaleBlit<SoftPreserveBlender>(x, y, angle, scale, *dest, SoftPreserveBlender());
                     break;
                 case BlendAdd:
-                    canvas->rotateScaleBlit<SoftAddBlender>(x, y, angle, scale, dest, SoftAddBlender());
+                    canvas->rotateScaleBlit<SoftAddBlender>(x, y, angle, scale, *dest, SoftAddBlender());
                     break;
                 case BlendSubtract:
-                    canvas->rotateScaleBlit<SoftSubtractBlender>(x, y, angle, scale, dest, SoftSubtractBlender());
+                    canvas->rotateScaleBlit<SoftSubtractBlender>(x, y, angle, scale, *dest, SoftSubtractBlender());
                     break;
             }
             return 0;
@@ -436,19 +436,19 @@ namespace plum
             switch(mode)
             {
                 case BlendOpaque:
-                    canvas->blitRegion<SoftOpaqueBlender>(sx, sy, sx2, sy2, dx, dy, dest, SoftOpaqueBlender());
+                    canvas->blitRegion<SoftOpaqueBlender>(sx, sy, sx2, sy2, dx, dy, *dest, SoftOpaqueBlender());
                     break;
                 case BlendMerge:
-                    canvas->blitRegion<SoftMergeBlender>(sx, sy, sx2, sy2, dx, dy, dest, SoftMergeBlender());
+                    canvas->blitRegion<SoftMergeBlender>(sx, sy, sx2, sy2, dx, dy, *dest, SoftMergeBlender());
                     break;
                 case BlendAlpha:
-                    canvas->blitRegion<SoftPreserveBlender>(sx, sy, sx2, sy2, dx, dy, dest, SoftPreserveBlender());
+                    canvas->blitRegion<SoftPreserveBlender>(sx, sy, sx2, sy2, dx, dy, *dest, SoftPreserveBlender());
                     break;
                 case BlendAdd:
-                    canvas->blitRegion<SoftAddBlender>(sx, sy, sx2, sy2, dx, dy, dest, SoftAddBlender());
+                    canvas->blitRegion<SoftAddBlender>(sx, sy, sx2, sy2, dx, dy, *dest, SoftAddBlender());
                     break;
                 case BlendSubtract:
-                    canvas->blitRegion<SoftSubtractBlender>(sx, sy, sx2, sy2, dx, dy, dest, SoftSubtractBlender());
+                    canvas->blitRegion<SoftSubtractBlender>(sx, sy, sx2, sy2, dx, dy, *dest, SoftSubtractBlender());
                     break;
             }
             return 0;
@@ -471,19 +471,19 @@ namespace plum
             switch(mode)
             {
                 case BlendOpaque:
-                    canvas->scaleBlitRegion<SoftOpaqueBlender>(sx, sy, sx2, sy2, dx, dy, scw, sch, dest, SoftOpaqueBlender());
+                    canvas->scaleBlitRegion<SoftOpaqueBlender>(sx, sy, sx2, sy2, dx, dy, scw, sch, *dest, SoftOpaqueBlender());
                     break;
                 case BlendMerge:
-                    canvas->scaleBlitRegion<SoftMergeBlender>(sx, sy, sx2, sy2, dx, dy, scw, sch, dest, SoftMergeBlender());
+                    canvas->scaleBlitRegion<SoftMergeBlender>(sx, sy, sx2, sy2, dx, dy, scw, sch, *dest, SoftMergeBlender());
                     break;
                 case BlendAlpha:
-                    canvas->scaleBlitRegion<SoftPreserveBlender>(sx, sy, sx2, sy2, dx, dy, scw, sch, dest, SoftPreserveBlender());
+                    canvas->scaleBlitRegion<SoftPreserveBlender>(sx, sy, sx2, sy2, dx, dy, scw, sch, *dest, SoftPreserveBlender());
                     break;
                 case BlendAdd:
-                    canvas->scaleBlitRegion<SoftAddBlender>(sx, sy, sx2, sy2, dx, dy, scw, sch, dest, SoftAddBlender());
+                    canvas->scaleBlitRegion<SoftAddBlender>(sx, sy, sx2, sy2, dx, dy, scw, sch, *dest, SoftAddBlender());
                     break;
                 case BlendSubtract:
-                    canvas->scaleBlitRegion<SoftSubtractBlender>(sx, sy, sx2, sy2, dx, dy, scw, sch, dest, SoftSubtractBlender());
+                    canvas->scaleBlitRegion<SoftSubtractBlender>(sx, sy, sx2, sy2, dx, dy, scw, sch, *dest, SoftSubtractBlender());
                     break;
             }
             return 0;
@@ -505,19 +505,19 @@ namespace plum
             switch(mode)
             {
                 case BlendOpaque:
-                    canvas->rotateBlitRegion<SoftOpaqueBlender>(sx, sy, sx2, sy2, dx, dy, angle, dest, SoftOpaqueBlender());
+                    canvas->rotateBlitRegion<SoftOpaqueBlender>(sx, sy, sx2, sy2, dx, dy, angle, *dest, SoftOpaqueBlender());
                     break;
                 case BlendMerge:
-                    canvas->rotateBlitRegion<SoftMergeBlender>(sx, sy, sx2, sy2, dx, dy, angle, dest, SoftMergeBlender());
+                    canvas->rotateBlitRegion<SoftMergeBlender>(sx, sy, sx2, sy2, dx, dy, angle, *dest, SoftMergeBlender());
                     break;
                 case BlendAlpha:
-                    canvas->rotateBlitRegion<SoftPreserveBlender>(sx, sy, sx2, sy2, dx, dy, angle, dest, SoftPreserveBlender());
+                    canvas->rotateBlitRegion<SoftPreserveBlender>(sx, sy, sx2, sy2, dx, dy, angle, *dest, SoftPreserveBlender());
                     break;
                 case BlendAdd:
-                    canvas->rotateBlitRegion<SoftAddBlender>(sx, sy, sx2, sy2, dx, dy, angle, dest, SoftAddBlender());
+                    canvas->rotateBlitRegion<SoftAddBlender>(sx, sy, sx2, sy2, dx, dy, angle, *dest, SoftAddBlender());
                     break;
                 case BlendSubtract:
-                    canvas->rotateBlitRegion<SoftSubtractBlender>(sx, sy, sx2, sy2, dx, dy, angle, dest, SoftSubtractBlender());
+                    canvas->rotateBlitRegion<SoftSubtractBlender>(sx, sy, sx2, sy2, dx, dy, angle, *dest, SoftSubtractBlender());
                     break;
             }
             return 0;
@@ -540,19 +540,19 @@ namespace plum
             switch(mode)
             {
                 case BlendOpaque:
-                    canvas->rotateScaleBlitRegion<SoftOpaqueBlender>(sx, sy, sx2, sy2, dx, dy, angle, scale, dest, SoftOpaqueBlender());
+                    canvas->rotateScaleBlitRegion<SoftOpaqueBlender>(sx, sy, sx2, sy2, dx, dy, angle, scale, *dest, SoftOpaqueBlender());
                     break;
                 case BlendMerge:
-                    canvas->rotateScaleBlitRegion<SoftMergeBlender>(sx, sy, sx2, sy2, dx, dy, angle, scale, dest, SoftMergeBlender());
+                    canvas->rotateScaleBlitRegion<SoftMergeBlender>(sx, sy, sx2, sy2, dx, dy, angle, scale, *dest, SoftMergeBlender());
                     break;
                 case BlendAlpha:
-                    canvas->rotateScaleBlitRegion<SoftPreserveBlender>(sx, sy, sx2, sy2, dx, dy, angle, scale, dest, SoftPreserveBlender());
+                    canvas->rotateScaleBlitRegion<SoftPreserveBlender>(sx, sy, sx2, sy2, dx, dy, angle, scale, *dest, SoftPreserveBlender());
                     break;
                 case BlendAdd:
-                    canvas->rotateScaleBlitRegion<SoftAddBlender>(sx, sy, sx2, sy2, dx, dy, angle, scale, dest, SoftAddBlender());
+                    canvas->rotateScaleBlitRegion<SoftAddBlender>(sx, sy, sx2, sy2, dx, dy, angle, scale, *dest, SoftAddBlender());
                     break;
                 case BlendSubtract:
-                    canvas->rotateScaleBlitRegion<SoftSubtractBlender>(sx, sy, sx2, sy2, dx, dy, angle, scale, dest, SoftSubtractBlender());
+                    canvas->rotateScaleBlitRegion<SoftSubtractBlender>(sx, sy, sx2, sy2, dx, dy, angle, scale, *dest, SoftSubtractBlender());
                     break;
             }
             return 0;

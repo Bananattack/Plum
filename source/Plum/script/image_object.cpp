@@ -21,14 +21,14 @@ namespace plum
             if(lua_isstring(L, 1))
             {
                 auto filename = script::get<const char*>(L, 1);
-                script::push(L, new Image(filename), LUA_NOREF);
+                script::push(L, new Image(Canvas::load(filename)), LUA_NOREF);
 
                 return 1;
             }
             else if(script::is<Canvas>(L, 1))
             {
                 auto canvas = script::ptr<Canvas>(L, 1);
-                script::push(L, new Image(canvas), LUA_NOREF);
+                script::push(L, new Image(*canvas), LUA_NOREF);
 
                 return 1;
             }
@@ -205,7 +205,7 @@ namespace plum
         int getwidth(lua_State* L)
         {
             auto img = script::ptr<Self>(L, 1);
-            script::push(L, img->getCanvas()->getWidth());
+            script::push(L, img->canvas().getWidth());
 
             return 1;
         }
@@ -213,7 +213,7 @@ namespace plum
         int getheight(lua_State* L)
         {
             auto img = script::ptr<Self>(L, 1);
-            script::push(L, img->getCanvas()->getHeight());
+            script::push(L, img->canvas().getHeight());
 
             return 1;
         }
@@ -221,7 +221,7 @@ namespace plum
         int getTrueWidth(lua_State* L)
         {
             auto img = script::ptr<Self>(L, 1);
-            script::push(L, img->getCanvas()->getTrueWidth());
+            script::push(L, img->canvas().getTrueWidth());
 
             return 1;
         }
@@ -229,7 +229,7 @@ namespace plum
         int getTrueHeight(lua_State* L)
         {
             auto img = script::ptr<Self>(L, 1);
-            script::push(L, img->getCanvas()->getTrueHeight());
+            script::push(L, img->canvas().getTrueHeight());
 
             return 1;
         }
@@ -243,7 +243,7 @@ namespace plum
             lua_pushvalue(L, 1);
             int ref = luaL_ref(L, LUA_REGISTRYINDEX);
 
-            script::push(L, img->getCanvas(), ref);
+            script::push(L, &img->canvas(), ref);
             return 1;
         }
     }

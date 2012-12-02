@@ -28,13 +28,13 @@ namespace plum
                 if(script::is<Canvas>(L, 1))
                 {
                     auto canvas = script::ptr<Canvas>(L, 1);
-                    script::push(L, new Self(canvas, w, h), LUA_NOREF);
+                    script::push(L, new Spritesheet(*canvas, w, h), LUA_NOREF);
                     return 1;
                 }
                 else if(script::is<Image>(L, 1))
                 {
                     auto img = script::ptr<Image>(L, 1);
-                    script::push(L, new Self(img, w, h), LUA_NOREF);
+                    script::push(L, new Spritesheet(img->canvas(), w, h), LUA_NOREF);
                     return 1;
                 }
             }
