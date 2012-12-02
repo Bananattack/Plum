@@ -14,19 +14,29 @@ namespace plum
         public:
             static Canvas* load(const std::string& filename);
 
-            int width, height;
-            // For textures
-            int occupiedWidth, occupiedHeight;
-
-            int clipX, clipY;
-            int clipX2, clipY2;
-
-            Color* data;
-
             Canvas(int width, int height)
-                : width(width), height(height),
-                occupiedWidth(width), occupiedHeight(height),
+                : width(width),
+                height(height),
+                trueWidth(width),
+                trueHeight(height),
+                clipX(0),
+                clipY(0),
+                clipX2(width - 1),
+                clipY2(height - 1),
                 data(new Color[width * height])
+            {
+                restoreClipRegion();
+                clear(Color::Black);
+            }
+
+            Canvas(int width, int height, int trueWidth, int trueHeight)
+                : width(width),
+                height(height),
+                trueWidth(trueWidth),
+                trueHeight(trueHeight),
+                clipX2(width - 1),
+                clipY2(height - 1),
+                data(new Color[trueWidth * trueHeight])
             {
                 restoreClipRegion();
                 clear(Color::Black);
@@ -37,12 +47,45 @@ namespace plum
                 delete[] data;    
             }
 
+            int getTrueWidth() const
+            {
+                return trueWidth;
+            }
+
+            int getTrueHeight() const
+            {
+                return trueHeight;
+            }
+
+            int getWidth() const
+            {
+                return width;
+            }
+
+            int getHeight() const
+            {
+                return height;
+            }
+
+            Color* getData() const
+            {
+                return data;
+            }
+
+            void getClipRegion(int& x, int& y, int& x2, int& y2) const
+            {
+                x = clipX;
+                y = clipY;
+                x2 = clipX2;
+                y2 = clipY2;
+            }
+
             void restoreClipRegion()
             {
                 clipX = 0;
                 clipY = 0;
-                clipX2 = occupiedWidth - 1;
-                clipY2 = occupiedHeight - 1;    
+                clipX2 = width - 1;
+                clipY2 = height - 1;    
             }
 
             void setClipRegion(int x, int y, int x2, int y2)
@@ -55,28 +98,27 @@ namespace plum
                 {
                     std::swap(y, y2);
                 }
-                clipX = std::min(std::max(0, x), occupiedWidth - 1);
-                clipY = std::min(std::max(0, y), occupiedHeight - 1);
-                clipX2 = std::min(std::max(0, x2), occupiedWidth - 1);
-                clipY2 = std::min(std::max(0, y2), occupiedHeight - 1);
+                clipX = std::min(std::max(0, x), width - 1);
+                clipY = std::min(std::max(0, y), height - 1);
+                clipX2 = std::min(std::max(0, x2), width - 1);
+                clipY2 = std::min(std::max(0, y2), height - 1);
             }
             
-            Color getPixel(int x, int y)
+            Color getPixel(int x, int y) const
             {
                 if(x < clipX || x >= clipX2 || y < clipY || y >= clipY2) return 0;
-                else return data[y * width + x];
+                else return data[y * trueWidth + x];
             }
 
             template <typename BlendCallback> void setPixel(int x, int y, Color color, const BlendCallback& blend)
             {
                 if(x < clipX || x > clipX2 || y < clipY || y > clipY2) return;
-                else data[y * width + x] = blend(color, data[y * width + x]);
+                else data[y * trueWidth + x] = blend(color, data[y * trueWidth + x]);
             }
 
             void clear(Color color)
             {
-                int i;
-                for(i = 0; i < width * height; i++)
+                for(int i = 0; i < trueWidth * trueHeight; i++)
                 {
                     data[i] = color;
                 }
@@ -84,8 +126,7 @@ namespace plum
 
             void replaceColor(Color find, Color replacement)
             {
-                int i;
-                for(i = 0; i < width * height; i++)
+                for(int i = 0; i < trueWidth * trueHeight; i++)
                 {
                     if(data[i] == find)
                     {
@@ -96,29 +137,27 @@ namespace plum
 
             void flip(bool horizontal, bool vertical)
             {
-                Color t;
-                int x, y;
                 if(horizontal)
                 {
-                    for(x = 0; x < occupiedWidth / 2; x++)
+                    for(int x = 0; x < width / 2; x++)
                     {
-                        for(y = 0; y < occupiedHeight; y++)
+                        for(int y = 0; y < height; y++)
                         {
-                            t = data[y * width + x];
-                            data[y * width + x] = data[y * width + (occupiedWidth - x - 1)];
-                            data[y * width + (occupiedWidth - x - 1)] = t;
+                            Color t = data[y * trueWidth + x];
+                            data[y * trueWidth + x] = data[y * trueWidth + (width - x - 1)];
+                            data[y * trueWidth + (width - x - 1)] = t;
                         }
                     }
                 }
                 if(vertical)
                 {
-                    for(x = 0; x < occupiedWidth; x++)
+                    for(int x = 0; x < width; x++)
                     {
-                        for(y = 0; y < occupiedHeight / 2; y++)
+                        for(int y = 0; y < height / 2; y++)
                         {
-                            t = data[y * width + x];
-                            data[y * width + x] = data[(occupiedHeight - y - 1) * width + x];
-                            data[(occupiedHeight - y - 1) * width + x] = t;
+                            Color t = data[y * trueWidth + x];
+                            data[y * trueWidth + x] = data[(height - y - 1) * trueWidth + x];
+                            data[(height - y - 1) * trueWidth + x] = t;
                         }
                     }
                 }
@@ -216,7 +255,7 @@ namespace plum
                 // A single pixel
                 if(x == x2 && y == y2)
                 {
-                    data[y * width + x] = blend(color, data[y * width + x]);
+                    data[y * trueWidth + x] = blend(color, data[y * trueWidth + x]);
                     return;
                 }
                 // Horizontal line
@@ -230,7 +269,7 @@ namespace plum
                     // Draw it.
                     for(int i = x; i <= x2; i++)
                     {
-                        data[y * width + i] = blend(color, data[y * width + i]);
+                        data[y * trueWidth + i] = blend(color, data[y * trueWidth + i]);
                     }
                     return;
                 }
@@ -245,7 +284,7 @@ namespace plum
                     // Draw it.
                     for(int i = y; i <= y2; i++)
                     {
-                        data[i * width + x] = blend(color, data[i * width + x]);
+                        data[i * trueWidth + x] = blend(color, data[i * trueWidth + x]);
                     }
                     return;
                 }
@@ -302,7 +341,7 @@ namespace plum
                         yaccum += yreset;
                     }
 
-                    data[cy * width + cx] = blend(color, data[cy * width + cx]);
+                    data[cy * trueWidth + cx] = blend(color, data[cy * trueWidth + cx]);
 
                     if(xreset == 0 && cx == x2) done = true;
                     if(yreset == 0 && cy == y2) done = true;
@@ -347,14 +386,14 @@ namespace plum
                 // Draw the horizontal lines of the rectangle.
                 for(i = x; i <= x2; i++)
                 {
-                    data[y * width + i] = blend(color, data[y * width + i]);
-                    data[y2 * width + i] = blend(color, data[y2 * width + i]);
+                    data[y * trueWidth + i] = blend(color, data[y * trueWidth + i]);
+                    data[y2 * trueWidth + i] = blend(color, data[y2 * trueWidth + i]);
                 }
                 // Draw the vertical lines of the rectangle.
                 for(i = y; i <= y2; i++)
                 {
-                    data[i * width + x] = blend(color, data[i * width + x]);
-                    data[i * width + x2] = blend(color, data[i * width + x2]);
+                    data[i * trueWidth + x] = blend(color, data[i * trueWidth + x]);
+                    data[i * trueWidth + x2] = blend(color, data[i * trueWidth + x2]);
                 }
             }
 
@@ -397,7 +436,7 @@ namespace plum
                 {
                     for(j = x; j <= x2; j++)
                     {
-                        data[i * width + j] = blend(color, data[i * width + j]);
+                        data[i * trueWidth + j] = blend(color, data[i * trueWidth + j]);
                     }
                 }
             }
@@ -439,12 +478,12 @@ namespace plum
                             plotX = cx - x;
                             if(plotX >= clipX && plotX <= clipX2)
                             {
-                                data[plotY * width + plotX] = blend(color, data[plotY * width + plotX]);
+                                data[plotY * trueWidth + plotX] = blend(color, data[plotY * trueWidth + plotX]);
                             }
                             plotX = cx + x;
                             if(plotX >= clipX && plotX <= clipX2)
                             {
-                                data[plotY * width + plotX] = blend(color, data[plotY * width + plotX]);
+                                data[plotY * trueWidth + plotX] = blend(color, data[plotY * trueWidth + plotX]);
                             }
                         }
                         if(y)
@@ -455,12 +494,12 @@ namespace plum
                                 plotX = cx - x;
                                 if(plotX >= clipX && plotX <= clipX2)
                                 {
-                                    data[plotY * width + plotX] = blend(color, data[plotY * width + plotX]);
+                                    data[plotY * trueWidth + plotX] = blend(color, data[plotY * trueWidth + plotX]);
                                 }
                                 plotX = cx + x;
                                 if(plotX >= clipX && plotX <= clipX2)
                                 {
-                                    data[plotY * width + plotX] = blend(color, data[plotY * width + plotX]);
+                                    data[plotY * trueWidth + plotX] = blend(color, data[plotY * trueWidth + plotX]);
                                 }
                             }
                         }
@@ -499,14 +538,14 @@ namespace plum
                             plotX = cx - x;
                             if(plotX >= clipX && plotX <= clipX2)
                             {
-                                data[plotY * width + plotX] = blend(color, data[plotY * width + plotX]);
+                                data[plotY * trueWidth + plotX] = blend(color, data[plotY * trueWidth + plotX]);
                             }
                             if(x)
                             {
                                 plotX = cx + x;
                                 if(plotX >= clipX && plotX <= clipX2)
                                 {
-                                    data[plotY * width + plotX] = blend(color, data[plotY * width + plotX]);
+                                    data[plotY * trueWidth + plotX] = blend(color, data[plotY * trueWidth + plotX]);
                                 }
                             }
                         }
@@ -518,14 +557,14 @@ namespace plum
                                 plotX = cx - x;
                                 if(plotX >= clipX && plotX <= clipX2)
                                 {
-                                    data[plotY * width + plotX] = blend(color, data[plotY * width + plotX]);
+                                    data[plotY * trueWidth + plotX] = blend(color, data[plotY * trueWidth + plotX]);
                                 }
                                 if(x)
                                 {
                                     plotX = cx + x;
                                     if(plotX >= clipX && plotX <= clipX2)
                                     {
-                                        data[plotY * width + plotX] = blend(color, data[plotY * width + plotX]);
+                                        data[plotY * trueWidth + plotX] = blend(color, data[plotY * trueWidth + plotX]);
                                     }
                                 }
                             }
@@ -583,7 +622,7 @@ namespace plum
                         {
                             for(i = plotX; i <= plotX2; i++)
                             {
-                                data[plotY * width + i] = blend(color, data[plotY * width + i]);
+                                data[plotY * trueWidth + i] = blend(color, data[plotY * trueWidth + i]);
                             }
                         }
                         if(y)
@@ -593,7 +632,7 @@ namespace plum
                             {
                                 for(i = plotX; i <= plotX2; i++)
                                 {
-                                    data[plotY * width + i] = blend(color, data[plotY * width + i]);
+                                    data[plotY * trueWidth + i] = blend(color, data[plotY * trueWidth + i]);
                                 }
                             }
                             lastY = y;
@@ -632,7 +671,7 @@ namespace plum
                         {
                             for(i = plotX; i <= plotX2; i++)
                             {
-                                data[plotY * width + i] = blend(color, data[plotY * width + i]);
+                                data[plotY * trueWidth + i] = blend(color, data[plotY * trueWidth + i]);
                             }
                         }
                         plotY = cy + y;
@@ -640,7 +679,7 @@ namespace plum
                         {
                             for(i = plotX; i <= plotX2; i++)
                             {
-                                data[plotY * width + i] = blend(color, data[plotY * width + i]);
+                                data[plotY * trueWidth + i] = blend(color, data[plotY * trueWidth + i]);
                             }
                         }
                         lastY = y;
@@ -660,15 +699,15 @@ namespace plum
                 }
             }
 
-            template <typename BlendCallback> void blit(int x, int y, Canvas* dest, const BlendCallback& blend)
+            template <typename BlendCallback> void blit(int x, int y, Canvas* dest, const BlendCallback& blend) const
             {
                 int i, j;
-                int x2 = x + width - 1;
-                int y2 = y + height -1;
+                int x2 = x + trueWidth - 1;
+                int y2 = y + trueHeight -1;
                 int sourceX = 0;
                 int sourceY = 0;
-                int sourceX2 = width - 1;
-                int sourceY2 = height - 1;
+                int sourceX2 = trueWidth - 1;
+                int sourceY2 = trueHeight - 1;
 
                 // Don't draw if completely outside clipping regions.
                 if(x > dest->clipX2 || y > dest->clipY2 || x2 < dest->clipX || y2 < dest->clipY)
@@ -697,28 +736,28 @@ namespace plum
                 {
                     for(j = sourceX; j <= sourceX2; j++)
                     {
-                        dest->data[(i + y) * dest->width + (j + x)] = blend(data[i * width + j], dest->data[(i + y) * dest->width + (j + x)]);
+                        dest->data[(i + y) * dest->trueWidth + (j + x)] = blend(data[i * trueWidth + j], dest->data[(i + y) * dest->trueWidth + (j + x)]);
                     }
                 }
             }
 
-            template <typename BlendCallback> void scaleBlit(int x, int y, int scaledWidth, int scaledHeight, Canvas* dest, const BlendCallback& blend)
+            template <typename BlendCallback> void scaleBlit(int x, int y, int scaledWidth, int scaledHeight, Canvas* dest, const BlendCallback& blend) const
             {
-                scaleBlitRegion(0, 0, occupiedWidth, occupiedHeight, x, y, scaledWidth, scaledHeight, dest, blend);
+                scaleBlitRegion(0, 0, width, height, x, y, scaledWidth, scaledHeight, dest, blend);
             }
 
-            template <typename BlendCallback> void rotateBlit(int x, int y, double angle, Canvas* dest, const BlendCallback& blend)
+            template <typename BlendCallback> void rotateBlit(int x, int y, double angle, Canvas* dest, const BlendCallback& blend) const
             {
-                rotateScaleBlitRegion(0, 0, occupiedWidth, occupiedHeight, x, y, angle, 1, dest, blend);
+                rotateScaleBlitRegion(0, 0, width, height, x, y, angle, 1, dest, blend);
             }
 
-            template <typename BlendCallback> void rotateScaleBlit(int x, int y, double angle, double scale, Canvas* dest, const BlendCallback& blend)
+            template <typename BlendCallback> void rotateScaleBlit(int x, int y, double angle, double scale, Canvas* dest, const BlendCallback& blend) const
             {
-                rotateScaleBlitRegion(0, 0, occupiedWidth, occupiedHeight, x, y, angle, scale, dest, blend);
+                rotateScaleBlitRegion(0, 0, width, height, x, y, angle, scale, dest, blend);
             }
 
             template <typename BlendCallback> void blitRegion(int sx, int sy, int sx2, int sy2,
-                    int dx, int dy, Canvas* dest, const BlendCallback& blend)
+                    int dx, int dy, Canvas* dest, const BlendCallback& blend) const
             {
                 int cx = dest->clipX;
                 int cy = dest->clipY;
@@ -740,7 +779,7 @@ namespace plum
             }
 
             template <typename BlendCallback> void scaleBlitRegion(int sx, int sy, int sx2, int sy2,
-                    int dx, int dy, int scw, int sch, Canvas* dest, const BlendCallback& blend)
+                    int dx, int dy, int scw, int sch, Canvas* dest, const BlendCallback& blend) const
             {
                 if (sx > sx2)
                 {
@@ -750,10 +789,10 @@ namespace plum
                 {
                     std::swap(sy, sy2);
                 }
-                sx = std::min(std::max(0, sx), occupiedWidth - 1);
-                sy = std::min(std::max(0, sy), occupiedHeight - 1);
-                sx2 = std::min(std::max(0, sx2), occupiedWidth - 1);
-                sy2 = std::min(std::max(0, sy2), occupiedHeight - 1);
+                sx = std::min(std::max(0, sx), width - 1);
+                sy = std::min(std::max(0, sy), height - 1);
+                sx2 = std::min(std::max(0, sx2), width - 1);
+                sy2 = std::min(std::max(0, sy2), height - 1);
 
                 int i, j;
                 int dx2 = dx + scw - 1;
@@ -792,19 +831,19 @@ namespace plum
                 {
                     for(j = sourceX; j <= sourceX2; j++)
                     {
-                        dest->data[(i + dy) * dest->width + (j + dx)] = blend(data[(((i * yRatio + sy) >> 16) + sy) * width + ((j * xRatio + sx) >> 16) + sx], dest->data[(i + dy) * dest->width + (j + dx)]);
+                        dest->data[(i + dy) * dest->trueWidth + (j + dx)] = blend(data[(((i * yRatio + sy) >> 16) + sy) * trueWidth + ((j * xRatio + sx) >> 16) + sx], dest->data[(i + dy) * dest->trueWidth + (j + dx)]);
                     }
                 }        
             }
 
             template <typename BlendCallback> void rotateBlitRegion(int sx, int sy, int sx2, int sy2,
-                    int dx, int dy, double angle, Canvas* dest, const BlendCallback& blend)
+                    int dx, int dy, double angle, Canvas* dest, const BlendCallback& blend) const
             {
                 rotateScaleBlitRegion(sx, sy, sx2, sy2, dx, dy, angle, 1.0, dest, blend);
             }
 
             template <typename BlendCallback> void rotateScaleBlitRegion(int sx, int sy, int sx2, int sy2,
-                    int dx, int dy, double angle, double scale, Canvas* dest, const BlendCallback& blend)
+                    int dx, int dy, double angle, double scale, Canvas* dest, const BlendCallback& blend) const
             {
                 int minX, minY;
                 int maxX, maxY;
@@ -829,10 +868,10 @@ namespace plum
                 {
                     std::swap(sy, sy2);
                 }
-                sx = std::min(std::max(0, sx), occupiedWidth - 1);
-                sy = std::min(std::max(0, sy), occupiedHeight - 1);
-                sx2 = std::min(std::max(0, sx2), occupiedWidth - 1);
-                sy2 = std::min(std::max(0, sy2), occupiedHeight - 1);
+                sx = std::min(std::max(0, sx), width - 1);
+                sy = std::min(std::max(0, sy), height - 1);
+                sx2 = std::min(std::max(0, sx2), width - 1);
+                sy2 = std::min(std::max(0, sy2), height - 1);
 
                 cosine = (int) (cos(angle) * 65536);
                 sine = (int) (sin(angle) * 65536);
@@ -900,12 +939,24 @@ namespace plum
                         sourceY = plotY >> 16;
                         if(sourceX >= sx && sourceX <= sx2 && sourceY >= sy && sourceY <= sy2)
                         {
-                            dest->data[destY * dest->width + destX] = blend(data[sourceY * width + sourceX], dest->data[destY * dest->width + destX]);
+                            dest->data[destY * dest->trueWidth + destX] = blend(data[sourceY * trueWidth + sourceX], dest->data[destY * dest->trueWidth + destX]);
                         }
                         plotX += cosine;
                         plotY -= sine;
                     }
                 }
             }
+
+        private:
+            int width, height;
+            int trueWidth, trueHeight;
+
+            int clipX, clipY;
+            int clipX2, clipY2;
+
+            Color* data;
+
+            Canvas(const Canvas&);
+            void operator =(const Canvas&);
     };
 }

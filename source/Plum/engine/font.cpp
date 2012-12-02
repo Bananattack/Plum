@@ -13,13 +13,13 @@ namespace plum
         int w = 0;
         int h = 0;
         Color c = canvas->getPixel(0, 0);
-        for (w = 1; w < canvas->width; w++)
+        for (w = 1; w < canvas->getWidth(); w++)
         {
             Color z = canvas->getPixel(w, 1);
             if (z == c)
                 break;
         }
-        for (h = 1; h < canvas->height; h++)
+        for (h = 1; h < canvas->getHeight(); h++)
         {
             Color z = canvas->getPixel(1, h);
             if (z == c)

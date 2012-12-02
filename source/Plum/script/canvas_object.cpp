@@ -560,18 +560,18 @@ namespace plum
             return 0;
         }
 
-        int gettrueWidth(lua_State* L)
+        int getTrueWidth(lua_State* L)
         {
             auto canvas = script::ptr<Self>(L, 1);
-            script::push(L, canvas->width);
+            script::push(L, canvas->getTrueWidth());
 
             return 1;
         }
 
-        int gettrueHeight(lua_State* L)
+        int getTrueHeight(lua_State* L)
         {
             auto canvas = script::ptr<Self>(L, 1);
-            script::push(L, canvas->height);
+            script::push(L, canvas->getTrueHeight());
 
             return 1;
         }
@@ -579,7 +579,7 @@ namespace plum
         int getwidth(lua_State* L)
         {
             auto canvas = script::ptr<Self>(L, 1);
-            script::push(L, canvas->occupiedWidth);
+            script::push(L, canvas->getWidth());
 
             return 1;
         }
@@ -587,7 +587,7 @@ namespace plum
         int getheight(lua_State* L)
         {
             auto canvas = script::ptr<Self>(L, 1);
-            script::push(L, canvas->occupiedHeight);
+            script::push(L, canvas->getHeight());
 
             return 1;
         }
@@ -629,8 +629,8 @@ namespace plum
                 {"scaleBlitRegion", scaleBlitRegion},
                 {"rotateBlitRegion", rotateBlitRegion},
                 {"rotateScaleBlitRegion", rotateScaleBlitRegion},
-                {"gettrueWidth", gettrueWidth},
-                {"gettrueHeight", gettrueHeight},
+                {"gettrueWidth", getTrueWidth},
+                {"gettrueHeight", getTrueHeight},
                 {"getwidth", getwidth},
                 {"getheight", getheight},
                 {nullptr, nullptr}

@@ -205,7 +205,7 @@ namespace plum
         int getwidth(lua_State* L)
         {
             auto img = script::ptr<Self>(L, 1);
-            script::push(L, img->getCanvasWidth());
+            script::push(L, img->getCanvas()->getWidth());
 
             return 1;
         }
@@ -213,23 +213,23 @@ namespace plum
         int getheight(lua_State* L)
         {
             auto img = script::ptr<Self>(L, 1);
-            script::push(L, img->getCanvasHeight());
+            script::push(L, img->getCanvas()->getHeight());
 
             return 1;
         }
 
-        int gettrueWidth(lua_State* L)
+        int getTrueWidth(lua_State* L)
         {
             auto img = script::ptr<Self>(L, 1);
-            script::push(L, img->getTextureWidth());
+            script::push(L, img->getCanvas()->getTrueWidth());
 
             return 1;
         }
 
-        int gettrueHeight(lua_State* L)
+        int getTrueHeight(lua_State* L)
         {
             auto img = script::ptr<Self>(L, 1);
-            script::push(L, img->getTextureHeight());
+            script::push(L, img->getCanvas()->getTrueHeight());
 
             return 1;
         }
@@ -277,8 +277,8 @@ namespace plum
                 {"getwidth", getwidth},
                 {"getheight", getheight},
                 {"getcanvas", getcanvas},
-                {"gettrueWidth", gettrueWidth},
-                {"gettrueHeight", gettrueHeight},
+                {"gettrueWidth", getTrueWidth},
+                {"gettrueHeight", getTrueHeight},
                 {nullptr, nullptr}
             };
             luaL_register(L, nullptr, functions);

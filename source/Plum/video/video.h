@@ -39,6 +39,20 @@ namespace plum
             class Impl;
             std::shared_ptr<Impl> impl;
     };
+
+    class Canvas;
+    class Texture
+    {
+        public:
+            Texture();
+            ~Texture();
+
+            void getCanvas(Canvas& canvas) const;
+// TODO
+        private:
+            class Impl;
+            std::shared_ptr<Impl> impl;
+    };
 }
 
 #endif

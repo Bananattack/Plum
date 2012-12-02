@@ -29,7 +29,7 @@ namespace plum
         frameWidth = w;
         frameHeight = h;
         padding = 0;
-        columns = image->getCanvasWidth() / w;
+        columns = image->getCanvas()->getWidth() / w;
     }
 
     Image* Spritesheet::getImage()

@@ -12,62 +12,23 @@ namespace plum
     class Image
     {
         private:
-            inline static int nearestPowerOfTwo(int num)
-            {
-                if (num <= 0)
-                {
-                    return 0;
-                }
-                else
-                {
-                    num--;
-                    num |= num >> 1;
-                    num |= num >> 2;
-                    num |= num >> 4;
-                    num |= num >> 8;
-                    num |= num >> 16;
-                    num++;
-
-                    return num;
-                }
-            }
-
             // A backend software canvas that this image's raw texture copies.
             // Useful if the textures need to be refreshed later.
-            Canvas* textureCanvas;
+            Canvas* canvas;
             // The GL target type
             int target; 
             // The GL texture ID
             unsigned int textureID;
-            // The width and height of the canvas
-            int canvasWidth, canvasHeight;
-            // The width and height of the texture (usually is a power of two)
-            int textureWidth, textureHeight;
-            // The ratio of canvas{Width|Height} / texture{Width|Height}
-            double widthRatio, heightRatio;
-
-            void setCanvasWidth(int width);
-            void setCanvasHeight(int height);
-            void setTextureWidth(int width);
-            void setTextureHeight(int height);
         public:
             Image(const std::string& filename);
-            Image(Canvas* canvas);
+            Image(Canvas* source);
 
             ~Image();
 
             void init(const char* filename);
             void init(Canvas* canvas);
 
-            int getCanvasWidth();
-            int getCanvasHeight();
-            int getTextureWidth();
-            int getTextureHeight();
-            double getWidthRatio();
-            double getHeightRatio();
-            Canvas* getCanvas();
-
-            void updateRatios();
+            Canvas* getCanvas() const;
             void refresh();
 
             void bind();
