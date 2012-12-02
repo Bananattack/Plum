@@ -11,22 +11,11 @@ namespace plum
     struct Transform;
     class Image
     {
-        private:
-            // A backend software canvas that this image's raw texture copies.
-            // Useful if the textures need to be refreshed later.
-            Canvas* canvas;
-            // The GL target type
-            int target; 
-            // The GL texture ID
-            unsigned int textureID;
         public:
             Image(const std::string& filename);
             Image(Canvas* source);
 
             ~Image();
-
-            void init(const char* filename);
-            void init(Canvas* canvas);
 
             Canvas* getCanvas() const;
             void refresh();
@@ -49,5 +38,16 @@ namespace plum
             void rawBlitRegion(int sourceX, int sourceY, int sourceX2, int sourceY2,
                     int destX, int destY, double angle, double scale);
             void transformBlit(Transform* transform);
+
+        private:
+            void init(Canvas* canvas);
+
+            // A backend software canvas that this image's raw texture copies.
+            // Useful if the textures need to be refreshed later.
+            Canvas* canvas;
+            // The GL target type
+            int target; 
+            // The GL texture ID
+            unsigned int textureID;
     };
 }

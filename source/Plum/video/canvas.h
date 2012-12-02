@@ -2,7 +2,6 @@
 
 #include <cmath>
 #include <string>
-#include <corona.h>
 
 #include "color.h"
 #include "blending.h"
@@ -25,7 +24,6 @@ namespace plum
                 clipY2(height - 1),
                 data(new Color[width * height])
             {
-                restoreClipRegion();
                 clear(Color::Black);
             }
 
@@ -38,7 +36,6 @@ namespace plum
                 clipY2(height - 1),
                 data(new Color[trueWidth * trueHeight])
             {
-                restoreClipRegion();
                 clear(Color::Black);
             }
 

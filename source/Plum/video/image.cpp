@@ -1,3 +1,4 @@
+#include <memory>
 #include <SDL_opengl.h>
 
 #include "image.h"
@@ -31,9 +32,8 @@ namespace plum
 
     Image::Image(const std::string& filename)
     {
-        Canvas* source = Canvas::load(filename);
-        init(source);
-        delete source;
+        std::unique_ptr<Canvas> source(Canvas::load(filename));
+        init(source.get());
     }
 
     Image::Image(Canvas* source)
