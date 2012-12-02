@@ -1,8 +1,8 @@
 #pragma once
 
 #include <string>
-#include "../video/color.h"
-#include "../video/blending.h"
+#include "../core/color.h"
+#include "../core/blending.h"
 
 namespace plum
 {

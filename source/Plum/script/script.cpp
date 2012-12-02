@@ -1,8 +1,8 @@
 #include <vector>
 #include <unordered_map>
 
-#include "../engine/file.h"
-#include "../engine/engine.h"
+#include "../core/file.h"
+#include "../core/engine.h"
 #include "script.h"
 
 namespace plum

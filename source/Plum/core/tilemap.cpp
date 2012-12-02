@@ -2,9 +2,9 @@
 
 #include <SDL_opengl.h>
 
+#include "video.h"
 #include "tilemap.h"
 #include "spritesheet.h"
-#include "../video/video.h"
 
 namespace plum
 {

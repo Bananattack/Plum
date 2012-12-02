@@ -1,7 +1,7 @@
 
-#include "../video/canvas.h"
-#include "../video/image.h"
-#include "../engine/spritesheet.h"
+#include "../core/image.h"
+#include "../core/canvas.h"
+#include "../core/spritesheet.h"
 #include "script.h"
 
 namespace plum

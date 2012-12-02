@@ -103,17 +103,22 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="engine\config.cpp" />
-    <ClCompile Include="engine\directory.cpp" />
-    <ClCompile Include="engine\file.cpp" />
-    <ClCompile Include="engine\log.cpp" />
-    <ClCompile Include="engine\spritesheet.cpp" />
-    <ClCompile Include="engine\tilemap.cpp" />
+    <ClCompile Include="core\blending.cpp" />
+    <ClCompile Include="core\config.cpp" />
+    <ClCompile Include="core\directory.cpp" />
+    <ClCompile Include="core\engine.cpp" />
+    <ClCompile Include="core\file.cpp" />
+    <ClCompile Include="core\font.cpp" />
+    <ClCompile Include="core\input.cpp" />
+    <ClCompile Include="core\log.cpp" />
+    <ClCompile Include="core\spritesheet.cpp" />
+    <ClCompile Include="core\tilemap.cpp" />
+    <ClCompile Include="core\timer.cpp" />
+    <ClCompile Include="platform\audio_audiere.cpp" />
+    <ClCompile Include="platform\canvas_corona.cpp" />
+    <ClCompile Include="platform\image_sdl.cpp" />
+    <ClCompile Include="platform\video_sdl.cpp" />
     <ClCompile Include="plum.cpp" />
-    <ClCompile Include="video\blending.cpp" />
-    <ClCompile Include="video\canvas.cpp" />
-    <ClCompile Include="video\image.cpp" />
-    <ClCompile Include="audio\audio_audiere.cpp" />
     <ClCompile Include="script\canvas_object.cpp" />
     <ClCompile Include="script\directory_object.cpp" />
     <ClCompile Include="script\file_object.cpp" />
@@ -133,34 +138,29 @@
     <ClCompile Include="script\timer_object.cpp" />
     <ClCompile Include="script\transform_object.cpp" />
     <ClCompile Include="script\video_object.cpp" />
-    <ClCompile Include="engine\engine.cpp" />
-    <ClCompile Include="engine\font.cpp" />
-    <ClCompile Include="engine\input.cpp" />
-    <ClCompile Include="engine\timer.cpp" />
-    <ClCompile Include="video\video_sdl.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="audio\audio.h" />
-    <ClInclude Include="engine\config.h" />
-    <ClInclude Include="engine\directory.h" />
-    <ClInclude Include="engine\file.h" />
-    <ClInclude Include="engine\log.h" />
+    <ClInclude Include="core\audio.h" />
+    <ClInclude Include="core\blending.h" />
+    <ClInclude Include="core\canvas.h" />
+    <ClInclude Include="core\color.h" />
+    <ClInclude Include="core\config.h" />
+    <ClInclude Include="core\directory.h" />
+    <ClInclude Include="core\engine.h" />
+    <ClInclude Include="core\file.h" />
+    <ClInclude Include="core\font.h" />
+    <ClInclude Include="core\image.h" />
+    <ClInclude Include="core\input.h" />
+    <ClInclude Include="core\keyboard.h" />
+    <ClInclude Include="core\log.h" />
+    <ClInclude Include="core\mouse.h" />
+    <ClInclude Include="core\spritesheet.h" />
+    <ClInclude Include="core\tilemap.h" />
+    <ClInclude Include="core\timer.h" />
+    <ClInclude Include="core\transform.h" />
+    <ClInclude Include="core\video.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="video\blending.h" />
-    <ClInclude Include="video\canvas.h" />
-    <ClInclude Include="video\color.h" />
-    <ClInclude Include="video\image.h" />
-    <ClInclude Include="video\transform.h" />
-    <ClInclude Include="video\video.h" />
     <ClInclude Include="script\script.h" />
-    <ClInclude Include="engine\engine.h" />
-    <ClInclude Include="engine\font.h" />
-    <ClInclude Include="engine\input.h" />
-    <ClInclude Include="engine\keyboard.h" />
-    <ClInclude Include="engine\mouse.h" />
-    <ClInclude Include="engine\spritesheet.h" />
-    <ClInclude Include="engine\tilemap.h" />
-    <ClInclude Include="engine\timer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="plum.ico" />

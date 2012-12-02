@@ -3,8 +3,8 @@
 #include <SDL.h>
 #include <SDL_opengl.h>
 
-#include "../engine/engine.h"
-#include "../video/video.h"
+#include "../core/engine.h"
+#include "../core/video.h"
 
 namespace plum
 {

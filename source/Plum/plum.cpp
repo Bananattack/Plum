@@ -1,8 +1,9 @@
-#include "engine/log.h"
-#include "engine/engine.h"
+#include "core/log.h"
+#include "core/audio.h"
+#include "core/video.h"
+#include "core/config.h"
+#include "core/engine.h"
 #include "script/script.h"
-#include "audio/audio.h"
-#include "video/video.h"
 
 #include <cstdlib>
 #include <stdexcept>

@@ -5,7 +5,6 @@
 #include "color.h"
 #include "blending.h"
 
-struct SDL_Surface;
 namespace plum
 {
     void useHardwareBlender(BlendMode mode);

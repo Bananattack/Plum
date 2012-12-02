@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../video/color.h"
-#include "../video/blending.h"
+#include "color.h"
+#include "blending.h"
 
 namespace plum
 {

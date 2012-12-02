@@ -1,6 +1,6 @@
 
 #include "script.h"
-#include "../engine/directory.h"
+#include "../core/directory.h"
 
 namespace plum
 {

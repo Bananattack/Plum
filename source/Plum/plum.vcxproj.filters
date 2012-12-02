@@ -5,48 +5,33 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="Source Files\video">
-      <UniqueIdentifier>{4efd5aea-f364-4141-804a-bffbf9057486}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\audio">
-      <UniqueIdentifier>{e8e9af37-7c25-4e90-bb0d-b5ee675b7a3a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\script">
       <UniqueIdentifier>{8a97e8be-3fa4-4d2d-974c-70dc2c2397b8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\engine">
-      <UniqueIdentifier>{51e1dbba-1bb7-4a45-a20d-721c2dda7b0f}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
-    <Filter Include="Header Files\video">
-      <UniqueIdentifier>{15525378-d5a1-454b-b2d9-1388f0b72828}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\audio">
-      <UniqueIdentifier>{befdc843-5bb4-4764-b572-5c511aee66c7}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\script">
       <UniqueIdentifier>{38adebc1-9a33-4662-9abd-d5249c8333de}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\engine">
-      <UniqueIdentifier>{d726bf1a-d4e2-4f7d-8faf-134cabbc905d}</UniqueIdentifier>
     </Filter>
     <Filter Include="Resource Files">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
     </Filter>
+    <Filter Include="Source Files\core">
+      <UniqueIdentifier>{51e1dbba-1bb7-4a45-a20d-721c2dda7b0f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\core">
+      <UniqueIdentifier>{d726bf1a-d4e2-4f7d-8faf-134cabbc905d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\platform">
+      <UniqueIdentifier>{be745fa8-3113-4413-88ee-e96538ec809f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="plum.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="video\image.cpp">
-      <Filter>Source Files\video</Filter>
-    </ClCompile>
-    <ClCompile Include="audio\audio_audiere.cpp">
-      <Filter>Source Files\audio</Filter>
     </ClCompile>
     <ClCompile Include="script\canvas_object.cpp">
       <Filter>Source Files\script</Filter>
@@ -105,109 +90,115 @@
     <ClCompile Include="script\video_object.cpp">
       <Filter>Source Files\script</Filter>
     </ClCompile>
-    <ClCompile Include="engine\engine.cpp">
-      <Filter>Source Files\engine</Filter>
+    <ClCompile Include="core\config.cpp">
+      <Filter>Source Files\core</Filter>
     </ClCompile>
-    <ClCompile Include="engine\font.cpp">
-      <Filter>Source Files\engine</Filter>
+    <ClCompile Include="core\directory.cpp">
+      <Filter>Source Files\core</Filter>
     </ClCompile>
-    <ClCompile Include="engine\input.cpp">
-      <Filter>Source Files\engine</Filter>
+    <ClCompile Include="core\engine.cpp">
+      <Filter>Source Files\core</Filter>
     </ClCompile>
-    <ClCompile Include="engine\timer.cpp">
-      <Filter>Source Files\engine</Filter>
+    <ClCompile Include="core\file.cpp">
+      <Filter>Source Files\core</Filter>
     </ClCompile>
-    <ClCompile Include="engine\spritesheet.cpp">
-      <Filter>Source Files\engine</Filter>
+    <ClCompile Include="core\font.cpp">
+      <Filter>Source Files\core</Filter>
     </ClCompile>
-    <ClCompile Include="engine\tilemap.cpp">
-      <Filter>Source Files\engine</Filter>
+    <ClCompile Include="core\input.cpp">
+      <Filter>Source Files\core</Filter>
     </ClCompile>
-    <ClCompile Include="video\canvas.cpp">
-      <Filter>Source Files\video</Filter>
+    <ClCompile Include="core\log.cpp">
+      <Filter>Source Files\core</Filter>
     </ClCompile>
-    <ClCompile Include="engine\config.cpp">
-      <Filter>Source Files\engine</Filter>
+    <ClCompile Include="core\spritesheet.cpp">
+      <Filter>Source Files\core</Filter>
     </ClCompile>
-    <ClCompile Include="engine\directory.cpp">
-      <Filter>Source Files\engine</Filter>
+    <ClCompile Include="core\tilemap.cpp">
+      <Filter>Source Files\core</Filter>
     </ClCompile>
-    <ClCompile Include="engine\file.cpp">
-      <Filter>Source Files\engine</Filter>
+    <ClCompile Include="core\timer.cpp">
+      <Filter>Source Files\core</Filter>
     </ClCompile>
-    <ClCompile Include="engine\log.cpp">
-      <Filter>Source Files\engine</Filter>
+    <ClCompile Include="platform\audio_audiere.cpp">
+      <Filter>Source Files\platform</Filter>
     </ClCompile>
-    <ClCompile Include="video\blending.cpp">
-      <Filter>Source Files\video</Filter>
+    <ClCompile Include="platform\video_sdl.cpp">
+      <Filter>Source Files\platform</Filter>
     </ClCompile>
-    <ClCompile Include="video\video_sdl.cpp">
-      <Filter>Source Files\video</Filter>
+    <ClCompile Include="platform\canvas_corona.cpp">
+      <Filter>Source Files\platform</Filter>
+    </ClCompile>
+    <ClCompile Include="platform\image_sdl.cpp">
+      <Filter>Source Files\platform</Filter>
+    </ClCompile>
+    <ClCompile Include="core\blending.cpp">
+      <Filter>Source Files\core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="video\blending.h">
-      <Filter>Header Files\video</Filter>
-    </ClInclude>
-    <ClInclude Include="video\canvas.h">
-      <Filter>Header Files\video</Filter>
-    </ClInclude>
-    <ClInclude Include="video\color.h">
-      <Filter>Header Files\video</Filter>
-    </ClInclude>
-    <ClInclude Include="video\image.h">
-      <Filter>Header Files\video</Filter>
-    </ClInclude>
-    <ClInclude Include="video\transform.h">
-      <Filter>Header Files\video</Filter>
-    </ClInclude>
     <ClInclude Include="script\script.h">
       <Filter>Header Files\script</Filter>
     </ClInclude>
-    <ClInclude Include="engine\engine.h">
-      <Filter>Header Files\engine</Filter>
+    <ClInclude Include="core\config.h">
+      <Filter>Header Files\core</Filter>
     </ClInclude>
-    <ClInclude Include="engine\font.h">
-      <Filter>Header Files\engine</Filter>
+    <ClInclude Include="core\directory.h">
+      <Filter>Header Files\core</Filter>
     </ClInclude>
-    <ClInclude Include="engine\input.h">
-      <Filter>Header Files\engine</Filter>
+    <ClInclude Include="core\engine.h">
+      <Filter>Header Files\core</Filter>
     </ClInclude>
-    <ClInclude Include="engine\keyboard.h">
-      <Filter>Header Files\engine</Filter>
+    <ClInclude Include="core\file.h">
+      <Filter>Header Files\core</Filter>
     </ClInclude>
-    <ClInclude Include="engine\mouse.h">
-      <Filter>Header Files\engine</Filter>
+    <ClInclude Include="core\font.h">
+      <Filter>Header Files\core</Filter>
     </ClInclude>
-    <ClInclude Include="engine\spritesheet.h">
-      <Filter>Header Files\engine</Filter>
+    <ClInclude Include="core\input.h">
+      <Filter>Header Files\core</Filter>
     </ClInclude>
-    <ClInclude Include="engine\tilemap.h">
-      <Filter>Header Files\engine</Filter>
+    <ClInclude Include="core\keyboard.h">
+      <Filter>Header Files\core</Filter>
     </ClInclude>
-    <ClInclude Include="engine\timer.h">
-      <Filter>Header Files\engine</Filter>
+    <ClInclude Include="core\log.h">
+      <Filter>Header Files\core</Filter>
     </ClInclude>
-    <ClInclude Include="video\video.h">
-      <Filter>Header Files\video</Filter>
+    <ClInclude Include="core\mouse.h">
+      <Filter>Header Files\core</Filter>
     </ClInclude>
-    <ClInclude Include="audio\audio.h">
-      <Filter>Header Files\audio</Filter>
+    <ClInclude Include="core\spritesheet.h">
+      <Filter>Header Files\core</Filter>
     </ClInclude>
-    <ClInclude Include="engine\config.h">
-      <Filter>Header Files\engine</Filter>
+    <ClInclude Include="core\tilemap.h">
+      <Filter>Header Files\core</Filter>
     </ClInclude>
-    <ClInclude Include="engine\directory.h">
-      <Filter>Header Files\engine</Filter>
+    <ClInclude Include="core\timer.h">
+      <Filter>Header Files\core</Filter>
     </ClInclude>
-    <ClInclude Include="engine\file.h">
-      <Filter>Header Files\engine</Filter>
+    <ClInclude Include="core\audio.h">
+      <Filter>Header Files\core</Filter>
     </ClInclude>
-    <ClInclude Include="engine\log.h">
-      <Filter>Header Files\engine</Filter>
+    <ClInclude Include="core\video.h">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="core\blending.h">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="core\canvas.h">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="core\color.h">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="core\image.h">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="core\transform.h">
+      <Filter>Header Files\core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

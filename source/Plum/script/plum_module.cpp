@@ -1,8 +1,8 @@
 
-#include "../engine/engine.h"
-#include "../video/color.h"
-#include "../video/blending.h"
-#include "../video/video.h"
+#include "../core/color.h"
+#include "../core/video.h"
+#include "../core/engine.h"
+#include "../core/blending.h"
 #include "script.h"
 
 namespace plum

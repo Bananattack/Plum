@@ -1,6 +1,6 @@
 #include "font.h"
-#include "../video/canvas.h"
-#include "../video/image.h"
+#include "image.h"
+#include "canvas.h"
 
 namespace plum
 {

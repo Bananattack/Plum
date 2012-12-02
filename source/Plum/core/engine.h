@@ -6,7 +6,6 @@
 
 #include "mouse.h"
 #include "timer.h"
-#include "config.h"
 #include "keyboard.h"
 
 namespace plum

@@ -1,7 +1,7 @@
 
 #include "script.h"
-#include "../video/canvas.h"
-#include "../video/image.h"
+#include "../core/image.h"
+#include "../core/canvas.h"
 
 namespace plum
 {

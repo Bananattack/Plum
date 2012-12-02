@@ -2,9 +2,9 @@
 #include <unordered_set>
 #include <functional>
 
-#include "audio.h"
-#include "../engine/file.h"
-#include "../engine/engine.h"
+#include "../core/file.h"
+#include "../core/audio.h"
+#include "../core/engine.h"
 
 namespace
 {

@@ -1,9 +1,9 @@
 #include <memory>
 #include <SDL_opengl.h>
 
-#include "image.h"
-#include "canvas.h"
-#include "transform.h"
+#include "../core/image.h"
+#include "../core/canvas.h"
+#include "../core/transform.h"
 
 namespace plum
 {

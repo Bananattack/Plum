@@ -1,5 +1,5 @@
 
-#include "../engine/input.h"
+#include "../core/input.h"
 #include "script.h"
 
 namespace plum

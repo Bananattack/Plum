@@ -1,23 +1,22 @@
 #pragma once
 
-#include "canvas.h"
-
 #include <cstdlib>
 #include <memory>
 #include <corona.h>
-#include "../engine/file.h"
+#include "../core/file.h"
+#include "../core/canvas.h"
 
-namespace plum
+namespace
 {
-    class CoronaPlumFile : public corona::DLLImplementation<corona::File>
+    class FileWrapper : public corona::DLLImplementation<corona::File>
     {
         public:
-            CoronaPlumFile(plum::File* f)
+            FileWrapper(plum::File* f)
             {
                 file = f;
             }
 
-            virtual ~CoronaPlumFile()
+            virtual ~FileWrapper()
             {
                 delete file;
             }
@@ -34,12 +33,12 @@ namespace plum
 
             virtual bool COR_CALL seek(int position, corona::File::SeekMode mode)
             {
-                FileSeekMode m;
+                plum::FileSeekMode m;
                 switch (mode)
                 {
-                    case BEGIN: m = SeekStart; break;
-                    case CURRENT: m = SeekCurrent; break;
-                    case END: m = SeekEnd; break;
+                    case BEGIN: m = plum::SeekStart; break;
+                    case CURRENT: m = plum::SeekCurrent; break;
+                    case END: m = plum::SeekEnd; break;
                     default: return false;
                 }
                 return file->seek(position, m);
@@ -52,10 +51,13 @@ namespace plum
         private:
             plum::File* file;
     };
+}
 
+namespace plum
+{
     Canvas* Canvas::load(const std::string& filename)
     {
-        std::unique_ptr<corona::File> file(new CoronaPlumFile(new File(filename, FileRead)));
+        std::unique_ptr<corona::File> file(new FileWrapper(new File(filename, FileRead)));
         std::unique_ptr<corona::Image> image(corona::OpenImage(file.get(), corona::PF_R8G8B8A8, corona::FF_AUTODETECT));
         if(!image.get())
         {
