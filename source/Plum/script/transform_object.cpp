@@ -280,7 +280,7 @@ namespace plum
             if(lua_isnil(L, 2))
             {
                 script::push(L, nullptr);
-                wrapper->data->clip = NULL;
+                wrapper->data->clip = nullptr;
             }
             else
             {
@@ -375,7 +375,7 @@ namespace plum
             lua_getglobal(L, "plum");
 
             // plum.Transform = <function create>
-            lua_pushstring(L, "Transform");
+            script::push(L, "Transform");
             lua_pushcfunction(L, create);
             lua_settable(L, -3);
 

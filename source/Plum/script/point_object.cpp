@@ -123,7 +123,7 @@ namespace plum
             lua_getglobal(L, "plum");
 
             // plum.Point = <function create>
-            lua_pushstring(L, "Point");
+            script::push(L, "Point");
             lua_pushcfunction(L, create);
             lua_settable(L, -3);
 

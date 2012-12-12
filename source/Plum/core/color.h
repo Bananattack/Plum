@@ -2,19 +2,20 @@
 #define PLUM_COLOR_H
 
 #include <cstdint>
+#include <algorithm>
 
 namespace plum
 {
     int getOpacity();
 
-    enum ColorChannels
+    enum ColorChannel
     {
         RedChannel = 0,
         GreenChannel = 1,
         BlueChannel = 2,
         AlphaChannel = 3
     };
-    typedef uint8_t ColorChannel;
+    typedef uint8_t uint8_t;
 
     class Color
     {
@@ -34,76 +35,64 @@ namespace plum
 
             uint32_t value;
 
-            inline operator uint32_t() const
+            operator uint32_t() const
             {
                 return value;
             }
 
-            inline bool operator != (Color& rhs)
+            bool operator !=(const Color& rhs) const
             {
-                return (this->value != rhs.value);
+                return value != rhs.value;
             }
 
-            inline bool operator == (Color& rhs)
+            bool operator ==(const Color& rhs) const
             {
-                return (this->value == rhs.value);
+                return value == rhs.value;
             }
 
-            inline ColorChannel& operator[](ColorChannels i)
+            uint8_t& operator[](ColorChannel i)
             {
-                return ((ColorChannel*) &(this->value))[i];
+                return ((uint8_t*) &(this->value))[i];
+            }
+
+            uint8_t operator[](ColorChannel i) const
+            {
+                return (value >> (i << 3)) & 0xFF;
             }
 
             Color()
+                : value(0)
             {
-                this->value = 0;
+                value = 0;
             }
 
             Color(uint32_t value)
+                : value(value)
             {
-                this->value = value;
             }
 
-            Color(int r, int g, int b)
+            Color(uint8_t r, uint8_t g, uint8_t b)
+                : value(0xFF000000 | (b << 16) | (g << 8) | r)
             {
-                (*this)[RedChannel] = r;
-                (*this)[GreenChannel] = g;
-                (*this)[BlueChannel] = b;
-                (*this)[AlphaChannel] = 255;
             }
 
-            Color(int r, int g, int b, int a)
+            Color(uint8_t r, uint8_t g, uint8_t b, uint8_t a)
+                : value((a << 24) | (b << 16) | (g << 8) | r)
             {
-                (*this)[RedChannel] = r;
-                (*this)[GreenChannel] = g;
-                (*this)[BlueChannel] = b;
-                (*this)[AlphaChannel] = a;
+            }
+
+            void channels(uint8_t& r, uint8_t& g, uint8_t& b, uint8_t& a)
+            {
+                r = (*this)[RedChannel];
+                g = (*this)[GreenChannel];
+                b = (*this)[BlueChannel];
+                a = (*this)[AlphaChannel];
             }
     };
 
-    inline Color rgb(int r, int g, int b, int a = 255)
-    {
-        return Color(r, g, b, a);
-    }
-
     inline Color rgba(int r, int g, int b, int a)
     {
-        return Color(r, g, b, a);
-    }
-
-    inline void getRGB(Color color, ColorChannel& r, ColorChannel& g, ColorChannel& b)
-    {
-        r = color[RedChannel];
-        g = color[GreenChannel];
-        b = color[BlueChannel];
-    }
-
-    inline void getRGBA(Color color, ColorChannel& r, ColorChannel& g, ColorChannel& b, ColorChannel& a)
-    {
-        r = color[RedChannel];
-        g = color[GreenChannel];
-        b = color[BlueChannel];
-        a = color[AlphaChannel];
+        return Color(std::min(std::max(0, r), 255), std::min(std::max(0, g), 255), std::min(std::max(0, b), 255), std::min(std::max(0, a), 255));
     }
     
     inline Color hsv(int h, int s, int v, int a = 255)
@@ -116,10 +105,8 @@ namespace plum
         int f;
 
         h = (h + 360) % 360;
-        if (s > 255) s = 255;
-        else if (s < 0) s = 0;
-        if (v > 255) v = 255;
-        else if (v < 0) v = 0;
+        s = std::min(std::max(0, s), 255);
+        v = std::min(std::max(0, v), 255);
 
         ixz = h / 60;
         h = (h << 8) / 60;
@@ -130,24 +117,12 @@ namespace plum
 
         switch (ixz)
         {
-            case 0:
-                r = v; g = h; b = s;
-                break;
-            case 1:
-                r = f; g = v; b = s;
-                break;
-            case 2:
-                r = s; g = v; b = h;
-                break;
-            case 3:
-                r = s; g = f; b = v;
-                break;
-            case 4:
-                r = h; g = s; b = v;
-                break;
-            case 5:
-                r = v; g = s; b = f;
-                break;
+            case 0: r = v; g = h; b = s; break;
+            case 1: r = f; g = v; b = s; break;
+            case 2: r = s; g = v; b = h; break;
+            case 3: r = s; g = f; b = v; break;
+            case 4: r = h; g = s; b = v; break;
+            case 5: r = v; g = s; b = f; break;
         }
         return Color(r, g, b, a);
     }

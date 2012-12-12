@@ -82,7 +82,7 @@ namespace plum
             lua_getglobal(L, "plum");
 
             // plum.sound = <function soundNew>
-            lua_pushstring(L, "Sound");
+            script::push(L, "Sound");
             lua_pushcfunction(L, create);
             lua_settable(L, -3);
 

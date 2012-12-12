@@ -11,7 +11,7 @@ namespace plum
         this->width = width;
         this->height = height;
         data = new unsigned int[width * height];
-        spr = NULL;
+        spr = nullptr;
         clear(0);
     }
 

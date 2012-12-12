@@ -53,6 +53,8 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <AssemblerListingLocation>$(IntDir)/%(RelativeDir)</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)/%(RelativeDir)</ObjectFileName>
     </ClCompile>
     <Link>
       <AdditionalDependencies>../SDLmain.lib;../SDL.lib;OpenGL32.lib;dxguid.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -106,7 +108,6 @@
     <ClCompile Include="core\blending.cpp" />
     <ClCompile Include="core\config.cpp" />
     <ClCompile Include="core\directory.cpp" />
-    <ClCompile Include="core\engine.cpp" />
     <ClCompile Include="core\file.cpp" />
     <ClCompile Include="core\font.cpp" />
     <ClCompile Include="core\input.cpp" />
@@ -114,10 +115,12 @@
     <ClCompile Include="core\spritesheet.cpp" />
     <ClCompile Include="core\tilemap.cpp" />
     <ClCompile Include="core\timer.cpp" />
-    <ClCompile Include="platform\audio_audiere.cpp" />
-    <ClCompile Include="platform\canvas_corona.cpp" />
-    <ClCompile Include="platform\image_sdl.cpp" />
-    <ClCompile Include="platform\video_sdl.cpp" />
+    <ClCompile Include="platform\audiere\audio.cpp" />
+    <ClCompile Include="platform\corona\canvas.cpp" />
+    <ClCompile Include="platform\sdl\engine.cpp" />
+    <ClCompile Include="platform\sdl\image.cpp" />
+    <ClCompile Include="platform\sdl\input.cpp" />
+    <ClCompile Include="platform\sdl\video.cpp" />
     <ClCompile Include="plum.cpp" />
     <ClCompile Include="script\canvas_object.cpp" />
     <ClCompile Include="script\directory_object.cpp" />
@@ -151,14 +154,13 @@
     <ClInclude Include="core\font.h" />
     <ClInclude Include="core\image.h" />
     <ClInclude Include="core\input.h" />
-    <ClInclude Include="core\keyboard.h" />
     <ClInclude Include="core\log.h" />
-    <ClInclude Include="core\mouse.h" />
     <ClInclude Include="core\spritesheet.h" />
     <ClInclude Include="core\tilemap.h" />
     <ClInclude Include="core\timer.h" />
     <ClInclude Include="core\transform.h" />
     <ClInclude Include="core\video.h" />
+    <ClInclude Include="platform\sdl\event.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="script\script.h" />
   </ItemGroup>

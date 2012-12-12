@@ -1,5 +1,5 @@
 
-#include "../core/engine.h"
+#include "../core/input.h"
 #include "script.h"
 
 namespace plum
@@ -8,7 +8,7 @@ namespace plum
     {
         int mouseGetField(lua_State* L)
         {
-            std::string fieldName = luaL_checkstring(L, 2);
+            std::string fieldName(script::get<const char*>(L, 2));
             if(luaL_getmetafield(L, 1, std::string("get" + fieldName).c_str()))
             {
                 lua_pushvalue(L, 1);
@@ -20,7 +20,7 @@ namespace plum
 
         int mouseSetField(lua_State* L)
         {
-            std::string fieldName = luaL_checkstring(L, 2);
+            std::string fieldName(script::get<const char*>(L, 2));
             /* L, 3 is the value to set. */
             if(luaL_getmetafield(L, 1, std::string("set" + fieldName).c_str()))
             {
@@ -41,33 +41,20 @@ namespace plum
 
         int mouseToString(lua_State* L)
         {
-            lua_pushstring(L, "(plum.mouse singleton)");
+            script::push(L, "(plum.mouse singleton)");
             return 1;
         }
 
         int mouseGetX(lua_State* L)
         {
-            lua_pushnumber(L, script::instance(L).engine().mouse.x);
+            script::push(L, script::instance(L).mouse().getX());
             return 1;
         }
 
         int mouseGetY(lua_State* L)
         {
-            lua_pushnumber(L, script::instance(L).engine().mouse.y);
+            script::push(L, script::instance(L).mouse().getY());
             return 1;
-        }
-
-        int mouseGetWheelPosition(lua_State* L)
-        {
-            lua_pushinteger(L, script::instance(L).engine().mouse.wheelPosition);
-            return 1;
-        }
-
-        int mouseSetWheelPosition(lua_State* L)
-        {
-            int value = luaL_checkint(L, 2);
-            script::instance(L).engine().mouse.wheelPosition = value;
-            return 0;
         }
 
         int mouseGetLeft(lua_State* L)
@@ -80,7 +67,7 @@ namespace plum
             if(inputConstructor)
             {
                 lua_pushcfunction(L, inputConstructor);
-                lua_pushlightuserdata(L, &(script::instance(L).engine().mouse.button[MOUSE_LEFT]));
+                lua_pushlightuserdata(L, &script::instance(L).mouse().getLeft());
                 lua_call(L, 1, 1);
                 return 1;
             }
@@ -98,7 +85,7 @@ namespace plum
             if(inputConstructor)
             {
                 lua_pushcfunction(L, inputConstructor);
-                lua_pushlightuserdata(L, &(script::instance(L).engine().mouse.button[MOUSE_MIDDLE]));
+                lua_pushlightuserdata(L, &script::instance(L).mouse().getMiddle());
                 lua_call(L, 1, 1);
                 return 1;
             }
@@ -116,7 +103,7 @@ namespace plum
             if(inputConstructor)
             {
                 lua_pushcfunction(L, inputConstructor);
-                lua_pushlightuserdata(L, &(script::instance(L).engine().mouse.button[MOUSE_RIGHT]));
+                lua_pushlightuserdata(L, &script::instance(L).mouse().getRight());
                 lua_call(L, 1, 1);
                 return 1;
             }
@@ -124,15 +111,39 @@ namespace plum
             return 0;
         }
 
-        int mouseGetHide(lua_State* L)
+        int mouseGetWheelUp(lua_State* L)
         {
-            lua_pushboolean(L, SDL_ShowCursor(SDL_QUERY) == SDL_DISABLE);
-            return 1;
+            lua_getglobal(L, "plum");
+            lua_getfield(L, -1, "_Input");
+            lua_CFunction inputConstructor = lua_tocfunction(L, -1);
+            lua_pop(L, 2);
+
+            if(inputConstructor)
+            {
+                lua_pushcfunction(L, inputConstructor);
+                lua_pushlightuserdata(L, &script::instance(L).mouse().getWheelUp());
+                lua_call(L, 1, 1);
+                return 1;
+            }
+
+            return 0;
         }
 
-        int mouseSetHide(lua_State* L)
+        int mouseGetWheelDown(lua_State* L)
         {
-            SDL_ShowCursor((lua_toboolean(L, 2) != 0) ? SDL_DISABLE : SDL_ENABLE);
+            lua_getglobal(L, "plum");
+            lua_getfield(L, -1, "_Input");
+            lua_CFunction inputConstructor = lua_tocfunction(L, -1);
+            lua_pop(L, 2);
+
+            if(inputConstructor)
+            {
+                lua_pushcfunction(L, inputConstructor);
+                lua_pushlightuserdata(L, &script::instance(L).mouse().getWheelDown());
+                lua_call(L, 1, 1);
+                return 1;
+            }
+
             return 0;
         }
 
@@ -142,14 +153,12 @@ namespace plum
             { "__tostring",    mouseToString },
             { "getx", mouseGetX },
             { "gety", mouseGetY },
-            { "getwheelPosition", mouseGetWheelPosition },
-            { "setwheelPosition", mouseSetWheelPosition },
             { "getleft", mouseGetLeft },
             { "getmiddle", mouseGetMiddle },
             { "getright", mouseGetRight },
-            { "gethide", mouseGetHide },
-            { "sethide", mouseSetHide },
-            { NULL, NULL }
+            { "getwheelUp", mouseGetWheelUp },
+            { "getwheelDown", mouseGetWheelUp },
+            { nullptr, nullptr }
         };
     }
 
@@ -163,7 +172,7 @@ namespace plum
             // metatable.__index = metatable
             lua_setfield(L, -2, "__index");
             // Put the members into the metatable.
-            luaL_register(L, NULL, mouseMembers);
+            luaL_register(L, nullptr, mouseMembers);
             lua_pop(L, 1);
 
             // Push plum namespace.

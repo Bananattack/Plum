@@ -11,7 +11,7 @@ namespace plum
     {
         BlendOpaque,     // Direct copy to destination
         BlendMerge,      // Combines two images, altering alpha as needed.
-        BlendAlpha,      // Combines two images, preserving alpha of the destination.
+        BlendPreserve,      // Combines two images, preserving alpha of the destination.
         BlendAdd,        // Adds the RGB value of the source to the dest
         BlendSubtract    // Subtracts the RGB value of the source from the dest
     };

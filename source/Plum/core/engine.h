@@ -4,10 +4,7 @@
 #include <vector>
 #include <stdexcept>
 #include <functional>
-
-#include "mouse.h"
-#include "timer.h"
-#include "keyboard.h"
+#include <memory>
 
 namespace plum
 {
@@ -33,31 +30,25 @@ namespace plum
             int status_;
     };
 
+    class Event;
+
     class Engine
     {
-        private:
-            std::vector<std::function<void()>> updateHooks;
-
         public:
-            Timer timer;
-            Mouse mouse;
-            KeyInput key[KEY_MAX_COUNT];
-
             Engine();
             ~Engine();
 
-            void quit(std::string message = "");
-
-            size_t addUpdateHook(const std::function<void()>& hook);
-            void removeUpdateHook(size_t index);
-
-            void handleMouseButtonEvent(SDL_MouseButtonEvent e);
-            void poll();
             void refresh();
+            void quit(const std::string& message = "");
 
-        private:
-            Engine(const Engine&);
-            void operator =(const Engine&);
+            typedef std::function<void(const Event&)> EventHook;
+            typedef std::function<void()> UpdateHook;
+
+            std::shared_ptr<EventHook> addEventHook(const EventHook& hook);
+            std::shared_ptr<UpdateHook> addUpdateHook(const UpdateHook& hook);
+
+            class Impl;
+            std::shared_ptr<Impl> impl;
     };
 }
 

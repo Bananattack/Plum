@@ -106,7 +106,7 @@ namespace plum
             lua_getglobal(L, "plum");
 
             // plum[classname] = <function create>
-            lua_pushstring(L, "Directory");
+            script::push(L, "Directory");
             lua_pushcfunction(L, create);
             lua_settable(L, -3);
 

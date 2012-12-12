@@ -134,7 +134,7 @@ namespace plum
             lua_getglobal(L, "plum");
 
             // plum.song = <function songNew>
-            lua_pushstring(L, "Song");
+            script::push(L, "Song");
             lua_pushcfunction(L, create);
             lua_settable(L, -3);
 

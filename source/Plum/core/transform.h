@@ -54,20 +54,20 @@ namespace plum
         // Scale proportions. Required.
         Point* scale;
 
-        // Clipping rectangle. NULL = whole image.
+        // Clipping rectangle. nullptr = whole image.
         Rect* clip;
         
         Transform()
         {
             mirror = false;
             angle = 0;
-            mode = BlendAlpha;
+            mode = BlendPreserve;
             tint = Color::White;
 
-            position = NULL;
-            pivot = NULL;
-            scale = NULL;
-            clip = NULL;
+            position = nullptr;
+            pivot = nullptr;
+            scale = nullptr;
+            clip = nullptr;
         }
     };
 }

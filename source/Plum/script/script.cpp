@@ -10,18 +10,17 @@ namespace plum
     namespace
     {
         std::unordered_map<lua_State*, Script*> instances;
-
-        int panic(lua_State *L)
-        {
-        //    __asm int 3;
-            return 0;
-        }
     }
 
-    Script::Script(Engine& engine, Audio& audio, Video& video)
-        : L(luaL_newstate()), engine_(engine), audio_(audio), video_(video)
+    Script::Script(Engine& engine, Timer& timer, Keyboard& keyboard, Mouse& mouse, Audio& audio, Video& video)
+        : L(luaL_newstate()),
+        engine_(engine),
+        timer_(timer),
+        keyboard_(keyboard),
+        mouse_(mouse),
+        audio_(audio),
+        video_(video)
     {
-        //lua_atpanic(lua, panic);
         luaL_openlibs(L);
 
         lua_gc(L, LUA_GCSETSTEPMUL, 400);
@@ -29,27 +28,6 @@ namespace plum
         // Allow the static script methods to be able to use instance variables,
         // by looking up with the lua_State.
         instances[L] = this;
-
-        update = engine_.addUpdateHook([&]() {
-            /*
-            // Update the input hooks, one by one.
-            // The input hook wrapper stuff makes me sick inside somewhat.
-            for(auto it = inputHooks.begin(), end = inputHooks.end(); it != end; ++it)
-            {
-                auto& hook(*it);
-                // Okay, convert our reference number input to userdata.
-                lua_rawgeti(L, LUA_REGISTRYINDEX, hook.inputRef);
-                Input** inp = (Input**) luaL_checkudata(L, -1, "plum_input");
-
-                // If the button's presed, we can call the hook callback.
-                if((*inp)->isPressed())
-                {
-                    lua_rawgeti(L, LUA_REGISTRYINDEX, hook.callbackRef);
-                    lua_rawgeti(L, LUA_REGISTRYINDEX, hook.inputRef);
-                    lua_call(L, 1, 0);
-                }
-            }*/
-        });
 
         // Load library functions.
         script::initLibrary(L);
@@ -83,7 +61,6 @@ namespace plum
 
     Script::~Script()
     {
-        engine_.removeUpdateHook(update);
         lua_close(L);
         instances.erase(L);
     }

@@ -16,29 +16,35 @@ extern "C"
 namespace plum
 {
     class Engine;
+    class Timer;
+    class Keyboard;
+    class Mouse;
     class Video;
     class Audio;
     class Script
     {
         public:
-            // A mapping of type: input reference -> function index
-            // Oh, and the function needs to be of form:
-            // void f(keyIndex);
-            // This way callbacks can be potentially used across several keys
-            // and determine which is pressed by the name passed
-            struct InputHook
-            {
-                int inputRef;
-                int callbackRef;
-            };
-            std::vector<InputHook> inputHooks;
-
-            Script(Engine& engine, Audio& audio, Video& video);
+            Script(Engine& engine, Timer& timer, Keyboard& keyboard, Mouse& mouse, Audio& audio, Video& video);
             ~Script();
 
             Engine& engine()
             {
                 return engine_;
+            }
+
+            Timer& timer()
+            {
+                return timer_;
+            }
+
+            Keyboard& keyboard()
+            {
+                return keyboard_;
+            }
+
+            Mouse& mouse()
+            {
+                return mouse_;
             }
 
             Audio& audio()
@@ -56,9 +62,11 @@ namespace plum
         private:
             lua_State* L;
             Engine& engine_;
+            Timer& timer_;
+            Keyboard& keyboard_;
+            Mouse& mouse_;
             Audio& audio_;
             Video& video_;
-            size_t update;
 
             Script(const Script&);
             void operator =(const Script&);
@@ -71,7 +79,7 @@ namespace plum
         template<typename T> struct Wrapper
         {
             T* data;
-            // The parent, if not NULL, is a registry index to the thing that manages this object's memory
+            // The parent, if not nullptr, is a registry index to the thing that manages this object's memory
             // (ie. don't delete this, since you didn't allocate the memory.)
             int parentRef;
             // Reference to any 'extra' data that Lua needs to manage.

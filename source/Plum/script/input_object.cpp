@@ -77,7 +77,7 @@ namespace plum
             lua_getglobal(L, "plum");
 
             // plum.input = <function inputNew>
-            lua_pushstring(L, "_Input");
+            script::push(L, "_Input");
             lua_pushcfunction(L, create);
             lua_settable(L, -3);
 

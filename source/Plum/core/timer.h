@@ -1,13 +1,10 @@
 #ifndef PLUM_TIMER_H
 #define PLUM_TIMER_H
 
-#include "input.h"
+#include <memory>
 
 namespace plum
 {
-    const int TIMER_FAST_MULTIPLIER = 4;
-    const int TIMER_SLOW_DIVISOR = 4;
-    const int TIMER_MAX_FRAME_GAP_DEFAULT = 5;
     enum TimerSpeed
     {
         TimerSpeedNormal,
@@ -15,23 +12,31 @@ namespace plum
         TimerSpeedSlowMotion
     };
 
-    struct Timer
+    class Engine;
+    class Timer
     {
-        TimerSpeed speed;
-        uint32_t maxFrameGap;
-        uint32_t tickLast;
-        uint32_t secondLast;
-        uint32_t fractionalGap;
-        uint32_t gap;
-        uint32_t fps;
-        uint32_t time;
-        uint32_t updateCount;
-        uint32_t ticks;
+        public:
+            static const int FastForwardMultiplier = 4;
+            static const int SlowMotionDivisor = 4;
 
-        Timer();
-        void reset();
-        void processInput(Input& fastForward, Input& slowMotion);
-        void update();
+            static const int DefaultMaxDelta = 5;
+
+            Timer(Engine& engine);
+            ~Timer();
+
+            void reset();
+
+            TimerSpeed getSpeed() const;
+            unsigned int getMaxDelta() const;
+            unsigned int getTime() const;
+            unsigned int getDelta() const;
+            unsigned int getFPS() const;
+
+            void setSpeed(TimerSpeed speed);
+            void setMaxDelta(unsigned int value);
+
+            class Impl;
+            std::shared_ptr<Impl> impl;
     };
 }
 

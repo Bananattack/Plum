@@ -47,7 +47,7 @@ namespace plum
             bool close();
             bool active()
             {
-                return !closed && rawPointer != NULL;
+                return !closed && rawPointer != nullptr;
             }
 
             bool readU8(uint8_t& value);

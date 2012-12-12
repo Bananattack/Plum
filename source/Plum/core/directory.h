@@ -29,7 +29,7 @@ namespace plum
 
             bool active()
             {
-                return !closed && dir != NULL;
+                return !closed && dir != nullptr;
             }
 
             bool read(std::string& value);

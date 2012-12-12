@@ -53,7 +53,7 @@ namespace plum
             auto x = script::get<int>(L, 2);
             auto y = script::get<int>(L, 3);
             auto message = script::get<const char*>(L, 4);
-            BlendMode mode = (BlendMode) script::get<int>(L, 5, BlendAlpha);
+            BlendMode mode = (BlendMode) script::get<int>(L, 5, BlendPreserve);
             Color tint = script::get<int>(L, 6, Color::White);
 
             font->print(x, y, message, mode, tint);
@@ -66,7 +66,7 @@ namespace plum
             auto x = script::get<int>(L, 2);
             auto y = script::get<int>(L, 3);
             auto message = script::get<const char*>(L, 4);
-            BlendMode mode = (BlendMode) script::get<int>(L, 5, BlendAlpha);
+            BlendMode mode = (BlendMode) script::get<int>(L, 5, BlendPreserve);
             Color tint = script::get<int>(L, 6, Color::White);
 
             font->printRight(x, y, message, mode, tint);
@@ -79,7 +79,7 @@ namespace plum
             auto x = script::get<int>(L, 2);
             auto y = script::get<int>(L, 3);
             auto message = script::get<const char*>(L, 4);
-            BlendMode mode = (BlendMode) script::get<int>(L, 5, BlendAlpha);
+            BlendMode mode = (BlendMode) script::get<int>(L, 5, BlendPreserve);
             Color tint = script::get<int>(L, 6, Color::White);
 
             font->printCenter(x, y, message, mode, tint);
@@ -144,7 +144,7 @@ namespace plum
         int getheight(lua_State* L)
         {
             auto font = script::ptr<Self>(L, 1);
-            lua_pushinteger(L, font->height);
+            script::push(L, font->height);
             return 1;
         }
     }
@@ -184,7 +184,7 @@ namespace plum
             lua_getglobal(L, "plum");
 
             // plum[classname] = create
-            lua_pushstring(L, "Font");
+            script::push(L, "Font");
             lua_pushcfunction(L, create);
             lua_settable(L, -3);
 

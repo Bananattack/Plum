@@ -90,7 +90,7 @@ namespace plum
         int getheight(lua_State* L)
         {
             auto r = script::ptr<Self>(L, 1);
-            lua_pushnumber(L, r->height);
+            script::push(L, r->height);
             return 1;
         }
 
@@ -180,7 +180,7 @@ namespace plum
         {
             auto self = script::ptr<Self>(L, 1);
             auto point = script::ptr<Point>(L, 2);
-            lua_pushboolean(L, point->x >= self->x
+            script::push(L, point->x >= self->x
                 && point->x <= self->x + self->width
                 && point->y >= self->y
                 && point->y <= self->y + self->height);
@@ -191,7 +191,7 @@ namespace plum
         {
             auto self = script::ptr<Self>(L, 1);
             auto target = script::ptr<Self>(L, 2);
-            lua_pushboolean(L, self->x + self->width >= target->x
+            script::push(L, self->x + self->width >= target->x
                 && self->x <= target->x + target->width
                 && self->y + self->height >= target->y
                 && self->y <= target->y + target->height);
@@ -243,7 +243,7 @@ namespace plum
             lua_getglobal(L, "plum");
 
             // plum.Self = <function create>
-            lua_pushstring(L, "Rect");
+            script::push(L, "Rect");
             lua_pushcfunction(L, create);
             lua_settable(L, -3);
 

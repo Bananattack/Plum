@@ -17,7 +17,7 @@ namespace plum
 
         int create(lua_State* L)
         {
-            if(lua_isnumber(L, 1) && lua_isnumber(L, 2))
+            if(script::is<int>(L, 1) && script::is<int>(L, 2))
             {
                 auto w = script::get<int>(L, 1);
                 auto h = script::get<int>(L, 2);
@@ -26,7 +26,7 @@ namespace plum
                     
                 return 1;
             }
-            else if(lua_isstring(L, 1))
+            else if(script::is<const char*>(L, 1))
             {
                 auto filename = script::get<const char*>(L, 1);
 
@@ -84,7 +84,7 @@ namespace plum
             auto canvas = script::ptr<Self>(L, 1);
             auto x = script::get<int>(L, 2);
             auto y = script::get<int>(L, 3);
-            lua_pushinteger(L, canvas->getPixel(x, y));
+            script::push(L, int(canvas->getPixel(x, y)));
             return 1;
         }
 
@@ -94,7 +94,7 @@ namespace plum
             auto x = script::get<int>(L, 2);
             auto y = script::get<int>(L, 3);
             auto color = Color(script::get<int>(L, 4, Color::White));
-            auto mode = BlendMode(script::get<int>(L, 5, BlendAlpha));
+            auto mode = BlendMode(script::get<int>(L, 5, BlendPreserve));
 
             switch(mode)
             {
@@ -104,7 +104,7 @@ namespace plum
                 case BlendMerge:
                     canvas->setPixel<SoftMergeBlender>(x, y, color, SoftMergeBlender());
                     break;
-                case BlendAlpha:
+                case BlendPreserve:
                     canvas->setPixel<SoftPreserveBlender>(x, y, color, SoftPreserveBlender());
                     break;
                 case BlendAdd:
@@ -153,7 +153,7 @@ namespace plum
             auto x2 = script::get<int>(L, 4);
             auto y2 = script::get<int>(L, 5);
             auto color = Color(script::get<int>(L, 6, Color::White));
-            auto mode = BlendMode(script::get<int>(L, 7, BlendAlpha));
+            auto mode = BlendMode(script::get<int>(L, 7, BlendPreserve));
 
             switch(mode)
             {
@@ -163,7 +163,7 @@ namespace plum
                 case BlendMerge:
                     canvas->line<SoftMergeBlender>(x, y, x2, y2, color, SoftMergeBlender());
                     break;
-                case BlendAlpha:
+                case BlendPreserve:
                     canvas->line<SoftPreserveBlender>(x, y, x2, y2, color, SoftPreserveBlender());
                     break;
                 case BlendAdd:
@@ -184,7 +184,7 @@ namespace plum
             auto x2 = script::get<int>(L, 4);
             auto y2 = script::get<int>(L, 5);
             auto color = Color(script::get<int>(L, 6, Color::White));
-            auto mode = BlendMode(script::get<int>(L, 7, BlendAlpha));
+            auto mode = BlendMode(script::get<int>(L, 7, BlendPreserve));
 
             switch(mode)
             {
@@ -194,7 +194,7 @@ namespace plum
                 case BlendMerge:
                     canvas->rect<SoftMergeBlender>(x, y, x2, y2, color, SoftMergeBlender());
                     break;
-                case BlendAlpha:
+                case BlendPreserve:
                     canvas->rect<SoftPreserveBlender>(x, y, x2, y2, color, SoftPreserveBlender());
                     break;
                 case BlendAdd:
@@ -215,7 +215,7 @@ namespace plum
             auto x2 = script::get<int>(L, 4);
             auto y2 = script::get<int>(L, 5);
             auto color = Color(script::get<int>(L, 6, Color::White));
-            auto mode = BlendMode(script::get<int>(L, 7, BlendAlpha));
+            auto mode = BlendMode(script::get<int>(L, 7, BlendPreserve));
 
             switch(mode)
             {
@@ -225,7 +225,7 @@ namespace plum
                 case BlendMerge:
                     canvas->solidRect<SoftMergeBlender>(x, y, x2, y2, color, SoftMergeBlender());
                     break;
-                case BlendAlpha:
+                case BlendPreserve:
                     canvas->solidRect<SoftPreserveBlender>(x, y, x2, y2, color, SoftPreserveBlender());
                     break;
                 case BlendAdd:
@@ -246,7 +246,7 @@ namespace plum
             auto xRadius = script::get<int>(L, 4);
             auto yRadius = script::get<int>(L, 5);
             auto color = Color(script::get<int>(L, 6, Color::White));
-            auto mode = BlendMode(script::get<int>(L, 7, BlendAlpha));
+            auto mode = BlendMode(script::get<int>(L, 7, BlendPreserve));
 
             switch(mode)
             {
@@ -256,7 +256,7 @@ namespace plum
                 case BlendMerge:
                     canvas->circle<SoftMergeBlender>(cx, cy, xRadius, yRadius, color, SoftMergeBlender());
                     break;
-                case BlendAlpha:
+                case BlendPreserve:
                     canvas->circle<SoftPreserveBlender>(cx, cy, xRadius, yRadius, color, SoftPreserveBlender());
                     break;
                 case BlendAdd:
@@ -277,7 +277,7 @@ namespace plum
             auto xRadius = script::get<int>(L, 4);
             auto yRadius = script::get<int>(L, 5);
             auto color = Color(script::get<int>(L, 6, Color::White));
-            auto mode = BlendMode(script::get<int>(L, 7, BlendAlpha));
+            auto mode = BlendMode(script::get<int>(L, 7, BlendPreserve));
 
             switch(mode)
             {
@@ -287,7 +287,7 @@ namespace plum
                 case BlendMerge:
                     canvas->solidCircle<SoftMergeBlender>(cx, cy, xRadius, yRadius, color, SoftMergeBlender());
                     break;
-                case BlendAlpha:
+                case BlendPreserve:
                     canvas->solidCircle<SoftPreserveBlender>(cx, cy, xRadius, yRadius, color, SoftPreserveBlender());
                     break;
                 case BlendAdd:
@@ -306,7 +306,7 @@ namespace plum
             auto x = script::get<int>(L, 2);
             auto y = script::get<int>(L, 3);
             auto dest = script::ptr<Self>(L, 4);
-            auto mode = BlendMode(script::get<int>(L, 5, BlendAlpha));
+            auto mode = BlendMode(script::get<int>(L, 5, BlendPreserve));
                 
             switch(mode)
             {
@@ -316,7 +316,7 @@ namespace plum
                 case BlendMerge:
                     canvas->blit<SoftMergeBlender>(x, y, *dest, SoftMergeBlender());
                     break;
-                case BlendAlpha:
+                case BlendPreserve:
                     canvas->blit<SoftPreserveBlender>(x, y, *dest, SoftPreserveBlender());
                     break;
                 case BlendAdd:
@@ -337,7 +337,7 @@ namespace plum
             auto scaledWidth = script::get<int>(L, 4);
             auto scaledHeight = script::get<int>(L, 5);
             auto dest = script::ptr<Self>(L, 6);
-            auto mode = BlendMode(script::get<int>(L, 7, BlendAlpha));
+            auto mode = BlendMode(script::get<int>(L, 7, BlendPreserve));
                 
             switch(mode)
             {
@@ -347,7 +347,7 @@ namespace plum
                 case BlendMerge:
                     canvas->scaleBlit<SoftMergeBlender>(x, y, scaledWidth, scaledHeight, *dest, SoftMergeBlender());
                     break;
-                case BlendAlpha:
+                case BlendPreserve:
                     canvas->scaleBlit<SoftPreserveBlender>(x, y, scaledWidth, scaledHeight, *dest, SoftPreserveBlender());
                     break;
                 case BlendAdd:
@@ -367,7 +367,7 @@ namespace plum
             auto y = script::get<int>(L, 3);
             auto angle = script::get<double>(L, 4);
             auto dest = script::ptr<Self>(L, 5);
-            auto mode = BlendMode(script::get<int>(L, 6, BlendAlpha));
+            auto mode = BlendMode(script::get<int>(L, 6, BlendPreserve));
                 
             switch(mode)
             {
@@ -377,7 +377,7 @@ namespace plum
                 case BlendMerge:
                     canvas->rotateBlit<SoftMergeBlender>(x, y, angle, *dest, SoftMergeBlender());
                     break;
-                case BlendAlpha:
+                case BlendPreserve:
                     canvas->rotateBlit<SoftPreserveBlender>(x, y, angle, *dest, SoftPreserveBlender());
                     break;
                 case BlendAdd:
@@ -398,7 +398,7 @@ namespace plum
             auto angle = script::get<double>(L, 4);
             auto scale = script::get<double>(L, 5);
             auto dest = script::ptr<Self>(L, 6);
-            auto mode = BlendMode(script::get<int>(L, 7, BlendAlpha));
+            auto mode = BlendMode(script::get<int>(L, 7, BlendPreserve));
                 
             switch(mode)
             {
@@ -408,7 +408,7 @@ namespace plum
                 case BlendMerge:
                     canvas->rotateScaleBlit<SoftMergeBlender>(x, y, angle, scale, *dest, SoftMergeBlender());
                     break;
-                case BlendAlpha:
+                case BlendPreserve:
                     canvas->rotateScaleBlit<SoftPreserveBlender>(x, y, angle, scale, *dest, SoftPreserveBlender());
                     break;
                 case BlendAdd:
@@ -431,7 +431,7 @@ namespace plum
             auto dx = script::get<int>(L, 6);
             auto dy = script::get<int>(L, 7);
             auto dest = script::ptr<Self>(L, 8);
-            auto mode = BlendMode(script::get<int>(L, 9, BlendAlpha));
+            auto mode = BlendMode(script::get<int>(L, 9, BlendPreserve));
                 
             switch(mode)
             {
@@ -441,7 +441,7 @@ namespace plum
                 case BlendMerge:
                     canvas->blitRegion<SoftMergeBlender>(sx, sy, sx2, sy2, dx, dy, *dest, SoftMergeBlender());
                     break;
-                case BlendAlpha:
+                case BlendPreserve:
                     canvas->blitRegion<SoftPreserveBlender>(sx, sy, sx2, sy2, dx, dy, *dest, SoftPreserveBlender());
                     break;
                 case BlendAdd:
@@ -466,7 +466,7 @@ namespace plum
             auto scw = script::get<int>(L, 8);
             auto sch = script::get<int>(L, 9);
             auto dest = script::ptr<Self>(L, 10);
-            auto mode = BlendMode(script::get<int>(L, 11, BlendAlpha));
+            auto mode = BlendMode(script::get<int>(L, 11, BlendPreserve));
                 
             switch(mode)
             {
@@ -476,7 +476,7 @@ namespace plum
                 case BlendMerge:
                     canvas->scaleBlitRegion<SoftMergeBlender>(sx, sy, sx2, sy2, dx, dy, scw, sch, *dest, SoftMergeBlender());
                     break;
-                case BlendAlpha:
+                case BlendPreserve:
                     canvas->scaleBlitRegion<SoftPreserveBlender>(sx, sy, sx2, sy2, dx, dy, scw, sch, *dest, SoftPreserveBlender());
                     break;
                 case BlendAdd:
@@ -500,7 +500,7 @@ namespace plum
             auto dy = script::get<int>(L, 7);
             auto angle = script::get<double>(L, 8);
             auto dest = script::ptr<Self>(L, 9);
-            auto mode = BlendMode(script::get<int>(L, 10, BlendAlpha));
+            auto mode = BlendMode(script::get<int>(L, 10, BlendPreserve));
                 
             switch(mode)
             {
@@ -510,7 +510,7 @@ namespace plum
                 case BlendMerge:
                     canvas->rotateBlitRegion<SoftMergeBlender>(sx, sy, sx2, sy2, dx, dy, angle, *dest, SoftMergeBlender());
                     break;
-                case BlendAlpha:
+                case BlendPreserve:
                     canvas->rotateBlitRegion<SoftPreserveBlender>(sx, sy, sx2, sy2, dx, dy, angle, *dest, SoftPreserveBlender());
                     break;
                 case BlendAdd:
@@ -535,7 +535,7 @@ namespace plum
             auto angle = script::get<double>(L, 8);
             auto scale = script::get<double>(L, 9);
             auto dest = script::ptr<Self>(L, 10);
-            auto mode = BlendMode(script::get<int>(L, 11, BlendAlpha));
+            auto mode = BlendMode(script::get<int>(L, 11, BlendPreserve));
                 
             switch(mode)
             {
@@ -545,7 +545,7 @@ namespace plum
                 case BlendMerge:
                     canvas->rotateScaleBlitRegion<SoftMergeBlender>(sx, sy, sx2, sy2, dx, dy, angle, scale, *dest, SoftMergeBlender());
                     break;
-                case BlendAlpha:
+                case BlendPreserve:
                     canvas->rotateScaleBlitRegion<SoftPreserveBlender>(sx, sy, sx2, sy2, dx, dy, angle, scale, *dest, SoftPreserveBlender());
                     break;
                 case BlendAdd:
@@ -641,7 +641,7 @@ namespace plum
             lua_getglobal(L, "plum");
 
             // plum[classname] = create
-            lua_pushstring(L, "Canvas");
+            script::push(L, "Canvas");
             lua_pushcfunction(L, create);
             lua_settable(L, -3);
 

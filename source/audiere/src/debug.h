@@ -52,7 +52,7 @@ namespace audiere {
 
 //#define ADR_FORCE_DEBUG
 
-#if defined(ADR_FORCE_DEBUG) || defined(_DEBUG) || defined(DEBUG)
+#if defined(ADR_FORCE_DEBUG)// || defined(_DEBUG) || defined(DEBUG)
 
   #define ADR_GUARD(label) Guard guard_obj__(label)
   #define ADR_LOG(label)   (Log::Write(label))

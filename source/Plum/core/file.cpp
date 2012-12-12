@@ -197,7 +197,7 @@ namespace plum
     static int zzip_getc (ZZIP_FILE *f)
     {
         char c;
-        return (zzip_fread(&c, sizeof(char), 1, f) == 0) ? EOF : (int) c;
+        return (zzip_fread(&c, sizeof(char), 1, f) == 0) ? EOF : int(c);
     }
 
     // A helper function to emulate fgets() behaviour with zzip.

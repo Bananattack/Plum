@@ -25,30 +25,15 @@ namespace plum
             void setResolution(int width, int height, bool win);
 
             void clear(Color color);
-            void setPixel(int x, int y, Color color, BlendMode mode = BlendAlpha);
-            void line(int x, int y, int x2, int y2, Color color, BlendMode mode = BlendAlpha);
-            void rect(int x, int y, int x2, int y2, Color color, BlendMode mode = BlendAlpha);
-            void solidRect(int x, int y, int x2, int y2, Color color, BlendMode mode = BlendAlpha);
-            void horizontalGradientRect(int x, int y, int x2, int y2, Color color, Color color2, BlendMode mode = BlendAlpha);
-            void verticalGradientRect(int x, int y, int x2, int y2, Color color, Color color2, BlendMode mode = BlendAlpha);
-            void circle(int x, int y, int horizontalRadius, int verticalRadius, Color color, BlendMode mode = BlendAlpha);
-            void solidCircle(int x, int y, int horizontalRadius, int verticalRadius, Color color, BlendMode mode = BlendAlpha);
+            void setPixel(int x, int y, Color color, BlendMode mode = BlendPreserve);
+            void line(int x, int y, int x2, int y2, Color color, BlendMode mode = BlendPreserve);
+            void rect(int x, int y, int x2, int y2, Color color, BlendMode mode = BlendPreserve);
+            void solidRect(int x, int y, int x2, int y2, Color color, BlendMode mode = BlendPreserve);
+            void horizontalGradientRect(int x, int y, int x2, int y2, Color color, Color color2, BlendMode mode = BlendPreserve);
+            void verticalGradientRect(int x, int y, int x2, int y2, Color color, Color color2, BlendMode mode = BlendPreserve);
+            void circle(int x, int y, int horizontalRadius, int verticalRadius, Color color, BlendMode mode = BlendPreserve);
+            void solidCircle(int x, int y, int horizontalRadius, int verticalRadius, Color color, BlendMode mode = BlendPreserve);
 
-        private:
-            class Impl;
-            std::shared_ptr<Impl> impl;
-    };
-
-    class Canvas;
-    class Texture
-    {
-        public:
-            Texture();
-            ~Texture();
-
-            void getCanvas(Canvas& canvas) const;
-// TODO
-        private:
             class Impl;
             std::shared_ptr<Impl> impl;
     };

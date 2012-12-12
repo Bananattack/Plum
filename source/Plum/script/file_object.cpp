@@ -338,7 +338,7 @@ namespace plum
             size_t length = 0;
             const char* value = luaL_checklstring(L, 2, &length);
 
-            lua_pushboolean(L, file->writeString(value, length));
+            script::push(L, file->writeString(value, length));
             return 1;
         }
 
@@ -402,7 +402,7 @@ namespace plum
             lua_getglobal(L, "plum");
 
             // plum.File = <function create>
-            lua_pushstring(L, "File");
+            script::push(L, "File");
             lua_pushcfunction(L, create);
             lua_settable(L, -3);
 

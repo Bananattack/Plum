@@ -19,10 +19,10 @@ namespace plum
 
         int create(lua_State* L)
         {
-            if(lua_isnumber(L, 1) && lua_isnumber(L, 2))
+            if(script::is<int>(L, 1) && script::is<int>(L, 2))
             {
-                int w = lua_tointeger(L, 1);
-                int h = lua_tointeger(L, 2);
+                int w = script::get<int>(L, 1);
+                int h = script::get<int>(L, 2);
                 script::push(L, new Tilemap(w, h), LUA_NOREF);
 
                 return 1;
@@ -87,8 +87,8 @@ namespace plum
         int getTile(lua_State* L)
         {
             auto m = script::ptr<Tilemap>(L, 1);
-            int tx = luaL_checkint(L, 2);
-            int ty = luaL_checkint(L, 3);
+            int tx = script::get<int>(L, 2);
+            int ty = script::get<int>(L, 3);
             unsigned int t = m->getTile(tx, ty);
 
             if(t != Tilemap::InvalidTile)
@@ -106,9 +106,9 @@ namespace plum
         int setTile(lua_State* L)
         {
             auto m = script::ptr<Tilemap>(L, 1);
-            int tx = luaL_checkint(L, 2);
-            int ty = luaL_checkint(L, 3);
-            unsigned int tileIndex = luaL_checkint(L, 4);
+            int tx = script::get<int>(L, 2);
+            int ty = script::get<int>(L, 3);
+            unsigned int tileIndex = script::get<int>(L, 4);
             m->setTile(tx, ty, tileIndex);
             return 0;
         }
@@ -116,11 +116,11 @@ namespace plum
         int rect(lua_State* L)
         {
             auto m = script::ptr<Tilemap>(L, 1);
-            int tx = luaL_checkint(L, 2);
-            int ty = luaL_checkint(L, 3);
-            int tx2 = luaL_checkint(L, 4);
-            int ty2 = luaL_checkint(L, 5);
-            unsigned int tileIndex = luaL_checkint(L, 6);
+            int tx = script::get<int>(L, 2);
+            int ty = script::get<int>(L, 3);
+            int tx2 = script::get<int>(L, 4);
+            int ty2 = script::get<int>(L, 5);
+            unsigned int tileIndex = script::get<int>(L, 6);
             m->rect(tx, ty, tx2, ty2, tileIndex);
             return 0;
         }
@@ -128,11 +128,11 @@ namespace plum
         int solidRect(lua_State* L)
         {
             auto m = script::ptr<Tilemap>(L, 1);
-            int tx = luaL_checkint(L, 2);
-            int ty = luaL_checkint(L, 3);
-            int tx2 = luaL_checkint(L, 4);
-            int ty2 = luaL_checkint(L, 5);
-            unsigned int tileIndex = luaL_checkint(L, 6);
+            int tx = script::get<int>(L, 2);
+            int ty = script::get<int>(L, 3);
+            int tx2 = script::get<int>(L, 4);
+            int ty2 = script::get<int>(L, 5);
+            unsigned int tileIndex = script::get<int>(L, 6);
             m->solidRect(tx, ty, tx2, ty2, tileIndex);
             return 0;
         }
@@ -140,8 +140,8 @@ namespace plum
         int stamp(lua_State* L)
         {
             auto m = script::ptr<Tilemap>(L, 1);
-            int tx = luaL_checkint(L, 2);
-            int ty = luaL_checkint(L, 3);
+            int tx = script::get<int>(L, 2);
+            int ty = script::get<int>(L, 3);
             auto dest = script::ptr<Tilemap>(L, 4);
             m->stamp(tx, ty, dest);
             return 0;
@@ -150,13 +150,13 @@ namespace plum
         int blit(lua_State* L)
         {
             auto m = script::ptr<Tilemap>(L, 1);
-            int worldX = luaL_checkint(L, 2);
-            int worldY = luaL_checkint(L, 3);
-            int destX = luaL_checkint(L, 4);
-            int destY = luaL_checkint(L, 5);
-            int tilesWide = luaL_checkint(L, 6);
-            int tilesHigh = luaL_checkint(L, 7);
-            BlendMode mode = (BlendMode) script::get<int>(L, 8, BlendAlpha);
+            int worldX = script::get<int>(L, 2);
+            int worldY = script::get<int>(L, 3);
+            int destX = script::get<int>(L, 4);
+            int destY = script::get<int>(L, 5);
+            int tilesWide = script::get<int>(L, 6);
+            int tilesHigh = script::get<int>(L, 7);
+            BlendMode mode = (BlendMode) script::get<int>(L, 8, BlendPreserve);
             Color tint = script::get<int>(L, 9, Color::White);
 
             m->blit(worldX, worldY, destX, destY, tilesWide, tilesHigh, mode, tint);
@@ -200,7 +200,7 @@ namespace plum
             lua_getglobal(L, "plum");
 
             // plum[classname] = create
-            lua_pushstring(L, "Tilemap");
+            script::push(L, "Tilemap");
             lua_pushcfunction(L, create);
             lua_settable(L, -3);
 

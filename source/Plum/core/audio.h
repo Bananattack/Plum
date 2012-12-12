@@ -31,9 +31,6 @@ namespace plum
             void setVolume(double value);
             void setLooped(bool value);
 
-        private:
-            friend class Sound;
-            friend class Audio;
             class Impl;
             std::shared_ptr<Impl> impl;
     };
@@ -44,8 +41,6 @@ namespace plum
             Sound();
             ~Sound();
 
-        private:
-            friend class Audio;
             class Impl;
             std::shared_ptr<Impl> impl;
     };
@@ -66,7 +61,6 @@ namespace plum
             void setPitch(double value);
             void setVolume(double value);
 
-        private:
             class Impl;
             std::shared_ptr<Impl> impl;
     };

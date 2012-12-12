@@ -81,7 +81,7 @@ namespace plum
             int x = script::get<int>(L, 2);
             int y = script::get<int>(L, 3);
             int f = script::get<int>(L, 4);
-            BlendMode mode = (BlendMode) script::get<int>(L, 5, BlendAlpha);
+            BlendMode mode = (BlendMode) script::get<int>(L, 5, BlendPreserve);
             Color tint = script::get<int>(L, 6, Color::White);
 
             spr->blitFrame(x, y, f, mode, tint);
@@ -194,7 +194,7 @@ namespace plum
             lua_getglobal(L, "plum");
 
             // plum.Spritesheet = <function create>
-            lua_pushstring(L, "Spritesheet");
+            script::push(L, "Spritesheet");
             lua_pushcfunction(L, create);
             lua_settable(L, -3);
 

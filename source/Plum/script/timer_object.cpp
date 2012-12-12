@@ -1,5 +1,5 @@
 
-#include "../core/engine.h"
+#include "../core/timer.h"
 #include "script.h"
 
 namespace plum
@@ -8,7 +8,7 @@ namespace plum
     {
         int timerGetField(lua_State* L)
         {
-            std::string fieldName = luaL_checkstring(L, 2);
+            std::string fieldName(script::get<const char*>(L, 2));
             if(luaL_getmetafield(L, 1, std::string("get" + fieldName).c_str()))
             {
                 lua_pushvalue(L, 1);
@@ -20,7 +20,7 @@ namespace plum
 
         int timerSetField(lua_State* L)
         {
-            std::string fieldName = luaL_checkstring(L, 2);
+            std::string fieldName(script::get<const char*>(L, 2));
             if(luaL_getmetafield(L, 1, std::string("get" + fieldName).c_str()))
             {
                 luaL_error(L, "Attempt to modify readonly field '%s' on plum_timer.", fieldName.c_str());
@@ -33,25 +33,25 @@ namespace plum
 
         int timerToString(lua_State* L)
         {
-            lua_pushstring(L, "(plum.timer singleton)");
+            script::push(L, "(plum.timer singleton)");
             return 1;
         }
 
         int timerGetTime(lua_State* L)
         {
-            lua_pushinteger(L, script::instance(L).engine().timer.ticks);
+            script::push(L, script::instance(L).timer().getTime());
             return 1;
         }
 
         int timerGetGap(lua_State* L)
         {
-            lua_pushinteger(L, script::instance(L).engine().timer.gap);
+            script::push(L, script::instance(L).timer().getDelta());
             return 1;
         }
 
         int timerGetFPS(lua_State* L)
         {
-            lua_pushinteger(L, script::instance(L).engine().timer.fps);
+            script::push(L, script::instance(L).timer().getFPS());
             return 1;
         }
 
@@ -62,7 +62,7 @@ namespace plum
             { "gettime", timerGetTime },
             { "getgap", timerGetGap },
             { "getfps", timerGetFPS },
-            { NULL, NULL }
+            { nullptr, nullptr }
         };
     }
 
@@ -77,7 +77,7 @@ namespace plum
             // metatable.__index = metatable
             lua_setfield(L, -2, "__index");
             // Put the members into the metatable.
-            luaL_register(L, NULL, timerMembers);
+            luaL_register(L, nullptr, timerMembers);
             lua_pop(L, 1);
 
             // Push plum namespace.
