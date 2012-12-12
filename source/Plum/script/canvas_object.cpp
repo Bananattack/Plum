@@ -84,7 +84,7 @@ namespace plum
             auto canvas = script::ptr<Self>(L, 1);
             auto x = script::get<int>(L, 2);
             auto y = script::get<int>(L, 3);
-            script::push(L, int(canvas->getPixel(x, y)));
+            script::push(L, int(canvas->get(x, y)));
             return 1;
         }
 
@@ -98,11 +98,11 @@ namespace plum
 
             switch(mode)
             {
-                case BlendOpaque: canvas->setPixel<BlendOpaque>(x, y, color); break;
-                case BlendMerge: canvas->setPixel<BlendMerge>(x, y, color); break;
-                case BlendPreserve: canvas->setPixel<BlendPreserve>(x, y, color); break;
-                case BlendAdd: canvas->setPixel<BlendAdd>(x, y, color); break;
-                case BlendSubtract: canvas->setPixel<BlendSubtract>(x, y, color); break;
+                case BlendOpaque: canvas->dot<BlendOpaque>(x, y, color); break;
+                case BlendMerge: canvas->dot<BlendMerge>(x, y, color); break;
+                case BlendPreserve: canvas->dot<BlendPreserve>(x, y, color); break;
+                case BlendAdd: canvas->dot<BlendAdd>(x, y, color); break;
+                case BlendSubtract: canvas->dot<BlendSubtract>(x, y, color); break;
             }
             return 0;
         }
@@ -189,11 +189,11 @@ namespace plum
 
             switch(mode)
             {
-                case BlendOpaque: canvas->solidRect<BlendOpaque>(x, y, x2, y2, color); break;
-                case BlendMerge: canvas->solidRect<BlendMerge>(x, y, x2, y2, color); break;
-                case BlendPreserve: canvas->solidRect<BlendPreserve>(x, y, x2, y2, color); break;
-                case BlendAdd: canvas->solidRect<BlendAdd>(x, y, x2, y2, color); break;
-                case BlendSubtract: canvas->solidRect<BlendSubtract>(x, y, x2, y2, color); break;
+                case BlendOpaque: canvas->fillRect<BlendOpaque>(x, y, x2, y2, color); break;
+                case BlendMerge: canvas->fillRect<BlendMerge>(x, y, x2, y2, color); break;
+                case BlendPreserve: canvas->fillRect<BlendPreserve>(x, y, x2, y2, color); break;
+                case BlendAdd: canvas->fillRect<BlendAdd>(x, y, x2, y2, color); break;
+                case BlendSubtract: canvas->fillRect<BlendSubtract>(x, y, x2, y2, color); break;
             }
             return 0;
         }
@@ -210,11 +210,11 @@ namespace plum
 
             switch(mode)
             {
-                case BlendOpaque: canvas->circle<BlendOpaque>(cx, cy, xRadius, yRadius, color); break;
-                case BlendMerge: canvas->circle<BlendMerge>(cx, cy, xRadius, yRadius, color); break;
-                case BlendPreserve: canvas->circle<BlendPreserve>(cx, cy, xRadius, yRadius, color); break;
-                case BlendAdd: canvas->circle<BlendAdd>(cx, cy, xRadius, yRadius, color); break;
-                case BlendSubtract: canvas->circle<BlendSubtract>(cx, cy, xRadius, yRadius, color); break;
+                case BlendOpaque: canvas->ellipse<BlendOpaque>(cx, cy, xRadius, yRadius, color); break;
+                case BlendMerge: canvas->ellipse<BlendMerge>(cx, cy, xRadius, yRadius, color); break;
+                case BlendPreserve: canvas->ellipse<BlendPreserve>(cx, cy, xRadius, yRadius, color); break;
+                case BlendAdd: canvas->ellipse<BlendAdd>(cx, cy, xRadius, yRadius, color); break;
+                case BlendSubtract: canvas->ellipse<BlendSubtract>(cx, cy, xRadius, yRadius, color); break;
             }
             return 0;
         }
@@ -231,11 +231,11 @@ namespace plum
 
             switch(mode)
             {
-                case BlendOpaque: canvas->solidCircle<BlendOpaque>(cx, cy, xRadius, yRadius, color); break;
-                case BlendMerge: canvas->solidCircle<BlendMerge>(cx, cy, xRadius, yRadius, color); break;
-                case BlendPreserve: canvas->solidCircle<BlendPreserve>(cx, cy, xRadius, yRadius, color); break;
-                case BlendAdd: canvas->solidCircle<BlendAdd>(cx, cy, xRadius, yRadius, color); break;
-                case BlendSubtract: canvas->solidCircle<BlendSubtract>(cx, cy, xRadius, yRadius, color); break;
+                case BlendOpaque: canvas->fillEllipse<BlendOpaque>(cx, cy, xRadius, yRadius, color); break;
+                case BlendMerge: canvas->fillEllipse<BlendMerge>(cx, cy, xRadius, yRadius, color); break;
+                case BlendPreserve: canvas->fillEllipse<BlendPreserve>(cx, cy, xRadius, yRadius, color); break;
+                case BlendAdd: canvas->fillEllipse<BlendAdd>(cx, cy, xRadius, yRadius, color); break;
+                case BlendSubtract: canvas->fillEllipse<BlendSubtract>(cx, cy, xRadius, yRadius, color); break;
             }
             return 0;
         }

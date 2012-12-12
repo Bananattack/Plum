@@ -12,16 +12,16 @@ namespace plum
         // Try to automatically detect the font size based on the border edges.
         int w = 0;
         int h = 0;
-        Color c = canvas.getPixel(0, 0);
+        Color c = canvas.get(0, 0);
         for(w = 1; w < canvas.getWidth(); w++)
         {
-            Color z = canvas.getPixel(w, 1);
+            Color z = canvas.get(w, 1);
             if(z == c)
                 break;
         }
         for(h = 1; h < canvas.getHeight(); h++)
         {
-            Color z = canvas.getPixel(1, h);
+            Color z = canvas.get(1, h);
             if(z == c)
                 break;
         }
@@ -47,7 +47,7 @@ namespace plum
         Canvas& canvas(image->canvas());
         for(int y = 0; y < height; ++y)
         {
-            if(canvas.getPixel(fx + column, fy + y)[AlphaChannel] > 0)
+            if(canvas.get(fx + column, fy + y)[AlphaChannel] > 0)
             {
                 return false;
             }

@@ -173,16 +173,13 @@ namespace plum
                 clipY2 = std::min(std::max(0, y2), height - 1);
             }
             
-            Color getPixel(int x, int y) const
+            Color get(int x, int y) const
             {
-                if(!data || x < clipX || x >= clipX2 || y < clipY || y >= clipY2) return 0;
-                else return data[y * trueWidth + x];
-            }
-
-            template<BlendMode Blend> void setPixel(int x, int y, Color color)
-            {
-                if(!data || x < clipX || x > clipX2 || y < clipY || y > clipY2) return;
-                else blend<Blend>(color, data[y * trueWidth + x]);
+                if(data && x >= clipX && x < clipX2 && y >= clipY && y < clipY2)
+                {
+                    return data[y * trueWidth + x];
+                }
+                return 0;
             }
 
             void clear(Color color)
@@ -220,6 +217,14 @@ namespace plum
                         }
                     }
                 }
+            }
+
+            template<BlendMode Blend> void dot(int x, int y, Color color)
+            {
+                if(data && x >= clipX && x < clipX2 && y >= clipY && y < clipY2)
+                {
+                    blend<Blend>(color, data[y * trueWidth + x]);
+                }                
             }
 
             template<BlendMode Blend> void line(int x, int y, int x2, int y2, Color color)
@@ -458,7 +463,7 @@ namespace plum
                 }
             }
 
-            template<BlendMode Blend> void solidRect(int x, int y, int x2, int y2, Color color)
+            template<BlendMode Blend> void fillRect(int x, int y, int x2, int y2, Color color)
             {
                 if(!data) return;
                 int i, j;
@@ -510,7 +515,7 @@ namespace plum
             // "A Fast Bresenham Type Algorithm For Drawing Ellipses"
             // by John Kennedy
             // rkennedy@ix.netcom.com
-            template<BlendMode Blend> void circle(int cx, int cy, int xRadius, int yRadius, Color color)
+            template<BlendMode Blend> void ellipse(int cx, int cy, int xRadius, int yRadius, Color color)
             {
                 if(!data) return;
                 int x, y, plotX, plotY;
@@ -654,7 +659,7 @@ namespace plum
             // "A Fast Bresenham Type Algorithm For Drawing Ellipses"
             // by John Kennedy
             // rkennedy@ix.netcom.com
-            template<BlendMode Blend> void solidCircle(int cx, int cy, int xRadius, int yRadius, Color color)
+            template<BlendMode Blend> void fillEllipse(int cx, int cy, int xRadius, int yRadius, Color color)
             {
                 if(!data) return;
                 int i, plotX, plotX2, plotY;

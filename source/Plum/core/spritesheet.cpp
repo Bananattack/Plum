@@ -34,7 +34,7 @@ namespace plum
 
         int fx = (f % columns) * (frameWidth + padding) + padding;
         int fy = (f / columns) * (frameHeight + padding) + padding;
-        return image->canvas().getPixel(fx + x, fy + y);
+        return image->canvas().get(fx + x, fy + y);
     }
 
     void Spritesheet::blitFrame(int x, int y, int f, BlendMode mode, Color tint)
