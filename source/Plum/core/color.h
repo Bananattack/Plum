@@ -19,7 +19,6 @@ namespace plum
     class Color
     {
         public:
-            // Colors assume a 32-bit RGBA format
             enum
             {
                 White = 0xFFFFFFFF,
@@ -85,41 +84,38 @@ namespace plum
             uint32_t value;
     };
 
-    inline Color rgba(int r, int g, int b, int a)
+    inline Color rgb(int r, int g, int b, int a = 255)
     {
-        return Color(std::min(std::max(0, r), 255), std::min(std::max(0, g), 255), std::min(std::max(0, b), 255), std::min(std::max(0, a), 255));
+        return Color(
+            std::min(std::max(0, r), 255),
+            std::min(std::max(0, g), 255),
+            std::min(std::max(0, b), 255),
+            std::min(std::max(0, a), 255));
     }
     
-    inline Color hsv(int h, int s, int v, int a = 255)
-    // Pass: Hue (0-359), Saturation (0-255), Value (0-255)[, Alpha (0-255).]
     // Credit goes to Zip for original conversion code.
-    // Returns: a color determined using HSV color mapping.
+    inline Color hsv(int h, int s, int v, int a = 255)
     {
-        int r, g, b = 0;
-        int ixz;
-        int f;
-
-        h = (h + 360) % 360;
+        h = (h % 360 + 360) % 360;
         s = std::min(std::max(0, s), 255);
         v = std::min(std::max(0, v), 255);
+        a = std::min(std::max(0, v), 255);
 
-        ixz = h / 60;
-        h = (h << 8) / 60;
-        f = h - (ixz << 8);
-        h = (v * (255 - ((s * (255 - f)) >> 8))) >> 8;    // t =
-        f = (v * (255 - ((s * f) >> 8))) >> 8; // q =
-        s = (v * (255 - s)) >> 8; // p =
-
-        switch(ixz)
+        int i = h / 60;
+        int f = (h << 8) / 60 - (i << 8);
+        int p = (v * (255 - s)) >> 8;
+        int q = (v * (255 - ((s * f) >> 8))) >> 8;
+        int t = (v * (255 - ((s * (255 - f)) >> 8))) >> 8;
+        switch(i)
         {
-            case 0: r = v; g = h; b = s; break;
-            case 1: r = f; g = v; b = s; break;
-            case 2: r = s; g = v; b = h; break;
-            case 3: r = s; g = f; b = v; break;
-            case 4: r = h; g = s; b = v; break;
-            case 5: r = v; g = s; b = f; break;
+            case 0: return Color(v, t, p, a);
+            case 1: return Color(q, v, p, a);
+            case 2: return Color(p, v, t, a);
+            case 3: return Color(p, q, v, a);
+            case 4: return Color(t, p, v, a);
+            case 5: return Color(v, p, q, a);
+            default: return 0;
         }
-        return Color(r, g, b, a);
     }
 }
 

@@ -60,7 +60,7 @@ namespace plum
             int g = script::get<int>(L, 2);
             int b = script::get<int>(L, 3);
             int a = script::get<int>(L, 4, 255);
-            script::push(L, int(plum::rgba(r, g, b, a)));
+            script::push(L, int(plum::rgb(r, g, b, a)));
             return 1;
         }
 
