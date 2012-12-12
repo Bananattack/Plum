@@ -98,21 +98,11 @@ namespace plum
 
             switch(mode)
             {
-                case BlendOpaque:
-                    canvas->setPixel<SoftOpaqueBlender>(x, y, color, SoftOpaqueBlender());
-                    break;
-                case BlendMerge:
-                    canvas->setPixel<SoftMergeBlender>(x, y, color, SoftMergeBlender());
-                    break;
-                case BlendPreserve:
-                    canvas->setPixel<SoftPreserveBlender>(x, y, color, SoftPreserveBlender());
-                    break;
-                case BlendAdd:
-                    canvas->setPixel<SoftAddBlender>(x, y, color, SoftAddBlender());
-                    break;
-                case BlendSubtract:
-                    canvas->setPixel<SoftSubtractBlender>(x, y, color, SoftSubtractBlender());
-                    break;
+                case BlendOpaque: canvas->setPixel<BlendOpaque>(x, y, color); break;
+                case BlendMerge: canvas->setPixel<BlendMerge>(x, y, color); break;
+                case BlendPreserve: canvas->setPixel<BlendPreserve>(x, y, color); break;
+                case BlendAdd: canvas->setPixel<BlendAdd>(x, y, color); break;
+                case BlendSubtract: canvas->setPixel<BlendSubtract>(x, y, color); break;
             }
             return 0;
         }
@@ -157,21 +147,11 @@ namespace plum
 
             switch(mode)
             {
-                case BlendOpaque:
-                    canvas->line<SoftOpaqueBlender>(x, y, x2, y2, color, SoftOpaqueBlender());
-                    break;
-                case BlendMerge:
-                    canvas->line<SoftMergeBlender>(x, y, x2, y2, color, SoftMergeBlender());
-                    break;
-                case BlendPreserve:
-                    canvas->line<SoftPreserveBlender>(x, y, x2, y2, color, SoftPreserveBlender());
-                    break;
-                case BlendAdd:
-                    canvas->line<SoftAddBlender>(x, y, x2, y2, color, SoftAddBlender());
-                    break;
-                case BlendSubtract:
-                    canvas->line<SoftSubtractBlender>(x, y, x2, y2, color, SoftSubtractBlender());
-                    break;
+                case BlendOpaque: canvas->line<BlendOpaque>(x, y, x2, y2, color); break;
+                case BlendMerge: canvas->line<BlendMerge>(x, y, x2, y2, color); break;
+                case BlendPreserve: canvas->line<BlendPreserve>(x, y, x2, y2, color); break;
+                case BlendAdd: canvas->line<BlendAdd>(x, y, x2, y2, color); break;
+                case BlendSubtract: canvas->line<BlendSubtract>(x, y, x2, y2, color); break;
             }
             return 0;
         }
@@ -188,21 +168,11 @@ namespace plum
 
             switch(mode)
             {
-                case BlendOpaque:
-                    canvas->rect<SoftOpaqueBlender>(x, y, x2, y2, color, SoftOpaqueBlender());
-                    break;
-                case BlendMerge:
-                    canvas->rect<SoftMergeBlender>(x, y, x2, y2, color, SoftMergeBlender());
-                    break;
-                case BlendPreserve:
-                    canvas->rect<SoftPreserveBlender>(x, y, x2, y2, color, SoftPreserveBlender());
-                    break;
-                case BlendAdd:
-                    canvas->rect<SoftAddBlender>(x, y, x2, y2, color, SoftAddBlender());
-                    break;
-                case BlendSubtract:
-                    canvas->rect<SoftSubtractBlender>(x, y, x2, y2, color, SoftSubtractBlender());
-                    break;
+                case BlendOpaque: canvas->rect<BlendOpaque>(x, y, x2, y2, color); break;
+                case BlendMerge: canvas->rect<BlendMerge>(x, y, x2, y2, color); break;
+                case BlendPreserve: canvas->rect<BlendPreserve>(x, y, x2, y2, color); break;
+                case BlendAdd: canvas->rect<BlendAdd>(x, y, x2, y2, color); break;
+                case BlendSubtract: canvas->rect<BlendSubtract>(x, y, x2, y2, color); break;
             }
             return 0;
         }
@@ -219,21 +189,11 @@ namespace plum
 
             switch(mode)
             {
-                case BlendOpaque:
-                    canvas->solidRect<SoftOpaqueBlender>(x, y, x2, y2, color, SoftOpaqueBlender());
-                    break;
-                case BlendMerge:
-                    canvas->solidRect<SoftMergeBlender>(x, y, x2, y2, color, SoftMergeBlender());
-                    break;
-                case BlendPreserve:
-                    canvas->solidRect<SoftPreserveBlender>(x, y, x2, y2, color, SoftPreserveBlender());
-                    break;
-                case BlendAdd:
-                    canvas->solidRect<SoftAddBlender>(x, y, x2, y2, color, SoftAddBlender());
-                    break;
-                case BlendSubtract:
-                    canvas->solidRect<SoftSubtractBlender>(x, y, x2, y2, color, SoftSubtractBlender());
-                    break;
+                case BlendOpaque: canvas->solidRect<BlendOpaque>(x, y, x2, y2, color); break;
+                case BlendMerge: canvas->solidRect<BlendMerge>(x, y, x2, y2, color); break;
+                case BlendPreserve: canvas->solidRect<BlendPreserve>(x, y, x2, y2, color); break;
+                case BlendAdd: canvas->solidRect<BlendAdd>(x, y, x2, y2, color); break;
+                case BlendSubtract: canvas->solidRect<BlendSubtract>(x, y, x2, y2, color); break;
             }
             return 0;
         }
@@ -250,21 +210,11 @@ namespace plum
 
             switch(mode)
             {
-                case BlendOpaque:
-                    canvas->circle<SoftOpaqueBlender>(cx, cy, xRadius, yRadius, color, SoftOpaqueBlender());
-                    break;
-                case BlendMerge:
-                    canvas->circle<SoftMergeBlender>(cx, cy, xRadius, yRadius, color, SoftMergeBlender());
-                    break;
-                case BlendPreserve:
-                    canvas->circle<SoftPreserveBlender>(cx, cy, xRadius, yRadius, color, SoftPreserveBlender());
-                    break;
-                case BlendAdd:
-                    canvas->circle<SoftAddBlender>(cx, cy, xRadius, yRadius, color, SoftAddBlender());
-                    break;
-                case BlendSubtract:
-                    canvas->circle<SoftSubtractBlender>(cx, cy, xRadius, yRadius, color, SoftSubtractBlender());
-                    break;
+                case BlendOpaque: canvas->circle<BlendOpaque>(cx, cy, xRadius, yRadius, color); break;
+                case BlendMerge: canvas->circle<BlendMerge>(cx, cy, xRadius, yRadius, color); break;
+                case BlendPreserve: canvas->circle<BlendPreserve>(cx, cy, xRadius, yRadius, color); break;
+                case BlendAdd: canvas->circle<BlendAdd>(cx, cy, xRadius, yRadius, color); break;
+                case BlendSubtract: canvas->circle<BlendSubtract>(cx, cy, xRadius, yRadius, color); break;
             }
             return 0;
         }
@@ -281,21 +231,11 @@ namespace plum
 
             switch(mode)
             {
-                case BlendOpaque:
-                    canvas->solidCircle<SoftOpaqueBlender>(cx, cy, xRadius, yRadius, color, SoftOpaqueBlender());
-                    break;
-                case BlendMerge:
-                    canvas->solidCircle<SoftMergeBlender>(cx, cy, xRadius, yRadius, color, SoftMergeBlender());
-                    break;
-                case BlendPreserve:
-                    canvas->solidCircle<SoftPreserveBlender>(cx, cy, xRadius, yRadius, color, SoftPreserveBlender());
-                    break;
-                case BlendAdd:
-                    canvas->solidCircle<SoftAddBlender>(cx, cy, xRadius, yRadius, color, SoftAddBlender());
-                    break;
-                case BlendSubtract:
-                    canvas->solidCircle<SoftSubtractBlender>(cx, cy, xRadius, yRadius, color, SoftSubtractBlender());
-                    break;
+                case BlendOpaque: canvas->solidCircle<BlendOpaque>(cx, cy, xRadius, yRadius, color); break;
+                case BlendMerge: canvas->solidCircle<BlendMerge>(cx, cy, xRadius, yRadius, color); break;
+                case BlendPreserve: canvas->solidCircle<BlendPreserve>(cx, cy, xRadius, yRadius, color); break;
+                case BlendAdd: canvas->solidCircle<BlendAdd>(cx, cy, xRadius, yRadius, color); break;
+                case BlendSubtract: canvas->solidCircle<BlendSubtract>(cx, cy, xRadius, yRadius, color); break;
             }
             return 0;
         }
@@ -307,24 +247,14 @@ namespace plum
             auto y = script::get<int>(L, 3);
             auto dest = script::ptr<Self>(L, 4);
             auto mode = BlendMode(script::get<int>(L, 5, BlendPreserve));
-                
+
             switch(mode)
             {
-                case BlendOpaque:
-                    canvas->blit<SoftOpaqueBlender>(x, y, *dest, SoftOpaqueBlender());
-                    break;
-                case BlendMerge:
-                    canvas->blit<SoftMergeBlender>(x, y, *dest, SoftMergeBlender());
-                    break;
-                case BlendPreserve:
-                    canvas->blit<SoftPreserveBlender>(x, y, *dest, SoftPreserveBlender());
-                    break;
-                case BlendAdd:
-                    canvas->blit<SoftAddBlender>(x, y, *dest, SoftAddBlender());
-                    break;
-                case BlendSubtract:
-                    canvas->blit<SoftSubtractBlender>(x, y, *dest, SoftSubtractBlender());
-                    break;
+                case BlendOpaque: canvas->blit<BlendOpaque>(x, y, *dest); break;
+                case BlendMerge: canvas->blit<BlendMerge>(x, y, *dest); break;
+                case BlendPreserve: canvas->blit<BlendPreserve>(x, y, *dest); break;
+                case BlendAdd: canvas->blit<BlendAdd>(x, y, *dest); break;
+                case BlendSubtract: canvas->blit<BlendSubtract>(x, y, *dest); break;
             }
             return 0;
         }
@@ -338,24 +268,14 @@ namespace plum
             auto scaledHeight = script::get<int>(L, 5);
             auto dest = script::ptr<Self>(L, 6);
             auto mode = BlendMode(script::get<int>(L, 7, BlendPreserve));
-                
+
             switch(mode)
             {
-                case BlendOpaque:
-                    canvas->scaleBlit<SoftOpaqueBlender>(x, y, scaledWidth, scaledHeight, *dest, SoftOpaqueBlender());
-                    break;
-                case BlendMerge:
-                    canvas->scaleBlit<SoftMergeBlender>(x, y, scaledWidth, scaledHeight, *dest, SoftMergeBlender());
-                    break;
-                case BlendPreserve:
-                    canvas->scaleBlit<SoftPreserveBlender>(x, y, scaledWidth, scaledHeight, *dest, SoftPreserveBlender());
-                    break;
-                case BlendAdd:
-                    canvas->scaleBlit<SoftAddBlender>(x, y, scaledWidth, scaledHeight, *dest, SoftAddBlender());
-                    break;
-                case BlendSubtract:
-                    canvas->scaleBlit<SoftSubtractBlender>(x, y, scaledWidth, scaledHeight, *dest, SoftSubtractBlender());
-                    break;
+                case BlendOpaque: canvas->scaleBlit<BlendOpaque>(x, y, scaledWidth, scaledHeight, *dest); break;
+                case BlendMerge: canvas->scaleBlit<BlendMerge>(x, y, scaledWidth, scaledHeight, *dest); break;
+                case BlendPreserve: canvas->scaleBlit<BlendPreserve>(x, y, scaledWidth, scaledHeight, *dest); break;
+                case BlendAdd: canvas->scaleBlit<BlendAdd>(x, y, scaledWidth, scaledHeight, *dest); break;
+                case BlendSubtract: canvas->scaleBlit<BlendSubtract>(x, y, scaledWidth, scaledHeight, *dest); break;
             }
             return 0;
         }
@@ -368,24 +288,14 @@ namespace plum
             auto angle = script::get<double>(L, 4);
             auto dest = script::ptr<Self>(L, 5);
             auto mode = BlendMode(script::get<int>(L, 6, BlendPreserve));
-                
+             
             switch(mode)
             {
-                case BlendOpaque:
-                    canvas->rotateBlit<SoftOpaqueBlender>(x, y, angle, *dest, SoftOpaqueBlender());
-                    break;
-                case BlendMerge:
-                    canvas->rotateBlit<SoftMergeBlender>(x, y, angle, *dest, SoftMergeBlender());
-                    break;
-                case BlendPreserve:
-                    canvas->rotateBlit<SoftPreserveBlender>(x, y, angle, *dest, SoftPreserveBlender());
-                    break;
-                case BlendAdd:
-                    canvas->rotateBlit<SoftAddBlender>(x, y, angle, *dest, SoftAddBlender());
-                    break;
-                case BlendSubtract:
-                    canvas->rotateBlit<SoftSubtractBlender>(x, y, angle, *dest, SoftSubtractBlender());
-                    break;
+                case BlendOpaque: canvas->rotateBlit<BlendOpaque>(x, y, angle, *dest); break;
+                case BlendMerge: canvas->rotateBlit<BlendMerge>(x, y, angle, *dest); break;
+                case BlendPreserve: canvas->rotateBlit<BlendPreserve>(x, y, angle, *dest); break;
+                case BlendAdd: canvas->rotateBlit<BlendAdd>(x, y, angle, *dest); break;
+                case BlendSubtract: canvas->rotateBlit<BlendSubtract>(x, y, angle, *dest); break;
             }
             return 0;
         }
@@ -402,21 +312,11 @@ namespace plum
                 
             switch(mode)
             {
-                case BlendOpaque:
-                    canvas->rotateScaleBlit<SoftOpaqueBlender>(x, y, angle, scale, *dest, SoftOpaqueBlender());
-                    break;
-                case BlendMerge:
-                    canvas->rotateScaleBlit<SoftMergeBlender>(x, y, angle, scale, *dest, SoftMergeBlender());
-                    break;
-                case BlendPreserve:
-                    canvas->rotateScaleBlit<SoftPreserveBlender>(x, y, angle, scale, *dest, SoftPreserveBlender());
-                    break;
-                case BlendAdd:
-                    canvas->rotateScaleBlit<SoftAddBlender>(x, y, angle, scale, *dest, SoftAddBlender());
-                    break;
-                case BlendSubtract:
-                    canvas->rotateScaleBlit<SoftSubtractBlender>(x, y, angle, scale, *dest, SoftSubtractBlender());
-                    break;
+                case BlendOpaque: canvas->rotateScaleBlit<BlendOpaque>(x, y, angle, scale, *dest); break;
+                case BlendMerge: canvas->rotateScaleBlit<BlendMerge>(x, y, angle, scale, *dest); break;
+                case BlendPreserve: canvas->rotateScaleBlit<BlendPreserve>(x, y, angle, scale, *dest); break;
+                case BlendAdd: canvas->rotateScaleBlit<BlendAdd>(x, y, angle, scale, *dest); break;
+                case BlendSubtract: canvas->rotateScaleBlit<BlendSubtract>(x, y, angle, scale, *dest); break;
             }
             return 0;
         }
@@ -432,24 +332,14 @@ namespace plum
             auto dy = script::get<int>(L, 7);
             auto dest = script::ptr<Self>(L, 8);
             auto mode = BlendMode(script::get<int>(L, 9, BlendPreserve));
-                
+
             switch(mode)
             {
-                case BlendOpaque:
-                    canvas->blitRegion<SoftOpaqueBlender>(sx, sy, sx2, sy2, dx, dy, *dest, SoftOpaqueBlender());
-                    break;
-                case BlendMerge:
-                    canvas->blitRegion<SoftMergeBlender>(sx, sy, sx2, sy2, dx, dy, *dest, SoftMergeBlender());
-                    break;
-                case BlendPreserve:
-                    canvas->blitRegion<SoftPreserveBlender>(sx, sy, sx2, sy2, dx, dy, *dest, SoftPreserveBlender());
-                    break;
-                case BlendAdd:
-                    canvas->blitRegion<SoftAddBlender>(sx, sy, sx2, sy2, dx, dy, *dest, SoftAddBlender());
-                    break;
-                case BlendSubtract:
-                    canvas->blitRegion<SoftSubtractBlender>(sx, sy, sx2, sy2, dx, dy, *dest, SoftSubtractBlender());
-                    break;
+                case BlendOpaque: canvas->blitRegion<BlendOpaque>(sx, sy, sx2, sy2, dx, dy, *dest); break;
+                case BlendMerge: canvas->blitRegion<BlendMerge>(sx, sy, sx2, sy2, dx, dy, *dest); break;
+                case BlendPreserve: canvas->blitRegion<BlendPreserve>(sx, sy, sx2, sy2, dx, dy, *dest); break;
+                case BlendAdd: canvas->blitRegion<BlendAdd>(sx, sy, sx2, sy2, dx, dy, *dest); break;
+                case BlendSubtract: canvas->blitRegion<BlendSubtract>(sx, sy, sx2, sy2, dx, dy, *dest); break;
             }
             return 0;
         }
@@ -467,24 +357,14 @@ namespace plum
             auto sch = script::get<int>(L, 9);
             auto dest = script::ptr<Self>(L, 10);
             auto mode = BlendMode(script::get<int>(L, 11, BlendPreserve));
-                
+
             switch(mode)
             {
-                case BlendOpaque:
-                    canvas->scaleBlitRegion<SoftOpaqueBlender>(sx, sy, sx2, sy2, dx, dy, scw, sch, *dest, SoftOpaqueBlender());
-                    break;
-                case BlendMerge:
-                    canvas->scaleBlitRegion<SoftMergeBlender>(sx, sy, sx2, sy2, dx, dy, scw, sch, *dest, SoftMergeBlender());
-                    break;
-                case BlendPreserve:
-                    canvas->scaleBlitRegion<SoftPreserveBlender>(sx, sy, sx2, sy2, dx, dy, scw, sch, *dest, SoftPreserveBlender());
-                    break;
-                case BlendAdd:
-                    canvas->scaleBlitRegion<SoftAddBlender>(sx, sy, sx2, sy2, dx, dy, scw, sch, *dest, SoftAddBlender());
-                    break;
-                case BlendSubtract:
-                    canvas->scaleBlitRegion<SoftSubtractBlender>(sx, sy, sx2, sy2, dx, dy, scw, sch, *dest, SoftSubtractBlender());
-                    break;
+                case BlendOpaque: canvas->scaleBlitRegion<BlendOpaque>(sx, sy, sx2, sy2, dx, dy, scw, sch, *dest); break;
+                case BlendMerge: canvas->scaleBlitRegion<BlendMerge>(sx, sy, sx2, sy2, dx, dy, scw, sch, *dest); break;
+                case BlendPreserve: canvas->scaleBlitRegion<BlendPreserve>(sx, sy, sx2, sy2, dx, dy, scw, sch, *dest); break;
+                case BlendAdd: canvas->scaleBlitRegion<BlendAdd>(sx, sy, sx2, sy2, dx, dy, scw, sch, *dest); break;
+                case BlendSubtract: canvas->scaleBlitRegion<BlendSubtract>(sx, sy, sx2, sy2, dx, dy, scw, sch, *dest); break;
             }
             return 0;
         }
@@ -501,24 +381,14 @@ namespace plum
             auto angle = script::get<double>(L, 8);
             auto dest = script::ptr<Self>(L, 9);
             auto mode = BlendMode(script::get<int>(L, 10, BlendPreserve));
-                
+
             switch(mode)
             {
-                case BlendOpaque:
-                    canvas->rotateBlitRegion<SoftOpaqueBlender>(sx, sy, sx2, sy2, dx, dy, angle, *dest, SoftOpaqueBlender());
-                    break;
-                case BlendMerge:
-                    canvas->rotateBlitRegion<SoftMergeBlender>(sx, sy, sx2, sy2, dx, dy, angle, *dest, SoftMergeBlender());
-                    break;
-                case BlendPreserve:
-                    canvas->rotateBlitRegion<SoftPreserveBlender>(sx, sy, sx2, sy2, dx, dy, angle, *dest, SoftPreserveBlender());
-                    break;
-                case BlendAdd:
-                    canvas->rotateBlitRegion<SoftAddBlender>(sx, sy, sx2, sy2, dx, dy, angle, *dest, SoftAddBlender());
-                    break;
-                case BlendSubtract:
-                    canvas->rotateBlitRegion<SoftSubtractBlender>(sx, sy, sx2, sy2, dx, dy, angle, *dest, SoftSubtractBlender());
-                    break;
+                case BlendOpaque: canvas->rotateBlitRegion<BlendOpaque>(sx, sy, sx2, sy2, dx, dy, angle, *dest); break;
+                case BlendMerge: canvas->rotateBlitRegion<BlendMerge>(sx, sy, sx2, sy2, dx, dy, angle, *dest); break;
+                case BlendPreserve: canvas->rotateBlitRegion<BlendPreserve>(sx, sy, sx2, sy2, dx, dy, angle, *dest); break;
+                case BlendAdd: canvas->rotateBlitRegion<BlendAdd>(sx, sy, sx2, sy2, dx, dy, angle, *dest); break;
+                case BlendSubtract: canvas->rotateBlitRegion<BlendSubtract>(sx, sy, sx2, sy2, dx, dy, angle, *dest); break;
             }
             return 0;
         }
@@ -536,24 +406,14 @@ namespace plum
             auto scale = script::get<double>(L, 9);
             auto dest = script::ptr<Self>(L, 10);
             auto mode = BlendMode(script::get<int>(L, 11, BlendPreserve));
-                
+            
             switch(mode)
             {
-                case BlendOpaque:
-                    canvas->rotateScaleBlitRegion<SoftOpaqueBlender>(sx, sy, sx2, sy2, dx, dy, angle, scale, *dest, SoftOpaqueBlender());
-                    break;
-                case BlendMerge:
-                    canvas->rotateScaleBlitRegion<SoftMergeBlender>(sx, sy, sx2, sy2, dx, dy, angle, scale, *dest, SoftMergeBlender());
-                    break;
-                case BlendPreserve:
-                    canvas->rotateScaleBlitRegion<SoftPreserveBlender>(sx, sy, sx2, sy2, dx, dy, angle, scale, *dest, SoftPreserveBlender());
-                    break;
-                case BlendAdd:
-                    canvas->rotateScaleBlitRegion<SoftAddBlender>(sx, sy, sx2, sy2, dx, dy, angle, scale, *dest, SoftAddBlender());
-                    break;
-                case BlendSubtract:
-                    canvas->rotateScaleBlitRegion<SoftSubtractBlender>(sx, sy, sx2, sy2, dx, dy, angle, scale, *dest, SoftSubtractBlender());
-                    break;
+                case BlendOpaque: canvas->rotateScaleBlitRegion<BlendOpaque>(sx, sy, sx2, sy2, dx, dy, angle, scale, *dest); break;
+                case BlendMerge: canvas->rotateScaleBlitRegion<BlendMerge>(sx, sy, sx2, sy2, dx, dy, angle, scale, *dest); break;
+                case BlendPreserve: canvas->rotateScaleBlitRegion<BlendPreserve>(sx, sy, sx2, sy2, dx, dy, angle, scale, *dest); break;
+                case BlendAdd: canvas->rotateScaleBlitRegion<BlendAdd>(sx, sy, sx2, sy2, dx, dy, angle, scale, *dest); break;
+                case BlendSubtract: canvas->rotateScaleBlitRegion<BlendSubtract>(sx, sy, sx2, sy2, dx, dy, angle, scale, *dest); break;
             }
             return 0;
         }

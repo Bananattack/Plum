@@ -36,7 +36,7 @@ namespace plum
         target = GL_TEXTURE_2D;
         
         canvas_.clear(0);
-        source.blit<SoftOpaqueBlender>(0, 0, canvas_, SoftOpaqueBlender());
+        source.blit<BlendOpaque>(0, 0, canvas_);
         canvas_.setClipRegion(0, 0, source.getWidth() - 1, source.getHeight() - 1);
 
         glGenTextures(1, &textureID);

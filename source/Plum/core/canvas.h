@@ -179,10 +179,10 @@ namespace plum
                 else return data[y * trueWidth + x];
             }
 
-            template <typename BlendCallback> void setPixel(int x, int y, Color color, const BlendCallback& blend)
+            template<BlendMode Blend> void setPixel(int x, int y, Color color)
             {
                 if(!data || x < clipX || x > clipX2 || y < clipY || y > clipY2) return;
-                else blend(color, data[y * trueWidth + x]);
+                else blend<Blend>(color, data[y * trueWidth + x]);
             }
 
             void clear(Color color)
@@ -222,7 +222,7 @@ namespace plum
                 }
             }
 
-            template <typename BlendCallback> void line(int x, int y, int x2, int y2, Color color, const BlendCallback& blend)
+            template<BlendMode Blend> void line(int x, int y, int x2, int y2, Color color)
             {
                 if(!data) return;
                 // Now we'll clip the line using Cohen-Sutherland clipping
@@ -315,7 +315,7 @@ namespace plum
                 // A single pixel
                 if(x == x2 && y == y2)
                 {
-                    blend(color, data[y * trueWidth + x]);
+                    blend<Blend>(color, data[y * trueWidth + x]);
                     return;
                 }
                 // Horizontal line
@@ -329,7 +329,7 @@ namespace plum
                     // Draw it.
                     for(int i = x; i <= x2; ++i)
                     {
-                        blend(color, data[y * trueWidth + i]);
+                        blend<Blend>(color, data[y * trueWidth + i]);
                     }
                     return;
                 }
@@ -344,7 +344,7 @@ namespace plum
                     // Draw it.
                     for(int i = y; i <= y2; ++i)
                     {
-                        blend(color, data[i * trueWidth + x]);
+                        blend<Blend>(color, data[i * trueWidth + x]);
                     }
                     return;
                 }
@@ -401,14 +401,14 @@ namespace plum
                         yaccum += yreset;
                     }
 
-                    blend(color, data[cy * trueWidth + cx]);
+                    blend<Blend>(color, data[cy * trueWidth + cx]);
 
                     if(xreset == 0 && cx == x2) done = true;
                     if(yreset == 0 && cy == y2) done = true;
                 }
             }
 
-            template <typename BlendCallback> void rect(int x, int y, int x2, int y2, Color color, const BlendCallback& blend)
+            template<BlendMode Blend> void rect(int x, int y, int x2, int y2, Color color)
             {
                 if(!data) return;
                 int i;
@@ -447,18 +447,18 @@ namespace plum
                 // Draw the horizontal lines of the rectangle.
                 for(i = x; i <= x2; ++i)
                 {
-                    blend(color, data[y * trueWidth + i]);
-                    blend(color, data[y2 * trueWidth + i]);
+                    blend<Blend>(color, data[y * trueWidth + i]);
+                    blend<Blend>(color, data[y2 * trueWidth + i]);
                 }
                 // Draw the vertical lines of the rectangle.
                 for(i = y; i <= y2; ++i)
                 {
-                    blend(color, data[i * trueWidth + x]);
-                    blend(color, data[i * trueWidth + x2]);
+                    blend<Blend>(color, data[i * trueWidth + x]);
+                    blend<Blend>(color, data[i * trueWidth + x2]);
                 }
             }
 
-            template <typename BlendCallback> void solidRect(int x, int y, int x2, int y2, Color color, const BlendCallback& blend)
+            template<BlendMode Blend> void solidRect(int x, int y, int x2, int y2, Color color)
             {
                 if(!data) return;
                 int i, j;
@@ -498,19 +498,19 @@ namespace plum
                 {
                     for(j = x; j <= x2; ++j)
                     {
-                        blend(color, data[i * trueWidth + j]);
+                        blend<Blend>(color, data[i * trueWidth + j]);
                     }
                 }
             }
 
-            template <typename BlendCallback> void horizontalGradientRect(int x, int y, int x2, int y2, Color color, Color color2, const BlendCallback& blend);
-            template <typename BlendCallback> void verticalGradientRect(int x, int y, int x2, int y2, Color color, Color color2, const BlendCallback& blend);
+            template<BlendMode Blend> void horizontalGradientRect(int x, int y, int x2, int y2, Color color, Color color2);
+            template<BlendMode Blend> void verticalGradientRect(int x, int y, int x2, int y2, Color color, Color color2);
 
             // Algorithm based off this paper:
             // "A Fast Bresenham Type Algorithm For Drawing Ellipses"
             // by John Kennedy
             // rkennedy@ix.netcom.com
-            template <typename BlendCallback> void circle(int cx, int cy, int xRadius, int yRadius, Color color, const BlendCallback& blend)
+            template<BlendMode Blend> void circle(int cx, int cy, int xRadius, int yRadius, Color color)
             {
                 if(!data) return;
                 int x, y, plotX, plotY;
@@ -541,12 +541,12 @@ namespace plum
                             plotX = cx - x;
                             if(plotX >= clipX && plotX <= clipX2)
                             {
-                                blend(color, data[plotY * trueWidth + plotX]);
+                                blend<Blend>(color, data[plotY * trueWidth + plotX]);
                             }
                             plotX = cx + x;
                             if(plotX >= clipX && plotX <= clipX2)
                             {
-                                blend(color, data[plotY * trueWidth + plotX]);
+                                blend<Blend>(color, data[plotY * trueWidth + plotX]);
                             }
                         }
                         if(y)
@@ -557,12 +557,12 @@ namespace plum
                                 plotX = cx - x;
                                 if(plotX >= clipX && plotX <= clipX2)
                                 {
-                                    blend(color, data[plotY * trueWidth + plotX]);
+                                    blend<Blend>(color, data[plotY * trueWidth + plotX]);
                                 }
                                 plotX = cx + x;
                                 if(plotX >= clipX && plotX <= clipX2)
                                 {
-                                    blend(color, data[plotY * trueWidth + plotX]);
+                                    blend<Blend>(color, data[plotY * trueWidth + plotX]);
                                 }
                             }
                         }
@@ -601,14 +601,14 @@ namespace plum
                             plotX = cx - x;
                             if(plotX >= clipX && plotX <= clipX2)
                             {
-                                blend(color, data[plotY * trueWidth + plotX]);
+                                blend<Blend>(color, data[plotY * trueWidth + plotX]);
                             }
                             if(x)
                             {
                                 plotX = cx + x;
                                 if(plotX >= clipX && plotX <= clipX2)
                                 {
-                                    blend(color, data[plotY * trueWidth + plotX]);
+                                    blend<Blend>(color, data[plotY * trueWidth + plotX]);
                                 }
                             }
                         }
@@ -620,14 +620,14 @@ namespace plum
                                 plotX = cx - x;
                                 if(plotX >= clipX && plotX <= clipX2)
                                 {
-                                    blend(color, data[plotY * trueWidth + plotX]);
+                                    blend<Blend>(color, data[plotY * trueWidth + plotX]);
                                 }
                                 if(x)
                                 {
                                     plotX = cx + x;
                                     if(plotX >= clipX && plotX <= clipX2)
                                     {
-                                        blend(color, data[plotY * trueWidth + plotX]);
+                                        blend<Blend>(color, data[plotY * trueWidth + plotX]);
                                     }
                                 }
                             }
@@ -654,7 +654,7 @@ namespace plum
             // "A Fast Bresenham Type Algorithm For Drawing Ellipses"
             // by John Kennedy
             // rkennedy@ix.netcom.com
-            template <typename BlendCallback> void solidCircle(int cx, int cy, int xRadius, int yRadius, Color color, const BlendCallback& blend)
+            template<BlendMode Blend> void solidCircle(int cx, int cy, int xRadius, int yRadius, Color color)
             {
                 if(!data) return;
                 int i, plotX, plotX2, plotY;
@@ -686,7 +686,7 @@ namespace plum
                         {
                             for(i = plotX; i <= plotX2; ++i)
                             {
-                                blend(color, data[plotY * trueWidth + i]);
+                                blend<Blend>(color, data[plotY * trueWidth + i]);
                             }
                         }
                         if(y)
@@ -696,7 +696,7 @@ namespace plum
                             {
                                 for(i = plotX; i <= plotX2; ++i)
                                 {
-                                    blend(color, data[plotY * trueWidth + i]);
+                                    blend<Blend>(color, data[plotY * trueWidth + i]);
                                 }
                             }
                             lastY = y;
@@ -735,7 +735,7 @@ namespace plum
                         {
                             for(i = plotX; i <= plotX2; ++i)
                             {
-                                blend(color, data[plotY * trueWidth + i]);
+                                blend<Blend>(color, data[plotY * trueWidth + i]);
                             }
                         }
                         plotY = cy + y;
@@ -743,7 +743,7 @@ namespace plum
                         {
                             for(i = plotX; i <= plotX2; ++i)
                             {
-                                blend(color, data[plotY * trueWidth + i]);
+                                blend<Blend>(color, data[plotY * trueWidth + i]);
                             }
                         }
                         lastY = y;
@@ -763,7 +763,7 @@ namespace plum
                 }
             }
 
-            template <typename BlendCallback> void blit(int x, int y, Canvas& dest, const BlendCallback& blend) const
+            template<BlendMode Blend> void blit(int x, int y, Canvas& dest) const
             {
                 if(!data) return;
                 int i, j;
@@ -801,31 +801,31 @@ namespace plum
                 {
                     for(j = sourceX; j <= sourceX2; ++j)
                     {
-                        blend(data[i * trueWidth + j], dest.data[(i + y) * dest.trueWidth + (j + x)]);
+                        blend<Blend>(data[i * trueWidth + j], dest.data[(i + y) * dest.trueWidth + (j + x)]);
                     }
                 }
             }
 
-            template <typename BlendCallback> void scaleBlit(int x, int y, int scaledWidth, int scaledHeight, Canvas& dest, const BlendCallback& blend) const
+            template<BlendMode Blend> void scaleBlit(int x, int y, int scaledWidth, int scaledHeight, Canvas& dest) const
             {
                 if(!data) return;
-                scaleBlitRegion(0, 0, width, height, x, y, scaledWidth, scaledHeight, dest, blend);
+                scaleBlitRegion<Blend>(0, 0, width, height, x, y, scaledWidth, scaledHeight, dest);
             }
 
-            template <typename BlendCallback> void rotateBlit(int x, int y, double angle, Canvas& dest, const BlendCallback& blend) const
+            template<BlendMode Blend> void rotateBlit(int x, int y, double angle, Canvas& dest) const
             {
                 if(!data) return;
-                rotateScaleBlitRegion(0, 0, width, height, x, y, angle, 1, dest, blend);
+                rotateScaleBlitRegion<Blend>(0, 0, width, height, x, y, angle, 1, dest);
             }
 
-            template <typename BlendCallback> void rotateScaleBlit(int x, int y, double angle, double scale, Canvas& dest, const BlendCallback& blend) const
+            template<BlendMode Blend> void rotateScaleBlit(int x, int y, double angle, double scale, Canvas& dest) const
             {
                 if(!data) return;
-                rotateScaleBlitRegion(0, 0, width, height, x, y, angle, scale, dest, blend);
+                rotateScaleBlitRegion<Blend>(0, 0, width, height, x, y, angle, scale, dest);
             }
 
-            template <typename BlendCallback> void blitRegion(int sx, int sy, int sx2, int sy2,
-                    int dx, int dy, Canvas& dest, const BlendCallback& blend) const
+            template<BlendMode Blend> void blitRegion(int sx, int sy, int sx2, int sy2,
+                    int dx, int dy, Canvas& dest) const
             {
                 if(!data) return;
                 int cx = dest.clipX;
@@ -843,12 +843,12 @@ namespace plum
                 }
 
                 dest.setClipRegion(dx, dy, dx + (sx2 - sx), dy + (sy2 - sy));
-                blit(dx - sx, dy - sy, dest, blend);
+                blit<Blend>(dx - sx, dy - sy, dest);
                 dest.setClipRegion(cx, cy, cx2, cy2);
             }
 
-            template <typename BlendCallback> void scaleBlitRegion(int sx, int sy, int sx2, int sy2,
-                    int dx, int dy, int scw, int sch, Canvas& dest, const BlendCallback& blend) const
+            template<BlendMode Blend> void scaleBlitRegion(int sx, int sy, int sx2, int sy2,
+                    int dx, int dy, int scw, int sch, Canvas& dest) const
             {
                 if(!data) return;
                 if(sx > sx2)
@@ -901,20 +901,20 @@ namespace plum
                 {
                     for(j = sourceX; j <= sourceX2; ++j)
                     {
-                        blend(data[(((i * yRatio + sy) >> 16) + sy) * trueWidth + ((j * xRatio + sx) >> 16) + sx], dest.data[(i + dy) * dest.trueWidth + (j + dx)]);
+                        blend<Blend>(data[(((i * yRatio + sy) >> 16) + sy) * trueWidth + ((j * xRatio + sx) >> 16) + sx], dest.data[(i + dy) * dest.trueWidth + (j + dx)]);
                     }
                 }        
             }
 
-            template <typename BlendCallback> void rotateBlitRegion(int sx, int sy, int sx2, int sy2,
-                    int dx, int dy, double angle, Canvas& dest, const BlendCallback& blend) const
+            template<BlendMode Blend> void rotateBlitRegion(int sx, int sy, int sx2, int sy2,
+                    int dx, int dy, double angle, Canvas& dest) const
             {
                 if(!data) return;
-                rotateScaleBlitRegion(sx, sy, sx2, sy2, dx, dy, angle, 1.0, dest, blend);
+                rotateScaleBlitRegion<Blend>(sx, sy, sx2, sy2, dx, dy, angle, 1.0, dest);
             }
 
-            template <typename BlendCallback> void rotateScaleBlitRegion(int sx, int sy, int sx2, int sy2,
-                    int dx, int dy, double angle, double scale, Canvas& dest, const BlendCallback& blend) const
+            template<BlendMode Blend> void rotateScaleBlitRegion(int sx, int sy, int sx2, int sy2,
+                    int dx, int dy, double angle, double scale, Canvas& dest) const
             {
                 if(!data) return;
                 int minX, minY;
@@ -1011,7 +1011,7 @@ namespace plum
                         sourceY = plotY >> 16;
                         if(sourceX >= sx && sourceX <= sx2 && sourceY >= sy && sourceY <= sy2)
                         {
-                            blend(data[sourceY * trueWidth + sourceX], dest.data[destY * dest.trueWidth + destX]);
+                            blend<Blend>(data[sourceY * trueWidth + sourceX], dest.data[destY * dest.trueWidth + destX]);
                         }
                         plotX += cosine;
                         plotY -= sine;
