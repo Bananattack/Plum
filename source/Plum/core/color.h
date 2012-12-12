@@ -15,7 +15,6 @@ namespace plum
         BlueChannel = 2,
         AlphaChannel = 3
     };
-    typedef uint8_t uint8_t;
 
     class Color
     {
@@ -33,8 +32,6 @@ namespace plum
                 Black = 0xFF000000
             };
 
-            uint32_t value;
-
             operator uint32_t() const
             {
                 return value;
@@ -48,11 +45,6 @@ namespace plum
             bool operator ==(const Color& rhs) const
             {
                 return value == rhs.value;
-            }
-
-            uint8_t& operator[](ColorChannel i)
-            {
-                return ((uint8_t*) &(this->value))[i];
             }
 
             uint8_t operator[](ColorChannel i) const
@@ -81,13 +73,16 @@ namespace plum
             {
             }
 
-            void channels(uint8_t& r, uint8_t& g, uint8_t& b, uint8_t& a)
+            void channels(uint8_t& r, uint8_t& g, uint8_t& b, uint8_t& a) const
             {
                 r = (*this)[RedChannel];
                 g = (*this)[GreenChannel];
                 b = (*this)[BlueChannel];
                 a = (*this)[AlphaChannel];
             }
+
+        private:
+            uint32_t value;
     };
 
     inline Color rgba(int r, int g, int b, int a)
@@ -115,7 +110,7 @@ namespace plum
         f = (v * (255 - ((s * f) >> 8))) >> 8; // q =
         s = (v * (255 - s)) >> 8; // p =
 
-        switch (ixz)
+        switch(ixz)
         {
             case 0: r = v; g = h; b = s; break;
             case 1: r = f; g = v; b = s; break;

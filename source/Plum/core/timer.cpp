@@ -34,7 +34,7 @@ namespace plum
 
             void update()
             {
-                frames++;
+                ++frames;
                 currentTick = SDL_GetTicks();
                 if(currentTick - previousSecond > 999)
                 {

@@ -11,19 +11,19 @@ namespace plum
     {
         int align(int num)
         {
-            if (num <= 0)
+            if(num <= 0)
             {
                 return 0;
             }
             else
             {
-                num--;
+                --num;
                 num |= num >> 1;
                 num |= num >> 2;
                 num |= num >> 4;
                 num |= num >> 8;
                 num |= num >> 16;
-                num++;
+                ++num;
 
                 return num;
             }

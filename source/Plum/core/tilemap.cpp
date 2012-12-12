@@ -22,7 +22,7 @@ namespace plum
 
     void Tilemap::clear(unsigned int tileIndex)
     {
-        for(int i = 0; i < width * height; i++)
+        for(int i = 0; i < width * height; ++i)
         {
             data[i] = tileIndex;
         }
@@ -53,11 +53,11 @@ namespace plum
     void Tilemap::rect(int tx, int ty, int tx2, int ty2, unsigned int tileIndex)
     {
         int i;
-        if (tx > tx2)
+        if(tx > tx2)
         {
             std::swap(tx, tx2);
         }
-        if (ty > ty2)
+        if(ty > ty2)
         {
             std::swap(ty, ty2);
         }
@@ -84,13 +84,13 @@ namespace plum
             ty2 = width - 1;
         }
         // Draw the horizontal lines of the rectangle.
-        for(i = tx; i <= tx2; i++)
+        for(i = tx; i <= tx2; ++i)
         {
             data[ty * width + i] = tileIndex;
             data[ty2 * width + i] = tileIndex;
         }
         // Draw the vertical lines of the rectangle.
-        for(i = ty; i <= ty2; i++)
+        for(i = ty; i <= ty2; ++i)
         {
             data[i * width + tx] = tileIndex;
             data[i * width + tx2] = tileIndex;
@@ -100,11 +100,11 @@ namespace plum
     void Tilemap::solidRect(int tx, int ty, int tx2, int ty2, unsigned int tileIndex)
     {
         int i, j;
-        if (tx > tx2)
+        if(tx > tx2)
         {
             std::swap(tx, tx2);
         }
-        if (ty > ty2)
+        if(ty > ty2)
         {
             std::swap(ty, ty2);
         }
@@ -131,9 +131,9 @@ namespace plum
             ty2 = width - 1;
         }
         // Plot the solid rectangle
-        for(i = ty; i <= ty2; i++)
+        for(i = ty; i <= ty2; ++i)
         {
-            for(j = tx; j <= tx2; j++)
+            for(j = tx; j <= tx2; ++j)
             {
                 data[i * width + j] = tileIndex;
             }
@@ -239,12 +239,12 @@ namespace plum
         if(ty == ty2)
         {
             // Put the coordinates in order.
-            if (tx > tx2)
+            if(tx > tx2)
             {
                 std::swap(tx, tx2);
             }
             // Draw it.
-            for(int i = tx; i <= tx2; i++)
+            for(int i = tx; i <= tx2; ++i)
             {
                 data[ty * width + i] = tileIndex;
             }
@@ -254,12 +254,12 @@ namespace plum
         if(tx == tx2)
         {
             // Put the coordinates in order.
-            if (ty > ty2)
+            if(ty > ty2)
             {
                 std::swap(ty, ty2);
             }
             // Draw it.
-            for(int i = ty; i <= ty2; i++)
+            for(int i = ty; i <= ty2; ++i)
             {
                 data[i * width + tx] = tileIndex;
             }
@@ -358,9 +358,9 @@ namespace plum
             sourceY2 -= ty2 - dest->height - 1;
         }
         // Plot the tilemap, tile for tile
-        for(i = sourceY; i <= sourceY2; i++)
+        for(i = sourceY; i <= sourceY2; ++i)
         {
-            for(j = sourceX; j <= sourceX2; j++)
+            for(j = sourceX; j <= sourceX2; ++j)
             {
                 dest->data[(i + ty) * dest->width + (j + tx)] = data[i * width + j];
             }
@@ -403,9 +403,9 @@ namespace plum
 
         useHardwareBlender(mode);
         useHardwareColor(255, 255, 255, 255);
-        for(i = 0; i < tilesHigh; i++)
+        for(i = 0; i < tilesHigh; ++i)
         {
-            for(j = 0; j < tilesWide; j++)
+            for(j = 0; j < tilesWide; ++j)
             {
                 spr->rawBlitFrame(j * spr->frameWidth + xofs + destX, i * spr->frameHeight + yofs + destY,
                     data[(tileY + i) * width + (tileX + j)], 0, 1);

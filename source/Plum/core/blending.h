@@ -21,72 +21,64 @@ namespace plum
 
     struct SoftOpaqueBlender
     {
-        Color operator() (Color source, Color dest) const
+        void operator()(const Color& source, Color& dest) const
         {
-            return source;
+            dest = source;
         }
     };
 
     struct SoftMergeBlender
     {
-        Color operator() (Color source, Color dest) const
+        void operator()(const Color& source, Color& dest) const
         {
-            Color result;
             int sourceAlpha = source[AlphaChannel] * getOpacity() / 255;
             int finalAlpha = sourceAlpha + ((255 - sourceAlpha) * dest[AlphaChannel]) / 255;
             sourceAlpha = (finalAlpha == 0) ? 0 : sourceAlpha * 255 / finalAlpha;
 
-            result[RedChannel] = (source[RedChannel] * sourceAlpha + dest[RedChannel] * (255 - sourceAlpha)) / 255;
-            result[GreenChannel] = (source[GreenChannel] * sourceAlpha + dest[GreenChannel] * (255 - sourceAlpha)) / 255;
-            result[BlueChannel] = (source[BlueChannel] * sourceAlpha + dest[BlueChannel] * (255 - sourceAlpha)) / 255;
-            result[AlphaChannel] = finalAlpha;
-
-            return result;
+            dest = Color(
+                uint8_t((sourceAlpha * int(source[RedChannel]) + (255 - sourceAlpha) * int(dest[RedChannel])) / 255),
+                uint8_t((sourceAlpha * int(source[GreenChannel]) + (255 - sourceAlpha) * int(dest[GreenChannel])) / 255),
+                uint8_t((sourceAlpha * int(source[BlueChannel]) + (255 - sourceAlpha) * int(dest[BlueChannel])) / 255),
+                finalAlpha);
         }
     };
 
     struct SoftPreserveBlender
     {
-        Color operator() (Color source, Color dest) const
+        void operator()(const Color& source, Color& dest) const
         {
-            Color result;
             int sourceAlpha = source[AlphaChannel] * getOpacity() / 255;
-
-            result[RedChannel] = (sourceAlpha * (source[RedChannel] - dest[RedChannel])) / 255 + dest[RedChannel];
-            result[GreenChannel] = (sourceAlpha * (source[GreenChannel] - dest[GreenChannel])) / 255 + dest[GreenChannel];
-            result[BlueChannel] = (sourceAlpha * (source[BlueChannel] - dest[GreenChannel])) / 255 + dest[BlueChannel];
-            result[AlphaChannel] = dest[AlphaChannel];
-            return result;
+            dest = Color(
+                uint8_t((sourceAlpha * (int(source[RedChannel]) - int(dest[RedChannel]))) / 255 + int(dest[RedChannel])),
+                uint8_t((sourceAlpha * (int(source[GreenChannel]) - int(dest[GreenChannel]))) / 255 + int(dest[GreenChannel])),
+                uint8_t((sourceAlpha * (int(source[BlueChannel]) - int(dest[BlueChannel]))) / 255 + int(dest[BlueChannel])),
+                dest[AlphaChannel]);
         }
     };
 
     struct SoftAddBlender
     {
-        Color operator() (Color source, Color dest) const
+        void operator()(const Color& source, Color& dest) const
         {
-            Color result;
             int sourceAlpha = source[AlphaChannel] * getOpacity() / 255;
-
-            result[RedChannel] = std::min((sourceAlpha * source[RedChannel]) / 255 + dest[RedChannel], 255);
-            result[GreenChannel] = std::min((sourceAlpha * source[GreenChannel]) / 255 + dest[GreenChannel], 255);
-            result[BlueChannel] = std::min((sourceAlpha * source[BlueChannel]) / 255 + dest[BlueChannel], 255);
-            result[AlphaChannel] = dest[AlphaChannel];
-            return result;
+            dest = Color(
+                uint8_t(std::min((sourceAlpha * int(source[RedChannel])) / 255 + int(dest[RedChannel]), 255)),
+                uint8_t(std::min((sourceAlpha * int(source[GreenChannel])) / 255 + int(dest[GreenChannel]), 255)),
+                uint8_t(std::min((sourceAlpha * int(source[BlueChannel])) / 255 + int(dest[BlueChannel]), 255)),
+                dest[AlphaChannel]);
         }
     };
 
     struct SoftSubtractBlender
     {
-        Color operator() (Color source, Color dest) const
+        void operator()(const Color& source, Color& dest) const
         {
-            Color result;
             int sourceAlpha = source[AlphaChannel] * getOpacity() / 255;
-
-            result[RedChannel] = std::max((sourceAlpha * -source[RedChannel]) / 255 + dest[RedChannel], 0);
-            result[GreenChannel] = std::max((sourceAlpha * -source[GreenChannel]) / 255 + dest[GreenChannel], 0);
-            result[BlueChannel] = std::max((sourceAlpha * -source[BlueChannel]) / 255 + dest[BlueChannel], 0);
-            result[AlphaChannel] = dest[AlphaChannel];
-            return result;
+            dest = Color(
+                uint8_t(std::max((sourceAlpha * -int(source[RedChannel])) / 255 + int(dest[RedChannel]), 0)),
+                uint8_t(std::max((sourceAlpha * -int(source[GreenChannel])) / 255 + int(dest[GreenChannel]), 0)),
+                uint8_t(std::max((sourceAlpha * -int(source[BlueChannel])) / 255 + int(dest[BlueChannel]), 0)),
+                dest[AlphaChannel]);
         }
     };
 }

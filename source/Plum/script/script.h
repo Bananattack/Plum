@@ -185,7 +185,7 @@ namespace plum
                 {
                     // Get correct metatable
                     lua_getfield(L, LUA_REGISTRYINDEX, meta<T>());
-                    if (lua_rawequal(L, -1, -2))
+                    if(lua_rawequal(L, -1, -2))
                     {
                         result = true;
                     }

@@ -30,7 +30,7 @@ namespace
             virtual bool ADR_CALL seek(int position, audiere::File::SeekMode mode)
             {
                 plum::FileSeekMode m;
-                switch (mode)
+                switch(mode)
                 {
                     case BEGIN: m = plum::SeekStart; break;
                     case CURRENT: m = plum::SeekCurrent; break;

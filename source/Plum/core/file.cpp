@@ -22,14 +22,14 @@ namespace plum
 #   define O_NONBLOCK 0
 #   endif
 
-        if (!mode)
+        if(!mode)
         {
             mode = "rb";
         }
         // Directly copied from zzip/file.c
-        for (; *mode; mode++)
+        for(; *mode; mode++)
         {
-            switch (*mode)
+            switch(*mode)
             {
                 case '0': case '1': case '2': case '3': case '4': 
                 case '5': case '6': case '7': case '8': case '9':
@@ -205,17 +205,17 @@ namespace plum
     {
         int c, i;
 
-        for (i = 0; i < size-1; i++)
+        for(i = 0; i < size-1; ++i)
         {
             c = zzip_getc(stream);
-            if (c == EOF)
+            if(c == EOF)
             {
                 break;
             }
             str[i] = c;
-            if (c == '\n')
+            if(c == '\n')
             {
-                str[i++] = '\n';
+                str[++i] = '\n';
                 break;
             }
         }
@@ -313,7 +313,7 @@ namespace plum
         }
         
         int m;
-        switch (mode)
+        switch(mode)
         {
             case SeekStart:   m = SEEK_SET; break;
             case SeekCurrent: m = SEEK_CUR; break;

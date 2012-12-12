@@ -32,7 +32,7 @@ namespace
             virtual bool COR_CALL seek(int position, corona::File::SeekMode mode)
             {
                 plum::FileSeekMode m;
-                switch (mode)
+                switch(mode)
                 {
                     case BEGIN: m = plum::SeekStart; break;
                     case CURRENT: m = plum::SeekCurrent; break;
