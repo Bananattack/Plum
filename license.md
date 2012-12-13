@@ -26,7 +26,7 @@
     (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
     SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-The following is a list of third-party software used by **hooty**. Please consult their respective licensing terms.
+The following is a list of third-party software used by **Plum**. Please consult their respective licensing terms.
 
 * SDL 1.2 is released under the GNU LGPL License. http://www.libsdl.org/license.php
 * Lua is release under the MIT License: http://www.lua.org/license.html
