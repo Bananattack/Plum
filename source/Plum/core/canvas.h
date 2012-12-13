@@ -230,12 +230,13 @@ namespace plum
             template<BlendMode Blend> void line(int x, int y, int x2, int y2, Color color)
             {
                 if(!data) return;
-                // Now we'll clip the line using Cohen-Sutherland clipping
-                // (this source adapted from ika)
+
+                // Cohen-Sutherland clipping implementation used here originally by Andy Friesen.
+                // Used with permission.
                 int c1 = 0;
                 int c2 = 0;
 
-                // Silly region code things to start us off
+                // Compute all the region codes for this line.
                 if(x < clipX) c1 |= 1;
                 if(x > clipX2) c1 |= 2;
                 if(y < clipY) c1 |= 4;
@@ -315,8 +316,11 @@ namespace plum
                         if(y2 > clipY2) c2 |= 8;
                     }
                 }
-                // Re-jected!
-                if(c1 & c2) return;
+                // Rejected.
+                if(c1 & c2)
+                {
+                    return;
+                }
                 // A single pixel
                 if(x == x2 && y == y2)
                 {
@@ -353,7 +357,9 @@ namespace plum
                     }
                     return;
                 }
-                // Time for some Bresenham! (Thanks Kildorf, and Mr. Jack E. Bresenham)
+
+                // Bresenham line-drawing implementation used here originally by Shamus Peveril.
+                // Used with permission.
                 int cx, cy, dx, dy;
                 int xaccum, yaccum, xincre, yincre, xreset, yreset, xchange, ychange;
                 bool done = false;

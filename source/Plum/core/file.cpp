@@ -128,7 +128,6 @@ namespace plum
         return std::fread(&value, sizeof(double), 1, file) == 1;
     }
 
-
     /*
         Inspired by Verge's FileReadLn implemenation. Here is the license!
 

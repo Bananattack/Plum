@@ -139,12 +139,12 @@ namespace plum
 
     void Tilemap::line(int tx, int ty, int tx2, int ty2, unsigned int tileIndex)
     {
-        // Now we'll clip the line using Cohen-Sutherland clipping
-        // (this source adapted from ika)
+        // Cohen-Sutherland clipping implementation used here originally by Andy Friesen.
+        // Used with permission.
         int c1 = 0;
         int c2 = 0;
 
-        // Silly region code things to start us off
+        // Compute all the region codes for this line.
         if(tx < 0)    c1 |= 1;
         if(tx >= width)    c1 |= 2;
         if(ty < 0)    c1 |= 4;
@@ -224,8 +224,11 @@ namespace plum
                 if(ty2 >= height)    c2 |= 8;
             }
         }
-        // Re-jected!
-        if(c1 & c2) return;
+        // Rejected.
+        if(c1 & c2)
+        {
+            return;
+        }
         // A single pixel
         if(tx == tx2 && ty == ty2)
         {
@@ -262,7 +265,9 @@ namespace plum
             }
             return;
         }
-        // Time for some Bresenham! (Thanks Kildorf, and Mr. Jack E. Bresenham)
+
+        // Bresenham line-drawing implementation used here originally by Shamus Peveril.
+        // Used with permission.
         int cx, cy, dx, dy;
         int xaccum, yaccum, xincre, yincre, xreset, yreset, xchange, ychange;
         bool done = false;
