@@ -112,14 +112,14 @@
     <ClCompile Include="core\font.cpp" />
     <ClCompile Include="core\input.cpp" />
     <ClCompile Include="core\log.cpp" />
-    <ClCompile Include="core\spritesheet.cpp" />
+    <ClCompile Include="core\sprite.cpp" />
     <ClCompile Include="core\tilemap.cpp" />
-    <ClCompile Include="core\timer.cpp" />
     <ClCompile Include="platform\audiere\audio.cpp" />
     <ClCompile Include="platform\corona\canvas.cpp" />
     <ClCompile Include="platform\sdl\engine.cpp" />
     <ClCompile Include="platform\sdl\image.cpp" />
     <ClCompile Include="platform\sdl\input.cpp" />
+    <ClCompile Include="platform\sdl\timer.cpp" />
     <ClCompile Include="platform\sdl\video.cpp" />
     <ClCompile Include="plum.cpp" />
     <ClCompile Include="script\canvas_object.cpp" />
@@ -136,7 +136,7 @@
     <ClCompile Include="script\script.cpp" />
     <ClCompile Include="script\song_object.cpp" />
     <ClCompile Include="script\sound_object.cpp" />
-    <ClCompile Include="script\spritesheet_object.cpp" />
+    <ClCompile Include="script\sprite_object.cpp" />
     <ClCompile Include="script\tilemap_object.cpp" />
     <ClCompile Include="script\timer_object.cpp" />
     <ClCompile Include="script\transform_object.cpp" />
@@ -155,7 +155,7 @@
     <ClInclude Include="core\image.h" />
     <ClInclude Include="core\input.h" />
     <ClInclude Include="core\log.h" />
-    <ClInclude Include="core\spritesheet.h" />
+    <ClInclude Include="core\sprite.h" />
     <ClInclude Include="core\tilemap.h" />
     <ClInclude Include="core\timer.h" />
     <ClInclude Include="core\transform.h" />

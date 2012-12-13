@@ -1,13 +1,12 @@
 #include "font.h"
-#include "image.h"
 #include "canvas.h"
 
 namespace plum
 {
     Font::Font(const std::string& filename)
-        : image(new Image(Canvas::load(filename))), letterSpacing(1)
+        : image(Image(Canvas::load(filename))), letterSpacing(1)
     {
-        Canvas& canvas(image->canvas());
+        Canvas& canvas(image.canvas());
 
         // Try to automatically detect the font size based on the border edges.
         int w = 0;
@@ -29,7 +28,7 @@ namespace plum
         int ysize = height = h - 1;
 
         // Initialize glyph widths, which might be replaced later if variable width mode is enabled.
-        for(int i = 0; i < FONT_COLUMNS * FONT_ROWS; ++i)
+        for(int i = 0; i < FontColumns * FontRows; ++i)
         {
             glyphWidth[i] = width;
         }
@@ -37,14 +36,23 @@ namespace plum
 
     Font::~Font()
     {
-        delete image;
+    }
+
+    int Font::getWidth() const
+    {
+        return width;
+    }
+
+    int Font::getHeight() const
+    {
+        return height;
     }
 
     bool Font::isColumnEmpty(int cell, int column)
     {
-        int fx = (cell % FONT_COLUMNS) * (width + 1) + 1;
-        int fy = (cell / FONT_COLUMNS) * (height + 1) + 1;
-        Canvas& canvas(image->canvas());
+        int fx = (cell % FontColumns) * (width + 1) + 1;
+        int fy = (cell / FontColumns) * (height + 1) + 1;
+        Canvas& canvas(image.canvas());
         for(int y = 0; y < height; ++y)
         {
             if(canvas.get(fx + column, fy + y)[AlphaChannel] > 0)
@@ -58,7 +66,7 @@ namespace plum
     void Font::enableVariableWidth()
     {
         glyphWidth[0] = width * 60 / 100;
-        for(int i = 1; i < FONT_COLUMNS * FONT_ROWS; ++i)
+        for(int i = 1; i < FontColumns * FontRows; ++i)
         {
             glyphWidth[i] = 1;
             for(int x = width - 1; x > 0; --x)
@@ -83,10 +91,10 @@ namespace plum
         // (this uses ASCII and will possibly need to be replaced with something much more clever some time down the line.)
         if(c < 32) return;
 
-        int fx = ((c - 32) % FONT_COLUMNS) * (width + 1) + 1;
-        int fy = ((c - 32) / FONT_COLUMNS) * (height + 1) + 1;
+        int fx = ((c - 32) % FontColumns) * (width + 1) + 1;
+        int fy = ((c - 32) / FontColumns) * (height + 1) + 1;
 
-        image->blitRegion(fx, fy, fx + width - 1, fy + height - 1, x, y, mode, tint);
+        image.blitRegion(fx, fy, fx + width - 1, fy + height - 1, x, y, mode, tint);
     }
 
     void Font::print(int x1, int y, const std::string& s, BlendMode mode, Color tint)

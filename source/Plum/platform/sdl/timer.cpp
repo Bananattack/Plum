@@ -2,8 +2,8 @@
 
 #include <SDL.h>
 
-#include "timer.h"
-#include "engine.h"
+#include "../../core/timer.h"
+#include "../../core/engine.h"
 
 namespace plum
 {

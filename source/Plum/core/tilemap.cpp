@@ -1,8 +1,6 @@
-#include <SDL_opengl.h>
-
 #include "video.h"
 #include "tilemap.h"
-#include "spritesheet.h"
+#include "sprite.h"
 
 namespace plum
 {
@@ -11,13 +9,22 @@ namespace plum
         this->width = width;
         this->height = height;
         data = new unsigned int[width * height];
-        spr = nullptr;
         clear(0);
     }
 
     Tilemap::~Tilemap()
     {
         delete data;
+    }
+
+    int Tilemap::getWidth() const
+    {
+        return width;
+    }
+
+    int Tilemap::getHeight() const
+    {
+        return height;
     }
 
     void Tilemap::clear(unsigned int tileIndex)
@@ -28,17 +35,7 @@ namespace plum
         }
     }
 
-    int Tilemap::getWidth()
-    {
-        return width;
-    }
-
-    int Tilemap::getHeight()
-    {
-        return height;
-    }
-
-    unsigned int Tilemap::getTile(int tx, int ty)
+    unsigned int Tilemap::getTile(int tx, int ty) const
     {
         if(tx < 0 || tx >= width || ty < 0 || ty >= height) return InvalidTile;
         return data[ty * width + tx];
@@ -367,14 +364,14 @@ namespace plum
         }
     }
 
-    void Tilemap::blit(int worldX, int worldY, int destX, int destY, int tilesWide, int tilesHigh, BlendMode mode, Color tint)
+    void Tilemap::blit(Video& video, Sprite& spr, int worldX, int worldY, int destX, int destY, int tilesWide, int tilesHigh, BlendMode mode, Color tint)
     {
-        if(!spr || tilesWide < 0 || tilesHigh < 0) return;
+        if(tilesWide < 0 || tilesHigh < 0) return;
 
-        int xofs = -(worldX % spr->frameWidth);
-        int yofs = -(worldY % spr->frameHeight);
-        int tileX = worldX / spr->frameWidth;
-        int tileY = worldY / spr->frameHeight;
+        int xofs = -(worldX % spr.getFrameWidth());
+        int yofs = -(worldY % spr.getFrameHeight());
+        int tileX = worldX / spr.getFrameWidth();
+        int tileY = worldY / spr.getFrameHeight();
 
         // Clip the tile region to make sure things don't crash.
         if(tileX < 0)
@@ -396,10 +393,8 @@ namespace plum
 
         int i, j;
 
-        glEnable(GL_TEXTURE_2D);
-        glEnableClientState(GL_VERTEX_ARRAY);
-        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-        spr->bind();
+        video.startBatch();
+        spr.bind();
 
         useHardwareBlender(mode);
         useHardwareColor(255, 255, 255, 255);
@@ -407,12 +402,10 @@ namespace plum
         {
             for(j = 0; j < tilesWide; ++j)
             {
-                spr->rawBlitFrame(j * spr->frameWidth + xofs + destX, i * spr->frameHeight + yofs + destY,
+                spr.rawBlitFrame(j * spr.getFrameWidth() + xofs + destX, i * spr.getFrameHeight() + yofs + destY,
                     data[(tileY + i) * width + (tileX + j)], 0, 1);
             }
         }
-
-        glDisableClientState(GL_VERTEX_ARRAY);
-        glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+        video.endBatch();
     }
 }

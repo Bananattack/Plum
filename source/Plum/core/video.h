@@ -24,6 +24,9 @@ namespace plum
             void setTitle(const std::string& title);
             void setResolution(int width, int height, bool win);
 
+            void startBatch();
+            void endBatch();
+
             void clear(Color color);
             void setPixel(int x, int y, Color color, BlendMode mode = BlendPreserve);
             void line(int x, int y, int x2, int y2, Color color, BlendMode mode = BlendPreserve);

@@ -149,6 +149,19 @@ namespace plum
         glLoadIdentity();
     }
 
+    void Video::startBatch()
+    {
+        glEnable(GL_TEXTURE_2D);
+        glEnableClientState(GL_VERTEX_ARRAY);
+        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+    }
+
+    void Video::endBatch()
+    {
+        glDisableClientState(GL_VERTEX_ARRAY);
+        glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+    }
+
     void Video::clear(Color color)
     {
         uint8_t r, g, b, a;

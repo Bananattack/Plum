@@ -5,35 +5,32 @@
 
 namespace plum
 {
-    class Spritesheet;
+    class Video;
+    class Sprite;
     class Tilemap
     {
         public:
             static const unsigned int InvalidTile = (unsigned int)(-1);
 
-            int width;
-            int height;
-
-            unsigned int* data;
-            
-            // Used for visual display of tilemaps.
-            Spritesheet* spr;
-
             Tilemap(int width, int height);
             ~Tilemap();
 
+            int getWidth() const;
+            int getHeight() const;
+
             void clear(unsigned int tileIndex);
 
-            int getWidth();
-            int getHeight();
-
-            unsigned int getTile(int tx, int ty);
+            unsigned int getTile(int tx, int ty) const;
             void setTile(int tx, int ty, unsigned int tileIndex);
             void rect(int tx, int ty, int tx2, int ty2, unsigned int tileIndex);
             void solidRect(int tx, int ty, int tx2, int ty2, unsigned int tileIndex);
             void line(int tx, int ty, int tx2, int ty2, unsigned int tileIndex);
             void stamp(int tx, int ty, Tilemap* dest);
-            void blit(int worldX, int worldY, int destX, int destY, int tilesWide, int tilesHigh, BlendMode mode = BlendPreserve, Color tint = Color::White);
+            void blit(Video& video, Sprite& spr, int worldX, int worldY, int destX, int destY, int tilesWide, int tilesHigh, BlendMode mode = BlendPreserve, Color tint = Color::White);
+
+        private:
+            int width, height;
+            unsigned int* data;
     };
 }
 

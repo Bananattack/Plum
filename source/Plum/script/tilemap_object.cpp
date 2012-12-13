@@ -1,4 +1,5 @@
 
+#include "../core/video.h"
 #include "../core/tilemap.h"
 #include "script.h"
 
@@ -15,7 +16,6 @@ namespace plum
     namespace
     {
         typedef Tilemap Self;
-        const int TILEMAP_SPRITESHEET_REF = 1;
 
         int create(lua_State* L)
         {
@@ -49,25 +49,6 @@ namespace plum
         int tostring(lua_State* L)
         {
             return script::wrapped<Self>(L, 1)->tostring(L);
-        }
-
-        int getspritesheet(lua_State* L)
-        {
-            auto wrapper = script::wrapped<Tilemap>(L, 1);
-            wrapper->getAttribute(L, TILEMAP_SPRITESHEET_REF);
-            return 1;
-        }
-
-        int setspritesheet(lua_State* L)
-        {
-            auto wrapper = script::wrapped<Tilemap>(L, 1);
-            auto spritesheet = script::ptr<Spritesheet>(L, 2);
-
-            // Change the spritesheet
-            wrapper->data->spr = spritesheet;
-            // Update reference table, so the value will remain in memory as long as it's required.
-            wrapper->setAttribute(L, TILEMAP_SPRITESHEET_REF);
-            return 0;
         }
 
         int getwidth(lua_State* L)
@@ -150,16 +131,17 @@ namespace plum
         int blit(lua_State* L)
         {
             auto m = script::ptr<Tilemap>(L, 1);
-            int worldX = script::get<int>(L, 2);
-            int worldY = script::get<int>(L, 3);
-            int destX = script::get<int>(L, 4);
-            int destY = script::get<int>(L, 5);
-            int tilesWide = script::get<int>(L, 6);
-            int tilesHigh = script::get<int>(L, 7);
-            BlendMode mode = (BlendMode) script::get<int>(L, 8, BlendPreserve);
-            Color tint = script::get<int>(L, 9, Color::White);
+            auto spr = script::ptr<Sprite>(L, 2);
+            int worldX = script::get<int>(L, 3);
+            int worldY = script::get<int>(L, 4);
+            int destX = script::get<int>(L, 5);
+            int destY = script::get<int>(L, 6);
+            int tilesWide = script::get<int>(L, 7);
+            int tilesHigh = script::get<int>(L, 8);
+            BlendMode mode = (BlendMode) script::get<int>(L, 9, BlendPreserve);
+            Color tint = script::get<int>(L, 10, Color::White);
 
-            m->blit(worldX, worldY, destX, destY, tilesWide, tilesHigh, mode, tint);
+            m->blit(script::instance(L).video(), *spr, worldX, worldY, destX, destY, tilesWide, tilesHigh, mode, tint);
             return 0;
         }
     }
@@ -180,8 +162,6 @@ namespace plum
                 {"__index", index},
                 {"__newindex", newindex},
                 {"__tostring", tostring},
-                {"getspritesheet", getspritesheet},
-                {"setspritesheet", setspritesheet},
                 {"getwidth", getwidth},
                 {"getheight", getheight},
                 {"getTile", getTile},

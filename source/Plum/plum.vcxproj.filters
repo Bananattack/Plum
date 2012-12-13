@@ -84,9 +84,6 @@
     <ClCompile Include="script\sound_object.cpp">
       <Filter>Source Files\script</Filter>
     </ClCompile>
-    <ClCompile Include="script\spritesheet_object.cpp">
-      <Filter>Source Files\script</Filter>
-    </ClCompile>
     <ClCompile Include="script\tilemap_object.cpp">
       <Filter>Source Files\script</Filter>
     </ClCompile>
@@ -117,13 +114,7 @@
     <ClCompile Include="core\log.cpp">
       <Filter>Source Files\core</Filter>
     </ClCompile>
-    <ClCompile Include="core\spritesheet.cpp">
-      <Filter>Source Files\core</Filter>
-    </ClCompile>
     <ClCompile Include="core\tilemap.cpp">
-      <Filter>Source Files\core</Filter>
-    </ClCompile>
-    <ClCompile Include="core\timer.cpp">
       <Filter>Source Files\core</Filter>
     </ClCompile>
     <ClCompile Include="core\blending.cpp">
@@ -146,6 +137,15 @@
     </ClCompile>
     <ClCompile Include="platform\corona\canvas.cpp">
       <Filter>Source Files\platform\corona</Filter>
+    </ClCompile>
+    <ClCompile Include="script\sprite_object.cpp">
+      <Filter>Source Files\script</Filter>
+    </ClCompile>
+    <ClCompile Include="core\sprite.cpp">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="platform\sdl\timer.cpp">
+      <Filter>Source Files\platform\sdl</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -174,9 +174,6 @@
       <Filter>Header Files\core</Filter>
     </ClInclude>
     <ClInclude Include="core\log.h">
-      <Filter>Header Files\core</Filter>
-    </ClInclude>
-    <ClInclude Include="core\spritesheet.h">
       <Filter>Header Files\core</Filter>
     </ClInclude>
     <ClInclude Include="core\tilemap.h">
@@ -208,6 +205,9 @@
     </ClInclude>
     <ClInclude Include="platform\sdl\event.h">
       <Filter>Source Files\platform\sdl</Filter>
+    </ClInclude>
+    <ClInclude Include="core\sprite.h">
+      <Filter>Header Files\core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

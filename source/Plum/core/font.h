@@ -2,30 +2,24 @@
 #define PLUM_FONT_H
 
 #include <string>
-#include "../core/color.h"
-#include "../core/blending.h"
+#include "image.h"
+#include "color.h"
+#include "blending.h"
 
 namespace plum
 {
-    class Image;
     class Font
     {
         public:
-            static const int FONT_COLUMNS = 20;
-            static const int FONT_ROWS = 5;
-
-            Image* image;
-            int width, height;
-            int letterSpacing;
-            int glyphWidth[FONT_COLUMNS * FONT_ROWS];
+            static const int FontColumns = 20;
+            static const int FontRows = 5;
 
             Font(const std::string& filename);
             ~Font();
 
-        private:
-            bool isColumnEmpty(int cell, int column);
+            int getWidth() const;
+            int getHeight() const;
 
-        public:
             void enableVariableWidth();
             void printChar(int x, int y, char c, BlendMode mode, Color tint);
 
@@ -38,6 +32,14 @@ namespace plum
             int textWidth(const std::string& s);
             int textHeight(const std::string& s);
             std::string wrapText(const std::string& input, int lineLength);
+
+        private:
+            bool isColumnEmpty(int cell, int column);
+
+            Image image;
+            int width, height;
+            int letterSpacing;
+            int glyphWidth[FontColumns * FontRows];
     };
 }
 

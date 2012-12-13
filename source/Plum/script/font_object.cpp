@@ -137,14 +137,14 @@ namespace plum
         int getwidth(lua_State* L)
         {
             auto font = script::ptr<Self>(L, 1);
-            script::push(L, font->width);
+            script::push(L, font->getWidth());
             return 1;
         }
 
         int getheight(lua_State* L)
         {
             auto font = script::ptr<Self>(L, 1);
-            script::push(L, font->height);
+            script::push(L, font->getHeight());
             return 1;
         }
     }

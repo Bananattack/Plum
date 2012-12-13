@@ -71,6 +71,7 @@ namespace plum
 
     void Image::bind()
     {
+        glEnable(GL_TEXTURE_2D);
         glBindTexture(target, textureID); 
     }
 
@@ -117,7 +118,6 @@ namespace plum
 
         useHardwareBlender(mode);
 
-        glEnable(GL_TEXTURE_2D);
         glPushMatrix();
         bind();
 
@@ -198,7 +198,6 @@ namespace plum
 
         useHardwareBlender(mode);
 
-        glEnable(GL_TEXTURE_2D);
         glPushMatrix();
         bind();
 
@@ -311,7 +310,6 @@ namespace plum
 
         useHardwareBlender(transform->mode);
 
-        glEnable(GL_TEXTURE_2D);
         glPushMatrix();
         bind();
 
