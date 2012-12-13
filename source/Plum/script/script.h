@@ -367,8 +367,6 @@ namespace plum
         void initSoundObject(lua_State* L);
         void initSongObject(lua_State* L);
         void initFileObject(lua_State* L);
-        void initFileObject(lua_State* L);
-        void initDirectoryObject(lua_State* L);
         void initCanvasObject(lua_State* L);
         void initPointObject(lua_State* L);
         void initRectObject(lua_State* L);

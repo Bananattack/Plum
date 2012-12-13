@@ -107,7 +107,6 @@
   <ItemGroup>
     <ClCompile Include="core\blending.cpp" />
     <ClCompile Include="core\config.cpp" />
-    <ClCompile Include="core\directory.cpp" />
     <ClCompile Include="core\file.cpp" />
     <ClCompile Include="core\font.cpp" />
     <ClCompile Include="core\input.cpp" />
@@ -123,7 +122,6 @@
     <ClCompile Include="platform\sdl\video.cpp" />
     <ClCompile Include="plum.cpp" />
     <ClCompile Include="script\canvas_object.cpp" />
-    <ClCompile Include="script\directory_object.cpp" />
     <ClCompile Include="script\file_object.cpp" />
     <ClCompile Include="script\font_object.cpp" />
     <ClCompile Include="script\image_object.cpp" />
@@ -148,7 +146,6 @@
     <ClInclude Include="core\canvas.h" />
     <ClInclude Include="core\color.h" />
     <ClInclude Include="core\config.h" />
-    <ClInclude Include="core\directory.h" />
     <ClInclude Include="core\engine.h" />
     <ClInclude Include="core\file.h" />
     <ClInclude Include="core\font.h" />
@@ -189,10 +186,6 @@
     </ProjectReference>
     <ProjectReference Include="..\zlib\zlib.vcxproj">
       <Project>{9224b68e-4e98-429f-a15d-322f38bdf9c7}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="..\zzip\zzip.vcxproj">
-      <Project>{87ceebe8-4be5-4c38-9082-93502b714cd4}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
   </ItemGroup>

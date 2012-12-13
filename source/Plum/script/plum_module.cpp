@@ -168,8 +168,6 @@ namespace plum
             initSoundObject(L);
             initSongObject(L);
             initFileObject(L);
-            initFileObject(L);
-            initDirectoryObject(L);
             initCanvasObject(L);
             initPointObject(L);
             initRectObject(L);

@@ -68,7 +68,7 @@ namespace plum
     void Script::run(const std::string& filename)
     {
         File f(filename.c_str(), FileRead);
-        if(!f.active())
+        if(!f.isActive())
         {
             throw std::runtime_error("The script file '" + filename + "' was not found.");
         }

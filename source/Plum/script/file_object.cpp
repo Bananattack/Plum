@@ -41,7 +41,7 @@ namespace plum
 
             auto f = new File(filename, mode);
             // Failure.
-            if(!f->active())
+            if(!f->isActive())
             {    
                 delete f;
                 return 0;
