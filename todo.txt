@@ -1,7 +1,0 @@
-* Make it so Plum compiles on Linux again
-* Try and get Plum compiling on a Mac.
-* Painstakingly bind Plum's API to Lua.
-* Make map and tileset formats, which will also need plaintext compression eventually.
-* Make a tool to edit maps, or (faster for now) convert from existing format.
-* Advanced audio support
-* Networking support
