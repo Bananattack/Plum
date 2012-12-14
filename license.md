@@ -28,7 +28,7 @@
 
 The following is a list of third-party software used by **Plum**. Please consult their respective licensing terms.
 
-* GLFW - [zlib license](http://www.gzip.org/zlib/zlib_license.html)
+* **GLFW** - [zlib license](http://www.gzip.org/zlib/zlib_license.html) - Used for windowing, timing and input.
 
         Copyright (c) 2002-2006 Marcus Geelnard
         Copyright (c) 2006-2010 Camilla Berglund <elmindreda@elmindreda.org>
@@ -49,7 +49,7 @@ The following is a list of third-party software used by **Plum**. Please consult
            misrepresented as being the original software.
         3. This notice may not be removed or altered from any source distribution.
 
-* Lua - [MIT license](http://www.lua.org/license.html)
+* **Lua** - [MIT license](http://www.lua.org/license.html) - Used for scripting.
 
         Copyright (c) 1994–2012 Lua.org, PUC-Rio.
         
@@ -70,7 +70,7 @@ The following is a list of third-party software used by **Plum**. Please consult
         WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
         CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-* zlib - [zlib license](http://www.gzip.org/zlib/zlib_license.html)
+* **zlib** - [zlib license](http://www.gzip.org/zlib/zlib_license.html) - Used for compression.
 
         Copyright (c) 1995-2012 Jean-loup Gailly and Mark Adler
   
@@ -94,7 +94,7 @@ The following is a list of third-party software used by **Plum**. Please consult
         jloup@gzip.org          madler@alumni.caltech.edu
 
 
-* corona - [zlib license](http://www.gzip.org/zlib/zlib_license.html)
+* **corona** - [zlib license](http://www.gzip.org/zlib/zlib_license.html) - Used to load images.
 
         Copyright (c) 2002 Chad Austin
   
@@ -115,4 +115,4 @@ The following is a list of third-party software used by **Plum**. Please consult
         3. This notice may not be removed or altered from any source distribution.
 
 
-* audiere - [GNU LGPL license](http://opensource.org/licenses/lgpl-license.html)
+* **audiere** - [GNU LGPL license](http://opensource.org/licenses/lgpl-license.html) - Used to load and play audio files.
