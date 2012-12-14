@@ -8,9 +8,9 @@ Plum is a free game engine, used for making cool 2D games with minimal effort th
 
 It supports all the basic needs of a simple 2D game:
 
-* Lua Scripting
-* Hardware graphics rendering
-* Software canvases
+* Scripting (via Lua 5.2)
+* Hardware-accelerated graphics rendering
+* Software canvases for image processing
 * Audio playback
 * Tilemaps
 * Sprites
