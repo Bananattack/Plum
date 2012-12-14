@@ -28,14 +28,14 @@
     <Filter Include="Source Files\platform">
       <UniqueIdentifier>{be745fa8-3113-4413-88ee-e96538ec809f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\platform\sdl">
-      <UniqueIdentifier>{8750658e-b2d8-4600-9e37-28c755359278}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\platform\audiere">
       <UniqueIdentifier>{db2d791e-184d-49b8-9c81-1590c7ffe955}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\platform\corona">
       <UniqueIdentifier>{f462ebb8-f34a-4f26-a79e-bf9f4e991e41}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\platform\glfw">
+      <UniqueIdentifier>{97abf32e-307c-4976-a78f-50c7b8d72eab}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -108,20 +108,8 @@
     <ClCompile Include="core\blending.cpp">
       <Filter>Source Files\core</Filter>
     </ClCompile>
-    <ClCompile Include="platform\sdl\engine.cpp">
-      <Filter>Source Files\platform\sdl</Filter>
-    </ClCompile>
-    <ClCompile Include="platform\sdl\image.cpp">
-      <Filter>Source Files\platform\sdl</Filter>
-    </ClCompile>
-    <ClCompile Include="platform\sdl\video.cpp">
-      <Filter>Source Files\platform\sdl</Filter>
-    </ClCompile>
     <ClCompile Include="platform\audiere\audio.cpp">
       <Filter>Source Files\platform\audiere</Filter>
-    </ClCompile>
-    <ClCompile Include="platform\sdl\input.cpp">
-      <Filter>Source Files\platform\sdl</Filter>
     </ClCompile>
     <ClCompile Include="platform\corona\canvas.cpp">
       <Filter>Source Files\platform\corona</Filter>
@@ -132,14 +120,26 @@
     <ClCompile Include="core\sprite.cpp">
       <Filter>Source Files\core</Filter>
     </ClCompile>
-    <ClCompile Include="platform\sdl\timer.cpp">
-      <Filter>Source Files\platform\sdl</Filter>
-    </ClCompile>
     <ClCompile Include="core\file.cpp">
       <Filter>Source Files\core</Filter>
     </ClCompile>
     <ClCompile Include="script\file_object.cpp">
       <Filter>Source Files\script</Filter>
+    </ClCompile>
+    <ClCompile Include="platform\glfw\engine.cpp">
+      <Filter>Source Files\platform\glfw</Filter>
+    </ClCompile>
+    <ClCompile Include="platform\glfw\image.cpp">
+      <Filter>Source Files\platform\glfw</Filter>
+    </ClCompile>
+    <ClCompile Include="platform\glfw\input.cpp">
+      <Filter>Source Files\platform\glfw</Filter>
+    </ClCompile>
+    <ClCompile Include="platform\glfw\timer.cpp">
+      <Filter>Source Files\platform\glfw</Filter>
+    </ClCompile>
+    <ClCompile Include="platform\glfw\video.cpp">
+      <Filter>Source Files\platform\glfw</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -191,14 +191,14 @@
     <ClInclude Include="core\transform.h">
       <Filter>Header Files\core</Filter>
     </ClInclude>
-    <ClInclude Include="platform\sdl\event.h">
-      <Filter>Source Files\platform\sdl</Filter>
-    </ClInclude>
     <ClInclude Include="core\sprite.h">
       <Filter>Header Files\core</Filter>
     </ClInclude>
     <ClInclude Include="core\file.h">
       <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="platform\glfw\engine.h">
+      <Filter>Source Files\platform\glfw</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

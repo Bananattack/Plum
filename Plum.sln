@@ -1,6 +1,9 @@
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "plum", "source\Plum\plum.vcxproj", "{7F953593-93ED-4D49-88B8-37EEF5E399DF}"
+	ProjectSection(ProjectDependencies) = postProject
+		{5A4FF2E6-BC91-4069-AAC2-58472CDFC5E4} = {5A4FF2E6-BC91-4069-AAC2-58472CDFC5E4}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "corona", "source\corona\corona.vcxproj", "{DEFA9E48-98BC-4BC5-B4B5-40231DFDB938}"
 EndProject
@@ -8,9 +11,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zlib", "source\zlib\zlib.vc
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lua", "source\lua\lua.vcxproj", "{9879234C-63E3-4EE3-9DA4-6CD88677A00A}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SDL", "source\SDL-1.2.13\VisualC\SDL\SDL.vcxproj", "{81CE8DAF-EBB2-4761-8E45-B71ABCCA8C68}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "audiere", "source\audiere\vc7\audiere\audiere.vcxproj", "{E5195361-63CD-4C1B-8DD7-3E579779B1F6}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "glfw", "source\glfw\glfw.vcxproj", "{5A4FF2E6-BC91-4069-AAC2-58472CDFC5E4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -34,14 +37,14 @@ Global
 		{9879234C-63E3-4EE3-9DA4-6CD88677A00A}.Debug|Win32.Build.0 = Debug|Win32
 		{9879234C-63E3-4EE3-9DA4-6CD88677A00A}.Release|Win32.ActiveCfg = Release|Win32
 		{9879234C-63E3-4EE3-9DA4-6CD88677A00A}.Release|Win32.Build.0 = Release|Win32
-		{81CE8DAF-EBB2-4761-8E45-B71ABCCA8C68}.Debug|Win32.ActiveCfg = Debug|Win32
-		{81CE8DAF-EBB2-4761-8E45-B71ABCCA8C68}.Debug|Win32.Build.0 = Debug|Win32
-		{81CE8DAF-EBB2-4761-8E45-B71ABCCA8C68}.Release|Win32.ActiveCfg = Release|Win32
-		{81CE8DAF-EBB2-4761-8E45-B71ABCCA8C68}.Release|Win32.Build.0 = Release|Win32
 		{E5195361-63CD-4C1B-8DD7-3E579779B1F6}.Debug|Win32.ActiveCfg = Debug|Win32
 		{E5195361-63CD-4C1B-8DD7-3E579779B1F6}.Debug|Win32.Build.0 = Debug|Win32
 		{E5195361-63CD-4C1B-8DD7-3E579779B1F6}.Release|Win32.ActiveCfg = Release|Win32
 		{E5195361-63CD-4C1B-8DD7-3E579779B1F6}.Release|Win32.Build.0 = Release|Win32
+		{5A4FF2E6-BC91-4069-AAC2-58472CDFC5E4}.Debug|Win32.ActiveCfg = Debug|Win32
+		{5A4FF2E6-BC91-4069-AAC2-58472CDFC5E4}.Debug|Win32.Build.0 = Debug|Win32
+		{5A4FF2E6-BC91-4069-AAC2-58472CDFC5E4}.Release|Win32.ActiveCfg = Release|Win32
+		{5A4FF2E6-BC91-4069-AAC2-58472CDFC5E4}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

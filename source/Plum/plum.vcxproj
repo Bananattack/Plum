@@ -45,8 +45,8 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>../SDL-1.2.13/include;../zlib;../corona;../audiere/src;..;../lua/src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;_USE_MATH_DEFINES;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>../glfw/include;../zlib;../corona;../audiere/src;..;../lua/src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;_USE_MATH_DEFINES;GLFW_EXPOSE_NATIVE_WIN32_WGL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -57,7 +57,7 @@
       <ObjectFileName>$(IntDir)/%(RelativeDir)</ObjectFileName>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>../SDLmain.lib;../SDL.lib;OpenGL32.lib;dxguid.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>OpenGL32.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\directx;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <DelayLoadDLLs>%(DelayLoadDLLs)</DelayLoadDLLs>
@@ -115,11 +115,11 @@
     <ClCompile Include="core\tilemap.cpp" />
     <ClCompile Include="platform\audiere\audio.cpp" />
     <ClCompile Include="platform\corona\canvas.cpp" />
-    <ClCompile Include="platform\sdl\engine.cpp" />
-    <ClCompile Include="platform\sdl\image.cpp" />
-    <ClCompile Include="platform\sdl\input.cpp" />
-    <ClCompile Include="platform\sdl\timer.cpp" />
-    <ClCompile Include="platform\sdl\video.cpp" />
+    <ClCompile Include="platform\glfw\engine.cpp" />
+    <ClCompile Include="platform\glfw\image.cpp" />
+    <ClCompile Include="platform\glfw\input.cpp" />
+    <ClCompile Include="platform\glfw\timer.cpp" />
+    <ClCompile Include="platform\glfw\video.cpp" />
     <ClCompile Include="plum.cpp" />
     <ClCompile Include="script\canvas_object.cpp" />
     <ClCompile Include="script\file_object.cpp" />
@@ -157,7 +157,7 @@
     <ClInclude Include="core\timer.h" />
     <ClInclude Include="core\transform.h" />
     <ClInclude Include="core\video.h" />
-    <ClInclude Include="platform\sdl\event.h" />
+    <ClInclude Include="platform\glfw\engine.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="script\script.h" />
   </ItemGroup>
@@ -176,12 +176,11 @@
       <Project>{defa9e48-98bc-4bc5-b4b5-40231dfdb938}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
+    <ProjectReference Include="..\glfw\glfw.vcxproj">
+      <Project>{5a4ff2e6-bc91-4069-aac2-58472cdfc5e4}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\lua\lua.vcxproj">
       <Project>{9879234c-63e3-4ee3-9da4-6cd88677a00a}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="..\SDL-1.2.13\VisualC\SDL\SDL.vcxproj">
-      <Project>{81ce8daf-ebb2-4761-8e45-b71abcca8c68}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
     <ProjectReference Include="..\zlib\zlib.vcxproj">

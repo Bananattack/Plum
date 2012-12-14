@@ -1,6 +1,3 @@
-#include <SDL_opengl.h>
-
-
 #include "blending.h"
 
 namespace plum
