@@ -4,7 +4,7 @@ Plum
 About Plum
 ----------
 
-Plum is a free game engine, used for making cool 2D games with minimal effort through Lua scripting. Its aim to be simple and lightweight, but simultaneously powerful.
+Plum is a free game engine, used for making cool 2D games with minimal effort through Lua scripting. Its aim to be simple and lightweight, but simultaneously powerful. The performance-intensive heavy lifting and cross-platform work is done in the C++ backend, but the frontend gives a great degree of high-level control via Lua scripts, for a balanced experience that appeases both novices and control freaks.
 
 It supports all the basic needs of a simple 2D game:
 
