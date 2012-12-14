@@ -28,8 +28,8 @@
 
 The following is a list of third-party software used by **Plum**. Please consult their respective licensing terms.
 
-* SDL 1.2 is released under the GNU LGPL License. http://www.libsdl.org/license.php
-* Lua is release under the MIT License: http://www.lua.org/license.html
-* zlib is released under the zlib License. http://www.gzip.org/zlib/zlib_license.html
-* corona is released under the zlib License. http://www.gzip.org/zlib/zlib_license.html
-* audiere is released under the GNU LGPL License. http://opensource.org/licenses/lgpl-license.html
+* SDL 1.2 - [GNU LGPL license](http://www.libsdl.org/license.php)
+* Lua - [MIT license](http://www.lua.org/license.html)
+* zlib - [zlib license](http://www.gzip.org/zlib/zlib_license.html)
+* corona - [zlib license](http://www.gzip.org/zlib/zlib_license.html)
+* audiere - [GNU LGPL license](http://opensource.org/licenses/lgpl-license.html)
