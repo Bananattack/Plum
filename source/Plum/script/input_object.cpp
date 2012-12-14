@@ -70,7 +70,7 @@ namespace plum
                 {"setpressed", setpressed},
                 {nullptr, nullptr}
             };
-            luaL_register(L, nullptr, functions);
+            luaL_setfuncs(L, functions, 0);
             lua_pop(L, 1);
 
             // Push plum namespace.

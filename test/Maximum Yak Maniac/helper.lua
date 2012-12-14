@@ -73,7 +73,7 @@ function vergeclass(name, parent)
 		rawset(_G, 'super', call_super)
 
 		if arg then
-			cls.__init(obj, unpack(arg))
+			cls.__init(obj, table.unpack(arg))
 		end
 		
 		-- Restore old 'super' meaning.

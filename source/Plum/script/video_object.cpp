@@ -201,7 +201,7 @@ namespace plum
             return 0;
         }
 
-        const luaL_Reg videoMembers[] = {
+        const luaL_Reg functions[] = {
             { "__index", video_getField },
             { "__newindex", video_setField },
             { "__tostring",    video_toString },
@@ -236,7 +236,7 @@ namespace plum
             // metatable.__index = metatable
             lua_setfield(L, -2, "__index");
             // Put the members into the metatable.
-            luaL_register(L, nullptr, videoMembers);
+            luaL_setfuncs(L, functions, 0);
             lua_pop(L, 1);
 
             // Push plum namespace.

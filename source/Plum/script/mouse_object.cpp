@@ -147,7 +147,7 @@ namespace plum
             return 0;
         }
 
-        const luaL_Reg mouseMembers[] = {
+        const luaL_Reg functions[] = {
             { "__index", mouseGetField },
             { "__newindex",    mouseSetField },
             { "__tostring",    mouseToString },
@@ -172,7 +172,7 @@ namespace plum
             // metatable.__index = metatable
             lua_setfield(L, -2, "__index");
             // Put the members into the metatable.
-            luaL_register(L, nullptr, mouseMembers);
+            luaL_setfuncs(L, functions, 0);
             lua_pop(L, 1);
 
             // Push plum namespace.

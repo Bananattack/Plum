@@ -96,7 +96,7 @@ namespace plum
                 {"setTitle", setTitle},
                 {nullptr, nullptr},
             };
-            luaL_register(L, libraryName, functions);
+            luaL_newlib(L, functions);
 
             // Create the 'color' table.
             lua_newtable(L);
@@ -153,8 +153,8 @@ namespace plum
             // Done with 'blend' now.
             lua_pop(L, 1);
 
-            // Pop the library.
-            lua_pop(L, 1);
+            // Pop and store the library.
+            lua_setglobal(L, "plum");
 
             // Load all the submodule and object definitions contained within Plum.
             initVideoModule(L);
