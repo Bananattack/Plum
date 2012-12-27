@@ -170,7 +170,6 @@ namespace
             ModPlugFile* mod;
     };
 
-
     class Codec : public plaidgadget::AudioCodec
     {
         public:
@@ -193,8 +192,5 @@ namespace
                 }
                 return plaidgadget::Sound(mod);
             }
-    };
-
-    // Register the codec by instantiating it in static time
-    static Codec codec;
+    } codec;
 }
