@@ -18,7 +18,7 @@ namespace plaidgadget
         class ModplugStream : public AudioStream
         {
             public:
-                ModplugStream(String fn, bool _loop)
+                ModplugStream(String fn, bool loop)
                     : loop(loop), finished(true), valid(false)
                 {
                     {
