@@ -7,6 +7,7 @@
 #include "../../core/audio.h"
 #include "../../core/engine.h"
 
+#if 0
 namespace
 {
     class FileWrapper : public audiere::RefImplementation<audiere::File>
@@ -106,26 +107,31 @@ namespace plum
     bool Channel::isPlaying() const
     {
         return impl->stream ? impl->stream->isPlaying() : false;
+        return false;
     }
 
     bool Channel::isLooped() const
     {
         return impl->stream ? impl->stream->getRepeat() : false;
+        return false;
     }
 
     double Channel::getPan() const
     {
         return impl->pan;
+        return 0;
     }
 
     double Channel::getPitch() const
     {
         return impl->pitch;
+        return 0;
     }
 
     double Channel::getVolume() const
     {
         return impl->volume;
+        return 0;
     }
 
     void Channel::setPan(double value)
@@ -193,7 +199,6 @@ namespace plum
                     disabled = true;
                     device = audiere::OpenDevice("null", "");
                 }
-
                 hook = engine.addUpdateHook([this](){ update(); });
             }
 
@@ -207,7 +212,6 @@ namespace plum
                 {
                     return;
                 }
-
                 for(auto it = channels.begin(), end = channels.end(); it != end;)
                 {
                     const auto& c(*it);
@@ -319,3 +323,4 @@ namespace plum
         impl->volume = value;
     }
 }
+#endif

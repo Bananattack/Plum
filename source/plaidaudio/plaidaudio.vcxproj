@@ -1,0 +1,113 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="plaid\audio.h" />
+    <ClInclude Include="plaid\audio\audio.h" />
+    <ClInclude Include="plaid\audio\bindings.h" />
+    <ClInclude Include="plaid\audio\buffer.h" />
+    <ClInclude Include="plaid\audio\clip.h" />
+    <ClInclude Include="plaid\audio\effects.h" />
+    <ClInclude Include="plaid\audio\implementation.h" />
+    <ClInclude Include="plaid\audio\stream.h" />
+    <ClInclude Include="plaid\audio\synth.h" />
+    <ClInclude Include="plaid\audio\util.h" />
+    <ClInclude Include="plaid\core.h" />
+    <ClInclude Include="plaid\thread\lockfree.h" />
+    <ClInclude Include="plaid\util\attribute.h" />
+    <ClInclude Include="plaid\util\bimap.h" />
+    <ClInclude Include="plaid\util\binary.h" />
+    <ClInclude Include="plaid\util\memory.h" />
+    <ClInclude Include="plaid\util\ref.h" />
+    <ClInclude Include="plaid\util\stringmap.h" />
+    <ClInclude Include="plaid\util\traits.h" />
+    <ClInclude Include="plaid\util\types.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="imp-portaudio\pg_audioimp_portaudio.cpp" />
+    <ClCompile Include="plaid\audio\audio.cpp" />
+    <ClCompile Include="plaid\audio\clip.cpp" />
+    <ClCompile Include="plaid\audio\effect\amp.cpp" />
+    <ClCompile Include="plaid\audio\effect\bandpass.cpp" />
+    <ClCompile Include="plaid\audio\effect\pan.cpp" />
+    <ClCompile Include="plaid\audio\effect\pitch.cpp" />
+    <ClCompile Include="plaid\audio\effect\reverb.cpp" />
+    <ClCompile Include="plaid\audio\scheduler.cpp" />
+    <ClCompile Include="plaid\audio\signal.cpp" />
+    <ClCompile Include="plaid\audio\synth\oscillator.cpp" />
+    <ClCompile Include="plaid\audio\util\mixer.cpp" />
+    <ClCompile Include="plaid\audio\util\splicer.cpp" />
+    <ClCompile Include="plaid\audio\util\splitter.cpp" />
+    <ClCompile Include="plaid\audio\util\transcoder.cpp" />
+    <ClCompile Include="plaid\util\binary.cpp" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{231A5F7C-3BC4-4AED-B72F-223F134CEA67}</ProjectGuid>
+    <RootNamespace>plaidaudio</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Debug\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Release\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <AdditionalIncludeDirectories>.;../portaudio/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Lib>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

@@ -59,6 +59,7 @@
     </ClCompile>
     <Lib>
       <OutputFile>$(OutDir)corona.lib</OutputFile>
+      <TargetMachine>MachineX86</TargetMachine>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

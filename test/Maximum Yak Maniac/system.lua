@@ -15,15 +15,15 @@ resource = {
     };
     sound = {
         blast = {
-            plum.Sound('resources/blast_1.wav');
-            plum.Sound('resources/blast_2.wav');
-            plum.Sound('resources/blast_3.wav');
-            plum.Sound('resources/blast_4.wav');
+            plum.Sound('resources/blast_1.ogg');
+            plum.Sound('resources/blast_2.ogg');
+            plum.Sound('resources/blast_3.ogg');
+            plum.Sound('resources/blast_4.ogg');
         };
-        rage = plum.Sound('resources/rage.wav');
-        heal = plum.Sound('resources/heart.wav');
-        jump = plum.Sound('resources/jump_cartoony.wav');
-        balloon_die = plum.Sound('resources/hiss.wav');
+        rage = plum.Sound('resources/rage.ogg');
+        heal = plum.Sound('resources/heart.ogg');
+        jump = plum.Sound('resources/jump_cartoony.ogg');
+        balloon_die = plum.Sound('resources/hiss.ogg');
     };
     font = {
         plain = plum.Font('resources/font1.png');

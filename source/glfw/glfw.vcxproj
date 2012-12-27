@@ -31,6 +31,8 @@
     <ClCompile Include="src\window.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\GL\glfw3.h" />
+    <ClInclude Include="include\GL\glfw3native.h" />
     <ClInclude Include="src\config.h" />
     <ClInclude Include="src\internal.h" />
     <ClInclude Include="src\wgl_platform.h" />
@@ -76,6 +78,9 @@
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
     </ClCompile>
+    <Lib>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>

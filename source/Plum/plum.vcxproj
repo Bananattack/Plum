@@ -45,12 +45,11 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>../glfw/include;../zlib;../corona;../audiere/src;..;../lua/src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../glfw/include;../zlib;../corona;../audiere/src;..;../lua/src;../plaidaudio/;../libmodplug/src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;_USE_MATH_DEFINES;GLFW_EXPOSE_NATIVE_WIN32_WGL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <AssemblerListingLocation>$(IntDir)/%(RelativeDir)</AssemblerListingLocation>
@@ -105,6 +104,8 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\plaidaudio\codec_stb\pg_codec_ogg_stb.cpp" />
+    <ClCompile Include="..\plaidaudio\codec_stb\stb_vorbis.c" />
     <ClCompile Include="core\blending.cpp" />
     <ClCompile Include="core\config.cpp" />
     <ClCompile Include="core\file.cpp" />
@@ -113,13 +114,14 @@
     <ClCompile Include="core\log.cpp" />
     <ClCompile Include="core\sprite.cpp" />
     <ClCompile Include="core\tilemap.cpp" />
-    <ClCompile Include="platform\audiere\audio.cpp" />
     <ClCompile Include="platform\corona\canvas.cpp" />
     <ClCompile Include="platform\glfw\engine.cpp" />
     <ClCompile Include="platform\glfw\image.cpp" />
     <ClCompile Include="platform\glfw\input.cpp" />
     <ClCompile Include="platform\glfw\timer.cpp" />
     <ClCompile Include="platform\glfw\video.cpp" />
+    <ClCompile Include="platform\plaidaudio\audio.cpp" />
+    <ClCompile Include="platform\plaidaudio\codec_modplug.cpp" />
     <ClCompile Include="plum.cpp" />
     <ClCompile Include="script\canvas_object.cpp" />
     <ClCompile Include="script\file_object.cpp" />
@@ -168,24 +170,27 @@
     <ResourceCompile Include="Plum.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\audiere\vc7\audiere\audiere.vcxproj">
-      <Project>{e5195361-63cd-4c1b-8dd7-3e579779b1f6}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
     <ProjectReference Include="..\corona\corona.vcxproj">
       <Project>{defa9e48-98bc-4bc5-b4b5-40231dfdb938}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
     <ProjectReference Include="..\glfw\glfw.vcxproj">
       <Project>{5a4ff2e6-bc91-4069-aac2-58472cdfc5e4}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\libmodplug\libmodplug.vcxproj">
+      <Project>{27472e0b-c2a3-4892-afd7-8660a4746dad}</Project>
     </ProjectReference>
     <ProjectReference Include="..\lua\lua.vcxproj">
       <Project>{9879234c-63e3-4ee3-9da4-6cd88677a00a}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
+    <ProjectReference Include="..\plaidaudio\plaidaudio.vcxproj">
+      <Project>{231a5f7c-3bc4-4aed-b72f-223f134cea67}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\portaudio\build\msvc\portaudio.vcxproj">
+      <Project>{0a18a071-125e-442f-aff7-a3f68abecf99}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\zlib\zlib.vcxproj">
       <Project>{9224b68e-4e98-429f-a15d-322f38bdf9c7}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

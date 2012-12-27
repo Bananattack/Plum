@@ -29,7 +29,6 @@ namespace plum
             void setPan(double value);
             void setPitch(double value);
             void setVolume(double value);
-            void setLooped(bool value);
 
             class Impl;
             std::shared_ptr<Impl> impl;
@@ -51,7 +50,7 @@ namespace plum
             Audio(Engine& engine, bool disabled);
             ~Audio();
 
-            void loadSound(const std::string& filename, bool streamed, Sound& sound);
+            void loadSound(const std::string& filename, bool looped, Sound& sound);
             void loadChannel(const Sound& sound, Channel& channel);
 
             double getPan() const;

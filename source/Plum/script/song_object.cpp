@@ -24,7 +24,6 @@ namespace plum
 
             auto chan = new Channel();
             script::instance(L).audio().loadChannel(sound, *chan);
-            chan->setLooped(true);
 
             script::push(L, chan, LUA_NOREF);
             return 1;
