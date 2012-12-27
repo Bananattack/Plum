@@ -115,7 +115,7 @@ The following is a list of third-party software used by **Plum**. Please consult
         3. This notice may not be removed or altered from any source distribution.
 
 
-* **<plaid/audio>** - [zlib license](http://www.gzip.org/zlib/zlib_license.html) - Used to load and play audio files.
+* **plaid/audio** - [zlib license](http://www.gzip.org/zlib/zlib_license.html) - Used to load and play audio files.
 
         <plaid/audio> standalone audio framework
         Copyright (c) 2012 Evan Balster, Interactopia LLC
@@ -139,7 +139,7 @@ The following is a list of third-party software used by **Plum**. Please consult
            3. This notice may not be removed or altered from any source
            distribution.
 
-* **portaudio** - [MIT license](http://www.portaudio.com/license.html) - Dependency of <plaid/audio>, for a cross-platform audio I/O implementation.
+* **portaudio** - [MIT license](http://www.portaudio.com/license.html) - Dependency of plaid/audio, for a cross-platform audio I/O implementation.
 
         PortAudio Portable Real-Time Audio Library 
         Copyright (c) 1999-2011 Ross Bencina and Phil Burk
@@ -155,7 +155,7 @@ The following is a list of third-party software used by **Plum**. Please consult
 
         ModPlug-XMMS and libmodplug are now in the public domain.
 
-* **libvorbis**, **libvorbisfile** - [BSD 3-Clause License]() - Used as a format loader for .ogg Vorbis files.
+* **libvorbis**, **libvorbisfile** - [BSD 3-Clause License](http://opensource.org/licenses/BSD-3-Clause) - Used as a format loader for .ogg Vorbis files.
 
         Copyright (c) 2002-2008 Xiph.org Foundation
 
@@ -186,7 +186,7 @@ The following is a list of third-party software used by **Plum**. Please consult
         (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
         OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-* **libogg** - [BSD 3-Clause License]() - Dependency of libvorbis, used for the .ogg container format.
+* **libogg** - [BSD 3-Clause License](http://opensource.org/licenses/BSD-3-Clause) - Dependency of libvorbis, used for the .ogg container format.
 
         Copyright (c) 2002, Xiph.org Foundation
 
