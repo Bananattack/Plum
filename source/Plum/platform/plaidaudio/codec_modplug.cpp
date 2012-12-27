@@ -37,7 +37,7 @@ namespace plaidgadget
                     std::vector<uint8_t> data(length);
                     file->readRaw(data.data(), data.size());
                     // Load the mod.
-                    mod = ModPlug_Load(&data[0], data.size());
+                    mod = ModPlug_Load(data.data(), data.size());
                 }
 
                 if(!mod)
