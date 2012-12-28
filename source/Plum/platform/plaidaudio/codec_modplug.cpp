@@ -2,6 +2,8 @@
 
 #include <modplug.h>
 #include <cstdint>
+#include <memory>
+#include <vector>
 
 #include "../../core/file.h"
 
