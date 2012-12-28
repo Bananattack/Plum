@@ -119,7 +119,7 @@ function intro()
     render_list = {}
     update_list = {}
     world = World()
-    manageWithEngine(world)
+    world:register()
     players = {
         Player(80, controls[1], PLAYER_ONE_COLOR);
         Player(240, controls[2], PLAYER_TWO_COLOR);
@@ -133,19 +133,15 @@ function intro()
     table.insert(world.sprites, players[2])
 end
 
-function autoexec()
-    resource.song.city:play()
+resource.song.city:play()
 
-	--vx.SetResolution(320, 240)
-	plum.setTitle(TITLE)
+--vx.SetResolution(320, 240)
+plum.setTitle(TITLE)
 
-    intro()
+intro()
 
-    while true do
-        render()
-        update()
-    end
+while true do
+    render()
+    update()
 end
-
-autoexec()
 

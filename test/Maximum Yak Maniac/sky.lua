@@ -1,11 +1,13 @@
-vergeclass 'Sky' do
-    function Sky:__init()
+do local Self = {}
+    function Sky()
+        local self = setmetatable({}, {__index = Self})
         self.clouds = {{}, {}}
         self.cloud_movement_speed = { 0.0625, 0.50 }
         self.spawn_offset = { plum.video.width + 50, plum.video.width + 100 }
+        return self
     end
     
-    function Sky:renderLayer(layer)
+    function Self:renderLayer(layer)
         plum.video.opacity = layer == 2 and 127 or 192
         for i, cloud in ipairs(self.clouds[layer]) do
             cloud.image:blit(cloud.x - world.x, cloud.y)
@@ -14,7 +16,7 @@ vergeclass 'Sky' do
         plum.video.opacity = 255
     end
     
-    function Sky:update()
+    function Self:update()
         -- Spawn new clouds
         for layer = 1, 2 do
             if self.spawn_offset[layer] < world.x + plum.video.width then
@@ -63,16 +65,18 @@ vergeclass 'Sky' do
     end
 end
 
-vergeclass 'Cloud' do
-    function Cloud:__init(x, y, layer)
+do local Self = {}
+    function Cloud(x, y, layer)
+        local self = setmetatable({}, Self)
         self.x = x
         self.y = y
         self.image = randomItem(resource.image.cloud)
         self.dispose = false
         self.layer = layer
+        return self
     end
     
-    function Cloud:touches(cloud)
+    function Self:touches(cloud)
         return self.x + self.image.width > cloud.x
                 and self.x < cloud.x + cloud.image.width
                 and self.y + self.image.height > cloud.y

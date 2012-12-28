@@ -1,5 +1,6 @@
-vergeclass 'Grass' do
-    function Grass:__init(color, x_offset, y_offset, height, parallax)
+do local Self = {}
+    function Grass(color, x_offset, y_offset, height, parallax)
+        local self = setmetatable({}, {__index = Self})
         self.color = color
         self.x_offset = x_offset
         self.y_offset = y_offset
@@ -8,9 +9,10 @@ vergeclass 'Grass' do
         self.texture = plum.Image(resource.image.grass.canvas)
         self.texture.canvas:replaceColor(plum.color.Black, color)
         self.texture:refresh()
+        return self
     end
 
-    function Grass:blit(x, y)
+    function Self:blit(x, y)
         x = (x + self.x_offset) * self.parallax
         y = y + self.y_offset
         local w = self.texture.width
@@ -22,7 +24,7 @@ vergeclass 'Grass' do
     end
 end
 
-vergeclass 'World' do
+do local Self = {}
     local CAMERA_HORIZONTAL_BORDER = 240
 
     local GRASS_FAREST_COLOR = plum.color.rgb(0x24, 0x9B, 0x7F)
@@ -30,7 +32,8 @@ vergeclass 'World' do
     local GRASS_NEAR_COLOR = plum.color.rgb(0x77, 0xBD, 0x3F)
     local GRASS_NEAREST_COLOR = plum.color.rgb(0x99, 0xCD, 0x0F)
 
-    function World:__init()
+    function World()
+        local self = setmetatable({}, {__index = Self})
         self.x = 0
         
         self.sky = Sky()
@@ -48,9 +51,10 @@ vergeclass 'World' do
         self.game_over = false
         
         table.insert(self.sprites, Building(160))
+        return self
     end
     
-    function World:addBuilding()
+    function Self:addBuilding()
         if math.random(0, 100) < 15 then
             table.insert(world.sprites, Roids(self.spawn_offset, math.random(1, 10)))
         elseif math.random(0, 100) < 30 then
@@ -62,12 +66,12 @@ vergeclass 'World' do
         self.spawn_offset = self.spawn_offset + math.random(110, 250)
     end
     
-    function World:manageWithEngine()
+    function Self:register()
         table.insert(render_list, methodPointer(self, 'render'))
         table.insert(update_list, methodPointer(self, 'update'))
     end
     
-    function World:drawHUD()
+    function Self:drawHUD()
         local fnt
         local t = math.max(players[1].timer, 0)
         local t2 = math.max(players[2].timer, 0)
@@ -92,7 +96,7 @@ vergeclass 'World' do
         end
     end
     
-    function World:render()
+    function Self:render()
         local grass = self.grass
         plum.video:solidRect(0, 0, plum.video.width, plum.video.height / 2 - 1, plum.color.rgb(0x1F, 0xD1, 0xE0))
         self.sky:renderLayer(1)
@@ -127,7 +131,7 @@ vergeclass 'World' do
         self:drawHUD()
     end
     
-    function World:checkGameOver()
+    function Self:checkGameOver()
         for i, player in ipairs(players) do
             if plum.key['0'].pressed then
                 player.timer = 0
@@ -139,7 +143,7 @@ vergeclass 'World' do
         return true
     end
     
-    function World:cameraCanMoveForward()
+    function Self:cameraCanMoveForward()
         a = nil
         local b = 0
         for i, player in ipairs(players) do
@@ -158,7 +162,7 @@ vergeclass 'World' do
         return a
     end
     
-    function World:update()
+    function Self:update()
         if self.game_over and plum.key.Enter.pressed then
             plum.key.Enter.pressed = false
             intro()

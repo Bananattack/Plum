@@ -1,5 +1,6 @@
-vergeclass 'Balloon' do
-    function Balloon:__init(x, y)
+do local Self = {}
+    function Balloon(x, y)
+        local self = setmetatable({}, {__index = Self})
         self.frame = plum.Image(randomItem(resource.image.balloon).canvas)
         self.color = plum.color.hsv(math.random(0, 359), 255, 255)
         self.frame.canvas:replaceColor(plum.color.White, self.color)
@@ -15,9 +16,10 @@ vergeclass 'Balloon' do
         self.timer = 0
         self.scale = math.random(50, 150) / 100
         self.score = 5000
+        return self
     end
     
-    function Balloon:update()
+    function Self:update()
         self.timer = self.timer + 1
         self.angle = self.base_angle + math.sin(self.timer / 20) * 30
         
@@ -26,12 +28,12 @@ vergeclass 'Balloon' do
         end
     end
     
-    function Balloon:render()
+    function Self:render()
         plum.video:solidCircle(self.x - world.x + self.frame.width / 2, 180, 15, 8, plum.color.Red)
         self.frame:rotateScaleBlit(self.x - world.x, self.y - self.frame.height + 100, self.angle, self.scale)
     end
     
-    function Balloon:damage(damage, player)
+    function Self:damage(damage, player)
         self.dispose = true
         table.insert(world.sprites, Particle(self.x + math.random(-20, self.frame.width + 20), self.y + math.random(0, self.frame.height)))
         table.insert(world.sprites, Particle(self.x + math.random(-20, self.frame.width + 20), self.y + math.random(0, self.frame.height)))

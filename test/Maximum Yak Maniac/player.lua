@@ -1,4 +1,4 @@
-vergeclass 'Player' do
+do local Self = {}
     local ACCEL = 0.2
     local MAX_SPEED = 3
     local POST_EAT_MAX_SPEED = 1
@@ -9,7 +9,8 @@ vergeclass 'Player' do
 
     PLAYER_ONE_COLOR = plum.color.rgb(0x12, 0x78, 0x50)
     PLAYER_TWO_COLOR = plum.color.rgb(0x78, 0x12, 0x64)
-    function Player:__init(x, controls, color)
+    function Player(x, controls, color)
+        local self = setmetatable({}, {__index = Self})
         self.walk_counter = 0
         self.angle = 0
         self.eating = false
@@ -40,18 +41,19 @@ vergeclass 'Player' do
         
         self.controls = controls
         self.offscreen = false
+        return self
     end
     
-    function Player:addScore(amount)
+    function Self:addScore(amount)
         self.score_counter = self.score_counter + amount
     end
     
-    function Player:addTime(amount)
+    function Self:addTime(amount)
         self.timer = self.timer + amount
         self.heal_counter = 100
     end
     
-    function Player:touches(sprite)
+    function Self:touches(sprite)
         if self.direction == 'right' then
             return self.x + self.frame.width > sprite.x
                 and self.x + self.frame.width - self.head_width < sprite.x + sprite.hitbox.width
@@ -65,7 +67,7 @@ vergeclass 'Player' do
         end
     end
 
-    function Player:updateDead()
+    function Self:updateDead()
         if self.y + self.frame.height < 180 then
             self.y = self.y + 4
             if self.y + self.frame.height > 180 then
@@ -73,10 +75,10 @@ vergeclass 'Player' do
             end
         end
     
-        if self.controls.left.pressed then
+        if self.controls.left:held() then
             self.direction = 'left'
             self.frame = self.image.idle[self.direction]
-        elseif self.controls.right.pressed and not self.eating then
+        elseif self.controls.right:held() and not self.eating then
             self.direction = 'right'
             self.frame = self.image.idle[self.direction]
         end
@@ -99,7 +101,7 @@ vergeclass 'Player' do
         end
     end
 
-    function Player:update()
+    function Self:update()
         self.heal_counter = self.heal_counter - 1
         if self.timer <= 0 then
             self.score = self.score + self.score_counter
@@ -136,7 +138,7 @@ vergeclass 'Player' do
             if self.jump_timer == 0 then
                 self.jumping = false
                 self.falling = true
-                self.controls.up.pressed = false
+                self.controls.up:release()
             end
         elseif self.y + self.frame.height < 180 then
             self.jumping = false
@@ -151,19 +153,19 @@ vergeclass 'Player' do
             self.falling = false
         end
     
-        if self.controls.up.pressed and not self.jumping and not self.falling then
+        if self.controls.up:held() and not self.jumping and not self.falling then
             self.jumping = true
             self.jump_timer = JUMP_DURATION
             resource.sound.jump:play()
-        elseif not self.controls.up.pressed and self.jumping then
+        elseif not self.controls.up:held() and self.jumping then
             self.jumping = false
             self.falling = true
             self.fall_timer = 0
-            self.controls.up.pressed = false
+            self.controls.up:release()
         end
     
-        if self.controls.eat.pressed and not self.eating then
-            self.controls.eat.pressed = false
+        if self.controls.eat:held() and not self.eating then
+            self.controls.eat:release()
             self.eating = true
             self.eat_timer = EAT_COOLDOWN
             for i, sprite in ipairs(world.sprites) do
@@ -186,7 +188,7 @@ vergeclass 'Player' do
         
         self.post_eat_timer = self.post_eat_timer - 1
         
-        if self.controls.left.pressed and not self.eating then
+        if self.controls.left:held() and not self.eating then
             self.direction = 'left'
             if self.post_eat_timer > 0 then
                 self.speed = math.max(self.speed - ACCEL, -POST_EAT_MAX_SPEED)
@@ -197,7 +199,7 @@ vergeclass 'Player' do
             if not self.jumping and not self.falling then
                 self.angle = math.sin(self.walk_counter / 24) * 20
             end
-        elseif self.controls.right.pressed and not self.eating then
+        elseif self.controls.right:held() and not self.eating then
             self.direction = 'right'
             if self.post_eat_timer > 0 then
                 self.speed = math.min(self.speed + ACCEL, POST_EAT_MAX_SPEED)
@@ -236,7 +238,7 @@ vergeclass 'Player' do
         self.timer = self.timer - 1
     end
     
-    function Player:render()
+    function Self:render()
         plum.video:solidCircle(self.x - world.x + self.frame.width / 2, 180, 20, 3, plum.color.Black)
         self.frame:rotateBlit(self.x - world.x, self.y, self.angle)
     end

@@ -1,5 +1,6 @@
-vergeclass 'Building' do
-    function Building:__init(x)
+do local Self = {}
+    function Building(x)
+        local self = setmetatable({}, {__index = Self})
         self.is_edible = true
         self.is_building = true
         self.is_big = math.random(0, 100) < 10
@@ -33,9 +34,10 @@ vergeclass 'Building' do
         self.x = x
         self.shake_timer = 0
         self.y = 180 - self.frame.height
+        return self
     end
     
-    function Building:update()
+    function Self:update()
         if self.x + self.frame.width < world.x then
             self.dispose = true
         end
@@ -44,7 +46,7 @@ vergeclass 'Building' do
         end
     end
     
-    function Building:render()
+    function Self:render()
         local x = self.x - world.x
         if self.shake_timer > 0 then
             x = x + math.random(-5, 5)
@@ -52,7 +54,7 @@ vergeclass 'Building' do
         self.frame:blit(x, self.y)
     end
     
-    function Building:damage(damage, player)
+    function Self:damage(damage, player)
         self.health = math.max(self.health - damage, 0)
         table.insert(world.sprites, Particle(self.x + math.random(-20, self.frame.width - 44), self.y + math.random(0, self.frame.height)))
         table.insert(world.sprites, Particle(self.x + math.random(-20, self.frame.width - 44), self.y + math.random(0, self.frame.height)))
