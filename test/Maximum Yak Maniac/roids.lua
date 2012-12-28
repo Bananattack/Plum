@@ -3,8 +3,8 @@ do local Self = {}
         local self = setmetatable({}, {__index = Self})
         self.frame = resource.image.roids[1]
         self.hitbox = { width = self.frame.width, height = self.frame.height }
-        self.z_index = 50
-        self.is_edible = true
+        self.z = 50
+        self.isEdible = true
         self.x = x
         self.y = y
         self.angle = math.random(0, 359)

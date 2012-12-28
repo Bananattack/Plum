@@ -1,27 +1,27 @@
 do local Self = {}
     function Building(x)
         local self = setmetatable({}, {__index = Self})
-        self.is_edible = true
-        self.is_building = true
-        self.is_big = math.random(0, 100) < 10
-        self.has_roids = math.random(0, 100) < 20
-        self.z_index = 0
+        self.isEdible = true
+        self.isBuilding = true
+        self.isBig = math.random(0, 100) < 10
+        self.hasRoids = math.random(0, 100) < 20
+        self.z = 0
         self.score = 5000
-        self.frame = self.is_big and randomItem(resource.image.big_building) or randomItem(resource.image.building)
+        self.frame = self.isBig and randomItem(resource.image.bigBuilding) or randomItem(resource.image.building)
         
-        self.max_health = 4
-        self.health = self.max_health
+        self.maxHealth = 4
+        self.health = self.maxHealth
         
         -- Big buildings have more max health
         -- Also less chance of containing 'roids.
-        if self.is_big then
-            self.has_roids = math.random(0, 100) < 10
-            self.max_health = 5
-            self.health = self.max_health
+        if self.isBig then
+            self.hasRoids = math.random(0, 100) < 10
+            self.maxHealth = 5
+            self.health = self.maxHealth
             -- Find an equivalent "small building" picture as you destroy further
-            for i, frame in ipairs(resource.image.big_building) do
+            for i, frame in ipairs(resource.image.bigBuilding) do
                 if frame == self.frame then
-                    self.small_frame = resource.image.building[i]
+                    self.smallFrame = resource.image.building[i]
                 end
             end
         end
@@ -32,7 +32,7 @@ do local Self = {}
         
         
         self.x = x
-        self.shake_timer = 0
+        self.shakeTimer = 0
         self.y = 180 - self.frame.height
         return self
     end
@@ -41,14 +41,14 @@ do local Self = {}
         if self.x + self.frame.width < world.x then
             self.dispose = true
         end
-        if self.shake_timer > 0 then
-            self.shake_timer = self.shake_timer - 1
+        if self.shakeTimer > 0 then
+            self.shakeTimer = self.shakeTimer - 1
         end
     end
     
     function Self:render()
         local x = self.x - world.x
-        if self.shake_timer > 0 then
+        if self.shakeTimer > 0 then
             x = x + math.random(-5, 5)
         end
         self.frame:blit(x, self.y)
@@ -59,20 +59,20 @@ do local Self = {}
         table.insert(world.sprites, Particle(self.x + math.random(-20, self.frame.width - 44), self.y + math.random(0, self.frame.height)))
         table.insert(world.sprites, Particle(self.x + math.random(-20, self.frame.width - 44), self.y + math.random(0, self.frame.height)))
         table.insert(world.sprites, Particle(self.x + math.random(-20, self.frame.width - 44), self.y + math.random(0, self.frame.height)))
-        if self.has_roids and math.random(0, 100) < 75 then
+        if self.hasRoids and math.random(0, 100) < 75 then
             table.insert(world.sprites, Roids(world.x + math.random(0, plum.video.width), math.random(1, 10)))
         end
-        self.shake_timer = 80
+        self.shakeTimer = 80
         
-        player.post_eat_timer = POST_EAT_HIT_DURATION
+        player.postEatTimer = PostEatHitDuration
         randomItem(resource.sound.blast):play()
         if self.health == 0 then
             player:addScore(self.score * 5)
 
-            if self.is_big then
-                self.frame = self.small_frame
-                self.is_big = false
-                self.health = self.max_health
+            if self.isBig then
+                self.frame = self.smallFrame
+                self.isBig = false
+                self.health = self.maxHealth
                 self.hitbox = { width = self.frame.width, height = self.frame.height }
             else
                 self.dispose = true

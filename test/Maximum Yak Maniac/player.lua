@@ -1,43 +1,43 @@
 do local Self = {}
-    local ACCEL = 0.2
-    local MAX_SPEED = 3
-    local POST_EAT_MAX_SPEED = 1
-    local EAT_COOLDOWN = 10
-    local JUMP_DURATION = 30
-    POST_EAT_HIT_DURATION = 90
-    POST_EAT_MISS_DURATION = 40
+    local Acceleration = 0.2
+    local MaxSpeed = 3
+    local PostEatMaxSpeed = 1
+    local EatCooldown = 10
+    local JumpDuration = 30
+    PostEatHitDuration = 90
+    PostEatMissDuration = 40
 
-    PLAYER_ONE_COLOR = plum.color.rgb(0x12, 0x78, 0x50)
-    PLAYER_TWO_COLOR = plum.color.rgb(0x78, 0x12, 0x64)
+    PlayerOneColor = plum.color.rgb(0x12, 0x78, 0x50)
+    PlayerTwoColor = plum.color.rgb(0x78, 0x12, 0x64)
     function Player(x, controls, color)
         local self = setmetatable({}, {__index = Self})
-        self.walk_counter = 0
+        self.walkCounter = 0
         self.angle = 0
         self.eating = false
         self.jumping = false
         self.falling = false
-        self.jump_timer = 0
-        self.eat_timer = 0
-        self.post_eat_timer = 0
+        self.jumpTimer = 0
+        self.eatTimer = 0
+        self.postEatTimer = 0
         self.speed = 0
         self.direction = 'left'
         self.score = 0
         self.timer = 30 * 100
         self.image = {}
-        self.image.idle = createSpriteFrame(resource.image.yak.idle, PLAYER_ONE_COLOR, color)
-        self.image.eat = createSpriteFrame(resource.image.yak.eat, PLAYER_ONE_COLOR, color)
+        self.image.idle = createSpriteFrame(resource.image.yak.idle, PlayerOneColor, color)
+        self.image.eat = createSpriteFrame(resource.image.yak.eat, PlayerOneColor, color)
         self.frame = self.image.idle.left
         
-        self.score_counter = 0
-        self.score_accel = 0
+        self.scoreCounter = 0
+        self.scoreAccel = 0
         
-        self.heal_counter = 0
+        self.healCounter = 0
         
-        self.z_index = 1
+        self.z = 1
         
         self.x = x
         self.y = 180 - self.frame.height
-        self.head_width = 30
+        self.headWidth = 30
         
         self.controls = controls
         self.offscreen = false
@@ -45,22 +45,22 @@ do local Self = {}
     end
     
     function Self:addScore(amount)
-        self.score_counter = self.score_counter + amount
+        self.scoreCounter = self.scoreCounter + amount
     end
     
     function Self:addTime(amount)
         self.timer = self.timer + amount
-        self.heal_counter = 100
+        self.healCounter = 100
     end
     
     function Self:touches(sprite)
         if self.direction == 'right' then
             return self.x + self.frame.width > sprite.x
-                and self.x + self.frame.width - self.head_width < sprite.x + sprite.hitbox.width
+                and self.x + self.frame.width - self.headWidth < sprite.x + sprite.hitbox.width
                 and self.y + self.frame.height + 30 > sprite.y
                 and self.y < sprite.y + sprite.hitbox.height
         elseif self.direction == 'left' then
-            return self.x + self.head_width > sprite.x
+            return self.x + self.headWidth > sprite.x
                 and self.x < sprite.x + sprite.hitbox.width
                 and self.y + self.frame.height + 30 > sprite.y
                 and self.y < sprite.y + sprite.hitbox.height
@@ -102,40 +102,40 @@ do local Self = {}
     end
 
     function Self:update()
-        self.heal_counter = self.heal_counter - 1
+        self.healCounter = self.healCounter - 1
         if self.timer <= 0 then
-            self.score = self.score + self.score_counter
-            self.score_counter = 0
+            self.score = self.score + self.scoreCounter
+            self.scoreCounter = 0
             self:updateDead()
             return
         end
         
-        if self.score_counter > 0 then
-            self.score_accel = self.score_accel + 1
+        if self.scoreCounter > 0 then
+            self.scoreAccel = self.scoreAccel + 1
             
-            local roll_speed = 21
-            if self.score_counter > 100000 then
-                roll_speed = 411
-            elseif self.score_counter > 10000 then
-                roll_speed = 211
+            local rollSpeed = 21
+            if self.scoreCounter > 100000 then
+                rollSpeed = 411
+            elseif self.scoreCounter > 10000 then
+                rollSpeed = 211
             end
-            roll_speed = roll_speed + 8 * math.floor(self.score_accel / 10)
+            rollSpeed = rollSpeed + 8 * math.floor(self.scoreAccel / 10)
             
-            self.score_counter = self.score_counter - roll_speed
-            if self.score_counter <= 0 then
-                self.score = self.score + roll_speed + self.score_counter
-                self.score_counter = 0
-                self.score_accel = 0
+            self.scoreCounter = self.scoreCounter - rollSpeed
+            if self.scoreCounter <= 0 then
+                self.score = self.score + rollSpeed + self.scoreCounter
+                self.scoreCounter = 0
+                self.scoreAccel = 0
             else
-                self.score = self.score + roll_speed
+                self.score = self.score + rollSpeed
             end            
         end
         
         if self.jumping then
             self.y = self.y - 3
-            self.jump_timer = self.jump_timer - 1
+            self.jumpTimer = self.jumpTimer - 1
             self.angle = self.angle + 15
-            if self.jump_timer == 0 then
+            if self.jumpTimer == 0 then
                 self.jumping = false
                 self.falling = true
                 self.controls.up:release()
@@ -155,21 +155,20 @@ do local Self = {}
     
         if self.controls.up:held() and not self.jumping and not self.falling then
             self.jumping = true
-            self.jump_timer = JUMP_DURATION
+            self.jumpTimer = JumpDuration
             resource.sound.jump:play()
         elseif not self.controls.up:held() and self.jumping then
             self.jumping = false
             self.falling = true
-            self.fall_timer = 0
             self.controls.up:release()
         end
     
         if self.controls.eat:held() and not self.eating then
             self.controls.eat:release()
             self.eating = true
-            self.eat_timer = EAT_COOLDOWN
+            self.eatTimer = EatCooldown
             for i, sprite in ipairs(world.sprites) do
-                if sprite.is_edible and self:touches(sprite) then
+                if sprite.isEdible and self:touches(sprite) then
                     sprite:damage(1, self)
                 end
             end
@@ -177,42 +176,42 @@ do local Self = {}
         
         if self.eating then
             self.frame = self.image.eat[self.direction]
-            self.eat_timer = self.eat_timer - 1
-            if self.eat_timer <= 0 then
+            self.eatTimer = self.eatTimer - 1
+            if self.eatTimer <= 0 then
                 self.eating = false
-                self.post_eat_timer = POST_EAT_MISS_DURATION
+                self.postEatTimer = PostEatMissDuration
             end
         else
             self.frame = self.image.idle[self.direction]
         end
         
-        self.post_eat_timer = self.post_eat_timer - 1
+        self.postEatTimer = self.postEatTimer - 1
         
         if self.controls.left:held() and not self.eating then
             self.direction = 'left'
-            if self.post_eat_timer > 0 then
-                self.speed = math.max(self.speed - ACCEL, -POST_EAT_MAX_SPEED)
+            if self.postEatTimer > 0 then
+                self.speed = math.max(self.speed - Acceleration, -PostEatMaxSpeed)
             else
-                self.speed = math.max(self.speed - ACCEL, -MAX_SPEED)
+                self.speed = math.max(self.speed - Acceleration, -MaxSpeed)
             end
-            self.walk_counter = self.walk_counter + self.speed
+            self.walkCounter = self.walkCounter + self.speed
             if not self.jumping and not self.falling then
-                self.angle = math.sin(self.walk_counter / 24) * 20
+                self.angle = math.sin(self.walkCounter / 24) * 20
             end
         elseif self.controls.right:held() and not self.eating then
             self.direction = 'right'
-            if self.post_eat_timer > 0 then
-                self.speed = math.min(self.speed + ACCEL, POST_EAT_MAX_SPEED)
+            if self.postEatTimer > 0 then
+                self.speed = math.min(self.speed + Acceleration, PostEatMaxSpeed)
             else
-                self.speed = math.min(self.speed + ACCEL, MAX_SPEED)
+                self.speed = math.min(self.speed + Acceleration, MaxSpeed)
             end
-            self.walk_counter = self.walk_counter + self.speed
+            self.walkCounter = self.walkCounter + self.speed
             if not self.jumping and not self.falling then
-                self.angle = math.sin(self.walk_counter / 24) * 20
+                self.angle = math.sin(self.walkCounter / 24) * 20
             end
         else
             self.speed = 0
-            self.walk_counter = self.walk_counter - 1
+            self.walkCounter = self.walkCounter - 1
             if not self.jumping and not self.falling then            
                 if self.angle % 360 < 360 then
                     self.angle = (self.angle + 1)

@@ -4,9 +4,9 @@ do local Self = {}
         self.x = x
         self.y = y
         self.dispose = false
-        self.z_index = 500
-        self.frame_index = 1
-        self.frame = resource.image.poof[self.frame_index]
+        self.z = 500
+        self.frameIndex = 1
+        self.frame = resource.image.poof[self.frameIndex]
         self.timer = 0
         return self
     end
@@ -19,9 +19,9 @@ do local Self = {}
         self.timer = self.timer + 1
         if self.timer > 5 then
             self.timer = 0
-            if self.frame_index < 7 then
-                self.frame_index = self.frame_index + 1
-                self.frame = resource.image.poof[self.frame_index]
+            if self.frameIndex < 7 then
+                self.frameIndex = self.frameIndex + 1
+                self.frame = resource.image.poof[self.frameIndex]
             else
                 self.dispose = true
             end

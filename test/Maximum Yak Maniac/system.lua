@@ -8,7 +8,7 @@ require 'building'
 require 'player'
 require 'world'
 
-TITLE = 'Maximum Yak Maniac'
+Title = 'Maximum Yak Maniac'
 resource = {
     song = {
         city = plum.Song('resources/Jiggy.it')
@@ -23,13 +23,13 @@ resource = {
         rage = plum.Sound('resources/rage.ogg');
         heal = plum.Sound('resources/heart.ogg');
         jump = plum.Sound('resources/jump_cartoony.ogg');
-        balloon_die = plum.Sound('resources/hiss.ogg');
+        balloonDeath = plum.Sound('resources/hiss.ogg');
     };
     font = {
         plain = plum.Font('resources/font1.png');
         big = plum.Font('resources/ff6big.png');
-        big_green = plum.Font('resources/ff6big_green.png');
-        big_yellow = plum.Font('resources/ff6big_yellow.png');
+        bigGreen = plum.Font('resources/ff6big_green.png');
+        bigYellow = plum.Font('resources/ff6big_yellow.png');
     };
     image = {
         yak = {
@@ -40,7 +40,7 @@ resource = {
             plum.Image('resources/cloud_1.png');
             plum.Image('resources/cloud_2.png');
         };
-        big_building = {
+        bigBuilding = {
             plum.Image('resources/big_building_1.png');
         };
         building = {
@@ -71,12 +71,12 @@ resource = {
     };
 };
 
-render_list = {}
-update_list = {}
+renderList = {}
+updateList = {}
 
 function render()
     plum.video:solidRect(0, 0, plum.video.width, plum.video.height, 0)
-    for i, f in ipairs(render_list) do
+    for i, f in ipairs(renderList) do
         f()
     end
     plum.refresh()
@@ -85,19 +85,19 @@ end
 function update()    
     local i = 0
     while i < plum.timer.gap do
-        for _, f in ipairs(update_list) do
+        for _, f in ipairs(updateList) do
             f()
         end
         i = i + 1
     end
-    plum.setTitle(TITLE .. ' ' .. plum.timer.fps)
+    plum.setTitle(Title .. ' ' .. plum.timer.fps)
 end
 
 function intro()
     while not plum.key.Enter.pressed do
         plum.video:solidRect(0, 0, plum.video.width, plum.video.height, plum.color.Black)
-        plum.video:solidRect(1, 10, 6, 50, PLAYER_ONE_COLOR)
-        plum.video:solidRect(plum.video.width - 6, 10, plum.video.width - 1, 50, PLAYER_TWO_COLOR)
+        plum.video:solidRect(1, 10, 6, 50, PlayerOneColor)
+        plum.video:solidRect(plum.video.width - 6, 10, plum.video.width - 1, 50, PlayerTwoColor)
         resource.font.plain:print(10, 10, "Controls:")
         resource.font.plain:print(10, 20, "A/D = Move")
         resource.font.plain:print(10, 30, "W = Jump")
@@ -108,7 +108,7 @@ function intro()
         resource.font.plain:printRight(plum.video.width - 10, 30, "Up = Jump")
         resource.font.plain:printRight(plum.video.width - 10, 40, "Down = Eat")
         
-        resource.font.big_green:printCenter(plum.video.width / 2, plum.video.height / 2 - 30, "Maximum Yak Maniac")
+        resource.font.bigGreen:printCenter(plum.video.width / 2, plum.video.height / 2 - 30, "Maximum Yak Maniac")
         resource.font.big:printCenter(plum.video.width / 2, plum.video.height / 2 + 30, "Press Enter")
         
         resource.font.plain:printCenter(plum.video.width / 2, plum.video.height - resource.font.plain.height, "by Overkill (Music by mad)")
@@ -116,17 +116,17 @@ function intro()
     end
     plum.key.Enter.pressed = false
 
-    render_list = {}
-    update_list = {}
+    renderList = {}
+    updateList = {}
     world = World()
     world:register()
     players = {
-        Player(80, controls[1], PLAYER_ONE_COLOR);
-        Player(240, controls[2], PLAYER_TWO_COLOR);
+        Player(80, controls[1], PlayerOneColor);
+        Player(240, controls[2], PlayerTwoColor);
     }
     
-    players[1].z_index = 1
-    players[2].z_index = 2
+    players[1].z = 1
+    players[2].z = 2
     players[2].timer = players[2].timer
     
     table.insert(world.sprites, players[1])
@@ -136,7 +136,7 @@ end
 resource.song.city:play()
 
 --vx.SetResolution(320, 240)
-plum.setTitle(TITLE)
+plum.setTitle(Title)
 
 intro()
 

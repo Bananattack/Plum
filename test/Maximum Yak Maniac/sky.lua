@@ -2,8 +2,8 @@ do local Self = {}
     function Sky()
         local self = setmetatable({}, {__index = Self})
         self.clouds = {{}, {}}
-        self.cloud_movement_speed = { 0.0625, 0.50 }
-        self.spawn_offset = { plum.video.width + 50, plum.video.width + 100 }
+        self.cloudMovementSpeed = { 0.0625, 0.50 }
+        self.spawnOffset = { plum.video.width + 50, plum.video.width + 100 }
         return self
     end
     
@@ -19,13 +19,13 @@ do local Self = {}
     function Self:update()
         -- Spawn new clouds
         for layer = 1, 2 do
-            if self.spawn_offset[layer] < world.x + plum.video.width then
-                self.spawn_offset[layer] = world.x + plum.video.width
+            if self.spawnOffset[layer] < world.x + plum.video.width then
+                self.spawnOffset[layer] = world.x + plum.video.width
             end
   
             -- Move clouds
             for i, cloud in ipairs(self.clouds[layer]) do
-                cloud.x = cloud.x - self.cloud_movement_speed[cloud.layer]
+                cloud.x = cloud.x - self.cloudMovementSpeed[cloud.layer]
                 if cloud.x + cloud.image.width < world.x - 10 then
                     cloud.dispose = true
                 end
@@ -35,15 +35,15 @@ do local Self = {}
                 local c = nil
                 local t = 0
                 if layer == 1 then
-                    c = Cloud(self.spawn_offset[layer], math.random(0,  80), layer)
+                    c = Cloud(self.spawnOffset[layer], math.random(0,  80), layer)
                 elseif layer == 2 then
-                    c = Cloud(self.spawn_offset[layer], math.random(100, plum.video.height - 80), layer)
+                    c = Cloud(self.spawnOffset[layer], math.random(100, plum.video.height - 80), layer)
                 end
                 if c then
                     if layer == 1 then
-                        self.spawn_offset[layer] = self.spawn_offset[layer] + math.random(300, 600)
+                        self.spawnOffset[layer] = self.spawnOffset[layer] + math.random(300, 600)
                     elseif layer == 2 then
-                        self.spawn_offset[layer] = self.spawn_offset[layer] + math.random(600, 900)
+                        self.spawnOffset[layer] = self.spawnOffset[layer] + math.random(600, 900)
                     end
                     table.insert(self.clouds[layer], c)
                 end

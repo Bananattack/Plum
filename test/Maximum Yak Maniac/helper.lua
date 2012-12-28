@@ -12,18 +12,18 @@ function randomItem(t)
     end
 end
 
-function createSpriteFrame(tex, replace, color)
-    local tex_left = plum.Image(tex.canvas)
-    local tex_right = plum.Image(tex.canvas)
+function createSpriteFrame(img, replace, color)
+    local left = plum.Image(img.canvas)
+    local right = plum.Image(img.canvas)
     
-    tex_left.canvas:replaceColor(PLAYER_ONE_COLOR, color)
-    tex_left:refresh()
-    tex_right.canvas:replaceColor(PLAYER_ONE_COLOR, color)
-    tex_right.canvas:flip(true, false)
-    tex_right:refresh()
+    left.canvas:replaceColor(PlayerOneColor, color)
+    left:refresh()
+    right.canvas:replaceColor(PlayerOneColor, color)
+    right.canvas:flip(true, false)
+    right:refresh()
     
     return {
-        left = tex_left;
-        right = tex_right;
+        left = left;
+        right = right;
     }
 end

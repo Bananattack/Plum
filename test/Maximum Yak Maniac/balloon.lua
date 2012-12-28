@@ -7,12 +7,12 @@ do local Self = {}
         self.frame:refresh()
         
         self.hitbox = { width = 64, height = 64 }
-        self.z_index = 50
-        self.is_edible = true
+        self.z = 50
+        self.isEdible = true
         self.x = x
         self.y = y
-        self.base_angle = math.random(-50, 50)
-        self.angle = self.base_angle
+        self.baseAngle = math.random(-50, 50)
+        self.angle = self.baseAngle
         self.timer = 0
         self.scale = math.random(50, 150) / 100
         self.score = 5000
@@ -21,7 +21,7 @@ do local Self = {}
     
     function Self:update()
         self.timer = self.timer + 1
-        self.angle = self.base_angle + math.sin(self.timer / 20) * 30
+        self.angle = self.baseAngle + math.sin(self.timer / 20) * 30
         
         if self.x + self.frame.width < world.x then
             self.dispose = true
@@ -41,6 +41,6 @@ do local Self = {}
             table.insert(world.sprites, Roids(world.x + math.random(0, plum.video.width), math.random(1, 10)))
         end
         player:addScore(self.score)
-        resource.sound.balloon_die:play()
+        resource.sound.balloonDeath:play()
     end 
 end
