@@ -1,9 +1,3 @@
-#include <iostream>
-#include <iomanip>
-#include <cstring>
-#include <fstream>
-#include <cstdio>
-
 #include <plaid/audio/implementation.h>
 
 #include <modplug.h>
@@ -11,14 +5,13 @@
 
 #include "../../core/file.h"
 
-
 namespace
 {
     class ModplugStream : public plaidgadget::AudioStream
     {
         public:
             ModplugStream(plaidgadget::String fn, bool loop)
-                : loop(loop), finished(true), valid(false)
+                : loop(loop), finished(true)
             {
                 {
                     std::unique_ptr<plum::File> file(new plum::File(plaidgadget::ToStdString(fn), plum::FileRead));
@@ -43,14 +36,13 @@ namespace
                     output.channels = settings.mChannels;
                     output.rate = settings.mFrequency;
 
-                    valid = true;
                     finished = false;
                 }
             }
 
             virtual ~ModplugStream()
             {
-                if(valid)
+                if(mod)
                 {
                     ModPlug_Unload(mod);
                 }
@@ -58,7 +50,7 @@ namespace
 
             bool success()
             {
-                return valid;
+                return mod != nullptr;
             }
 
             virtual plaidgadget::AudioFormat format()
@@ -82,7 +74,7 @@ namespace
                     return;
                 }
 
-                if(!valid || finished)
+                if(!mod || finished)
                 {
                     chunk.silence();
                     return;
@@ -98,15 +90,17 @@ namespace
                 }
 
                 // Create pointers to 16-bit data
-                short* d16[PG_MAX_CHANNELS];
+                int16_t* d16[PG_MAX_CHANNELS];
                 for(plaidgadget::Uint32 i = 0; i < chunk.format().channels; ++i)
                 {
-                    d16[i] = (short*) chunk.start(i);
+                    d16[i] = (int16_t*) chunk.start(i);
                 }
 
                 while(true)
                 {
-                    int samples = ModPlug_Read(mod, &buffer[0], (need - have) * chunk.format().channels * 2) / chunk.format().channels / 2;
+                    int samples = ModPlug_Read(mod, buffer.data(),
+                        (need - have) * chunk.format().channels * sizeof(int16_t)
+                    ) / chunk.format().channels / sizeof(int16_t);
 
                     if(samples < 0)
                     {
@@ -115,7 +109,7 @@ namespace
                     }
                     if(samples == 0)
                     {
-                        //File's end
+                        // File's end
                         if(loop)
                         {
                             ModPlug_Seek(mod, 0);
@@ -130,7 +124,7 @@ namespace
 
                     for(plaidgadget::Uint32 i = 0; i < chunk.format().channels; ++i)
                     {
-                        for(size_t j = 0; j < samples; ++j)
+                        for(int j = 0; j < samples; ++j)
                         {
                             d16[i][j] = buffer[j * chunk.format().channels + i];
                         }
@@ -144,29 +138,28 @@ namespace
                     }
                 }
 
-                //Cutoff marker if necessary
+                // Cutoff marker if necessary
                 if(have < need)
                 {
                     chunk.cutoff(have);
                 }
-
-                //Upsample data to 24-bit Sint32s
+                // Upsample data to 24-bit Sint32s
                 for(plaidgadget::Uint32 i = 0; i < chunk.format().channels; ++i)
                 {
                     plaidgadget::Sint32* start = chunk.start(i);
                     plaidgadget::Sint32* op = start + have;
-                    short* ip = d16[i];
+                    int16_t* ip = d16[i];
                     while(op != start)
                     {
-                        *--op = 256 * plaidgadget::Sint32(*--ip);
+                        *--op = plaidgadget::Sint32(*--ip) << 8;
                     }
                 }
             }
 
         private:
-            bool loop, finished, valid;
+            bool loop, finished;
             plaidgadget::AudioFormat output;
-            std::vector<uint16_t> buffer;
+            std::vector<int16_t> buffer;
             ModPlugFile* mod;
     };
 
