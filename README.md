@@ -19,7 +19,7 @@ It supports all the basic needs of a simple 2D game:
 * Timing
 * Keyboard input
 * Mouse input
-* Joypad input
+* Joypad input (forthcoming)
 
 
 Compiling
@@ -38,3 +38,4 @@ License
 **Plum** is released under the **Modified BSD License**. It frees you to contribute, fork your own version, statically link in projects of different licenses, to use it in commercial projects, among other things -- so long as you remember to follow the conditions of the license.
 
 Please read the `license.md` file included in this repository for full details.
+m
