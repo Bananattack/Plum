@@ -1,5 +1,7 @@
 #include "file.h"
 
+#include <iostream>
+
 namespace plum
 {
     namespace
@@ -177,25 +179,25 @@ namespace plum
         do
         {
             char buffer[256];
-            std::fgets(buffer, sizeof(buffer), file);
-            size_t len = std::strlen(buffer);
-
-            if(!len)
+            if(!std::fgets(buffer, sizeof(buffer), file))
             {
                 eof = true;
             }
-            else if(buffer[len - 2] == '\r' && buffer[len - 1] == '\n')
+            else
             {
-                buffer[len - 2] = 0;
-                eol = true;
-            }
-            else if(buffer[len - 1] == '\r' || buffer[len - 1] == '\n')
-            {
-                buffer[len - 1] = 0;
-                eol = true;
-            }
-
-            value.append(buffer);
+                size_t len = std::strlen(buffer);
+                if(buffer[len - 2] == '\r' && buffer[len - 1] == '\n')
+                {
+                    buffer[len - 2] = 0;
+                    eol = true;
+                }
+                else if(buffer[len - 1] == '\r' || buffer[len - 1] == '\n')
+                {
+                    buffer[len - 1] = 0;
+                    eol = true;
+                }
+                value.append(buffer);
+            }            
         } while(!eol && !eof);
 
         return !eof || value.length() > 0;
