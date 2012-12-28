@@ -20,7 +20,7 @@ namespace plum
 
         int create(lua_State* L)
         {
-            if((script::is<Image>(L, 1) || script::is<Image>(L, 1))
+            if((script::is<Image>(L, 1) || script::is<Canvas>(L, 1))
                 && script::is<int>(L, 2) && script::is<int>(L, 3))
             {
                 int w = script::get<int>(L, 2);

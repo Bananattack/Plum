@@ -85,11 +85,11 @@ namespace plum
                     {
                         luaL_error(L, "%s 'scale' must be a plum.Point or nil. Got %s value instead.", CONSTRUCT_ERR, luaL_typename(L, -1));
                     }
-                    t->position = script::ptr<Point>(L, -1);
+                    t->scale = script::ptr<Point>(L, -1);
                 }
                 else
                 {
-                    t->position = &UnitPoint;
+                    t->scale = &UnitPoint;
                 }
                 w->setAttribute(L, REF_SCALE);
                 lua_pop(L, 1);
@@ -106,7 +106,7 @@ namespace plum
                 }
                 else
                 {
-                    t->position = &ZeroPoint;
+                    t->pivot = &ZeroPoint;
                 }
                 w->setAttribute(L, REF_PIVOT);
                 lua_pop(L, 1);
