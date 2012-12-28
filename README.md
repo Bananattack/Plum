@@ -35,7 +35,6 @@ Compiling
 License
 -------
 
-**Plum** is released under the **Modified BSD License**. It frees you to contribute, fork your own version, statically link in projects of different licenses, to use it in commercial projects, among other things -- so long as you remember to follow the conditions of the license.
+**Plum** is released under the [BSD 3-Clause License](http://opensource.org/licenses/BSD-3-Clause):. It frees you to contribute, to create derivative works, to use it in commercial projects, among other things -- so long as you remember to follow the conditions of the license, which are pretty friendly.
 
 Please read the `license.md` file included in this repository for full details.
-m
