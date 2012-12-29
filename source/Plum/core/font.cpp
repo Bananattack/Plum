@@ -84,7 +84,7 @@ namespace plum
         }
     }
 
-    void Font::printChar(int x, int y, char c, BlendMode mode, Color tint)
+    void Font::printChar(int x, int y, char c, BlendMode mode)
     {
         // Only allow printable characters.
         // Don't need to check for >= 128 because that would make c negative.
@@ -94,10 +94,10 @@ namespace plum
         int fx = ((c - 32) % FontColumns) * (width + 1) + 1;
         int fy = ((c - 32) / FontColumns) * (height + 1) + 1;
 
-        image.blitRegion(fx, fy, fx + width - 1, fy + height - 1, x, y, mode, tint);
+        image.blitRegion(fx, fy, fx + width - 1, fy + height - 1, x, y, mode);
     }
 
-    void Font::print(int x1, int y, const std::string& s, BlendMode mode, Color tint)
+    void Font::print(int x1, int y, const std::string& s, BlendMode mode)
     {
         int x = x1;
         for(unsigned int i = 0; i < s.length(); ++i)
@@ -113,13 +113,13 @@ namespace plum
             }
             else if(s[i] >= 32)
             {
-                printChar(x, y, s[i], mode, tint);
+                printChar(x, y, s[i], mode);
                 x += glyphWidth[s[i] - 32] + letterSpacing;
             }
         }
     }
 
-    void Font::printRight(int x1, int y, const std::string& s, BlendMode mode, Color tint)
+    void Font::printRight(int x1, int y, const std::string& s, BlendMode mode)
     {
         int x = x1;
         int lineIndex = 0;
@@ -140,13 +140,13 @@ namespace plum
             }
             else if(s[i] >= 32)
             {
-                printChar(x - ofs, y, s[i], mode, tint);
+                printChar(x - ofs, y, s[i], mode);
                 x += glyphWidth[s[i] - 32] + letterSpacing;
             }
         }
     }
 
-    void Font::printCenter(int x1, int y, const std::string& s, BlendMode mode, Color tint)
+    void Font::printCenter(int x1, int y, const std::string& s, BlendMode mode)
     {
         int x = x1;
         int lineIndex = 0;
@@ -167,7 +167,7 @@ namespace plum
             }
             else if(s[i] >= 32)
             {
-                printChar(x - ofs, y, s[i], mode, tint);
+                printChar(x - ofs, y, s[i], mode);
                 x += glyphWidth[s[i] - 32] + letterSpacing;
             }
         }

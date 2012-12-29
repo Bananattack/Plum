@@ -62,9 +62,8 @@ namespace plum
             auto x = script::get<int>(L, 2);
             auto y = script::get<int>(L, 3);
             auto mode = BlendMode(script::get<int>(L, 4, BlendPreserve));
-            auto tint = Color(script::get<int>(L, 5, Color::White));
 
-            img->blit(x, y, mode, tint);
+            img->blit(x, y, mode);
 
             return 0;
         }
@@ -89,9 +88,8 @@ namespace plum
             auto dx = script::get<int>(L, 6);
             auto dy = script::get<int>(L, 7);
             auto mode = BlendMode(script::get<int>(L, 8, BlendPreserve));
-            auto tint = Color(script::get<int>(L, 9, Color::White));
 
-            img->blitRegion(sx, sy, sx2, sy2, dx, dy, mode, tint);
+            img->blitRegion(sx, sy, sx2, sy2, dx, dy, mode);
 
             return 0;
         }
@@ -104,9 +102,8 @@ namespace plum
             auto width = script::get<int>(L, 4);
             auto height = script::get<int>(L, 5);
             auto mode = BlendMode(script::get<int>(L, 6, BlendPreserve));
-            auto tint = Color(script::get<int>(L, 7, Color::White));
 
-            img->scaleBlit(x, y, width, height, mode, tint);
+            img->scaleBlit(x, y, width, height, mode);
 
             return 0;
         }
@@ -123,9 +120,8 @@ namespace plum
             auto scaledWidth = script::get<int>(L, 8);
             auto scaledHeight = script::get<int>(L, 9);
             auto mode = BlendMode(script::get<int>(L, 10, BlendPreserve));
-            auto tint = Color(script::get<int>(L, 11, Color::White));
 
-            img->scaleBlitRegion(sx, sy, sx2, sy2, dx, dy, scaledWidth, scaledHeight, mode, tint);
+            img->scaleBlitRegion(sx, sy, sx2, sy2, dx, dy, scaledWidth, scaledHeight, mode);
 
             return 0;
         }
@@ -137,9 +133,8 @@ namespace plum
             auto y = script::get<int>(L, 3);
             auto angle = script::get<double>(L, 4);
             auto mode = BlendMode(script::get<int>(L, 5, BlendPreserve));
-            auto tint = Color(script::get<int>(L, 6, Color::White));
 
-            img->rotateBlit(x, y, angle, mode, tint);
+            img->rotateBlit(x, y, angle, mode);
 
             return 0;
         }
@@ -155,9 +150,8 @@ namespace plum
             auto dy = script::get<int>(L, 7);
             auto angle = script::get<double>(L, 8);
             auto mode = BlendMode(script::get<int>(L, 9, BlendPreserve));
-            auto tint = Color(script::get<int>(L, 10, Color::White));
 
-            img->rotateBlitRegion(sx, sy, sx2, sy2, dx, dy, angle, mode, tint);
+            img->rotateBlitRegion(sx, sy, sx2, sy2, dx, dy, angle, mode);
             return 0;
         }
 
@@ -169,9 +163,8 @@ namespace plum
             auto angle = script::get<double>(L, 4);
             auto scale = script::get<double>(L, 5);
             auto mode = BlendMode(script::get<int>(L, 6, BlendPreserve));
-            auto tint = Color(script::get<int>(L, 7, Color::White));
 
-            img->rotateScaleBlit(x, y, angle, scale, mode, tint);
+            img->rotateScaleBlit(x, y, angle, scale, mode);
 
             return 0;
         }
@@ -188,9 +181,8 @@ namespace plum
             auto angle = script::get<double>(L, 8);
             auto scale = script::get<double>(L, 9);
             auto mode = BlendMode(script::get<int>(L, 10, BlendPreserve));
-            auto tint = Color(script::get<int>(L, 11, Color::White));
 
-            img->rotateScaleBlitRegion(sx, sy, sx2, sy2, dx, dy, angle, scale, mode, tint);
+            img->rotateScaleBlitRegion(sx, sy, sx2, sy2, dx, dy, angle, scale, mode);
             return 0;
         }
 

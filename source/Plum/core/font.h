@@ -21,11 +21,11 @@ namespace plum
             int getHeight() const;
 
             void enableVariableWidth();
-            void printChar(int x, int y, char c, BlendMode mode, Color tint);
 
-            void print(int x, int y, const std::string& s, BlendMode mode = BlendPreserve, Color tint = Color::White);
-            void printRight(int x, int y, const std::string& s, BlendMode mode = BlendPreserve, Color tint = Color::White);
-            void printCenter(int x, int y, const std::string& s, BlendMode mode = BlendPreserve, Color tint = Color::White);
+            void printChar(int x, int y, char c, BlendMode mode);
+            void print(int x, int y, const std::string& s, BlendMode mode);
+            void printRight(int x, int y, const std::string& s, BlendMode mode);
+            void printCenter(int x, int y, const std::string& s, BlendMode mode);
             
             int lineWidth(const std::string& s, int lineIndex);
             int lineCount(const std::string& s);

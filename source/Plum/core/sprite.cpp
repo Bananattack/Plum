@@ -75,14 +75,13 @@ namespace plum
         return image_.canvas().get(fx + x, fy + y);
     }
 
-    void Sprite::blitFrame(int x, int y, int f, BlendMode mode, Color tint)
+    void Sprite::blitFrame(int x, int y, int f, BlendMode mode)
     {
         if(!columns) return;
 
         int fx = (f % columns) * (frameWidth + padding) + padding;
         int fy = (f / columns) * (frameHeight + padding) + padding;
-        image_.blitRegion(fx, fy, fx + frameWidth - 1, fy + frameHeight - 1,
-                x, y, mode, tint);
+        image_.blitRegion(fx, fy, fx + frameWidth - 1, fy + frameHeight - 1, x, y, mode);
     }
 
     void Sprite::rawBlitFrame(int x, int y, int f, double angle, double scale)
@@ -91,7 +90,6 @@ namespace plum
 
         int fx = (f % columns) * (frameWidth + padding) + padding;
         int fy = (f / columns) * (frameHeight + padding) + padding;
-        image_.rawBlitRegion(fx, fy, fx + frameWidth - 1, fy + frameHeight - 1,
-                x, y, 0, 1);
+        image_.rawBlitRegion(fx, fy, fx + frameWidth - 1, fy + frameHeight - 1, x, y, 0, 1);
     }
 }

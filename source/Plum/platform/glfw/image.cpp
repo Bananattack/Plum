@@ -75,29 +75,26 @@ namespace plum
         glBindTexture(target, textureID); 
     }
 
-    void Image::blit(int x, int y, BlendMode mode, Color tint)
+    void Image::blit(int x, int y, BlendMode mode)
     {
-        scaleBlitRegion(0, 0, canvas_.getWidth(), canvas_.getHeight(), x, y, canvas_.getWidth(), canvas_.getHeight(), mode, tint);
+        scaleBlitRegion(0, 0, canvas_.getWidth(), canvas_.getHeight(), x, y, canvas_.getWidth(), canvas_.getHeight(), mode);
     }
 
-    void Image::scaleBlit(int x, int y, int width, int height, BlendMode mode, Color tint)
+    void Image::scaleBlit(int x, int y, int width, int height, BlendMode mode)
     {
-        scaleBlitRegion(0, 0, canvas_.getWidth(), canvas_.getHeight(), x, y, width, height, mode, tint);
+        scaleBlitRegion(0, 0, canvas_.getWidth(), canvas_.getHeight(), x, y, width, height, mode);
     }
 
     void Image::blitRegion(int sourceX, int sourceY, int sourceX2, int sourceY2,
-                    int destX, int destY, BlendMode mode, Color tint)
+                    int destX, int destY, BlendMode mode)
     {
         scaleBlitRegion(sourceX, sourceY, sourceX2, sourceY2, destX, destY,
-            std::abs(sourceX2 - sourceX) + 1, std::abs(sourceY2 - sourceY) + 1, mode, tint);
+            std::abs(sourceX2 - sourceX) + 1, std::abs(sourceY2 - sourceY) + 1, mode);
     }
 
     void Image::scaleBlitRegion(int sourceX, int sourceY, int sourceX2, int sourceY2,
-                    int destX, int destY, int scaledWidth, int scaledHeight, BlendMode mode, Color tint)
+                    int destX, int destY, int scaledWidth, int scaledHeight, BlendMode mode)
     {
-        uint8_t r, g, b, a;
-        tint.channels(r, g, b, a);
-
         if(sourceX > sourceX2)
         {
             std::swap(sourceX, sourceX2);
@@ -121,7 +118,7 @@ namespace plum
         glPushMatrix();
         bind();
 
-        useHardwareColor(r, g, b, a);
+        useHardwareColor(255, 255, 255, 255);
         glTranslated(destX, destY, 0);
 
 
@@ -153,28 +150,25 @@ namespace plum
         glPopMatrix();
     }
 
-    void Image::rotateBlit(int x, int y, double angle, BlendMode mode, Color tint)
+    void Image::rotateBlit(int x, int y, double angle, BlendMode mode)
     {
-        rotateScaleBlitRegion(0, 0, canvas_.getWidth(), canvas_.getHeight(), x, y, angle, 1.0, mode, tint);
+        rotateScaleBlitRegion(0, 0, canvas_.getWidth(), canvas_.getHeight(), x, y, angle, 1.0, mode);
     }
 
-    void Image::rotateScaleBlit(int x, int y, double angle, double scale, BlendMode mode, Color tint)
+    void Image::rotateScaleBlit(int x, int y, double angle, double scale, BlendMode mode)
     {
-        rotateScaleBlitRegion(0, 0, canvas_.getWidth(), canvas_.getHeight(), x, y, angle, scale, mode, tint);
+        rotateScaleBlitRegion(0, 0, canvas_.getWidth(), canvas_.getHeight(), x, y, angle, scale, mode);
     }
 
     void Image::rotateBlitRegion(int sourceX, int sourceY, int sourceX2, int sourceY2,
-                    int destX, int destY, double angle, BlendMode mode, Color tint)
+                    int destX, int destY, double angle, BlendMode mode)
     {
-        rotateScaleBlitRegion(sourceX, sourceY, sourceX2, sourceY2, destX, destY, angle, 1.0, mode, tint);
+        rotateScaleBlitRegion(sourceX, sourceY, sourceX2, sourceY2, destX, destY, angle, 1.0, mode);
     }
 
     void Image::rotateScaleBlitRegion(int sourceX, int sourceY, int sourceX2, int sourceY2,
-                    int destX, int destY, double angle, double scale, BlendMode mode, Color tint)
+                    int destX, int destY, double angle, double scale, BlendMode mode)
     {
-        uint8_t r, g, b, a;
-        tint.channels(r, g, b, a);
-
         if(sourceX > sourceX2)
         {
             std::swap(sourceX, sourceX2);
@@ -201,7 +195,7 @@ namespace plum
         glPushMatrix();
         bind();
 
-        useHardwareColor(r, g, b, a);
+        useHardwareColor(255, 255, 255, 255);
         glTranslated(destX + width / 2.0, destY + height / 2.0, 0.0);
         glRotated(angle, 0.0, 0.0, 1.0);
         glTranslated(-width / 2.0, -height / 2.0, 0.0);
