@@ -1,3 +1,10 @@
+#ifdef _WIN32
+#define NOMINMAX
+#include <windows.h>
+#else
+#include <unistd.h>
+#endif
+
 #include "../core/color.h"
 #include "../core/input.h"
 #include "../core/video.h"
@@ -35,6 +42,17 @@ namespace plum
             return 0;
         }
 
+        int sleep(lua_State* L)
+        {
+            auto ms = script::get<int>(L, 1);
+#ifdef _WIN32
+            Sleep(ms);
+#else
+            usleep(ms * 1000);
+#endif
+            return 0;
+        }
+
         int refresh(lua_State* L)
         {
             auto& script = script::instance(L);
@@ -56,10 +74,10 @@ namespace plum
 
         int rgb(lua_State* L)
         {
-            int r = script::get<int>(L, 1);
-            int g = script::get<int>(L, 2);
-            int b = script::get<int>(L, 3);
-            int a = script::get<int>(L, 4, 255);
+            auto r = script::get<int>(L, 1);
+            auto g = script::get<int>(L, 2);
+            auto b = script::get<int>(L, 3);
+            auto a = script::get<int>(L, 4, 255);
             script::push(L, int(plum::rgb(r, g, b, a)));
             return 1;
         }
@@ -77,10 +95,10 @@ namespace plum
 
         int hsv(lua_State* L)
         {
-            int h = script::get<int>(L, 1);
-            int s = script::get<int>(L, 2);
-            int v = script::get<int>(L, 3);
-            int a = script::get<int>(L, 4, 255);
+            auto h = script::get<int>(L, 1);
+            auto s = script::get<int>(L, 2);
+            auto v = script::get<int>(L, 3);
+            auto a = script::get<int>(L, 4, 255);
             script::push(L, int(plum::hsv(h, s, v, a)));
             return 1;
         }
@@ -92,6 +110,7 @@ namespace plum
         {
             const luaL_Reg functions[] = {
                 {"exit", exit},
+                {"sleep", sleep},
                 {"refresh", refresh},
                 {"setTitle", setTitle},
                 {nullptr, nullptr},

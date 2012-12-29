@@ -90,6 +90,7 @@ function update()
         end
         i = i + 1
     end
+    plum.sleep(10)
     plum.setTitle(Title .. ' ' .. plum.timer.fps)
 end
 
