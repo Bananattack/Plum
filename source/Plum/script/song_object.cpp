@@ -63,14 +63,14 @@ namespace plum
             return 0;
         }
 
-        int getplaying(lua_State* L)
+        int get_playing(lua_State* L)
         {
             auto chan = script::ptr<Self>(L, 1);
             script::push(L, chan->isPlaying());
             return 1;
         }
 
-        int setplaying(lua_State* L)
+        int set_playing(lua_State* L)
         {
             auto chan = script::ptr<Self>(L, 1);
             auto playing = script::get<bool>(L, 2);
@@ -86,14 +86,14 @@ namespace plum
             return 0;
         }
 
-        int getvolume(lua_State* L)
+        int get_volume(lua_State* L)
         {
             auto chan = script::ptr<Self>(L, 1);
             script::push(L, chan->getVolume());
             return 1;
         }
 
-        int setvolume(lua_State* L)
+        int set_volume(lua_State* L)
         {
             auto chan = script::ptr<Self>(L, 1);
             auto value = script::get<double>(L, 2);
@@ -120,10 +120,10 @@ namespace plum
                 {"__gc", gc},
                 {"play", play},
                 {"stop", stop},
-                {"getplaying", getplaying},
-                {"setplaying", setplaying},
-                {"getvolume", getvolume},
-                {"setvolume", setvolume},
+                {"get_playing", get_playing},
+                {"set_playing", set_playing},
+                {"get_volume", get_volume},
+                {"set_volume", set_volume},
                 {nullptr, nullptr}
             };
             luaL_setfuncs(L, functions, 0);

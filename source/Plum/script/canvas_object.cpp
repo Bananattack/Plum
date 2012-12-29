@@ -434,7 +434,7 @@ namespace plum
             return 1;
         }
 
-        int getwidth(lua_State* L)
+        int get_width(lua_State* L)
         {
             auto canvas = script::ptr<Self>(L, 1);
             script::push(L, canvas->getWidth());
@@ -442,7 +442,7 @@ namespace plum
             return 1;
         }
 
-        int getheight(lua_State* L)
+        int get_height(lua_State* L)
         {
             auto canvas = script::ptr<Self>(L, 1);
             script::push(L, canvas->getHeight());
@@ -487,10 +487,10 @@ namespace plum
                 {"scaleBlitRegion", scaleBlitRegion},
                 {"rotateBlitRegion", rotateBlitRegion},
                 {"rotateScaleBlitRegion", rotateScaleBlitRegion},
-                {"gettrueWidth", getTrueWidth},
-                {"gettrueHeight", getTrueHeight},
-                {"getwidth", getwidth},
-                {"getheight", getheight},
+                {"get_trueWidth", getTrueWidth},
+                {"get_trueHeight", getTrueHeight},
+                {"get_width", get_width},
+                {"get_height", get_height},
                 {nullptr, nullptr}
             };
             luaL_setfuncs(L, functions, 0);

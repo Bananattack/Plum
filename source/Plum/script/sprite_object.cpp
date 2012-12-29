@@ -62,7 +62,7 @@ namespace plum
             return script::wrapped<Self>(L, 1)->tostring(L);
         }
 
-        int getimage(lua_State* L)
+        int get_image(lua_State* L)
         {
             auto spr = script::ptr<Sprite>(L, 1);
 
@@ -99,56 +99,56 @@ namespace plum
             return 1;
         }
 
-        int getframeWidth(lua_State* L)
+        int get_frameWidth(lua_State* L)
         {
             auto spr = script::ptr<Sprite>(L, 1);
             script::push(L, spr->getFrameWidth());
             return 1;
         }
 
-        int setframeWidth(lua_State* L)
+        int set_frameWidth(lua_State* L)
         {
             auto spr = script::ptr<Sprite>(L, 1);
             spr->setFrameWidth(script::get<int>(L, 2));
             return 0;
         }
 
-        int getframeHeight(lua_State* L)
+        int get_frameHeight(lua_State* L)
         {
             auto spr = script::ptr<Sprite>(L, 1);
             script::push(L, spr->getFrameHeight());
             return 1;
         }
 
-        int setframeHeight(lua_State* L)
+        int set_frameHeight(lua_State* L)
         {
             auto spr = script::ptr<Sprite>(L, 1);
             spr->setFrameHeight(script::get<int>(L, 2));
             return 0;
         }
 
-        int getpadding(lua_State* L)
+        int get_padding(lua_State* L)
         {
             auto spr = script::ptr<Sprite>(L, 1);
             script::push(L, spr->getPadding());
             return 1;
         }
 
-        int setpadding(lua_State* L)
+        int set_padding(lua_State* L)
         {
             auto spr = script::ptr<Sprite>(L, 1);
             spr->setPadding(script::get<int>(L, 2));
             return 0;
         }
 
-        int getcolumns(lua_State* L)
+        int get_columns(lua_State* L)
         {
             auto spr = script::ptr<Sprite>(L, 1);
             script::push(L, spr->getColumns());
             return 1;
         }
 
-        int setcolumns(lua_State* L)
+        int set_columns(lua_State* L)
         {
             auto spr = script::ptr<Sprite>(L, 1);
             spr->setColumns(script::get<int>(L, 2));
@@ -174,15 +174,15 @@ namespace plum
                 {"__tostring", tostring},
                 {"blitFrame", blitFrame},
                 {"getFramePixel", getFramePixel},
-                {"getframeWidth", getframeWidth},
-                {"setframeWidth", setframeWidth},
-                {"getframeHeight", getframeHeight},
-                {"setframeHeight", setframeHeight},
-                {"getpadding", getpadding},
-                {"setpadding", setpadding},
-                {"getcolumns", getcolumns},
-                {"setcolumns", setcolumns},
-                {"getimage", getimage},
+                {"get_frameWidth", get_frameWidth},
+                {"set_frameWidth", set_frameWidth},
+                {"get_frameHeight", get_frameHeight},
+                {"set_frameHeight", set_frameHeight},
+                {"get_padding", get_padding},
+                {"set_padding", set_padding},
+                {"get_columns", get_columns},
+                {"set_columns", set_columns},
+                {"get_image", get_image},
                 {nullptr, nullptr}
             };
             luaL_setfuncs(L, functions, 0);

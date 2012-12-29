@@ -52,49 +52,49 @@ namespace plum
             return 1;
         }
 
-        int getx(lua_State* L)
+        int get_x(lua_State* L)
         {
             auto r = script::ptr<Self>(L, 1);
             script::push(L, r->x);
             return 1;
         }
 
-        int gety(lua_State* L)
+        int get_y(lua_State* L)
         {
             auto r = script::ptr<Self>(L, 1);
             script::push(L, r->y);
             return 1;
         }
 
-        int getx2(lua_State* L)
+        int get_x2(lua_State* L)
         {
             auto r = script::ptr<Self>(L, 1);
             script::push(L, r->x + r->width);
             return 1;
         }
 
-        int gety2(lua_State* L)
+        int get_y2(lua_State* L)
         {
             auto r = script::ptr<Self>(L, 1);
             script::push(L, r->y + r->height);
             return 1;
         }
 
-        int getwidth(lua_State* L)
+        int get_width(lua_State* L)
         {
             auto r = script::ptr<Self>(L, 1);
             script::push(L, r->width);
             return 1;
         }
 
-        int getheight(lua_State* L)
+        int get_height(lua_State* L)
         {
             auto r = script::ptr<Self>(L, 1);
             script::push(L, r->height);
             return 1;
         }
 
-        int setx(lua_State* L)
+        int set_x(lua_State* L)
         {
             auto r = script::ptr<Self>(L, 1);
             auto val = script::get<double>(L, 2);
@@ -102,7 +102,7 @@ namespace plum
             return 0;
         }
 
-        int sety(lua_State* L)
+        int set_y(lua_State* L)
         {
             auto r = script::ptr<Self>(L, 1);
             auto val = script::get<double>(L, 2);
@@ -110,7 +110,7 @@ namespace plum
             return 0;
         }
 
-        int setx2(lua_State* L)
+        int set_x2(lua_State* L)
         {
             auto r = script::ptr<Self>(L, 1);
             auto val = script::get<double>(L, 2);
@@ -118,7 +118,7 @@ namespace plum
             return 0;
         }
 
-        int sety2(lua_State* L)
+        int set_y2(lua_State* L)
         {
             auto r = script::ptr<Self>(L, 1);
             auto val = script::get<double>(L, 2);
@@ -126,7 +126,7 @@ namespace plum
             return 0;
         }
 
-        int setwidth(lua_State* L)
+        int set_width(lua_State* L)
         {
             auto r = script::ptr<Self>(L, 1);
             auto val = script::get<double>(L, 2);
@@ -134,7 +134,7 @@ namespace plum
             return 1;
         }
 
-        int setheight(lua_State* L)
+        int set_height(lua_State* L)
         {
             auto r = script::ptr<Self>(L, 1);
             auto val = script::get<double>(L, 2);
@@ -216,18 +216,18 @@ namespace plum
                 {"__index", index},
                 {"__newindex", newindex},
                 {"__tostring", tostring},
-                {"getx", getx},
-                {"gety", gety},
-                {"getx2", getx2},
-                {"gety2", gety2},
-                {"getwidth", getwidth},
-                {"getheight", getheight},
-                {"setx", setx},
-                {"sety", sety},
-                {"setx2", setx2},
-                {"sety2", sety2},
-                {"setwidth", setwidth},
-                {"setheight", setheight},
+                {"get_x", get_x},
+                {"get_y", get_y},
+                {"get_x2", get_x2},
+                {"get_y2", get_y2},
+                {"get_width", get_width},
+                {"get_height", get_height},
+                {"set_x", set_x},
+                {"set_y", set_y},
+                {"set_x2", set_x2},
+                {"set_y2", set_y2},
+                {"set_width", set_width},
+                {"set_height", set_height},
                 {"setOrigin", setOrigin},
                 {"setSize", setSize},
                 {"setRegion", setRegion},

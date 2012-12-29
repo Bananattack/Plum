@@ -194,7 +194,7 @@ namespace plum
             return 1;
         }
 
-        int getwidth(lua_State* L)
+        int get_width(lua_State* L)
         {
             auto img = script::ptr<Self>(L, 1);
             script::push(L, img->canvas().getWidth());
@@ -202,7 +202,7 @@ namespace plum
             return 1;
         }
 
-        int getheight(lua_State* L)
+        int get_height(lua_State* L)
         {
             auto img = script::ptr<Self>(L, 1);
             script::push(L, img->canvas().getHeight());
@@ -226,7 +226,7 @@ namespace plum
             return 1;
         }
 
-        int getcanvas(lua_State* L)
+        int get_canvas(lua_State* L)
         {
             auto img = script::ptr<Self>(L, 1); 
 
@@ -266,11 +266,11 @@ namespace plum
                 {"rotateScaleBlit", rotateScaleBlit},
                 {"rotateScaleBlitRegion", rotateScaleBlitRegion},
                 {"refresh", refresh},
-                {"getwidth", getwidth},
-                {"getheight", getheight},
-                {"getcanvas", getcanvas},
-                {"gettrueWidth", getTrueWidth},
-                {"gettrueHeight", getTrueHeight},
+                {"get_width", get_width},
+                {"get_height", get_height},
+                {"get_canvas", get_canvas},
+                {"get_trueWidth", getTrueWidth},
+                {"get_trueHeight", getTrueHeight},
                 {nullptr, nullptr}
             };
             luaL_setfuncs(L, functions, 0);

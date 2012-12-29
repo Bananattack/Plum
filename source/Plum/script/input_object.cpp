@@ -37,14 +37,14 @@ namespace plum
             return script::wrapped<Self>(L, 1)->tostring(L);
         }
 
-        int getpressed(lua_State* L)
+        int get_pressed(lua_State* L)
         {
             auto inp = script::ptr<Input>(L, 1);
             script::push(L, inp->isPressed());
             return 1;
         }
 
-        int setpressed(lua_State* L)
+        int set_pressed(lua_State* L)
         {
             auto inp = script::ptr<Input>(L, 1);
             inp->setPressed(script::get<bool>(L, 2));
@@ -66,8 +66,8 @@ namespace plum
                 {"__index", index},
                 {"__newindex", newindex},
                 {"__tostring", tostring},
-                {"getpressed", getpressed},
-                {"setpressed", setpressed},
+                {"get_pressed", get_pressed},
+                {"set_pressed", set_pressed},
                 {nullptr, nullptr}
             };
             luaL_setfuncs(L, functions, 0);

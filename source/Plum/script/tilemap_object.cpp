@@ -51,14 +51,14 @@ namespace plum
             return script::wrapped<Self>(L, 1)->tostring(L);
         }
 
-        int getwidth(lua_State* L)
+        int get_width(lua_State* L)
         {
             auto m = script::ptr<Tilemap>(L, 1);
             script::push(L, m->getWidth());
             return 1;
         }
 
-        int getheight(lua_State* L)
+        int get_height(lua_State* L)
         {
             auto m = script::ptr<Tilemap>(L, 1);
             script::push(L, m->getHeight());
@@ -162,8 +162,8 @@ namespace plum
                 {"__index", index},
                 {"__newindex", newindex},
                 {"__tostring", tostring},
-                {"getwidth", getwidth},
-                {"getheight", getheight},
+                {"get_width", get_width},
+                {"get_height", get_height},
                 {"getTile", getTile},
                 {"setTile", setTile},
                 {"rect", rect},

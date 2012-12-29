@@ -9,7 +9,7 @@ namespace plum
         int timerGetField(lua_State* L)
         {
             std::string fieldName(script::get<const char*>(L, 2));
-            if(luaL_getmetafield(L, 1, std::string("get" + fieldName).c_str()))
+            if(luaL_getmetafield(L, 1, std::string("get_" + fieldName).c_str()))
             {
                 lua_pushvalue(L, 1);
                 lua_call(L, 1, 1);
@@ -21,7 +21,7 @@ namespace plum
         int timerSetField(lua_State* L)
         {
             std::string fieldName(script::get<const char*>(L, 2));
-            if(luaL_getmetafield(L, 1, std::string("get" + fieldName).c_str()))
+            if(luaL_getmetafield(L, 1, std::string("get_" + fieldName).c_str()))
             {
                 luaL_error(L, "Attempt to modify readonly field '%s' on plum_timer.", fieldName.c_str());
                 lua_pop(L, 1);
@@ -59,9 +59,9 @@ namespace plum
             { "__index", timerGetField },
             { "__newindex", timerSetField },
             { "__tostring",    timerToString },
-            { "gettime", timerGetTime },
-            { "getgap", timerGetGap },
-            { "getfps", timerGetFPS },
+            { "get_time", timerGetTime },
+            { "get_gap", timerGetGap },
+            { "get_fps", timerGetFPS },
             { nullptr, nullptr }
         };
     }

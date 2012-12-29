@@ -131,14 +131,14 @@ namespace plum
             return 1;
         }
 
-        int getwidth(lua_State* L)
+        int get_width(lua_State* L)
         {
             auto font = script::ptr<Self>(L, 1);
             script::push(L, font->getWidth());
             return 1;
         }
 
-        int getheight(lua_State* L)
+        int get_height(lua_State* L)
         {
             auto font = script::ptr<Self>(L, 1);
             script::push(L, font->getHeight());
@@ -169,8 +169,8 @@ namespace plum
                 {"printRight", printRight},
                 {"printCenter", printCenter},
                 {"wrapText", wrapText},
-                {"getwidth", getwidth},
-                {"getheight", getheight},
+                {"get_width", get_width},
+                {"get_height", get_height},
                 {nullptr, nullptr},
             };
             luaL_setfuncs(L, functions, 0);

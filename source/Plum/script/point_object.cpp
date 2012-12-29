@@ -50,21 +50,21 @@ namespace plum
             return 1;
         }
 
-        int getx(lua_State* L)
+        int get_x(lua_State* L)
         {
             auto p = script::ptr<Point>(L, 1);
             script::push(L, p->x);
             return 1;
         }
 
-        int gety(lua_State* L)
+        int get_y(lua_State* L)
         {
             auto p = script::ptr<Point>(L, 1);
             script::push(L, p->y);
             return 1;
         }
 
-        int setx(lua_State* L)
+        int set_x(lua_State* L)
         {
             auto p = script::ptr<Point>(L, 1);
             auto val = script::get<double>(L, 2);
@@ -72,7 +72,7 @@ namespace plum
             return 0;
         }
 
-        int sety(lua_State* L)
+        int set_y(lua_State* L)
         {
             auto p = script::ptr<Point>(L, 1);
             auto val = script::get<double>(L, 2);
@@ -108,10 +108,10 @@ namespace plum
                 {"__index", index},
                 {"__newindex", newindex},
                 {"__tostring", tostring},
-                {"getx", getx},
-                {"gety", gety},
-                {"setx", setx},
-                {"sety", sety},
+                {"get_x", get_x},
+                {"get_y", get_y},
+                {"set_x", set_x},
+                {"set_y", set_y},
                 {"setPoint", setPoint},
                 {nullptr, nullptr},
             };

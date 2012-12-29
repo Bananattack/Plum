@@ -172,14 +172,14 @@ namespace plum
             return script::wrapped<Self>(L, 1)->tostring(L);
         }
 
-        int getmirror(lua_State* L)
+        int get_mirror(lua_State* L)
         {
             auto t = script::ptr<Transform>(L, 1);
             script::push(L, t->mirror);
             return 1;
         }
 
-        int setmirror(lua_State* L)
+        int set_mirror(lua_State* L)
         {
             auto t = script::ptr<Transform>(L, 1);
             auto mirror = script::get<bool>(L, 2);
@@ -187,14 +187,14 @@ namespace plum
             return 0;
         }
 
-        int getangle(lua_State* L)
+        int get_angle(lua_State* L)
         {
             auto t = script::ptr<Transform>(L, 1);
             script::push(L, t->angle);
             return 1;
         }
 
-        int setangle(lua_State* L)
+        int set_angle(lua_State* L)
         {
             auto t = script::ptr<Transform>(L, 1);
             auto value = script::get<double>(L, 2);
@@ -202,14 +202,14 @@ namespace plum
             return 0;
         }
 
-        int getmode(lua_State* L)
+        int get_mode(lua_State* L)
         {
             auto t = script::ptr<Transform>(L, 1);
             script::push(L, (int) t->mode);
             return 1;
         }
 
-        int setmode(lua_State* L)
+        int set_mode(lua_State* L)
         {
             auto t = script::ptr<Transform>(L, 1);
             auto value = script::get<int>(L, 2);
@@ -217,14 +217,14 @@ namespace plum
             return 0;
         }
 
-        int gettint(lua_State* L)
+        int get_tint(lua_State* L)
         {
             auto t = script::ptr<Transform>(L, 1);
             script::push(L, (int) t->tint);
             return 1;
         }
 
-        int settint(lua_State* L)
+        int set_tint(lua_State* L)
         {
             auto t = script::ptr<Transform>(L, 1);
             auto value = script::get<int>(L, 2);
@@ -232,31 +232,31 @@ namespace plum
             return 0;
         }
 
-        int getposition(lua_State* L)
+        int get_position(lua_State* L)
         {
             script::wrapped<Transform>(L, 1)->getAttribute(L, REF_POSITION);
             return 1;
         }
 
-        int getclip(lua_State* L)
+        int get_clip(lua_State* L)
         {
             script::wrapped<Transform>(L, 1)->getAttribute(L, REF_CLIP);
             return 1;
         }
 
-        int getscale(lua_State* L)
+        int get_scale(lua_State* L)
         {
             script::wrapped<Transform>(L, 1)->getAttribute(L, REF_SCALE);
             return 1;
         }
 
-        int getpivot(lua_State* L)
+        int get_pivot(lua_State* L)
         {
             script::wrapped<Transform>(L, 1)->getAttribute(L, REF_PIVOT);
             return 1;
         }
 
-        int setposition(lua_State* L)
+        int set_position(lua_State* L)
         {
             auto wrapper = script::wrapped<Transform>(L, 1);
             if(lua_isnil(L, 2))
@@ -274,7 +274,7 @@ namespace plum
             return 0;
         }
 
-        int setclip(lua_State* L)
+        int set_clip(lua_State* L)
         {
             auto wrapper = script::wrapped<Transform>(L, 1);
             if(lua_isnil(L, 2))
@@ -292,7 +292,7 @@ namespace plum
             return 0;
         }
 
-        int setscale(lua_State* L)
+        int set_scale(lua_State* L)
         {
             auto wrapper = script::wrapped<Transform>(L, 1);
             if(lua_isnil(L, 2))
@@ -310,7 +310,7 @@ namespace plum
             return 0;
         }
 
-        int setpivot(lua_State* L)
+        int set_pivot(lua_State* L)
         {
             auto wrapper = script::wrapped<Transform>(L, 1);
             if(lua_isnil(L, 2))
@@ -349,22 +349,22 @@ namespace plum
                 {"__index", index},
                 {"__newindex", newindex},
                 {"__tostring", tostring},
-                {"getmirror", getmirror},
-                {"setmirror", setmirror},
-                {"getangle", getangle},
-                {"setangle", setangle},
-                {"getmode", getmode},
-                {"setmode", setmode},
-                {"gettint", gettint},
-                {"settint", settint},
-                {"getposition", getposition},
-                {"getclip", getclip},
-                {"getscale", getscale},
-                {"getpivot", getpivot},
-                {"setposition", setposition},
-                {"setclip", setclip},
-                {"setscale", setscale},
-                {"setpivot", setpivot},
+                {"get_mirror", get_mirror},
+                {"set_mirror", set_mirror},
+                {"get_angle", get_angle},
+                {"set_angle", set_angle},
+                {"get_mode", get_mode},
+                {"set_mode", set_mode},
+                {"get_tint", get_tint},
+                {"set_tint", set_tint},
+                {"get_position", get_position},
+                {"get_clip", get_clip},
+                {"get_scale", get_scale},
+                {"get_pivot", get_pivot},
+                {"set_position", set_position},
+                {"set_clip", set_clip},
+                {"set_scale", set_scale},
+                {"set_pivot", set_pivot},
                 {nullptr, nullptr}
             };
             luaL_setfuncs(L, functions, 0);
