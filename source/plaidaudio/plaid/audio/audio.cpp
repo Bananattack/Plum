@@ -643,7 +643,6 @@ AudioCodec *AudioCodec::Find(const String &file)
 		if (ext[i] <= 'Z' && ext[i] >= 'A') ext[i] += ('a'-'A');
 
 	Codecs &codecs = codecRegistry();
-    std::cout << "CODECS REGISTERED: " << codecs.size() << std::endl;
 	Codecs::const_iterator i = codecs.find(ext);
 	if (i == codecs.end()) return NULL;
 	return i->second;

@@ -98,7 +98,7 @@ namespace plaidgadget
 					if (samples < 0)
 					{
 						finished = true;
-						cout << " VORBIS ERROR" << endl;
+						//cout << " VORBIS ERROR" << endl;
 						break;
 					}
 					if (samples == 0)
@@ -119,9 +119,9 @@ namespace plaidgadget
 					for (Uint32 i=0; i < chunk.format().channels; ++i)
 						d16[i] += samples;
 					have += samples;
-					if (have > need) cout << "VORBIS OVERDRAW" << endl;
+					//if (have > need) cout << "VORBIS OVERDRAW" << endl;
 
-					std::cout << "OGG pull: " << have << "/" << need << std::endl;
+					//std::cout << "OGG pull: " << have << "/" << need << std::endl;
 
 					if (have >= need) break;
 				}
