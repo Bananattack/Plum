@@ -1,5 +1,4 @@
 #include <cmath>
-#include <iostream>
 #include <GL/glfw3.h>
 
 #include "engine.h"

@@ -16,14 +16,7 @@ namespace plum
         {
             auto context = (WindowContext*) glfwGetWindowUserPointer(window);
             auto impl = context->impl();
-            if(impl->eventCount < impl->events.size())
-            {
-                impl->events[impl->eventCount++] = event;
-            }
-            else
-            {
-                impl->events.push_back(event);
-            }
+            impl->events.push_back(event);
         }
 
         int handleClose(GLFWwindow window)
@@ -105,6 +98,47 @@ namespace plum
         return ptr;
     }
 
+    void Engine::Impl::refresh()
+    {
+        while(true)
+        {
+            glfwPollEvents();
+            if(events.size() == 0)
+            {
+                break;
+            }
+
+            auto& events(events);
+            for(auto e = events.begin(), eventEnd = events.end(); e != eventEnd; ++e)
+            {
+                auto& eventHooks(eventHooks);
+                for(auto h = eventHooks.begin(), hookEnd = eventHooks.end(); h != hookEnd; ++h)
+                {
+                    if(auto f = h->lock())
+                    {
+                        (*f)(*e);
+                    }
+                }
+                if(e->type == EventClose)
+                {
+                    quit("");
+                }
+                eventHooks.cleanup();
+            }
+            events.clear();
+        }
+
+        auto& updateHooks(updateHooks);
+        for(auto it = updateHooks.begin(), end = updateHooks.end(); it != end; ++it)
+        {
+            if(auto f = it->lock())
+            {
+                (*f)();
+            }
+        }
+        updateHooks.cleanup();
+    }
+
     Engine::Engine()
         : impl(new Impl())
     {
@@ -116,44 +150,7 @@ namespace plum
 
     void Engine::refresh()
     {
-        while(true)
-        {
-            glfwPollEvents();
-            if(impl->eventCount == 0)
-            {
-                break;
-            }
-
-            auto& events(impl->events);
-            for(size_t i = 0, count = impl->eventCount; i != count; ++i)
-            {
-                const auto& e(events[i]);
-                auto& eventHooks(impl->eventHooks);
-                for(auto h = eventHooks.begin(), hookEnd = eventHooks.end(); h != hookEnd; ++h)
-                {
-                    if(auto f = h->lock())
-                    {
-                        (*f)(e);
-                    }
-                }
-                if(e.type == EventClose)
-                {
-                    quit();
-                }
-                eventHooks.cleanup();
-            }
-            impl->eventCount = 0;
-        }
-
-        auto& updateHooks(impl->updateHooks);
-        for(auto it = updateHooks.begin(), end = updateHooks.end(); it != end; ++it)
-        {
-            if(auto f = it->lock())
-            {
-                (*f)();
-            }
-        }
-        updateHooks.cleanup();
+        impl->refresh();
     }
 
     void Engine::quit(const std::string& message)

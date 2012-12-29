@@ -124,10 +124,8 @@ namespace plum
             WeakList<std::function<void()>> updateHooks;
             WeakList<WindowContext> windows;
             std::vector<Event> events;
-            size_t eventCount;
 
             Impl()
-                : eventCount(0)
             {
                 if(!glfwInit())
                 {
@@ -143,6 +141,7 @@ namespace plum
 
             void quit(const std::string& message);
             std::shared_ptr<WindowContext> registerWindow(GLFWwindow win);
+            void refresh();
     };
 }
 
