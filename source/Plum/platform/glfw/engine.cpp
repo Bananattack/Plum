@@ -115,27 +115,34 @@ namespace plum
 
     void Engine::refresh()
     {
-        glfwPollEvents();
-
-        auto& events(impl->events);
-        for(size_t i = 0, count = impl->eventCount; i != count; ++i)
+        while(true)
         {
-            const auto& e(events[i]);
-            auto& eventHooks(impl->eventHooks);
-            for(auto h = eventHooks.begin(), hookEnd = eventHooks.end(); h != hookEnd; ++h)
+            glfwPollEvents();
+            if(impl->eventCount == 0)
             {
-                if(auto f = h->lock())
+                break;
+            }
+
+            auto& events(impl->events);
+            for(size_t i = 0, count = impl->eventCount; i != count; ++i)
+            {
+                const auto& e(events[i]);
+                auto& eventHooks(impl->eventHooks);
+                for(auto h = eventHooks.begin(), hookEnd = eventHooks.end(); h != hookEnd; ++h)
                 {
-                    (*f)(e);
+                    if(auto f = h->lock())
+                    {
+                        (*f)(e);
+                    }
                 }
+                if(e.type == EventClose)
+                {
+                    quit();
+                }
+                eventHooks.cleanup();
             }
-            if(e.type == EventClose)
-            {
-                quit();
-            }
-            eventHooks.cleanup();
+            impl->eventCount = 0;
         }
-        impl->eventCount = 0;
 
         auto& updateHooks(impl->updateHooks);
         for(auto it = updateHooks.begin(), end = updateHooks.end(); it != end; ++it)
