@@ -80,7 +80,7 @@ namespace plum
             return 0;
         }
 
-        int setLocation(lua_State* L)
+        int setPoint(lua_State* L)
         {
             auto p = script::ptr<Point>(L, 1);
             auto x = script::get<double>(L, 2);
@@ -112,7 +112,7 @@ namespace plum
                 {"gety", gety},
                 {"setx", setx},
                 {"sety", sety},
-                {"setLocation", setLocation},
+                {"setPoint", setPoint},
                 {nullptr, nullptr},
             };
             luaL_setfuncs(L, functions, 0);

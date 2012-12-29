@@ -142,7 +142,7 @@ namespace plum
             return 1;
         }
 
-        int setLocation(lua_State* L)
+        int setOrigin(lua_State* L)
         {
             auto r = script::ptr<Self>(L, 1);
             auto x = script::get<double>(L, 2);
@@ -228,7 +228,7 @@ namespace plum
                 {"sety2", sety2},
                 {"setwidth", setwidth},
                 {"setheight", setheight},
-                {"setLocation", setLocation},
+                {"setOrigin", setOrigin},
                 {"setSize", setSize},
                 {"setRegion", setRegion},
                 {"containsPoint", containsPoint},

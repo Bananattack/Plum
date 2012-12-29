@@ -139,7 +139,7 @@ namespace plum
             int index(lua_State* L)
             {
                 std::string fieldName(get<const char*>(L, 2));
-                if(luaL_getmetafield(L, 1, std::string("get" + fieldName).c_str()))
+                if(fieldName[0] >= 'a' && fieldName[0] <= 'z' && luaL_getmetafield(L, 1, std::string("get" + fieldName).c_str()))
                 {
                     lua_pushvalue(L, 1);
                     lua_call(L, 1, 1);
@@ -152,7 +152,7 @@ namespace plum
             {
                 std::string fieldName(get<const char*>(L, 2));
                 /* L, 3 is the value to set. */
-                if(luaL_getmetafield(L, 1, std::string("set" + fieldName).c_str()))
+                if(fieldName[0] >= 'a' && fieldName[0] <= 'z' && luaL_getmetafield(L, 1, std::string("set" + fieldName).c_str()))
                 {
                     lua_pushvalue(L, 1);
                     lua_pushvalue(L, 3);
