@@ -76,6 +76,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <AssemblerListingLocation>$(IntDir)/%(RelativeDir)</AssemblerListingLocation>
       <ObjectFileName>$(IntDir)/%(RelativeDir)</ObjectFileName>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
     </ClCompile>
     <Link>
       <AdditionalDependencies>OpenGL32.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>

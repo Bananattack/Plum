@@ -16,9 +16,9 @@ int main(int argc, char** argv)
     try
     {
         plum::Config config("plum.cfg");
-        auto silent = config.get<bool>("silent", false);
         auto xres = config.get<int>("xres", 320);
         auto yres = config.get<int>("yres", 240);
+        auto silent = config.get<bool>("silent", false);
         auto windowed = config.get<bool>("windowed", true);
 
         plum::Engine engine;
