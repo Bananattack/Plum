@@ -100,7 +100,6 @@ namespace plum
         uint32_t s = std::min(std::max(0, saturation), 255);
         uint32_t v = std::min(std::max(0, value), 255);
         uint32_t a = std::min(std::max(0, alpha), 255);
-
         uint32_t i = h / 60;
         uint32_t f = (h << 8) / 60 - (i << 8);
         uint32_t p = (v * (255 - s)) >> 8;
