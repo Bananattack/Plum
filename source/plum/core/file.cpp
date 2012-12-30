@@ -1,7 +1,5 @@
 #include "file.h"
 
-#include <iostream>
-
 namespace plum
 {
     namespace
