@@ -23,6 +23,7 @@ plum.log
 *.o
 *.user
 *.lib
+*.opensdf
 *.sdf
 *.ncb
 *.suo
