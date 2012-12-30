@@ -84,28 +84,28 @@ namespace plum
             uint32_t value;
     };
 
-    inline Color rgb(int r, int g, int b, int a = 255)
+    inline Color rgb(int red, int green, int blue, int alpha = 255)
     {
         return Color(
-            std::min(std::max(0, r), 255),
-            std::min(std::max(0, g), 255),
-            std::min(std::max(0, b), 255),
-            std::min(std::max(0, a), 255));
+            std::min(std::max(0, red), 255),
+            std::min(std::max(0, green), 255),
+            std::min(std::max(0, blue), 255),
+            std::min(std::max(0, alpha), 255));
     }
     
     // Credit goes to Zip for original conversion code.
-    inline Color hsv(int h, int s, int v, int a = 255)
+    inline Color hsv(int hue, int saturation, int value, int alpha = 255)
     {
-        h = (h % 360 + 360) % 360;
-        s = std::min(std::max(0, s), 255);
-        v = std::min(std::max(0, v), 255);
-        a = std::min(std::max(0, v), 255);
+        uint32_t h = (hue % 360 + 360) % 360;
+        uint32_t s = std::min(std::max(0, saturation), 255);
+        uint32_t v = std::min(std::max(0, value), 255);
+        uint32_t a = std::min(std::max(0, alpha), 255);
 
-        int i = h / 60;
-        int f = (h << 8) / 60 - (i << 8);
-        int p = (v * (255 - s)) >> 8;
-        int q = (v * (255 - ((s * f) >> 8))) >> 8;
-        int t = (v * (255 - ((s * (255 - f)) >> 8))) >> 8;
+        uint32_t i = h / 60;
+        uint32_t f = (h << 8) / 60 - (i << 8);
+        uint32_t p = (v * (255 - s)) >> 8;
+        uint32_t q = (v * (255 - ((s * f) >> 8))) >> 8;
+        uint32_t t = (v * (255 - ((s * (255 - f)) >> 8))) >> 8;
         switch(i)
         {
             case 0: return Color(v, t, p, a);
