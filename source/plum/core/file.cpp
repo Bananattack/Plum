@@ -128,6 +128,24 @@ namespace plum
         return std::fread(&value, sizeof(double), 1, file) == 1;
     }
 
+    bool File::readString(std::string& value)
+    {
+        if(writing || !isActive())
+        {
+            return false;
+        }
+        return std::fread(&value[0], 1, value.size(), file) > 0;
+    }
+
+    size_t File::readRaw(void* raw, size_t length)
+    {
+        if(writing || !isActive())
+        {
+            return false;
+        }
+        return std::fread(raw, 1, length, file);
+    }
+
     /*
         Inspired by Verge's FileReadLn implemenation. Here is the license!
 
@@ -199,15 +217,6 @@ namespace plum
         } while(!eol && !eof);
 
         return !eof || value.length() > 0;
-    }
-
-    int File::readRaw(void* buffer, size_t size)
-    {
-        if(writing || !isActive())
-        {
-            return 0;
-        }
-        return std::fread(buffer, 1, size, file);
     }
 
     bool File::writeU8(uint8_t value)
@@ -290,34 +299,34 @@ namespace plum
         return std::fwrite(&value, sizeof(double), 1, file) == 1;
     }
 
-    bool File::writeString(const std::string& value, size_t size)
+    bool File::writeString(const std::string& value)
     {
         if(!writing || !isActive())
         {
             return false;
         }
-        std::fwrite(value.data(), size, 1, file);
+        std::fwrite(value.data(), value.size(), 1, file);
         return true;
     }
 
-    bool File::writeLine(const std::string& value, size_t size)
+    bool File::writeLine(const std::string& value)
     {
         if(!writing || !isActive())
         {
             return false;
         }
-        std::fwrite(value.data(), size, 1, file);
+        std::fwrite(value.data(), value.size(), 1, file);
         std::fwrite("\r\n", 1, 2, file);
         return true;
     }
 
-    int File::writeRaw(const void* buffer, size_t size)
+    size_t File::writeRaw(const void* raw, size_t length)
     {
         if(!writing || !isActive())
         {
-            return 0;
+            return false;
         }
-        return std::fwrite(buffer, 1, size, file);
+        return std::fwrite(raw, 1, length, file);
     }
 
     bool File::seek(int position, FileSeekMode mode)

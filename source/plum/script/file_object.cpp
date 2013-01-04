@@ -182,37 +182,18 @@ namespace plum
             return 0;
         }
 
-        int readBlob(lua_State* L)
+        int readString(lua_State* L)
         {
             auto file = script::ptr<File>(L, 1);
             auto blockSize = script::get<int>(L, 2);
 
-            std::vector<char> buffer(blockSize);
-            int size = file->readRaw(buffer.data(), buffer.size());
-
-            if(size)
+            std::string buffer(blockSize, 0);
+            if(file->readString(buffer))
             {
                 lua_pushlstring(L, buffer.data(), buffer.size());
+                return 1;
             }
-            return size > 0;
-        }
-
-        int readFixedString(lua_State* L)
-        {
-            auto file = script::ptr<File>(L, 1);
-            auto blockSize = script::get<int>(L, 2);
-
-            std::vector<char> buffer(blockSize);
-            int size = file->readRaw(buffer.data(), buffer.size());
-
-            // Force termination within block to prevent exceeding the buffer.
-            buffer[blockSize - 1] = 0;
-
-            if(size)
-            {
-                script::push(L, (const char*) buffer.data());
-            }
-            return size > 0;
+            return 0;
         }
 
         int readLine(lua_State* L)
@@ -251,13 +232,14 @@ namespace plum
                 return 0;
             }
 
-            // Read the string, making sure to terminate with null byte.
-            std::vector<char> buf(length + 1);
-            file->readRaw(buf.data(), length);
-            buf[length] = 0;
-            script::push(L, (const char*) buf.data());
-
-            return 1;
+            // Read the entire file into a string.
+            std::string buf(length, 0);
+            if(file->readString(buf))
+            {
+                lua_pushlstring(L, buf.data(), buf.size());
+                return 1;
+            }
+            return 0;
         }
 
         int writeU8(lua_State* L)
@@ -336,9 +318,9 @@ namespace plum
         {
             auto file = script::ptr<File>(L, 1);
             size_t length = 0;
-            const char* value = luaL_checklstring(L, 2, &length);
-
-            script::push(L, file->writeString(value, length));
+            const char* buffer = luaL_checklstring(L, 2, &length);
+            std::string value(buffer, buffer + length);
+            script::push(L, file->writeString(value));
             return 1;
         }
 
@@ -346,9 +328,9 @@ namespace plum
         {
             auto file = script::ptr<File>(L, 1);
             size_t length = 0;
-            const char* value = luaL_checklstring(L, 2, &length);
-
-            script::push(L, file->writeLine(value, length));
+            const char* buffer = luaL_checklstring(L, 2, &length);
+            std::string value(buffer, buffer + length);
+            script::push(L, file->writeLine(value));
             return 1;
         }
     }
@@ -378,8 +360,7 @@ namespace plum
                 {"readInt32", readInt32},
                 {"readFloat", readFloat},
                 {"readDouble", readDouble},
-                {"readBlob", readBlob},
-                {"readFixedString", readFixedString},
+                {"readString", readString},
                 {"readLine", readLine},
                 {"readFully", readFully},
                 {"writeU8", writeU8},

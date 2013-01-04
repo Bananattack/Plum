@@ -63,7 +63,10 @@ int main(int argc, char** argv)
     }
     catch(const plum::SystemExit& e)
     {
-        std::exit(e.status());
+        if(e.status())
+        {
+            std::exit(e.status());
+        }
     }
 
     return 0;

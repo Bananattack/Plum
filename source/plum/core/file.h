@@ -38,8 +38,9 @@ namespace plum
             bool readInt32(int32_t& value);
             bool readFloat(float& value);
             bool readDouble(double& value);
-            bool readLine(std::string& value);            
-            int readRaw(void* buffer, size_t size);
+            bool readString(std::string& value);
+            bool readLine(std::string& value);
+            size_t readRaw(void* raw, size_t length);
             
             bool writeU8(uint8_t value);
             bool writeU16(uint16_t value);
@@ -49,9 +50,9 @@ namespace plum
             bool writeInt32(int32_t value);
             bool writeFloat(float value);
             bool writeDouble(double value);
-            bool writeString(const std::string& value, size_t size);
-            bool writeLine(const std::string& value, size_t size);
-            int writeRaw(const void* buffer, size_t size);
+            bool writeString(const std::string& value);
+            bool writeLine(const std::string& value);
+            size_t writeRaw(const void* raw, size_t length);
 
             bool seek(int position, FileSeekMode mode);
             int tell();

@@ -115,7 +115,13 @@ namespace plum
                 {"setTitle", setTitle},
                 {nullptr, nullptr},
             };
-            luaL_newlib(L, functions);
+            luaL_newmetatable(L, "plum");
+            // Duplicate the metatable on the stack.
+            lua_pushvalue(L, -1);
+            // metatable.__index = metatable
+            lua_setfield(L, -2, "__index");
+            // Put the members into the metatable.
+            luaL_setfuncs(L, functions, 0);
 
             // Create the 'color' table.
             lua_newtable(L);
