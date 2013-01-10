@@ -42,8 +42,6 @@ namespace plum
             // A backend software canvas that this image's raw texture copies.
             // Useful if the textures need to be refreshed later.
             Canvas canvas_;
-            // The GL target type
-            int target; 
             // The GL texture ID
             unsigned int textureID;
     };

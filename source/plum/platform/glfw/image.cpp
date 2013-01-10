@@ -33,8 +33,6 @@ namespace plum
     Image::Image(const Canvas& source)
         : canvas_(source.getWidth(), source.getHeight(), align(source.getWidth()), align(source.getHeight()))
     {
-        target = GL_TEXTURE_2D;
-        
         canvas_.clear(0);
         source.blit<BlendOpaque>(0, 0, canvas_);
         canvas_.setClipRegion(0, 0, source.getWidth() - 1, source.getHeight() - 1);
@@ -44,11 +42,10 @@ namespace plum
 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-
-        glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
-        glTexImage2D(target, 0, GL_RGBA8, canvas_.getTrueWidth(), canvas_.getTrueHeight(),
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8,
+            canvas_.getTrueWidth(), canvas_.getTrueHeight(),
             0, GL_RGBA, GL_UNSIGNED_BYTE, canvas_.getData());
     }
 
@@ -65,14 +62,15 @@ namespace plum
     void Image::refresh()
     {
         bind();
-        glTexSubImage2D(target, 0, 0, 0, canvas_.getTrueWidth(), canvas_.getTrueHeight(),
+        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0,
+            canvas_.getTrueWidth(), canvas_.getTrueHeight(),
             GL_RGBA, GL_UNSIGNED_BYTE, canvas_.getData());
     }
 
     void Image::bind()
     {
         glEnable(GL_TEXTURE_2D);
-        glBindTexture(target, textureID); 
+        glBindTexture(GL_TEXTURE_2D, textureID); 
     }
 
     void Image::blit(int x, int y, BlendMode mode)

@@ -176,7 +176,7 @@ namespace plum
 
         useHardwareBlender(mode);
 
-        GLdouble vertexArray[] = { x, y };
+        const GLdouble vertexArray[] = { x, y };
         glDisable(GL_TEXTURE_2D);
 
         useHardwareColor(r, g, b, a);
@@ -193,7 +193,7 @@ namespace plum
 
         useHardwareBlender(mode);
 
-        GLdouble vertexArray[] = { x, y - 1, x2 + 1, y2 };
+        const GLdouble vertexArray[] = { x, y - 1, x2 + 1, y2 };
         glDisable(GL_TEXTURE_2D);
 
         useHardwareColor(r, g, b, a);
@@ -219,23 +219,24 @@ namespace plum
             std::swap(y, y2);
         }
 
+        const GLdouble vertexArray[] = {
+            x - 1, y - 1,
+            x - 1, y2,
+            x - 1, y2,
+            x2 + 1, y2,
+            x2 + 1, y2,
+            x2 + 2, y - 2,
+            x2 + 2, y - 2,
+            x - 1, y - 1,
+        };
         glDisable(GL_TEXTURE_2D);
-        glPushMatrix();
-        glBegin(GL_LINES);
-            useHardwareColor(r, g, b, a);
-            glVertex2d(x - 1, y - 1);
-            glVertex2d(x - 1, y2);
-            glVertex2d(x - 1, y2);
-            glVertex2d(x2 + 1, y2);
-            glVertex2d(x2 + 1, y2);
-            glVertex2d(x2 + 2, y - 2);
-            glVertex2d(x2 + 2, y - 2);
-            glVertex2d(x - 1, y - 1);
-        glEnd();
-    
-        glPopMatrix();
-    }
 
+        useHardwareColor(r, g, b, a);
+        glEnableClientState(GL_VERTEX_ARRAY);
+        glVertexPointer(2, GL_DOUBLE, 0, vertexArray);
+        glDrawArrays(GL_LINES, 0, 8);
+        glDisableClientState(GL_VERTEX_ARRAY);
+    }
 
     void Video::solidRect(int x, int y, int x2, int y2, Color color, BlendMode mode)
     {
@@ -253,23 +254,28 @@ namespace plum
             std::swap(y, y2);
         }
 
-        glDisable(GL_TEXTURE_2D);
-        glPushMatrix();
-        glBegin(GL_QUADS);
-            useHardwareColor(r, g, b, a);
-            glVertex2d(x - 1, y - 1);
-            glVertex2d(x2 + 1, y - 1);
-            glVertex2d(x2 + 1, y2);
-            glVertex2d(x - 1, y2);
-        glEnd();
 
-        glPopMatrix();
+        const GLdouble vertexArray[] = {
+            x - 1, y - 1,
+            x2 + 1, y - 1,
+            x2 + 1, y2,
+            x - 1, y2,
+        };
+        glDisable(GL_TEXTURE_2D);
+
+        useHardwareColor(r, g, b, a);
+        glEnableClientState(GL_VERTEX_ARRAY);
+        glVertexPointer(2, GL_DOUBLE, 0, vertexArray);
+        glDrawArrays(GL_QUADS, 0, 4);
+        glDisableClientState(GL_VERTEX_ARRAY);
     }
 
     void Video::horizontalGradientRect(int x, int y, int x2, int y2, Color color, Color color2, BlendMode mode)
     {
         uint8_t r, g, b, a;
+        uint8_t r2, g2, b2, a2;
         color.channels(r, g, b, a);
+        color2.channels(r2, g2, b2, a2);
 
         useHardwareBlender(mode);
 
@@ -282,29 +288,35 @@ namespace plum
             std::swap(y, y2);
         }
 
+        const GLdouble vertexArray[] = {
+            x - 1, y - 1,
+            x2 + 1, y - 1,
+            x2 + 1, y2,
+            x - 1, y2,
+        };
+        const uint8_t colorArray[] = {
+            r2, g2, b2, a2 * getOpacity() / 255,
+            r, g, b, a * getOpacity() / 255,
+            r, g, b, a * getOpacity() / 255,
+            r2, g2, b2, a2 * getOpacity() / 255,
+        };
         glDisable(GL_TEXTURE_2D);
-        glPushMatrix();
-        glBegin(GL_QUADS);
-            useHardwareColor(r, g, b, a);
-            glVertex2d(x - 1, y - 1);
-            color2.channels(r, g, b, a);
-            useHardwareColor(r, g, b, a);
-            glVertex2d(x2 + 1, y - 1);
-            color.channels(r, g, b, a);
-            useHardwareColor(r, g, b, a);
-            glVertex2d(x2 + 1, y2);
-            color2.channels(r, g, b, a);
-            useHardwareColor(r, g, b, a);
-            glVertex2d(x - 1, y2);
-        glEnd();
 
-        glPopMatrix();
+        glEnableClientState(GL_VERTEX_ARRAY);
+        glEnableClientState(GL_COLOR_ARRAY);
+        glVertexPointer(2, GL_DOUBLE, 0, vertexArray);
+        glColorPointer(4, GL_UNSIGNED_BYTE, 0, colorArray);
+        glDrawArrays(GL_QUADS, 0, 4);
+        glDisableClientState(GL_COLOR_ARRAY);
+        glDisableClientState(GL_VERTEX_ARRAY);
     }
 
     void Video::verticalGradientRect(int x, int y, int x2, int y2, Color color, Color color2, BlendMode mode)
     {
         uint8_t r, g, b, a;
+        uint8_t r2, g2, b2, a2;
         color.channels(r, g, b, a);
+        color2.channels(r2, g2, b2, a2);
 
         useHardwareBlender(mode);
 
@@ -317,19 +329,27 @@ namespace plum
             std::swap(y, y2);
         }
 
+        const GLdouble vertexArray[] = {
+            x - 1, y - 1,
+            x2 + 1, y - 1,
+            x2 + 1, y2,
+            x - 1, y2,
+        };
+        const uint8_t colorArray[] = {
+            r, g, b, a * getOpacity() / 255,
+            r, g, b, a * getOpacity() / 255,
+            r2, g2, b2, a2 * getOpacity() / 255,
+            r2, g2, b2, a2 * getOpacity() / 255,
+        };
         glDisable(GL_TEXTURE_2D);
-        glPushMatrix();
-        glBegin(GL_QUADS);
-            useHardwareColor(r, g, b, a);
-            glVertex2d(x - 1, y - 1);
-            glVertex2d(x2 + 1, y - 1);
-            color2.channels(r, g, b, a);
-            useHardwareColor(r, g, b, a);
-            glVertex2d(x2 + 1, y2);
-            glVertex2d(x - 1, y2);
-        glEnd();
 
-        glPopMatrix();
+        glEnableClientState(GL_VERTEX_ARRAY);
+        glEnableClientState(GL_COLOR_ARRAY);
+        glVertexPointer(2, GL_DOUBLE, 0, vertexArray);
+        glColorPointer(4, GL_UNSIGNED_BYTE, 0, colorArray);
+        glDrawArrays(GL_QUADS, 0, 4);
+        glDisableClientState(GL_COLOR_ARRAY);
+        glDisableClientState(GL_VERTEX_ARRAY);
     }
 
     void Video::circle(int x, int y, int horizontalRadius, int verticalRadius, Color color, BlendMode mode)
@@ -339,22 +359,24 @@ namespace plum
 
         useHardwareBlender(mode);
 
-        double x1 = x;
-        double y1 = y + verticalRadius;
-        double angle;
+        double px = x;
+        double py = y + verticalRadius;
+
+        GLdouble vertexArray[360 * 2];
+        for(int i = 0; i < 360; ++i) {
+            vertexArray[i * 2] = px;
+            vertexArray[i * 2 + 1] = py;
+            px = x + (horizontalRadius * (double) sin(i * M_PI / 180.0));
+            py = y + (verticalRadius * (double) cos(i * M_PI / 180.0));
+        }
 
         glDisable(GL_TEXTURE_2D);
-        glPushMatrix();
-        glBegin(GL_LINE_STRIP);            
-            useHardwareColor(r, g, b, a);
-            for(angle = 0.0; angle <= 2.0 * M_PI; angle += 0.01)
-            {                
-                glVertex2d(x1, y1);
-                x1 = x + (horizontalRadius * (double) sin(angle));
-                y1 = y + (verticalRadius * (double) cos(angle));            
-            }
-        glEnd();
-        glPopMatrix();
+
+        useHardwareColor(r, g, b, a);
+        glEnableClientState(GL_VERTEX_ARRAY);
+        glVertexPointer(2, GL_DOUBLE, 0, vertexArray);
+        glDrawArrays(GL_LINE_LOOP, 0, 360);
+        glDisableClientState(GL_VERTEX_ARRAY);
     }
 
     void Video::solidCircle(int x, int y, int horizontalRadius, int verticalRadius, Color color, BlendMode mode)
@@ -364,23 +386,23 @@ namespace plum
 
         useHardwareBlender(mode);
 
-        double x1 = x;
-        double y1 = y + verticalRadius;
-        double angle;
+        double px = x;
+        double py = y + verticalRadius;
+
+        GLdouble vertexArray[360 * 2];
+        for(int i = 0; i < 360; ++i) {
+            vertexArray[i * 2] = px;
+            vertexArray[i * 2 + 1] = py;
+            px = x + (horizontalRadius * (double) sin(i * M_PI / 180.0));
+            py = y + (verticalRadius * (double) cos(i * M_PI / 180.0));
+        }
 
         glDisable(GL_TEXTURE_2D);
-        glPushMatrix();
-        glBegin(GL_TRIANGLES);    
-            useHardwareColor(r, g, b, a);
-            for(angle = 0.0; angle <= 2.0 * M_PI; angle += 0.01)
-            {    
-                glVertex2d(x, y);
-                glVertex2d(x1, y1);
-                x1 = x + (horizontalRadius * (double) sin(angle));
-                y1 = y + (verticalRadius * (double) cos(angle));
-                glVertex2d(x1, y1);            
-            }
-        glEnd();
-        glPopMatrix();
+
+        useHardwareColor(r, g, b, a);
+        glEnableClientState(GL_VERTEX_ARRAY);
+        glVertexPointer(2, GL_DOUBLE, 0, vertexArray);
+        glDrawArrays(GL_TRIANGLE_FAN, 0, 360);
+        glDisableClientState(GL_VERTEX_ARRAY);
     }
 }
