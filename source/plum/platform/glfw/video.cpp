@@ -363,7 +363,8 @@ namespace plum
         double py = y + verticalRadius;
 
         GLdouble vertexArray[360 * 2];
-        for(int i = 0; i < 360; ++i) {
+        for(int i = 0; i < 360; ++i)
+        {
             vertexArray[i * 2] = px;
             vertexArray[i * 2 + 1] = py;
             px = x + (horizontalRadius * (double) sin(i * M_PI / 180.0));
@@ -390,7 +391,8 @@ namespace plum
         double py = y + verticalRadius;
 
         GLdouble vertexArray[360 * 2];
-        for(int i = 0; i < 360; ++i) {
+        for(int i = 0; i < 360; ++i)
+        {
             vertexArray[i * 2] = px;
             vertexArray[i * 2 + 1] = py;
             px = x + (horizontalRadius * (double) sin(i * M_PI / 180.0));
