@@ -30,57 +30,84 @@ namespace plum
         }
     }
 
-    Image::Image(const Canvas& source)
-        : canvas_(source.getWidth(), source.getHeight(), align(source.getWidth()), align(source.getHeight()))
+
+    class Image::Impl
     {
-        canvas_.clear(0);
-        source.blit<BlendOpaque>(0, 0, canvas_);
-        canvas_.setClipRegion(0, 0, source.getWidth() - 1, source.getHeight() - 1);
+        public:
+            Impl(const Canvas& source)
+                : canvas(source.getWidth(), source.getHeight(), align(source.getWidth()), align(source.getHeight()))
+            {
+                canvas.clear(0);
+                source.blit<BlendOpaque>(0, 0, canvas);
+                canvas.setClipRegion(0, 0, source.getWidth() - 1, source.getHeight() - 1);
 
-        glGenTextures(1, &textureID);
-        bind();
+                glGenTextures(1, &textureID);
+                bind();
 
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8,
-            canvas_.getTrueWidth(), canvas_.getTrueHeight(),
-            0, GL_RGBA, GL_UNSIGNED_BYTE, canvas_.getData());
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8,
+                    canvas.getTrueWidth(), canvas.getTrueHeight(),
+                    0, GL_RGBA, GL_UNSIGNED_BYTE, canvas.getData());
+            }
+
+            ~Impl()
+            {
+                glDeleteTextures(1, &textureID);
+            }
+
+
+            void bind()
+            {
+                glEnable(GL_TEXTURE_2D);
+                glBindTexture(GL_TEXTURE_2D, textureID); 
+            }
+
+            // A backend software canvas that this image's raw texture copies.
+            // Useful if the textures need to be refreshed later.
+            Canvas canvas;
+            // The GL texture ID
+            unsigned int textureID;
+    };
+
+    Image::Image(const Canvas& source)
+        : impl(new Impl(source))
+    {
     }
 
     Image::~Image()
     {
-        glDeleteTextures(1, &textureID);
     }
 
     Canvas& Image::canvas()
     {
-        return canvas_;
+        return impl->canvas;
     }
 
     void Image::refresh()
     {
         bind();
         glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0,
-            canvas_.getTrueWidth(), canvas_.getTrueHeight(),
-            GL_RGBA, GL_UNSIGNED_BYTE, canvas_.getData());
+            impl->canvas.getTrueWidth(), impl->canvas.getTrueHeight(),
+            GL_RGBA, GL_UNSIGNED_BYTE, impl->canvas.getData());
     }
 
     void Image::bind()
     {
         glEnable(GL_TEXTURE_2D);
-        glBindTexture(GL_TEXTURE_2D, textureID); 
+        glBindTexture(GL_TEXTURE_2D, impl->textureID); 
     }
 
     void Image::blit(int x, int y, BlendMode mode)
     {
-        scaleBlitRegion(0, 0, canvas_.getWidth(), canvas_.getHeight(), x, y, canvas_.getWidth(), canvas_.getHeight(), mode);
+        scaleBlitRegion(0, 0, impl->canvas.getWidth(), impl->canvas.getHeight(), x, y, impl->canvas.getWidth(), impl->canvas.getHeight(), mode);
     }
 
     void Image::scaleBlit(int x, int y, int width, int height, BlendMode mode)
     {
-        scaleBlitRegion(0, 0, canvas_.getWidth(), canvas_.getHeight(), x, y, width, height, mode);
+        scaleBlitRegion(0, 0, impl->canvas.getWidth(), impl->canvas.getHeight(), x, y, width, height, mode);
     }
 
     void Image::blitRegion(int sourceX, int sourceY, int sourceX2, int sourceY2,
@@ -101,15 +128,15 @@ namespace plum
         {
             std::swap(sourceY, sourceY2);
         }
-        sourceX = std::min(std::max(0, sourceX), canvas_.getWidth() - 1);
-        sourceY = std::min(std::max(0, sourceY), canvas_.getHeight() - 1);
-        sourceX2 = std::min(std::max(0, sourceX2), canvas_.getWidth() - 1);
-        sourceY2 = std::min(std::max(0, sourceY2), canvas_.getHeight() - 1);
+        sourceX = std::min(std::max(0, sourceX), impl->canvas.getWidth() - 1);
+        sourceY = std::min(std::max(0, sourceY), impl->canvas.getHeight() - 1);
+        sourceX2 = std::min(std::max(0, sourceX2), impl->canvas.getWidth() - 1);
+        sourceY2 = std::min(std::max(0, sourceY2), impl->canvas.getHeight() - 1);
 
-        double regionS = (double(sourceX) + 0.5) / canvas_.getTrueWidth();
-        double regionT = (double(sourceY) + 0.5) / canvas_.getTrueHeight();
-        double regionS2 = (double(sourceX2) + 0.5) / canvas_.getTrueWidth();
-        double regionT2 = (double(sourceY2) + 0.5) / canvas_.getTrueHeight();
+        double regionS = (double(sourceX) + 0.5) / impl->canvas.getTrueWidth();
+        double regionT = (double(sourceY) + 0.5) / impl->canvas.getTrueHeight();
+        double regionS2 = (double(sourceX2) + 0.5) / impl->canvas.getTrueWidth();
+        double regionT2 = (double(sourceY2) + 0.5) / impl->canvas.getTrueHeight();
 
         useHardwareBlender(mode);
 
@@ -150,12 +177,12 @@ namespace plum
 
     void Image::rotateBlit(int x, int y, double angle, BlendMode mode)
     {
-        rotateScaleBlitRegion(0, 0, canvas_.getWidth(), canvas_.getHeight(), x, y, angle, 1.0, mode);
+        rotateScaleBlitRegion(0, 0, impl->canvas.getWidth(), impl->canvas.getHeight(), x, y, angle, 1.0, mode);
     }
 
     void Image::rotateScaleBlit(int x, int y, double angle, double scale, BlendMode mode)
     {
-        rotateScaleBlitRegion(0, 0, canvas_.getWidth(), canvas_.getHeight(), x, y, angle, scale, mode);
+        rotateScaleBlitRegion(0, 0, impl->canvas.getWidth(), impl->canvas.getHeight(), x, y, angle, scale, mode);
     }
 
     void Image::rotateBlitRegion(int sourceX, int sourceY, int sourceX2, int sourceY2,
@@ -175,15 +202,15 @@ namespace plum
         {
             std::swap(sourceY, sourceY2);
         }
-        sourceX = std::min(std::max(0, sourceX), canvas_.getWidth() - 1);
-        sourceY = std::min(std::max(0, sourceY), canvas_.getHeight() - 1);
-        sourceX2 = std::min(std::max(0, sourceX2), canvas_.getWidth() - 1);
-        sourceY2 = std::min(std::max(0, sourceY2), canvas_.getHeight() - 1);
+        sourceX = std::min(std::max(0, sourceX), impl->canvas.getWidth() - 1);
+        sourceY = std::min(std::max(0, sourceY), impl->canvas.getHeight() - 1);
+        sourceX2 = std::min(std::max(0, sourceX2), impl->canvas.getWidth() - 1);
+        sourceY2 = std::min(std::max(0, sourceY2), impl->canvas.getHeight() - 1);
 
-        double regionS = (double(sourceX) + 0.5) / canvas_.getTrueWidth();
-        double regionT = (double(sourceY) + 0.5) / canvas_.getTrueHeight();
-        double regionS2 = (double(sourceX2) + 0.5) / canvas_.getTrueWidth();
-        double regionT2 = (double(sourceY2) + 0.5) / canvas_.getTrueHeight();
+        double regionS = (double(sourceX) + 0.5) / impl->canvas.getTrueWidth();
+        double regionT = (double(sourceY) + 0.5) / impl->canvas.getTrueHeight();
+        double regionS2 = (double(sourceX2) + 0.5) / impl->canvas.getTrueWidth();
+        double regionT2 = (double(sourceY2) + 0.5) / impl->canvas.getTrueHeight();
 
         double width = double(sourceX2 - sourceX) * scale;
         double height = double(sourceY2 - sourceY) * scale;
@@ -231,15 +258,15 @@ namespace plum
     void Image::rawBlitRegion(int sourceX, int sourceY, int sourceX2, int sourceY2,
                     int destX, int destY, double angle, double scale)
     {
-        sourceX = std::min(std::max(0, sourceX), canvas_.getWidth() - 1);
-        sourceY = std::min(std::max(0, sourceY), canvas_.getHeight() - 1);
-        sourceX2 = std::min(std::max(0, sourceX2), canvas_.getWidth() - 1);
-        sourceY2 = std::min(std::max(0, sourceY2), canvas_.getHeight() - 1);
+        sourceX = std::min(std::max(0, sourceX), impl->canvas.getWidth() - 1);
+        sourceY = std::min(std::max(0, sourceY), impl->canvas.getHeight() - 1);
+        sourceX2 = std::min(std::max(0, sourceX2), impl->canvas.getWidth() - 1);
+        sourceY2 = std::min(std::max(0, sourceY2), impl->canvas.getHeight() - 1);
 
-        double regionS = (double(sourceX) + 0.5) / canvas_.getTrueWidth();
-        double regionT = (double(sourceY) + 0.5) / canvas_.getTrueHeight();
-        double regionS2 = (double(sourceX2) + 0.5) / canvas_.getTrueWidth();
-        double regionT2 = (double(sourceY2) + 0.5) / canvas_.getTrueHeight();
+        double regionS = (double(sourceX) + 0.5) / impl->canvas.getTrueWidth();
+        double regionT = (double(sourceY) + 0.5) / impl->canvas.getTrueHeight();
+        double regionS2 = (double(sourceX2) + 0.5) / impl->canvas.getTrueWidth();
+        double regionT2 = (double(sourceY2) + 0.5) / impl->canvas.getTrueHeight();
 
         double width = double(sourceX2 - sourceX) * scale;
         double height = double(sourceY2 - sourceY) * scale;
@@ -280,22 +307,22 @@ namespace plum
 
         if(transform->clip)
         {
-            sourceX = std::min<double>(std::max(0.0, transform->clip->x), canvas_.getWidth() - 1);
-            sourceY = std::min<double>(std::max(0.0, transform->clip->y), canvas_.getHeight() - 1);
-            sourceX2 = std::min<double>(sourceX + transform->clip->width, canvas_.getWidth()) - 1;
-            sourceY2 = std::min<double>(sourceY + transform->clip->height, canvas_.getHeight()) - 1;
+            sourceX = std::min<double>(std::max(0.0, transform->clip->x), impl->canvas.getWidth() - 1);
+            sourceY = std::min<double>(std::max(0.0, transform->clip->y), impl->canvas.getHeight() - 1);
+            sourceX2 = std::min<double>(sourceX + transform->clip->width, impl->canvas.getWidth()) - 1;
+            sourceY2 = std::min<double>(sourceY + transform->clip->height, impl->canvas.getHeight()) - 1;
         }
         else
         {
             sourceX = sourceY = 0;
-            sourceX2 = canvas_.getWidth() - 1;
-            sourceY2 = canvas_.getHeight() - 1;
+            sourceX2 = impl->canvas.getWidth() - 1;
+            sourceY2 = impl->canvas.getHeight() - 1;
         }
 
-        double regionS = (double(sourceX) + 0.5) / canvas_.getTrueWidth();
-        double regionT = (double(sourceY) + 0.5) / canvas_.getTrueHeight();
-        double regionS2 = (double(sourceX2) + 0.5) / canvas_.getTrueWidth();
-        double regionT2 = (double(sourceY2) + 0.5) / canvas_.getTrueHeight();
+        double regionS = (double(sourceX) + 0.5) / impl->canvas.getTrueWidth();
+        double regionT = (double(sourceY) + 0.5) / impl->canvas.getTrueHeight();
+        double regionS2 = (double(sourceX2) + 0.5) / impl->canvas.getTrueWidth();
+        double regionT2 = (double(sourceY2) + 0.5) / impl->canvas.getTrueHeight();
 
         double width = double(sourceX2 - sourceX);
         double height = double(sourceY2 - sourceY);
