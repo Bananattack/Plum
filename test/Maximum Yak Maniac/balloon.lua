@@ -29,7 +29,7 @@ do local Self = {}
     end
     
     function Self:render()
-        plum.video:solidCircle(self.x - world.x + self.frame.width / 2, 180, 15, 8, plum.color.Red)
+        plum.screen:solidCircle(self.x - world.x + self.frame.width / 2, 180, 15, 8, plum.color.Red)
         self.frame:rotateScaleBlit(self.x - world.x, self.y - self.frame.height + 100, self.angle, self.scale)
     end
     
@@ -38,7 +38,7 @@ do local Self = {}
         table.insert(world.sprites, Particle(self.x + math.random(-20, self.frame.width + 20), self.y + math.random(0, self.frame.height)))
         table.insert(world.sprites, Particle(self.x + math.random(-20, self.frame.width + 20), self.y + math.random(0, self.frame.height)))
         if math.random(0, 100) < 65 then
-            table.insert(world.sprites, Roids(world.x + math.random(0, plum.video.width), math.random(1, 10)))
+            table.insert(world.sprites, Roids(world.x + math.random(0, plum.screen.width), math.random(1, 10)))
         end
         player:addScore(self.score)
         resource.sound.balloonDeath:play()

@@ -6,10 +6,10 @@ namespace plum
 {
     namespace
     {
-        const char* METANAME = "plum_video";
-        int video_getField(lua_State* L)
+        const char* Meta = "plum.screen";
+        int index(lua_State* L)
         {
-            luaL_checkudata(L, 1, METANAME);
+            luaL_checkudata(L, 1, Meta);
             std::string fieldName(script::get<const char*>(L, 2));
             if(luaL_getmetafield(L, 1, std::string("get_" + fieldName).c_str()))
             {
@@ -20,9 +20,9 @@ namespace plum
             return luaL_getmetafield(L, 1, fieldName.c_str());
         }
 
-        int video_setField(lua_State* L)
+        int newindex(lua_State* L)
         {
-            luaL_checkudata(L, 1, METANAME);
+            luaL_checkudata(L, 1, Meta);
             std::string fieldName(script::get<const char*>(L, 2));
             /* L, 3 is the value to set. */
             if(luaL_getmetafield(L, 1, std::string("set_" + fieldName).c_str()))
@@ -43,37 +43,37 @@ namespace plum
         }
 
 
-        int video_toString(lua_State* L)
+        int tostring(lua_State* L)
         {
-            luaL_checkudata(L, 1, METANAME);
+            luaL_checkudata(L, 1, Meta);
             script::push(L, "(plum.Video singleton)");
             return 1;
         }
 
-        int video_clear(lua_State* L)
+        int clear(lua_State* L)
         {
-            luaL_checkudata(L, 1, METANAME);
+            luaL_checkudata(L, 1, Meta);
             Color color = script::get<int>(L, 2);
 
-            script::instance(L).video().clear(color);
+            script::instance(L).screen().clear(color);
             return 0;
         }
 
-        int video_setPixel(lua_State* L)
+        int setPixel(lua_State* L)
         {
-            luaL_checkudata(L, 1, METANAME);
+            luaL_checkudata(L, 1, Meta);
             int x = script::get<int>(L, 2);
             int y = script::get<int>(L, 3);
             Color color = script::get<int>(L, 4);
             BlendMode mode = (BlendMode) script::get<int>(L, 5, BlendPreserve);
 
-            script::instance(L).video().setPixel(x, y, color, mode);
+            script::instance(L).screen().setPixel(x, y, color, mode);
             return 0;
         }
 
-        int video_rect(lua_State* L)
+        int rect(lua_State* L)
         {
-            luaL_checkudata(L, 1, METANAME);
+            luaL_checkudata(L, 1, Meta);
             int x = script::get<int>(L, 2);
             int y = script::get<int>(L, 3);
             int x2 = script::get<int>(L, 4);
@@ -81,13 +81,13 @@ namespace plum
             Color color = script::get<int>(L, 6);
             BlendMode mode = (BlendMode) script::get<int>(L, 7, BlendPreserve);
 
-            script::instance(L).video().rect(x, y, x2, y2, color, mode);
+            script::instance(L).screen().rect(x, y, x2, y2, color, mode);
             return 0;
         }
 
-        int video_solidRect(lua_State* L)
+        int solidRect(lua_State* L)
         {
-            luaL_checkudata(L, 1, METANAME);
+            luaL_checkudata(L, 1, Meta);
             int x = script::get<int>(L, 2);
             int y = script::get<int>(L, 3);
             int x2 = script::get<int>(L, 4);
@@ -95,13 +95,13 @@ namespace plum
             Color color = script::get<int>(L, 6);
             BlendMode mode = (BlendMode) script::get<int>(L, 7, BlendPreserve);
 
-            script::instance(L).video().solidRect(x, y, x2, y2, color, mode);
+            script::instance(L).screen().solidRect(x, y, x2, y2, color, mode);
             return 0;
         }
 
-        int video_line(lua_State* L)
+        int line(lua_State* L)
         {
-            luaL_checkudata(L, 1, METANAME);
+            luaL_checkudata(L, 1, Meta);
             int x = script::get<int>(L, 2);
             int y = script::get<int>(L, 3);
             int x2 = script::get<int>(L, 4);
@@ -109,28 +109,13 @@ namespace plum
             Color color = script::get<int>(L, 6);
             BlendMode mode = (BlendMode) script::get<int>(L, 7, BlendPreserve);
 
-            script::instance(L).video().line(x, y, x2, y2, color, mode);
+            script::instance(L).screen().line(x, y, x2, y2, color, mode);
             return 0;
         }
 
-        int video_horizontalGradientRect(lua_State* L)
+        int horizontalGradientRect(lua_State* L)
         {
-            luaL_checkudata(L, 1, METANAME);
-            int x = script::get<int>(L, 2);
-            int y = script::get<int>(L, 3);
-            int x2 = script::get<int>(L, 4);
-            int y2 = script::get<int>(L, 5);
-            Color color = script::get<int>(L, 6);
-            Color color2 = script::get<int>(L, 7);
-            BlendMode mode = (BlendMode) script::get<int>(L, 8, BlendPreserve);
-
-            script::instance(L).video().horizontalGradientRect(x, y, x2, y2, color, color2, mode);
-            return 0;
-        }
-
-        int video_verticalGradientRect(lua_State* L)
-        {
-            luaL_checkudata(L, 1, METANAME);
+            luaL_checkudata(L, 1, Meta);
             int x = script::get<int>(L, 2);
             int y = script::get<int>(L, 3);
             int x2 = script::get<int>(L, 4);
@@ -139,14 +124,29 @@ namespace plum
             Color color2 = script::get<int>(L, 7);
             BlendMode mode = (BlendMode) script::get<int>(L, 8, BlendPreserve);
 
-            script::instance(L).video().verticalGradientRect(x, y, x2, y2, color, color2, mode);
+            script::instance(L).screen().horizontalGradientRect(x, y, x2, y2, color, color2, mode);
+            return 0;
+        }
+
+        int verticalGradientRect(lua_State* L)
+        {
+            luaL_checkudata(L, 1, Meta);
+            int x = script::get<int>(L, 2);
+            int y = script::get<int>(L, 3);
+            int x2 = script::get<int>(L, 4);
+            int y2 = script::get<int>(L, 5);
+            Color color = script::get<int>(L, 6);
+            Color color2 = script::get<int>(L, 7);
+            BlendMode mode = (BlendMode) script::get<int>(L, 8, BlendPreserve);
+
+            script::instance(L).screen().verticalGradientRect(x, y, x2, y2, color, color2, mode);
             return 0;
         }
 
 
-        int video_circle(lua_State* L)
+        int circle(lua_State* L)
         {
-            luaL_checkudata(L, 1, METANAME);
+            luaL_checkudata(L, 1, Meta);
             int x = script::get<int>(L, 2);
             int y = script::get<int>(L, 3);
             int xrad = script::get<int>(L, 4);
@@ -154,13 +154,13 @@ namespace plum
             Color color = script::get<int>(L, 6);
             BlendMode mode = (BlendMode) script::get<int>(L, 7, BlendPreserve);
 
-            script::instance(L).video().circle(x, y, xrad, yrad, color, mode);
+            script::instance(L).screen().circle(x, y, xrad, yrad, color, mode);
             return 0;
         }
 
-        int video_solidCircle(lua_State* L)
+        int solidCircle(lua_State* L)
         {
-            luaL_checkudata(L, 1, METANAME);
+            luaL_checkudata(L, 1, Meta);
             int x = script::get<int>(L, 2);
             int y = script::get<int>(L, 3);
             int xrad = script::get<int>(L, 4);
@@ -168,60 +168,57 @@ namespace plum
             Color color = script::get<int>(L, 6);
             BlendMode mode = (BlendMode) script::get<int>(L, 7, BlendPreserve);
 
-            script::instance(L).video().solidCircle(x, y, xrad, yrad, color, mode);
+            script::instance(L).screen().solidCircle(x, y, xrad, yrad, color, mode);
             return 0;
         }
 
-        int video_getWidth(lua_State* L)
+        int get_width(lua_State* L)
         {
-            luaL_checkudata(L, 1, METANAME);
-            script::push(L, script::instance(L).video().getScreenWidth());
+            luaL_checkudata(L, 1, Meta);
+            script::push(L, script::instance(L).screen().getWidth());
             return 1;
         }
 
-        int video_getHeight(lua_State* L)
+        int get_height(lua_State* L)
         {
-            luaL_checkudata(L, 1, METANAME);
-            script::push(L, script::instance(L).video().getScreenHeight());
+            luaL_checkudata(L, 1, Meta);
+            script::push(L, script::instance(L).screen().getHeight());
             return 1;
         }
 
-        int video_getOpacity(lua_State* L)
+        int get_opacity(lua_State* L)
         {
-            luaL_checkudata(L, 1, METANAME);
+            luaL_checkudata(L, 1, Meta);
             script::push(L, getOpacity());
             return 1;
         }
 
-        int video_setOpacity(lua_State* L)
+        int set_opacity(lua_State* L)
         {
-            luaL_checkudata(L, 1, METANAME);
+            luaL_checkudata(L, 1, Meta);
             int v = script::get<int>(L, 2);
             setOpacity(v);
             return 0;
         }
 
         const luaL_Reg functions[] = {
-            { "__index", video_getField },
-            { "__newindex", video_setField },
-            { "__tostring",    video_toString },
-
-            { "clear", video_clear },
-            { "setPixel", video_setPixel },
-            { "line", video_line },
-            { "rect", video_rect },
-            { "solidRect", video_solidRect },
-            { "circle", video_circle },
-            { "solidCircle", video_solidCircle },
-            { "horizontalGradientRect", video_horizontalGradientRect },
-            { "verticalGradientRect", video_verticalGradientRect },
-
-            { "get_width", video_getWidth },
-            { "get_height", video_getHeight },
-            { "get_opacity", video_getOpacity },
-            { "set_opacity", video_setOpacity },
-
-            { nullptr, nullptr }
+            {"__index", index},
+            {"__newindex", newindex},
+            {"__tostring", tostring},
+            {"clear", clear},
+            {"setPixel", setPixel},
+            {"line", line},
+            {"rect", rect},
+            {"solidRect", solidRect},
+            {"circle", circle},
+            {"solidCircle", solidCircle},
+            {"horizontalGradientRect", horizontalGradientRect},
+            {"verticalGradientRect", verticalGradientRect},
+            {"get_width", get_width},
+            {"get_height", get_height},
+            {"get_opacity", get_opacity},
+            {"set_opacity", set_opacity},
+            {nullptr, nullptr},
         };
     }
 
@@ -230,7 +227,7 @@ namespace plum
         void initVideoModule(lua_State* L)
         {
             // Load timer metatable
-            luaL_newmetatable(L, METANAME);
+            luaL_newmetatable(L, Meta);
             // Duplicate the metatable on the stack.
             lua_pushvalue(L, -1);
             // metatable.__index = metatable
@@ -245,9 +242,9 @@ namespace plum
             // Create video
             lua_newuserdata(L, 0); // empty userdata (change this if it causes problems).
             lua_pushvalue(L, -1);
-            lua_setfield(L, -3, "video");
+            lua_setfield(L, -3, "screen");
 
-            luaL_getmetatable(L, METANAME);
+            luaL_getmetatable(L, Meta);
             lua_setmetatable(L, -2);
 
             // Pop video.

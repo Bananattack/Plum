@@ -66,7 +66,7 @@ namespace plum
 
             if(argumentCount >= 1)
             {
-                script::instance(L).video().setTitle(lua_tostring(L, 1));
+                script::instance(L).screen().setTitle(lua_tostring(L, 1));
             }
             
             return 0;

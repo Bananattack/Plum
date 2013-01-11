@@ -60,7 +60,7 @@ do local Self = {}
         table.insert(world.sprites, Particle(self.x + math.random(-20, self.frame.width - 44), self.y + math.random(0, self.frame.height)))
         table.insert(world.sprites, Particle(self.x + math.random(-20, self.frame.width - 44), self.y + math.random(0, self.frame.height)))
         if self.hasRoids and math.random(0, 100) < 75 then
-            table.insert(world.sprites, Roids(world.x + math.random(0, plum.video.width), math.random(1, 10)))
+            table.insert(world.sprites, Roids(world.x + math.random(0, plum.screen.width), math.random(1, 10)))
         end
         self.shakeTimer = 80
         

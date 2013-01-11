@@ -12,14 +12,14 @@ namespace plum
         std::unordered_map<lua_State*, Script*> instances;
     }
 
-    Script::Script(Engine& engine, Timer& timer, Keyboard& keyboard, Mouse& mouse, Audio& audio, Video& video)
+    Script::Script(Engine& engine, Timer& timer, Keyboard& keyboard, Mouse& mouse, Audio& audio, Screen& screen)
         : L(luaL_newstate()),
         engine_(engine),
         timer_(timer),
         keyboard_(keyboard),
         mouse_(mouse),
         audio_(audio),
-        video_(video)
+        screen_(screen)
     {
         luaL_openlibs(L);
 

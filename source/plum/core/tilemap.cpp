@@ -369,7 +369,7 @@ namespace plum
         }
     }
 
-    void Tilemap::blit(Video& video, Sprite& spr, int worldX, int worldY, int destX, int destY, int tilesWide, int tilesHigh, BlendMode mode, Color tint)
+    void Tilemap::blit(Screen& screen, Sprite& spr, int worldX, int worldY, int destX, int destY, int tilesWide, int tilesHigh, BlendMode mode, Color tint)
     {
         if(tilesWide < 0 || tilesHigh < 0) return;
 
@@ -398,7 +398,7 @@ namespace plum
 
         int i, j;
 
-        video.startBatch();
+        screen.startBatch();
         spr.bind();
 
         useHardwareBlender(mode);
@@ -411,6 +411,6 @@ namespace plum
                     data[(tileY + i) * width + (tileX + j)], 0, 1);
             }
         }
-        video.endBatch();
+        screen.endBatch();
     }
 }

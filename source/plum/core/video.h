@@ -11,16 +11,16 @@ namespace plum
     void useHardwareColor(int r, int g, int b, int a);
 
     class Engine;
-    class Video
+    class Screen
     {
         public:
-            Video(Engine& engine, int width, int height, bool win);
-            ~Video();
+            Screen(Engine& engine, int width, int height, bool win);
+            ~Screen();
 
-            int getScreenWidth() const;
-            int getScreenHeight() const;
-            int getWindowWidth() const;
-            int getWindowHeight() const;
+            int getWidth() const;
+            int getHeight() const;
+            int getTrueWidth() const;
+            int getTrueHeight() const;
             void setTitle(const std::string& title);
             void setResolution(int width, int height, bool win);
 

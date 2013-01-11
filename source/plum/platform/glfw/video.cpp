@@ -34,7 +34,7 @@ namespace plum
         return glColor4ub(r, g, b, a * getOpacity() / 255);
     }
 
-    class Video::Impl
+    class Screen::Impl
     {
         public:
             Impl(Engine& engine)
@@ -58,51 +58,51 @@ namespace plum
 
             bool windowed;
 
-            int windowWidth, windowHeight;
-            int xres, yres;
+            int trueWidth, trueHeight;
+            int width, height;
     };
 
-    Video::Video(Engine& engine, int width, int height, bool win)
+    Screen::Screen(Engine& engine, int width, int height, bool win)
         : impl(new Impl(engine))
     {
         setResolution(width, height, win);
     }
 
-    Video::~Video()
+    Screen::~Screen()
     {
     }
 
-    int Video::getScreenWidth() const
+    int Screen::getWidth() const
     {
-        return impl->xres;
+        return impl->width;
     }
 
-    int Video::getScreenHeight() const
+    int Screen::getHeight() const
     {
-        return impl->yres;
+        return impl->height;
     }
 
-    int Video::getWindowWidth() const
+    int Screen::getTrueWidth() const
     {
-        return impl->windowWidth;
+        return impl->trueWidth;
     }
 
-    int Video::getWindowHeight() const
+    int Screen::getTrueHeight() const
     {
-        return impl->windowHeight;
+        return impl->trueHeight;
     }
 
-    void Video::setTitle(const std::string& title)
+    void Screen::setTitle(const std::string& title)
     {
         glfwSetWindowTitle(impl->context->window(), title.c_str());
     }
 
-    void Video::setResolution(int width, int height, bool win)
+    void Screen::setResolution(int width, int height, bool win)
     {
         impl->windowed = win;
 
-        impl->xres = width;
-        impl->yres = height;
+        impl->width = width;
+        impl->height = height;
 
         // Fullscreen is usually not supported for low-res, so upscale everything!
         if(!impl->windowed && (width < 640 || height < 480))
@@ -114,9 +114,9 @@ namespace plum
         auto window = glfwCreateWindow(width, height, (impl->windowed ? GLFW_WINDOWED : GLFW_FULLSCREEN), "", nullptr);
         if(!window)
         {
-            throw std::runtime_error("Video settings were not compatible your graphics card.\r\n");
+            throw std::runtime_error("Screen settings were not compatible your graphics card.\r\n");
         }
-        glfwGetWindowSize(window, &impl->windowWidth, &impl->windowHeight);
+        glfwGetWindowSize(window, &impl->trueWidth, &impl->trueHeight);
 
         glfwMakeContextCurrent(window);
         glEnable(GL_BLEND);
@@ -125,11 +125,11 @@ namespace plum
 
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
-        glOrtho(0, impl->xres, impl->yres, 0, -1, 1);
+        glOrtho(0, impl->width, impl->height, 0, -1, 1);
 
         glDisable(GL_DEPTH_TEST);
 
-        glScissor(0, 0, impl->xres, impl->yres);
+        glScissor(0, 0, impl->width, impl->height);
         glEnable(GL_SCISSOR_TEST);
 
         glClearColor(0.0, 0.0, 0.0, 1.0);
@@ -142,20 +142,20 @@ namespace plum
         impl->context = impl->engine.impl->registerWindow(window);
     }
 
-    void Video::startBatch()
+    void Screen::startBatch()
     {
         glEnable(GL_TEXTURE_2D);
         glEnableClientState(GL_VERTEX_ARRAY);
         glEnableClientState(GL_TEXTURE_COORD_ARRAY);
     }
 
-    void Video::endBatch()
+    void Screen::endBatch()
     {
         glDisableClientState(GL_VERTEX_ARRAY);
         glDisableClientState(GL_TEXTURE_COORD_ARRAY);
     }
 
-    void Video::clear(Color color)
+    void Screen::clear(Color color)
     {
         uint8_t r, g, b, a;
         color.channels(r, g, b, a);
@@ -169,7 +169,7 @@ namespace plum
     }
 
     // Dear god I hope nobody uses this for anything intensive.
-    void Video::setPixel(int x, int y, Color color, BlendMode mode)
+    void Screen::setPixel(int x, int y, Color color, BlendMode mode)
     {
         uint8_t r, g, b, a;
         color.channels(r, g, b, a);
@@ -186,7 +186,7 @@ namespace plum
         glDisableClientState(GL_VERTEX_ARRAY);
     }
 
-    void Video::line(int x, int y, int x2, int y2, Color color, BlendMode mode)
+    void Screen::line(int x, int y, int x2, int y2, Color color, BlendMode mode)
     {
         uint8_t r, g, b, a;
         color.channels(r, g, b, a);
@@ -203,7 +203,7 @@ namespace plum
         glDisableClientState(GL_VERTEX_ARRAY);
     }
 
-    void Video::rect(int x, int y, int x2, int y2, Color color, BlendMode mode)
+    void Screen::rect(int x, int y, int x2, int y2, Color color, BlendMode mode)
     {
         uint8_t r, g, b, a;
         color.channels(r, g, b, a);
@@ -238,7 +238,7 @@ namespace plum
         glDisableClientState(GL_VERTEX_ARRAY);
     }
 
-    void Video::solidRect(int x, int y, int x2, int y2, Color color, BlendMode mode)
+    void Screen::solidRect(int x, int y, int x2, int y2, Color color, BlendMode mode)
     {
         uint8_t r, g, b, a;
         color.channels(r, g, b, a);    
@@ -270,7 +270,7 @@ namespace plum
         glDisableClientState(GL_VERTEX_ARRAY);
     }
 
-    void Video::horizontalGradientRect(int x, int y, int x2, int y2, Color color, Color color2, BlendMode mode)
+    void Screen::horizontalGradientRect(int x, int y, int x2, int y2, Color color, Color color2, BlendMode mode)
     {
         uint8_t r, g, b, a;
         uint8_t r2, g2, b2, a2;
@@ -311,7 +311,7 @@ namespace plum
         glDisableClientState(GL_VERTEX_ARRAY);
     }
 
-    void Video::verticalGradientRect(int x, int y, int x2, int y2, Color color, Color color2, BlendMode mode)
+    void Screen::verticalGradientRect(int x, int y, int x2, int y2, Color color, Color color2, BlendMode mode)
     {
         uint8_t r, g, b, a;
         uint8_t r2, g2, b2, a2;
@@ -352,7 +352,7 @@ namespace plum
         glDisableClientState(GL_VERTEX_ARRAY);
     }
 
-    void Video::circle(int x, int y, int horizontalRadius, int verticalRadius, Color color, BlendMode mode)
+    void Screen::circle(int x, int y, int horizontalRadius, int verticalRadius, Color color, BlendMode mode)
     {
         uint8_t r, g, b, a;
         color.channels(r, g, b, a);
@@ -380,7 +380,7 @@ namespace plum
         glDisableClientState(GL_VERTEX_ARRAY);
     }
 
-    void Video::solidCircle(int x, int y, int horizontalRadius, int verticalRadius, Color color, BlendMode mode)
+    void Screen::solidCircle(int x, int y, int horizontalRadius, int verticalRadius, Color color, BlendMode mode)
     {
         uint8_t r, g, b, a;
         color.channels(r, g, b, a);

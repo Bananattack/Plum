@@ -26,7 +26,7 @@ int main(int argc, char** argv)
         plum::Mouse mouse(engine);
         plum::Timer timer(engine);
         plum::Audio audio(engine, silent);
-        plum::Video video(engine, xres, yres, windowed);
+        plum::Screen screen(engine, xres, yres, windowed);
 
         auto hook = engine.addUpdateHook([&]() {
             if(keyboard[plum::KeyTilde].isPressed())
@@ -53,7 +53,7 @@ int main(int argc, char** argv)
 
         try
         {
-            plum::Script script(engine, timer, keyboard, mouse, audio, video);
+            plum::Script script(engine, timer, keyboard, mouse, audio, screen);
             script.run("system.lua");
         }
         catch(const std::runtime_error& e)

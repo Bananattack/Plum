@@ -19,12 +19,12 @@ namespace plum
     class Timer;
     class Keyboard;
     class Mouse;
-    class Video;
+    class Screen;
     class Audio;
     class Script
     {
         public:
-            Script(Engine& engine, Timer& timer, Keyboard& keyboard, Mouse& mouse, Audio& audio, Video& video);
+            Script(Engine& engine, Timer& timer, Keyboard& keyboard, Mouse& mouse, Audio& audio, Screen& screen);
             ~Script();
 
             Engine& engine()
@@ -52,9 +52,9 @@ namespace plum
                 return audio_;
             }
 
-            Video& video()
+            Screen& screen()
             {
-                return video_;
+                return screen_;
             }
 
             void run(const std::string& filename);
@@ -66,7 +66,7 @@ namespace plum
             Keyboard& keyboard_;
             Mouse& mouse_;
             Audio& audio_;
-            Video& video_;
+            Screen& screen_;
 
             Script(const Script&);
             void operator =(const Script&);
