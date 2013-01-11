@@ -1,5 +1,5 @@
 
-#include "../core/video.h"
+#include "../core/screen.h"
 #include "script.h"
 
 namespace plum

@@ -1,6 +1,6 @@
 #include "core/log.h"
 #include "core/audio.h"
-#include "core/video.h"
+#include "core/screen.h"
 #include "core/config.h"
 #include "core/engine.h"
 #include "core/timer.h"

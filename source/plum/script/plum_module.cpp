@@ -7,7 +7,7 @@
 
 #include "../core/color.h"
 #include "../core/input.h"
-#include "../core/video.h"
+#include "../core/screen.h"
 #include "../core/engine.h"
 #include "../core/blending.h"
 #include "script.h"

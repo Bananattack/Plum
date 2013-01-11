@@ -1,4 +1,4 @@
-#include "video.h"
+#include "screen.h"
 #include "tilemap.h"
 #include "sprite.h"
 

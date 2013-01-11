@@ -114,8 +114,8 @@
     <ClCompile Include="platform\glfw\engine.cpp" />
     <ClCompile Include="platform\glfw\image.cpp" />
     <ClCompile Include="platform\glfw\input.cpp" />
+    <ClCompile Include="platform\glfw\screen.cpp" />
     <ClCompile Include="platform\glfw\timer.cpp" />
-    <ClCompile Include="platform\glfw\video.cpp" />
     <ClCompile Include="platform\plaidaudio\audio.cpp" />
     <ClCompile Include="platform\plaidaudio\codec_modplug.cpp" />
     <ClCompile Include="plum.cpp" />
@@ -129,6 +129,7 @@
     <ClCompile Include="script\plum_module.cpp" />
     <ClCompile Include="script\point_object.cpp" />
     <ClCompile Include="script\rect_object.cpp" />
+    <ClCompile Include="script\screen_object.cpp" />
     <ClCompile Include="script\script.cpp" />
     <ClCompile Include="script\song_object.cpp" />
     <ClCompile Include="script\sound_object.cpp" />
@@ -136,7 +137,6 @@
     <ClCompile Include="script\tilemap_object.cpp" />
     <ClCompile Include="script\timer_object.cpp" />
     <ClCompile Include="script\transform_object.cpp" />
-    <ClCompile Include="script\video_object.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\audio.h" />
@@ -150,11 +150,11 @@
     <ClInclude Include="core\image.h" />
     <ClInclude Include="core\input.h" />
     <ClInclude Include="core\log.h" />
+    <ClInclude Include="core\screen.h" />
     <ClInclude Include="core\sprite.h" />
     <ClInclude Include="core\tilemap.h" />
     <ClInclude Include="core\timer.h" />
     <ClInclude Include="core\transform.h" />
-    <ClInclude Include="core\video.h" />
     <ClInclude Include="platform\glfw\engine.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="script\script.h" />

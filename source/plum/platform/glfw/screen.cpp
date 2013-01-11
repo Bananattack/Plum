@@ -2,7 +2,7 @@
 #include <GL/glfw3.h>
 
 #include "engine.h"
-#include "../../core/video.h"
+#include "../../core/screen.h"
 
 namespace plum
 {

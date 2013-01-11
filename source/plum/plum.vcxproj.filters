@@ -87,9 +87,6 @@
     <ClCompile Include="script\transform_object.cpp">
       <Filter>Source Files\script</Filter>
     </ClCompile>
-    <ClCompile Include="script\video_object.cpp">
-      <Filter>Source Files\script</Filter>
-    </ClCompile>
     <ClCompile Include="core\config.cpp">
       <Filter>Source Files\core</Filter>
     </ClCompile>
@@ -135,9 +132,6 @@
     <ClCompile Include="platform\glfw\timer.cpp">
       <Filter>Source Files\platform\glfw</Filter>
     </ClCompile>
-    <ClCompile Include="platform\glfw\video.cpp">
-      <Filter>Source Files\platform\glfw</Filter>
-    </ClCompile>
     <ClCompile Include="platform\plaidaudio\audio.cpp">
       <Filter>Source Files\platform\plaidaudio</Filter>
     </ClCompile>
@@ -149,6 +143,12 @@
     </ClCompile>
     <ClCompile Include="platform\plaidaudio\codec_modplug.cpp">
       <Filter>Source Files\platform\plaidaudio</Filter>
+    </ClCompile>
+    <ClCompile Include="platform\glfw\screen.cpp">
+      <Filter>Source Files\platform\glfw</Filter>
+    </ClCompile>
+    <ClCompile Include="script\screen_object.cpp">
+      <Filter>Source Files\script</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -182,9 +182,6 @@
     <ClInclude Include="core\audio.h">
       <Filter>Header Files\core</Filter>
     </ClInclude>
-    <ClInclude Include="core\video.h">
-      <Filter>Header Files\core</Filter>
-    </ClInclude>
     <ClInclude Include="core\blending.h">
       <Filter>Header Files\core</Filter>
     </ClInclude>
@@ -208,6 +205,9 @@
     </ClInclude>
     <ClInclude Include="platform\glfw\engine.h">
       <Filter>Source Files\platform\glfw</Filter>
+    </ClInclude>
+    <ClInclude Include="core\screen.h">
+      <Filter>Header Files\core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -3,7 +3,7 @@
 
 #include <string>
 #include "color.h"
-#include "video.h"
+#include "screen.h"
 #include "canvas.h"
 #include "blending.h"
 
