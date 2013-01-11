@@ -96,8 +96,7 @@ namespace plum
 
     void Image::bind()
     {
-        glEnable(GL_TEXTURE_2D);
-        glBindTexture(GL_TEXTURE_2D, impl->textureID); 
+        impl->bind();
     }
 
     void Image::blit(int x, int y, BlendMode mode)
