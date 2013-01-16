@@ -14,7 +14,7 @@ namespace plum
     class Screen
     {
         public:
-            Screen(Engine& engine, int width, int height, bool win);
+            Screen(Engine& engine, int width, int height, int scale, bool win);
             ~Screen();
 
             int getWidth() const;
@@ -22,7 +22,7 @@ namespace plum
             int getTrueWidth() const;
             int getTrueHeight() const;
             void setTitle(const std::string& title);
-            void setResolution(int width, int height, bool win);
+            void setResolution(int width, int height, int scale, bool win);
 
             void startBatch();
             void endBatch();

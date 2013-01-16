@@ -139,9 +139,8 @@ namespace plum
             int tilesWide = script::get<int>(L, 7);
             int tilesHigh = script::get<int>(L, 8);
             BlendMode mode = (BlendMode) script::get<int>(L, 9, BlendPreserve);
-            Color tint = script::get<int>(L, 10, Color::White);
 
-            m->blit(script::instance(L).screen(), *spr, worldX, worldY, destX, destY, tilesWide, tilesHigh, mode, tint);
+            m->blit(script::instance(L).screen(), *spr, worldX, worldY, destX, destY, tilesWide, tilesHigh, mode);
             return 0;
         }
     }

@@ -369,7 +369,7 @@ namespace plum
         }
     }
 
-    void Tilemap::blit(Screen& screen, Sprite& spr, int worldX, int worldY, int destX, int destY, int tilesWide, int tilesHigh, BlendMode mode, Color tint)
+    void Tilemap::blit(Screen& screen, Sprite& spr, int worldX, int worldY, int destX, int destY, int tilesWide, int tilesHigh, BlendMode mode)
     {
         if(tilesWide < 0 || tilesHigh < 0) return;
 
@@ -402,7 +402,6 @@ namespace plum
         spr.bind();
 
         useHardwareBlender(mode);
-        useHardwareColor(255, 255, 255, 255);
         for(i = 0; i < tilesHigh; ++i)
         {
             for(j = 0; j < tilesWide; ++j)

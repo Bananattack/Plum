@@ -20,25 +20,15 @@ namespace plum
 
         int create(lua_State* L)
         {
-            if((script::is<Image>(L, 1) || script::is<Canvas>(L, 1))
-                && script::is<int>(L, 2) && script::is<int>(L, 3))
+            if(script::is<Image>(L, 1) && script::is<int>(L, 2) && script::is<int>(L, 3))
             {
                 int w = script::get<int>(L, 2);
                 int h = script::get<int>(L, 3);
-                if(script::is<Canvas>(L, 1))
-                {
-                    auto canvas = script::ptr<Canvas>(L, 1);
-                    script::push(L, new Sprite(*canvas, w, h), LUA_NOREF);
-                    return 1;
-                }
-                else if(script::is<Image>(L, 1))
-                {
-                    auto img = script::ptr<Image>(L, 1);
-                    script::push(L, new Sprite(img->canvas(), w, h), LUA_NOREF);
-                    return 1;
-                }
+                auto img = script::ptr<Image>(L, 1);
+                script::push(L, new Sprite(*img, w, h), LUA_NOREF);
+                return 1;
             }
-            luaL_error(L, "Attempt to call plum.Sprite constructor with invalid argument types.\r\nMust be (Image img, int frameWidth, int frameHeight) or (Canvas canvas, int frameWidth, int frameHeight).");
+            luaL_error(L, "Attempt to call plum.Sprite constructor with invalid argument types.\r\nMust be (Image img, int frameWidth, int frameHeight).");
             return 0;
         }
 

@@ -19,6 +19,7 @@ namespace plum
             ~Image();
 
             Canvas& canvas();
+            const Canvas& canvas() const;
             void refresh();
 
             void bind();

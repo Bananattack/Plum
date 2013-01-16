@@ -3,12 +3,12 @@
 
 namespace plum
 {
-    Sprite::Sprite(const Canvas& canvas, int w, int h)
-        : image_(Image(canvas)),
+    Sprite::Sprite(const Image& image, int w, int h)
+        : image_(image),
         frameWidth(w),
         frameHeight(h),
         padding(0),
-        columns(canvas.getWidth() / w)
+        columns(image.canvas().getWidth() / w)
     {
     }
             

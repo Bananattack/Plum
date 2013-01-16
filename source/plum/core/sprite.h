@@ -11,7 +11,7 @@ namespace plum
     class Sprite
     {
         public:
-            Sprite(const Canvas& canvas, int w, int h);
+            Sprite(const Image& image, int w, int h);
             ~Sprite();
 
             int getFrameWidth() const;

@@ -16,8 +16,9 @@ int main(int argc, char** argv)
     try
     {
         plum::Config config("plum.cfg");
-        auto xres = config.get<int>("xres", 320);
-        auto yres = config.get<int>("yres", 240);
+        auto xres = std::max(config.get<int>("xres", 320), 0);
+        auto yres = std::max(config.get<int>("yres", 240), 0);
+        auto scale = std::max(config.get<int>("scale", 2), 1);
         auto silent = config.get<bool>("silent", false);
         auto windowed = config.get<bool>("windowed", true);
 
@@ -26,7 +27,7 @@ int main(int argc, char** argv)
         plum::Mouse mouse(engine);
         plum::Timer timer(engine);
         plum::Audio audio(engine, silent);
-        plum::Screen screen(engine, xres, yres, windowed);
+        plum::Screen screen(engine, xres, yres, scale, windowed);
 
         auto hook = engine.addUpdateHook([&]() {
             if(keyboard[plum::KeyTilde].isPressed())

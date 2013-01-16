@@ -29,11 +29,6 @@ namespace plum
         }
     }
 
-    void useHardwareColor(int r, int g, int b, int a) 
-    {
-        return glColor4ub(r, g, b, a * getOpacity() / 255);
-    }
-
     class Screen::Impl
     {
         public:
@@ -60,12 +55,13 @@ namespace plum
 
             int trueWidth, trueHeight;
             int width, height;
+            int scale;
     };
 
-    Screen::Screen(Engine& engine, int width, int height, bool win)
+    Screen::Screen(Engine& engine, int width, int height, int scale, bool win)
         : impl(new Impl(engine))
     {
-        setResolution(width, height, win);
+        setResolution(width, height, scale, win);
     }
 
     Screen::~Screen()
@@ -97,12 +93,13 @@ namespace plum
         glfwSetWindowTitle(impl->context->window(), title.c_str());
     }
 
-    void Screen::setResolution(int width, int height, bool win)
+    void Screen::setResolution(int width, int height, int scale, bool win)
     {
         impl->windowed = win;
 
         impl->width = width;
         impl->height = height;
+        impl->scale = scale;
 
         // Fullscreen is usually not supported for low-res, so upscale everything!
         if(!impl->windowed && (width < 640 || height < 480))
@@ -111,7 +108,7 @@ namespace plum
             height = 480;
         }
 
-        auto window = glfwCreateWindow(width, height, (impl->windowed ? GLFW_WINDOWED : GLFW_FULLSCREEN), "", nullptr);
+        auto window = glfwCreateWindow(width * scale, height * scale, (impl->windowed ? GLFW_WINDOWED : GLFW_FULLSCREEN), "", nullptr);
         if(!window)
         {
             throw std::runtime_error("Screen settings were not compatible your graphics card.\r\n");
@@ -126,10 +123,12 @@ namespace plum
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
         glOrtho(0, impl->width, impl->height, 0, -1, 1);
+        glViewport(0, 0, impl->trueWidth, impl->trueHeight);
+        glLineWidth(scale);
 
         glDisable(GL_DEPTH_TEST);
 
-        glScissor(0, 0, impl->width, impl->height);
+        glScissor(0, 0, impl->trueWidth, impl->trueHeight);
         glEnable(GL_SCISSOR_TEST);
 
         glClearColor(0.0, 0.0, 0.0, 1.0);
@@ -144,6 +143,7 @@ namespace plum
 
     void Screen::startBatch()
     {
+        glColor4ub(255, 255, 255, getOpacity());
         glEnable(GL_TEXTURE_2D);
         glEnableClientState(GL_VERTEX_ARRAY);
         glEnableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -171,19 +171,7 @@ namespace plum
     // Dear god I hope nobody uses this for anything intensive.
     void Screen::setPixel(int x, int y, Color color, BlendMode mode)
     {
-        uint8_t r, g, b, a;
-        color.channels(r, g, b, a);
-
-        useHardwareBlender(mode);
-
-        const GLdouble vertexArray[] = { x, y };
-        glDisable(GL_TEXTURE_2D);
-
-        useHardwareColor(r, g, b, a);
-        glEnableClientState(GL_VERTEX_ARRAY);
-        glVertexPointer(2, GL_DOUBLE, 0, vertexArray);
-        glDrawArrays(GL_POINTS, 0, 1);
-        glDisableClientState(GL_VERTEX_ARRAY);
+        solidRect(x, y, x, y, color, mode);
     }
 
     void Screen::line(int x, int y, int x2, int y2, Color color, BlendMode mode)
@@ -193,10 +181,10 @@ namespace plum
 
         useHardwareBlender(mode);
 
-        const GLdouble vertexArray[] = { x, y - 1, x2 + 1, y2 };
+        const GLdouble vertexArray[] = { x, y, x2, y2 };
         glDisable(GL_TEXTURE_2D);
 
-        useHardwareColor(r, g, b, a);
+        glColor4ub(r, g, b, a * getOpacity() / 255);
         glEnableClientState(GL_VERTEX_ARRAY);
         glVertexPointer(2, GL_DOUBLE, 0, vertexArray);
         glDrawArrays(GL_LINES, 0, 2);
@@ -220,21 +208,32 @@ namespace plum
         }
 
         const GLdouble vertexArray[] = {
-            x - 1, y - 1,
-            x - 1, y2,
-            x - 1, y2,
-            x2 + 1, y2,
-            x2 + 1, y2,
-            x2 + 2, y - 2,
-            x2 + 2, y - 2,
-            x - 1, y - 1,
+            x - 0.5, y - 0.5,
+            x + 0.5, y - 0.5,
+            x + 0.5, y2 + 0.5,
+            x - 0.5, y2 + 0.5,
+
+            x - 0.5, y2 - 0.5,
+            x2 + 0.5, y2 - 0.5,
+            x2 + 0.5, y2 + 0.5,
+            x - 0.5, y2 + 0.5,
+
+            x2 - 0.5, y - 0.5,
+            x2 + 0.5, y - 0.5,
+            x2 + 0.5, y2 + 0.5,
+            x2 - 0.5, y2 + 0.5,
+
+            x - 0.5, y - 0.5,
+            x2 + 0.5, y - 0.5,
+            x2 + 0.5, y + 0.5,
+            x - 0.5, y + 0.5,
         };
         glDisable(GL_TEXTURE_2D);
 
-        useHardwareColor(r, g, b, a);
+        glColor4ub(r, g, b, a * getOpacity() / 255);
         glEnableClientState(GL_VERTEX_ARRAY);
         glVertexPointer(2, GL_DOUBLE, 0, vertexArray);
-        glDrawArrays(GL_LINES, 0, 8);
+        glDrawArrays(GL_QUADS, 0, 16);
         glDisableClientState(GL_VERTEX_ARRAY);
     }
 
@@ -254,16 +253,15 @@ namespace plum
             std::swap(y, y2);
         }
 
-
         const GLdouble vertexArray[] = {
-            x - 1, y - 1,
-            x2 + 1, y - 1,
-            x2 + 1, y2,
-            x - 1, y2,
+            x - 0.5, y - 0.5,
+            x2 + 0.5, y - 0.5,
+            x2 + 0.5, y2 + 0.5,
+            x - 0.5, y2 + 0.5,
         };
         glDisable(GL_TEXTURE_2D);
 
-        useHardwareColor(r, g, b, a);
+        glColor4ub(r, g, b, a * getOpacity() / 255);
         glEnableClientState(GL_VERTEX_ARRAY);
         glVertexPointer(2, GL_DOUBLE, 0, vertexArray);
         glDrawArrays(GL_QUADS, 0, 4);
@@ -373,7 +371,7 @@ namespace plum
 
         glDisable(GL_TEXTURE_2D);
 
-        useHardwareColor(r, g, b, a);
+        glColor4ub(r, g, b, a * getOpacity() / 255);
         glEnableClientState(GL_VERTEX_ARRAY);
         glVertexPointer(2, GL_DOUBLE, 0, vertexArray);
         glDrawArrays(GL_LINE_LOOP, 0, 360);
@@ -401,7 +399,7 @@ namespace plum
 
         glDisable(GL_TEXTURE_2D);
 
-        useHardwareColor(r, g, b, a);
+        glColor4ub(r, g, b, a * getOpacity() / 255);
         glEnableClientState(GL_VERTEX_ARRAY);
         glVertexPointer(2, GL_DOUBLE, 0, vertexArray);
         glDrawArrays(GL_TRIANGLE_FAN, 0, 360);

@@ -4,7 +4,6 @@
 #include "../../core/log.h"
 
 #ifdef _WIN32
-#define NOMINMAX
 #include <GL/glfw3native.h>
 #endif
 

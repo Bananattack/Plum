@@ -86,6 +86,11 @@ namespace plum
         return impl->canvas;
     }
 
+    const Canvas& Image::canvas() const
+    {
+        return impl->canvas;
+    }
+
     void Image::refresh()
     {
         bind();
@@ -132,17 +137,17 @@ namespace plum
         sourceX2 = std::min(std::max(0, sourceX2), impl->canvas.getWidth() - 1);
         sourceY2 = std::min(std::max(0, sourceY2), impl->canvas.getHeight() - 1);
 
-        double regionS = (double(sourceX) + 0.5) / impl->canvas.getTrueWidth();
-        double regionT = (double(sourceY) + 0.5) / impl->canvas.getTrueHeight();
-        double regionS2 = (double(sourceX2) + 0.5) / impl->canvas.getTrueWidth();
-        double regionT2 = (double(sourceY2) + 0.5) / impl->canvas.getTrueHeight();
+        double regionS = (double(sourceX)) / impl->canvas.getTrueWidth();
+        double regionT = (double(sourceY)) / impl->canvas.getTrueHeight();
+        double regionS2 = (double(sourceX2) + 1) / impl->canvas.getTrueWidth();
+        double regionT2 = (double(sourceY2) + 1) / impl->canvas.getTrueHeight();
 
         useHardwareBlender(mode);
+        glColor4ub(255, 255, 255, getOpacity());
 
         glPushMatrix();
         bind();
 
-        useHardwareColor(255, 255, 255, 255);
         glTranslated(destX, destY, 0);
 
 
@@ -206,20 +211,20 @@ namespace plum
         sourceX2 = std::min(std::max(0, sourceX2), impl->canvas.getWidth() - 1);
         sourceY2 = std::min(std::max(0, sourceY2), impl->canvas.getHeight() - 1);
 
-        double regionS = (double(sourceX) + 0.5) / impl->canvas.getTrueWidth();
-        double regionT = (double(sourceY) + 0.5) / impl->canvas.getTrueHeight();
-        double regionS2 = (double(sourceX2) + 0.5) / impl->canvas.getTrueWidth();
-        double regionT2 = (double(sourceY2) + 0.5) / impl->canvas.getTrueHeight();
+        double regionS = (double(sourceX)) / impl->canvas.getTrueWidth();
+        double regionT = (double(sourceY)) / impl->canvas.getTrueHeight();
+        double regionS2 = (double(sourceX2) + 1) / impl->canvas.getTrueWidth();
+        double regionT2 = (double(sourceY2) + 1) / impl->canvas.getTrueHeight();
 
         double width = double(sourceX2 - sourceX) * scale;
         double height = double(sourceY2 - sourceY) * scale;
 
         useHardwareBlender(mode);
+        glColor4ub(255, 255, 255, getOpacity());
 
         glPushMatrix();
         bind();
 
-        useHardwareColor(255, 255, 255, 255);
         glTranslated(destX + width / 2.0, destY + height / 2.0, 0.0);
         glRotated(angle, 0.0, 0.0, 1.0);
         glTranslated(-width / 2.0, -height / 2.0, 0.0);
@@ -262,10 +267,10 @@ namespace plum
         sourceX2 = std::min(std::max(0, sourceX2), impl->canvas.getWidth() - 1);
         sourceY2 = std::min(std::max(0, sourceY2), impl->canvas.getHeight() - 1);
 
-        double regionS = (double(sourceX) + 0.5) / impl->canvas.getTrueWidth();
-        double regionT = (double(sourceY) + 0.5) / impl->canvas.getTrueHeight();
-        double regionS2 = (double(sourceX2) + 0.5) / impl->canvas.getTrueWidth();
-        double regionT2 = (double(sourceY2) + 0.5) / impl->canvas.getTrueHeight();
+        double regionS = (double(sourceX)) / impl->canvas.getTrueWidth();
+        double regionT = (double(sourceY)) / impl->canvas.getTrueHeight();
+        double regionS2 = (double(sourceX2) + 1) / impl->canvas.getTrueWidth();
+        double regionT2 = (double(sourceY2) + 1) / impl->canvas.getTrueHeight();
 
         double width = double(sourceX2 - sourceX) * scale;
         double height = double(sourceY2 - sourceY) * scale;
@@ -318,20 +323,20 @@ namespace plum
             sourceY2 = impl->canvas.getHeight() - 1;
         }
 
-        double regionS = (double(sourceX) + 0.5) / impl->canvas.getTrueWidth();
-        double regionT = (double(sourceY) + 0.5) / impl->canvas.getTrueHeight();
-        double regionS2 = (double(sourceX2) + 0.5) / impl->canvas.getTrueWidth();
-        double regionT2 = (double(sourceY2) + 0.5) / impl->canvas.getTrueHeight();
+        double regionS = (double(sourceX)) / impl->canvas.getTrueWidth();
+        double regionT = (double(sourceY)) / impl->canvas.getTrueHeight();
+        double regionS2 = (double(sourceX2) + 1) / impl->canvas.getTrueWidth();
+        double regionT2 = (double(sourceY2) + 1) / impl->canvas.getTrueHeight();
 
         double width = double(sourceX2 - sourceX);
         double height = double(sourceY2 - sourceY);
 
         useHardwareBlender(transform->mode);
+        glColor4ub(r, g, b, a * getOpacity() / 255);
 
         glPushMatrix();
         bind();
 
-        useHardwareColor(r, g, b, a);
         glTranslated(transform->position->x + transform->pivot->x, transform->position->y + transform->pivot->y, 0.0);
         glScaled(transform->scale->x * (1 - transform->mirror * 2), transform->scale->y, 0.0);
         glRotated(transform->angle, 0.0, 0.0, 1.0);
