@@ -1,24 +1,27 @@
 do local Self = {}
-    function Roids(x, y)
+    function Roids(x, y, bad)
         local self = setmetatable({}, {__index = Self})
-        self.frame = resource.image.roids[1]
+        self.frame = bad and randomItem(resource.image.roids.bad) or randomItem(resource.image.roids.good)
         self.hitbox = { width = self.frame.width, height = self.frame.height }
         self.z = 50
         self.isEdible = true
+        self.isBad = bad
         self.x = x
         self.y = y
+        self.fallSpeed = math.random() * 3 + 2
         self.angle = math.random(0, 359)
+        self.angleSpeed = (math.random(0, 100) < 50 and -1 or 1) * (math.random() + 1) * 3
         self.scale = math.random(80, 200) / 100
-        self.amount = 600 * (self.scale / 2)
+        self.amount = 300 * (self.scale / 2)
         return self
     end
     
     function Self:update()
-        if self.y < 180 then
-            self.y = self.y + 1
-            self.angle = self.angle + 1
-            if self.y > 180 then
-                self.y = 180
+        if self.y < world.floorY then
+            self.y = self.y + self.fallSpeed
+            self.angle = self.angle + self.angleSpeed
+            if self.y > world.floorY then
+                self.y = world.floorY
             end
         end
         
@@ -28,13 +31,17 @@ do local Self = {}
     end
     
     function Self:render()
-        plum.screen:solidCircle(self.x - world.x + self.frame.width / 2, 180, 15, 8, plum.color.Blue)
+        plum.screen:solidCircle(self.x - world.x + self.frame.width / 2, world.floorY, 15, 8, plum.color.rgb(0, 0, 0, 127))
         self.frame:rotateScaleBlit(self.x - world.x, self.y - self.frame.height + 20, self.angle, self.scale)
     end
     
     function Self:damage(damage, player)
         self.dispose = true
-        player:addTime(self.amount)
-        resource.sound.heal:play()
+        if self.isBad then
+            player:subtractTime(self.amount * 3)
+        else
+            player:addTime(self.amount)
+        end
+        
     end
 end

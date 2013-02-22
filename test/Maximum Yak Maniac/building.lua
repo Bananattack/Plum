@@ -3,8 +3,9 @@ do local Self = {}
         local self = setmetatable({}, {__index = Self})
         self.isEdible = true
         self.isBuilding = true
-        self.isBig = math.random(0, 100) < 10
-        self.hasRoids = math.random(0, 100) < 20
+        self.isBig = math.random() < 0.1
+        self.hasRoids = math.random() < 0.7
+        self.isBad = math.random() > 0.6
         self.z = 0
         self.score = 5000
         self.frame = self.isBig and randomItem(resource.image.bigBuilding) or randomItem(resource.image.building)
@@ -33,7 +34,7 @@ do local Self = {}
         
         self.x = x
         self.shakeTimer = 0
-        self.y = 180 - self.frame.height
+        self.y = world.floorY - self.frame.height
         return self
     end
     
@@ -60,7 +61,13 @@ do local Self = {}
         table.insert(world.sprites, Particle(self.x + math.random(-20, self.frame.width - 44), self.y + math.random(0, self.frame.height)))
         table.insert(world.sprites, Particle(self.x + math.random(-20, self.frame.width - 44), self.y + math.random(0, self.frame.height)))
         if self.hasRoids and math.random(0, 100) < 75 then
-            table.insert(world.sprites, Roids(world.x + math.random(0, plum.screen.width), math.random(1, 10)))
+            if self.isBad and math.random(0, 100) < 50 then
+                table.insert(world.sprites, Bomb(math.random(math.max(world.x, self.x - plum.screen.width / 3), math.min(world.x + plum.screen.width, self.x + plum.screen.width / 3)), math.random(-300, -10), self.isBad))
+            else
+                for i = 1, math.random(3, 5) do
+                    table.insert(world.sprites, Roids(math.random(math.max(world.x, self.x - plum.screen.width / 3), math.min(world.x + plum.screen.width, self.x + plum.screen.width / 3)), math.random(-300, -10), self.isBad))
+                end
+            end
         end
         self.shakeTimer = 80
         
@@ -74,6 +81,7 @@ do local Self = {}
                 self.isBig = false
                 self.health = self.maxHealth
                 self.hitbox = { width = self.frame.width, height = self.frame.height }
+                self.y = world.floorY - self.frame.height
             else
                 self.dispose = true
             end

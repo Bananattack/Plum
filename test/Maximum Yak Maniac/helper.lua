@@ -27,3 +27,11 @@ function createSpriteFrame(img, replace, color)
         right = right;
     }
 end
+
+
+function createFlipped(img)
+    local result = plum.Image(img.canvas)
+    result.canvas:flip(true, false)
+    result:refresh()
+    return result
+end
