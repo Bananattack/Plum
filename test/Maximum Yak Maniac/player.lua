@@ -55,6 +55,7 @@ do local Self = {}
         resource.sound.heal:play()
         self.timer = self.timer + amount
         self.healCounter = 100
+        table.insert(world.sprites, TextSprite(self.x + self.frame.width / 2, self.y, resource.font.bigGreen, '+' .. tostring(math.ceil(amount / 100))))
     end
 
     function Self:subtractTime(amount)
@@ -62,6 +63,7 @@ do local Self = {}
             resource.sound.ouch:play()
             self.timer = self.timer - amount
             self.hurtCounter = 200
+            table.insert(world.sprites, TextSprite(self.x + self.frame.width / 2, self.y, resource.font.bigRed, '-' .. tostring(math.floor(amount / 100))))
         end
     end
     
@@ -271,6 +273,10 @@ do local Self = {}
             end
         else
             self.frame:rotateBlit(self.x - world.x, self.y, self.angle)
+        end
+
+        if self.timer < 600 and self.timer > 0 then
+            (self.timer % 10 < 5 and resource.font.bigYellow or resource.font.bigRed):printCenter(self.x - world.x + self.frame.width / 2, self.y - 10 + math.sin(math.rad(self.timer) * 10) * 5, tostring(math.floor(self.timer / 100)))
         end
     end
 end

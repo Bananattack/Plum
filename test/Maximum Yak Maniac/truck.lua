@@ -51,9 +51,11 @@ do local Self = {}
             for i, player in ipairs(players) do
                 if player.timer > 0 and player:touches(self.smush) then
                     resource.sound.thud:play()
+                    player.jumping = false
+                    player.falling = true
                     player.x = player.x - (self.dir == 'left' and 70 or -70)
                     player:clampPosition()
-                    player:subtractTime(300)
+                    player:subtractTime(500)
                     self.timer = 0
                     self.derailed = true
                 end

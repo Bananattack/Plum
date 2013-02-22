@@ -72,10 +72,10 @@ do local Self = {}
         if self.spawnOffset > plum.screen.width * 5 and math.random() < 0.2 then
             table.insert(world.sprites, Bomb(self.spawnOffset, math.random(1, 10)))
         elseif math.random() < 0.2 then
-            table.insert(world.sprites, Roids(self.spawnOffset, math.random(1, 10), math.random() > 0.7))
+            table.insert(world.sprites, Roids(self.spawnOffset, math.random(1, 10), self.spawnOffset > plum.screen.width * 5 and math.random() > 0.7))
         elseif math.random() < 0.3 then
             table.insert(world.sprites, Balloon(self.spawnOffset, self.floorY - 240, self.floorY - 120))
-        elseif self.spawnOffset > plum.screen.width * 5 and math.random() < 0.25 and not self.gameOver then
+        elseif self.spawnOffset > plum.screen.width * 8 and math.random() < 0.25 and not self.gameOver then
             if math.random() < 0.15 then
                 table.insert(world.sprites, Truck(self.spawnOffset + 200, self.floorY - 50, 'left'))
             else

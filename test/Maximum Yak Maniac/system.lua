@@ -7,6 +7,7 @@ require 'balloon'
 require 'bomb'
 require 'building'
 require 'truck'
+require 'textsprite'
 require 'player'
 require 'world'
 
@@ -134,20 +135,20 @@ function intro()
         plum.screen:solidRect(1, 10, 6, 50, PlayerOneColor)
         plum.screen:solidRect(plum.screen.width - 6, 10, plum.screen.width - 1, 50, PlayerTwoColor)
         resource.font.plain:print(10, 10, "Controls:")
-        --[[resource.font.plain:print(10, 20, "A/D = Move")
+        resource.font.plain:print(10, 20, "A/D = Move")
         resource.font.plain:print(10, 30, "W = Jump")
-        resource.font.plain:print(10, 40, "S = Eat")]]
-        resource.font.plain:print(10, 20, "Left/Right = Move (A/D on kb)")
-        resource.font.plain:print(10, 30, "X = Jump (W on kb)")
-        resource.font.plain:print(10, 40, "Square = Eat (S on kb)")
+        resource.font.plain:print(10, 40, "S = Eat")
+        --[[resource.font.plain:print(10, 20, "Left/Right = Move")
+        resource.font.plain:print(10, 30, "X = Jump")
+        resource.font.plain:print(10, 40, "Square = Eat")]]
         
         resource.font.plain:printRight(plum.screen.width - 10, 10, "Controls:")
-        --[[resource.font.plain:printRight(plum.screen.width - 10, 20, "Left/Right = Move")
-        resource.font.plain:printRight(plum.screen.width - 10, 30, "Up = Jump")
-        resource.font.plain:printRight(plum.screen.width - 10, 40, "Down = Eat")]]
         resource.font.plain:printRight(plum.screen.width - 10, 20, "Left/Right = Move")
-        resource.font.plain:printRight(plum.screen.width - 10, 30, "X = Jump (Up on kb)")
-        resource.font.plain:printRight(plum.screen.width - 10, 40, "Square = Eat (Down on kb)")
+        resource.font.plain:printRight(plum.screen.width - 10, 30, "Up = Jump")
+        resource.font.plain:printRight(plum.screen.width - 10, 40, "Down = Eat")
+        --[[resource.font.plain:printRight(plum.screen.width - 10, 20, "Left/Right = Move")
+        resource.font.plain:printRight(plum.screen.width - 10, 30, "X = Jump")
+        resource.font.plain:printRight(plum.screen.width - 10, 40, "Square = Eat")]]
         
         resource.font.bigGreen:printCenter(plum.screen.width / 2, plum.screen.height / 2 - 30, "Yak Maniac")
         resource.font.big:printCenter(plum.screen.width / 2, plum.screen.height / 2 + 30, "Press Enter")
@@ -174,4 +175,5 @@ while true do
     update()
     render()
 end
+
 
