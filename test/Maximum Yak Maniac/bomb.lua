@@ -72,6 +72,9 @@ do local Self = {}
     
     function Self:damage(damage, player)
         self.timer = 0
+        if self.timer > 0 then
+            player.hurtCounter = player.hurtCounter - 100
+        end
         player:addScore(3000)
     end
 end

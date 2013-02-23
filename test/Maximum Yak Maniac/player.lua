@@ -55,6 +55,7 @@ do local Self = {}
         resource.sound.heal:play()
         self.timer = self.timer + amount
         self.healCounter = 100
+        self.hurtCounter = self.hurtCounter * 0.6
         table.insert(world.sprites, TextSprite(self.x + self.frame.width / 2, self.y, resource.font.bigGreen, '+' .. tostring(math.ceil(amount / 100))))
     end
 
@@ -109,8 +110,8 @@ do local Self = {}
             end
         end
         
-        self.timer = self.timer - 5
-        if self.x - self.timer >= world.x + plum.screen.width then
+        self.timer = self.timer - 3
+        if self.x + self.frame.width + self.timer >= world.x + plum.screen.width then
             self.offscreen = true
         end
     end

@@ -38,6 +38,7 @@ do local Self = {}
     function Self:damage(damage, player)
         self.dispose = true
         if self.isBad then
+            player.hurtCounter = player.hurtCounter - 100
             player:subtractTime(self.amount * 3)
         else
             player:addTime(self.amount)
