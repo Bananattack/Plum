@@ -41,10 +41,10 @@ do local Self = {}
         table.insert(world.sprites, Particle(self.x + math.random(-20, self.frame.width + 20), self.y + math.random(0, self.frame.height)))
         if math.random() < 0.65 then
             table.insert(world.sprites, Roids(math.random(math.max(world.x, self.x - 20), math.min(world.x + plum.screen.width, self.x + 20)), self.y - 30 - math.random(0, self.frame.height)))
-        elseif math.random() < 0.15 then
+        elseif math.random() < (world.spawnOffset > plum.screen.width * 15 and 0.4 or 0.15) then
             table.insert(world.sprites, Bomb(math.random(math.max(world.x, self.x - 20), math.min(world.x + plum.screen.width, self.x + 20)), self.y - 30 - math.random(0, self.frame.height)))
         end
-        if math.random() < 0.5 then
+        if math.random() < (world.spawnOffset > plum.screen.width * 15 and 0.6 or 0.5) then
             if math.random() < 0.5 then
                 table.insert(world.sprites, Truck(world.spawnOffset + 200, world.floorY - 50, 'left'))
             else

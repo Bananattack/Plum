@@ -17,6 +17,7 @@ do local Self = {}
         self.amount = 300 * (self.scale / 2)
         self.opacity = 255
         self.derailed = false
+        self.evil = math.random()
 
         self.fudge = math.random(200, 1000)
         return self
@@ -67,6 +68,18 @@ do local Self = {}
                 table.insert(world.sprites, Particle(self.x + self.frame.width / 2 + math.random(-200, 200), self.y - math.random(0, self.frame.height)))
             else
                 self.dispose = true
+                
+                local bad = self.evil > (world.spawnOffset > plum.screen.width * 15 and 0.2 or 0.6)
+                if bad and math.random() < 0.3 then
+                    table.insert(world.sprites, Bomb(self.x + self.frame.width / 2 + math.random(-200, 100), self.y - self.frame.height / 2 - math.random(-self.frame.height / 4, self.frame.height / 4)))
+                else
+                    for i = 1, math.random(6, 12) do
+                        table.insert(world.sprites, Roids(self.x + self.frame.width / 2 + math.random(-200, 100), self.y - self.frame.height / 2 - math.random(-self.frame.height / 4, self.frame.height / 4), bad))
+                    end
+                end
+                if bad and math.random() < 0.4 then
+                    table.insert(world.sprites, Bomb(world.x + math.random(0, plum.screen.width), -math.random(20, 50)))
+                end
             end
         end
         
@@ -91,6 +104,7 @@ do local Self = {}
             self.y = self.y + 40
             self.scale = self.scale
             self.opacity = 200
+            self.evil = self.evil * 0.7
         end
         randomItem(resource.sound.blast):play()
         player:addScore(10000)

@@ -43,6 +43,9 @@ do local Self = {}
         else
             player:addTime(self.amount)
         end
-        
+
+        if world.spawnOffset > plum.screen.width * 5 and math.random() < (world.spawnOffset > plum.screen.width * 15 and 0.3 or 0.1) then
+            table.insert(world.sprites, Bomb(world.x + math.random(0, plum.screen.width), -math.random(50, 100)))
+        end
     end
 end

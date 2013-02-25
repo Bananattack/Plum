@@ -29,10 +29,12 @@ do local Self = {}
         self.image.idle = createSpriteFrame(resource.image.yak.idle, PlayerOneColor, color)
         self.image.eat = createSpriteFrame(resource.image.yak.eat, PlayerOneColor, color)
         self.frame = self.image.idle.left
+        self.hitbox = { width = self.frame.width, height = self.frame.height }
         
         self.scoreCounter = 0
         self.scoreAccel = 0
         
+        self.isEdible = false
         self.healCounter = 0
         self.hurtCounter = 0
         
@@ -44,6 +46,7 @@ do local Self = {}
         
         self.controls = controls
         self.offscreen = false
+        self.hide = false
         return self
     end
     
@@ -83,6 +86,8 @@ do local Self = {}
     end
 
     function Self:updateDead()
+        self.isEdible = true
+
         if self.y + self.frame.height < world.floorY then
             self.y = self.y + 3
             if self.y + self.frame.height > world.floorY then
@@ -267,6 +272,9 @@ do local Self = {}
     end
     
     function Self:render()
+        if self.hide then
+            return
+        end
         plum.screen:solidCircle(self.x - world.x + self.frame.width / 2, world.floorY, 20, 3, plum.color.rgb(0, 0, 0, 127))
         if self.hurtCounter > 0 then
             if self.hurtCounter % 8 < 4 then
@@ -278,6 +286,13 @@ do local Self = {}
 
         if self.timer < 600 and self.timer > 0 then
             (self.timer % 10 < 5 and resource.font.bigYellow or resource.font.bigRed):printCenter(self.x - world.x + self.frame.width / 2, self.y - 10 + math.sin(math.rad(self.timer) * 10) * 5, tostring(math.floor(self.timer / 100)))
+        end
+    end
+
+    function Self:damage(damage, player)
+        if not self.hide then
+            self.hide = true
+            player:addTime(1500)
         end
     end
 end

@@ -21,7 +21,7 @@ do local Self = {}
         if self.category == 'boom' then
             for i, player in ipairs(players) do
                 if player:touches(self) then
-                    player:subtractTime(1000)
+                    player:subtractTime(1000 + math.random(0, 500))
                 end
             end
         end

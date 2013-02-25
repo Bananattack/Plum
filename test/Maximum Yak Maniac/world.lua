@@ -111,16 +111,21 @@ do local Self = {}
         local t = math.max(players[1].timer, 0)
         local t2 = math.max(players[2].timer, 0)
         
-        plum.screen:solidRect(1, 10, 6, 50, PlayerOneColor)
-        resource.font.plain:print(10, 10, tostring(1000000000 + players[1].score):sub(2, 10))
-        
-        fnt = players[1].healCounter > 0 and resource.font.bigGreen or (players[1].hurtCounter > 0 and resource.font.bigRed or resource.font.big)
-        fnt:print(10, 20, math.floor(t / 100 / 60) .. ":" .. tostring(t / 100 % 60 + 100):sub(2, 3))
-        
-        if players[1].scoreCounter > 0 then
-            resource.font.bigYellow:print(10, 50, "+" .. tostring(players[1].scoreCounter) .. "!")
+        if playerCount > 1 then
+            plum.screen:solidRect(1, 10, 6, 50, PlayerOneColor)
+            resource.font.plain:print(10, 10, tostring(1000000000 + players[1].score):sub(2, 10))
+            
+            fnt = players[1].healCounter > 0 and resource.font.bigGreen or (players[1].hurtCounter > 0 and resource.font.bigRed or resource.font.big)
+            fnt:print(10, 20, math.floor(t / 100 / 60) .. ":" .. tostring(t / 100 % 60 + 100):sub(2, 3))
+            
+            if players[1].scoreCounter > 0 then
+                resource.font.bigYellow:print(10, 50, "+" .. tostring(players[1].scoreCounter) .. "!")
+            end
+
+            resource.font.plain:print(10, 40, "Player 1")
+            resource.font.plain:printRight(plum.screen.width - 10, 40, "Player 2")
         end
-        
+            
         plum.screen:solidRect(plum.screen.width - 1, 10, plum.screen.width - 6, 50, PlayerTwoColor)
         resource.font.plain:printRight(plum.screen.width - 10, 10,  tostring(1000000000 + players[2].score):sub(2, 10))
         
@@ -142,9 +147,18 @@ do local Self = {}
 
         local sprites = self.sprites
         for idx, s in ipairs(sprites) do
+            s.z = s.z or 0
+            s.y = s.y or 0
             s.index = idx
         end
-        table.sort(sprites, function(ls, rs) return ls.z < rs.z or (ls.z == rs.z and ls.y < rs.y or (ls.y == rs.y and ls.index < rs.index)) end)
+
+        table.sort(sprites, function(ls, rs)
+            if ls.z == rs.z then
+                return ls.index < rs.index
+            end
+            return ls.z < rs.z
+        end)
+
         for idx, s in ipairs(sprites) do
             s:render()
         end
@@ -157,14 +171,19 @@ do local Self = {}
             plum.screen:solidRect(0, 0, plum.screen.width, plum.screen.height, plum.color.Black)
             plum.screen.opacity = 255
             resource.font.bigYellow:printCenter(plum.screen.width / 2, plum.screen.height / 2 - 30, "GAME OVER")
-            if players[1].score > players[2].score then
-                resource.font.big:printCenter(plum.screen.width / 2, plum.screen.height / 2, "PLAYER 1 WINS")
-            elseif players[1].score == players[2].score then
-                resource.font.big:printCenter(plum.screen.width / 2, plum.screen.height / 2, "TIE")
-            else
-                resource.font.big:printCenter(plum.screen.width / 2, plum.screen.height / 2, "PLAYER 2 WINS")
+            if playerCount == 2 then
+                if players[1].score > players[2].score then
+                    resource.font.bigGreen:printCenter(plum.screen.width / 2, plum.screen.height / 2, "PLAYER 1 WINS")
+                elseif players[1].score == players[2].score then
+                    resource.font.big:printCenter(plum.screen.width / 2, plum.screen.height / 2, "TIE")
+                else
+                    resource.font.bigRed:printCenter(plum.screen.width / 2, plum.screen.height / 2, "PLAYER 2 WINS")
+                end
             end
+            
+            plum.screen.opacity = 127 + math.sin(math.rad(plum.timer.time) * 3) * 100
             resource.font.big:printCenter(plum.screen.width / 2, plum.screen.height / 2 + 30, "Press Enter")
+            plum.screen.opacity = 255
         end
         self:drawHUD()
     end
@@ -215,7 +234,13 @@ do local Self = {}
     
         local a = self:cameraCanMoveForward()
         if a then
-            self.x = a - plum.screen.width + CameraHorizontalBorder
+            dx = a - plum.screen.width + CameraHorizontalBorder
+            if self.x < dx then
+                self.x = self.x + 5
+                if self.x > dx then
+                    self.x = dx
+                end
+            end
         end
         
         if self.spawnOffset < self.x + plum.screen.width + 50 then

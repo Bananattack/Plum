@@ -129,19 +129,43 @@ function update()
     plum.setTitle(Title .. ' ' .. plum.timer.fps)
 end
 
+playerCount = 1
 function intro()
+    local player = {
+        frame = {
+            idle = {
+                createSpriteFrame(resource.image.yak.idle, PlayerOneColor, PlayerOneColor),
+                createSpriteFrame(resource.image.yak.idle, PlayerOneColor, PlayerTwoColor)
+            },
+            eat = {
+                createSpriteFrame(resource.image.yak.eat, PlayerOneColor, PlayerOneColor),
+                createSpriteFrame(resource.image.yak.eat, PlayerOneColor, PlayerTwoColor)
+            }
+        };
+        direction = {'right', 'left'},
+        x = {20, plum.screen.width - resource.image.yak.idle.width - 20},
+        y = {120, 120},
+    }
+
     while not plum.key.Enter.pressed do
-        plum.screen:solidRect(0, 0, plum.screen.width, plum.screen.height, plum.color.Black)
+        plum.screen:solidRect(0, 0, plum.screen.width, plum.screen.height, plum.color.rgb(20 + math.sin(math.rad(plum.timer.time) / 3) * 20, 0, 20 + math.cos(math.rad(plum.timer.time) / 3) * 20))
+        
+
+        if playerCount == 1 then
+            plum.screen.opacity = 0
+        end        
         plum.screen:solidRect(1, 10, 6, 50, PlayerOneColor)
-        plum.screen:solidRect(plum.screen.width - 6, 10, plum.screen.width - 1, 50, PlayerTwoColor)
         resource.font.plain:print(10, 10, "Controls:")
         resource.font.plain:print(10, 20, "A/D = Move")
         resource.font.plain:print(10, 30, "W = Jump")
         resource.font.plain:print(10, 40, "S = Eat")
+        plum.screen.opacity = 255
+
         --[[resource.font.plain:print(10, 20, "Left/Right = Move")
         resource.font.plain:print(10, 30, "X = Jump")
         resource.font.plain:print(10, 40, "Square = Eat")]]
         
+        plum.screen:solidRect(plum.screen.width - 6, 10, plum.screen.width - 1, 50, PlayerTwoColor)
         resource.font.plain:printRight(plum.screen.width - 10, 10, "Controls:")
         resource.font.plain:printRight(plum.screen.width - 10, 20, "Left/Right = Move")
         resource.font.plain:printRight(plum.screen.width - 10, 30, "Up = Jump")
@@ -149,11 +173,50 @@ function intro()
         --[[resource.font.plain:printRight(plum.screen.width - 10, 20, "Left/Right = Move")
         resource.font.plain:printRight(plum.screen.width - 10, 30, "X = Jump")
         resource.font.plain:printRight(plum.screen.width - 10, 40, "Square = Eat")]]
-        
-        resource.font.bigGreen:printCenter(plum.screen.width / 2, plum.screen.height / 2 - 30, "Yak Maniac")
+
+        resource.font.bigYellow:printCenter(plum.screen.width / 2, 50, playerCount == 2 and "Two Player" or "Single Player")
+        resource.font.plain:printCenter(plum.screen.width / 2, 70, playerCount == 2 and "Press 1 for Single Player" or "Press 2 for Two Player")
+        if plum.key['1'].pressed then
+            playerCount = 1
+        elseif plum.key['2'].pressed then
+            playerCount = 2
+        end
+
+        for i = 1, 2 do
+            local jumping = controls[i].up:held()
+            local eating = controls[i].eat:held()
+            if playerCount >= 2 - i + 1 then      
+                if controls[i].left:held() then
+                    player.direction[i] = 'left'
+                elseif controls[i].right:held() then
+                    player.direction[i] = 'right'
+                end
+            else
+                eating = false
+                jumping = false
+                plum.screen.opacity = 0
+            end
+
+            local frame = player.frame[eating and 'eat' or 'idle'][i][player.direction[i]]
+            if playerCount == 1 then
+                frame:blit(plum.screen.width / 2 - frame.width / 2, player.y[i] + (jumping and -20 or 0))
+            else
+                resource.font.plain:print(player.x[i], player.y[i] - 40, "Player " .. i)
+                frame:blit(player.x[i], player.y[i] + (jumping and -20 or 0))
+            end
+
+            plum.screen.opacity = 255
+        end
+
+        (plum.timer.time % 50 < 25 and resource.font.bigGreen or resource.font.bigRed):printCenter(plum.screen.width / 2, plum.screen.height / 2 - 30, "Yak Maniac")
+
+        plum.screen.opacity = 127 + math.sin(math.rad(plum.timer.time) * 3) * 100
         resource.font.big:printCenter(plum.screen.width / 2, plum.screen.height / 2 + 30, "Press Enter")
+        --resource.font.big:printCenter(plum.screen.width / 2, plum.screen.height / 2 + 30, "Press Start")
+        plum.screen.opacity = 255
+
+        resource.font.plain:printCenter(plum.screen.width / 2, plum.screen.height - 10 - resource.font.plain.height, "by Andrew G. Crowell (Music by mad)")
         
-        resource.font.plain:printCenter(plum.screen.width / 2, plum.screen.height - resource.font.plain.height, "by Andrew G. Crowell (Music by mad)")
         plum.refresh()
     end
     plum.key.Enter.pressed = false
@@ -162,6 +225,12 @@ function intro()
     updateList = {}
     world = World()
     world:register()
+
+    for i, p in ipairs(players) do
+        if playerCount < 2 - i + 1 then
+            p.timer = 0
+        end
+    end
 end
 
 resource.song.city:play()
