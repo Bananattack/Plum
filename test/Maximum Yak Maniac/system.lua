@@ -10,6 +10,7 @@ require 'truck'
 require 'textsprite'
 require 'player'
 require 'world'
+require 'font'
 
 Title = 'Maximum Yak Maniac'
 resource = {
@@ -32,11 +33,11 @@ resource = {
         balloonDeath = plum.Sound('resources/hiss.ogg');
     };
     font = {
-        plain = plum.Font('resources/font1.png');
-        big = plum.Font('resources/font_big.png');
-        bigRed = plum.Font('resources/font_big_red.png');
-        bigGreen = plum.Font('resources/font_big_green.png');
-        bigYellow = plum.Font('resources/font_big_yellow.png');
+        plain = Font(plum.Image('resources/font1.png'));
+        big = Font(plum.Image('resources/font_big.png'));
+        bigRed = Font(plum.Image('resources/font_big_red.png'));
+        bigGreen = Font(plum.Image('resources/font_big_green.png'));
+        bigYellow = Font(plum.Image('resources/font_big_yellow.png'));
     };
     image = {
         yak = {
@@ -215,7 +216,7 @@ function intro()
         --resource.font.big:printCenter(plum.screen.width / 2, plum.screen.height / 2 + 30, "Press Start")
         plum.screen.opacity = 255
 
-        resource.font.plain:printCenter(plum.screen.width / 2, plum.screen.height - 10 - resource.font.plain.height, "by Andrew G. Crowell (Music by mad)")
+        resource.font.plain:printCenter(plum.screen.width / 2, plum.screen.height - 10 - resource.font.plain.cellHeight, "by Andrew G. Crowell (Music by mad)")
         
         plum.refresh()
     end

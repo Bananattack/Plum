@@ -1,5 +1,6 @@
 #include "canvas.h"
 #include "sprite.h"
+#include "transform.h"
 
 namespace plum
 {
@@ -82,6 +83,23 @@ namespace plum
         int fx = (f % columns) * (frameWidth + padding) + padding;
         int fy = (f / columns) * (frameHeight + padding) + padding;
         image_.blitRegion(fx, fy, fx + frameWidth - 1, fy + frameHeight - 1, x, y, mode);
+    }
+
+    void Sprite::transformBlitFrame(Transform* transform, int f)
+    {
+        if(!columns) return;
+
+        Rect* old = transform->clip;
+        Rect clip(
+            (f % columns) * (frameWidth + padding) + padding,
+            (f / columns) * (frameHeight + padding) + padding,
+            frameWidth,
+            frameHeight
+        );
+
+        transform->clip = &clip;
+        image_.transformBlit(transform);
+        transform->clip = old;
     }
 
     void Sprite::rawBlitFrame(int x, int y, int f, double angle, double scale)

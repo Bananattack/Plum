@@ -7,6 +7,7 @@
 
 namespace plum
 {
+    struct Transform;
     class Canvas;
     class Sprite
     {
@@ -29,6 +30,7 @@ namespace plum
             void bind();
             Color getFramePixel(int f, int x, int y);
             void blitFrame(int x, int y, int f, BlendMode mode);
+            void transformBlitFrame(Transform* transform, int f);
             void rawBlitFrame(int x, int y, int f, double angle, double scale);
 
         private:

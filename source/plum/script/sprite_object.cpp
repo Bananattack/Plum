@@ -77,6 +77,17 @@ namespace plum
             return 0;
         }
 
+        int drawFrame(lua_State* L)
+        {
+            auto spr = script::ptr<Sprite>(L, 1);
+            auto transform = script::ptr<Transform>(L, 2);
+            int f = script::get<int>(L, 3);
+
+            spr->transformBlitFrame(transform, f);
+
+            return 0;
+        }
+
         int getFramePixel(lua_State* L)
         {
             auto spr = script::ptr<Sprite>(L, 1);
@@ -163,6 +174,7 @@ namespace plum
                 {"__newindex", newindex},
                 {"__tostring", tostring},
                 {"blitFrame", blitFrame},
+                {"drawFrame", drawFrame},
                 {"getFramePixel", getFramePixel},
                 {"get_frameWidth", get_frameWidth},
                 {"set_frameWidth", set_frameWidth},

@@ -337,10 +337,30 @@ namespace plum
         glPushMatrix();
         bind();
 
-        glTranslated(transform->position->x + transform->pivot->x, transform->position->y + transform->pivot->y, 0.0);
-        glScaled(transform->scale->x * (1 - transform->mirror * 2), transform->scale->y, 0.0);
+        if(transform->position)
+        {
+            glTranslated(transform->position->x, transform->position->y, 0.0);
+        }
+        if(transform->pivot)
+        {
+            glTranslated(transform->pivot->x, transform->pivot->y, 0.0);
+        }
+
+        if(transform->scale)
+        {
+            glScaled(transform->scale->x * (1 - transform->mirror * 2), transform->scale->y, 0.0);
+        }
+        else
+        {
+            glScaled((1 - transform->mirror * 2), 1.0, 0.0);
+        }
+
         glRotated(transform->angle, 0.0, 0.0, 1.0);
-        glTranslated(-transform->pivot->x, -transform->pivot->y, 0.0);
+
+        if(transform->pivot)
+        {
+            glTranslated(-transform->pivot->x, -transform->pivot->y, 0.0);
+        }
 
         const GLdouble vertexArray[] = {
             0.0, 0.0,
