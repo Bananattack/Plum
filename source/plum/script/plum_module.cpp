@@ -188,7 +188,6 @@ namespace plum
             initKeyboardModule(L);
             initMouseModule(L);
 
-            initFontObject(L);
             initSoundObject(L);
             initSongObject(L);
             initFileObject(L);
@@ -198,7 +197,6 @@ namespace plum
             initTransformObject(L);
             initImageObject(L);
             initSpriteObject(L);
-            initFontObject(L);
             initTilemapObject(L);
         }
     }

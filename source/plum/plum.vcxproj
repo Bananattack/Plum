@@ -105,7 +105,6 @@
     <ClCompile Include="core\blending.cpp" />
     <ClCompile Include="core\config.cpp" />
     <ClCompile Include="core\file.cpp" />
-    <ClCompile Include="core\font.cpp" />
     <ClCompile Include="core\input.cpp" />
     <ClCompile Include="core\log.cpp" />
     <ClCompile Include="core\sprite.cpp" />
@@ -121,7 +120,6 @@
     <ClCompile Include="plum.cpp" />
     <ClCompile Include="script\canvas_object.cpp" />
     <ClCompile Include="script\file_object.cpp" />
-    <ClCompile Include="script\font_object.cpp" />
     <ClCompile Include="script\image_object.cpp" />
     <ClCompile Include="script\input_object.cpp" />
     <ClCompile Include="script\keyboard_object.cpp" />
@@ -146,7 +144,6 @@
     <ClInclude Include="core\config.h" />
     <ClInclude Include="core\engine.h" />
     <ClInclude Include="core\file.h" />
-    <ClInclude Include="core\font.h" />
     <ClInclude Include="core\image.h" />
     <ClInclude Include="core\input.h" />
     <ClInclude Include="core\log.h" />

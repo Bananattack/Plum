@@ -363,7 +363,6 @@ namespace plum
         void initKeyboardModule(lua_State* L);
         void initMouseModule(lua_State* L);
 
-        void initFontObject(lua_State* L);
         void initSoundObject(lua_State* L);
         void initSongObject(lua_State* L);
         void initFileObject(lua_State* L);
