@@ -1,7 +1,7 @@
 
 #include "../core/image.h"
 #include "../core/canvas.h"
-#include "../core/sprite.h"
+#include "../core/sheet.h"
 #include "script.h"
 
 namespace plum
@@ -74,11 +74,11 @@ namespace plum
 
         int getFrame(lua_State* L)
         {
-            auto spr = script::ptr<Sheet>(L, 1);
+            auto sheet = script::ptr<Sheet>(L, 1);
             int f = script::get<int>(L, 2);
 
             int x, y;
-            if(spr->getFrame(f, x, y))
+            if(sheet->getFrame(f, x, y))
             {
                script::push(L, x);
                script::push(L, y);
@@ -92,78 +92,78 @@ namespace plum
 
         int get_width(lua_State* L)
         {
-            auto spr = script::ptr<Sheet>(L, 1);
-            script::push(L, spr->getWidth());
+            auto sheet = script::ptr<Sheet>(L, 1);
+            script::push(L, sheet->getWidth());
             return 1;
         }
 
         int set_width(lua_State* L)
         {
-            auto spr = script::ptr<Sheet>(L, 1);
-            spr->setWidth(script::get<int>(L, 2));
+            auto sheet = script::ptr<Sheet>(L, 1);
+            sheet->setWidth(script::get<int>(L, 2));
             return 0;
         }
 
         int get_height(lua_State* L)
         {
-            auto spr = script::ptr<Sheet>(L, 1);
-            script::push(L, spr->getHeight());
+            auto sheet = script::ptr<Sheet>(L, 1);
+            script::push(L, sheet->getHeight());
             return 1;
         }
 
         int set_height(lua_State* L)
         {
-            auto spr = script::ptr<Sheet>(L, 1);
-            spr->setHeight(script::get<int>(L, 2));
+            auto sheet = script::ptr<Sheet>(L, 1);
+            sheet->setHeight(script::get<int>(L, 2));
             return 0;
         }
 
         int get_padding(lua_State* L)
         {
-            auto spr = script::ptr<Sheet>(L, 1);
-            script::push(L, spr->getPadding());
+            auto sheet = script::ptr<Sheet>(L, 1);
+            script::push(L, sheet->getPadding());
             return 1;
         }
 
         int set_padding(lua_State* L)
         {
-            auto spr = script::ptr<Sheet>(L, 1);
-            spr->setPadding(script::get<bool>(L, 2));
+            auto sheet = script::ptr<Sheet>(L, 1);
+            sheet->setPadding(script::get<bool>(L, 2));
             return 0;
         }
 
         int get_columns(lua_State* L)
         {
-            auto spr = script::ptr<Sheet>(L, 1);
-            script::push(L, spr->getColumns());
+            auto sheet = script::ptr<Sheet>(L, 1);
+            script::push(L, sheet->getColumns());
             return 1;
         }
 
         int set_columns(lua_State* L)
         {
-            auto spr = script::ptr<Sheet>(L, 1);
-            spr->setColumns(script::get<int>(L, 2));
+            auto sheet = script::ptr<Sheet>(L, 1);
+            sheet->setColumns(script::get<int>(L, 2));
             return 0;
         }
 
         int get_rows(lua_State* L)
         {
-            auto spr = script::ptr<Sheet>(L, 1);
-            script::push(L, spr->getRows());
+            auto sheet = script::ptr<Sheet>(L, 1);
+            script::push(L, sheet->getRows());
             return 1;
         }
 
         int set_rows(lua_State* L)
         {
-            auto spr = script::ptr<Sheet>(L, 1);
-            spr->setRows(script::get<int>(L, 2));
+            auto sheet = script::ptr<Sheet>(L, 1);
+            sheet->setRows(script::get<int>(L, 2));
             return 0;
         }
     }
 
     namespace script
     {
-        void initSpriteObject(lua_State* L)
+        void initSheetObject(lua_State* L)
         {
             luaL_newmetatable(L, meta<Self>());
             // Duplicate the metatable on the stack.

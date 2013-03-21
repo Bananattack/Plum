@@ -196,7 +196,7 @@ namespace plum
             initRectObject(L);
             initTransformObject(L);
             initImageObject(L);
-            initSpriteObject(L);
+            initSheetObject(L);
             initTilemapObject(L);
         }
     }

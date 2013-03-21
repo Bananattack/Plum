@@ -107,7 +107,7 @@
     <ClCompile Include="core\file.cpp" />
     <ClCompile Include="core\input.cpp" />
     <ClCompile Include="core\log.cpp" />
-    <ClCompile Include="core\sprite.cpp" />
+    <ClCompile Include="core\sheet.cpp" />
     <ClCompile Include="core\tilemap.cpp" />
     <ClCompile Include="platform\corona\canvas.cpp" />
     <ClCompile Include="platform\glfw\engine.cpp" />
@@ -129,9 +129,9 @@
     <ClCompile Include="script\rect_object.cpp" />
     <ClCompile Include="script\screen_object.cpp" />
     <ClCompile Include="script\script.cpp" />
+    <ClCompile Include="script\sheet_object.cpp" />
     <ClCompile Include="script\song_object.cpp" />
     <ClCompile Include="script\sound_object.cpp" />
-    <ClCompile Include="script\sprite_object.cpp" />
     <ClCompile Include="script\tilemap_object.cpp" />
     <ClCompile Include="script\timer_object.cpp" />
     <ClCompile Include="script\transform_object.cpp" />
@@ -148,7 +148,7 @@
     <ClInclude Include="core\input.h" />
     <ClInclude Include="core\log.h" />
     <ClInclude Include="core\screen.h" />
-    <ClInclude Include="core\sprite.h" />
+    <ClInclude Include="core\sheet.h" />
     <ClInclude Include="core\tilemap.h" />
     <ClInclude Include="core\timer.h" />
     <ClInclude Include="core\transform.h" />

@@ -1,6 +1,6 @@
 #include "image.h"
 #include "tilemap.h"
-#include "sprite.h"
+#include "sheet.h"
 
 namespace plum
 {

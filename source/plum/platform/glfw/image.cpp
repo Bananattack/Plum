@@ -3,7 +3,7 @@
 #include <GL/glfw3.h>
 
 #include "../../core/image.h"
-#include "../../core/sprite.h"
+#include "../../core/sheet.h"
 #include "../../core/transform.h"
 
 namespace plum

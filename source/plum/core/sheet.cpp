@@ -1,4 +1,4 @@
-#include "sprite.h"
+#include "sheet.h"
 
 namespace plum
 {

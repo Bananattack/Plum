@@ -371,7 +371,7 @@ namespace plum
         void initRectObject(lua_State* L);
         void initTransformObject(lua_State* L);
         void initImageObject(lua_State* L);
-        void initSpriteObject(lua_State* L);
+        void initSheetObject(lua_State* L);
         void initFontObject(lua_State* L);
         void initTilemapObject(lua_State* L);
     }

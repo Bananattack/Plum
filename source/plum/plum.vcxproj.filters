@@ -102,12 +102,6 @@
     <ClCompile Include="platform\corona\canvas.cpp">
       <Filter>Source Files\platform\corona</Filter>
     </ClCompile>
-    <ClCompile Include="script\sprite_object.cpp">
-      <Filter>Source Files\script</Filter>
-    </ClCompile>
-    <ClCompile Include="core\sprite.cpp">
-      <Filter>Source Files\core</Filter>
-    </ClCompile>
     <ClCompile Include="core\file.cpp">
       <Filter>Source Files\core</Filter>
     </ClCompile>
@@ -142,6 +136,12 @@
       <Filter>Source Files\platform\glfw</Filter>
     </ClCompile>
     <ClCompile Include="script\screen_object.cpp">
+      <Filter>Source Files\script</Filter>
+    </ClCompile>
+    <ClCompile Include="core\sheet.cpp">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="script\sheet_object.cpp">
       <Filter>Source Files\script</Filter>
     </ClCompile>
   </ItemGroup>
@@ -188,9 +188,6 @@
     <ClInclude Include="core\transform.h">
       <Filter>Header Files\core</Filter>
     </ClInclude>
-    <ClInclude Include="core\sprite.h">
-      <Filter>Header Files\core</Filter>
-    </ClInclude>
     <ClInclude Include="core\file.h">
       <Filter>Header Files\core</Filter>
     </ClInclude>
@@ -198,6 +195,9 @@
       <Filter>Source Files\platform\glfw</Filter>
     </ClInclude>
     <ClInclude Include="core\screen.h">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="core\sheet.h">
       <Filter>Header Files\core</Filter>
     </ClInclude>
   </ItemGroup>
