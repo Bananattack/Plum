@@ -1,4 +1,4 @@
-#include "screen.h"
+#include "image.h"
 #include "tilemap.h"
 #include "sprite.h"
 
@@ -369,14 +369,14 @@ namespace plum
         }
     }
 
-    void Tilemap::blit(Screen& screen, Sprite& spr, int worldX, int worldY, int destX, int destY, int tilesWide, int tilesHigh, BlendMode mode)
+    void Tilemap::blit(Image& img, Sheet& sheet, int worldX, int worldY, int destX, int destY, int tilesWide, int tilesHigh, BlendMode mode)
     {
         if(tilesWide < 0 || tilesHigh < 0) return;
 
-        int xofs = -(worldX % spr.getFrameWidth());
-        int yofs = -(worldY % spr.getFrameHeight());
-        int tileX = worldX / spr.getFrameWidth();
-        int tileY = worldY / spr.getFrameHeight();
+        int xofs = -(worldX % sheet.getWidth());
+        int yofs = -(worldY % sheet.getHeight());
+        int tileX = worldX / sheet.getWidth();
+        int tileY = worldY / sheet.getHeight();
 
         // Clip the tile region to make sure things don't crash.
         if(tileX < 0)
@@ -398,18 +398,20 @@ namespace plum
 
         int i, j;
 
-        screen.startBatch();
-        spr.bind();
+        img.startBatch();
+        img.bind();
 
         useHardwareBlender(mode);
         for(i = 0; i < tilesHigh; ++i)
         {
             for(j = 0; j < tilesWide; ++j)
             {
-                spr.rawBlitFrame(j * spr.getFrameWidth() + xofs + destX, i * spr.getFrameHeight() + yofs + destY,
-                    data[(tileY + i) * width + (tileX + j)], 0, 1);
+                img.rawBlitFrame(sheet,
+                    data[(tileY + i) * width + (tileX + j)],
+                    j * sheet.getWidth() + xofs + destX,
+                    i * sheet.getHeight() + yofs + destY);
             }
         }
-        screen.endBatch();
+        img.endBatch();
     }
 }

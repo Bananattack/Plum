@@ -3,6 +3,7 @@
 #include <GL/glfw3.h>
 
 #include "../../core/image.h"
+#include "../../core/sprite.h"
 #include "../../core/transform.h"
 
 namespace plum
@@ -97,6 +98,20 @@ namespace plum
         glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0,
             impl->canvas.getTrueWidth(), impl->canvas.getTrueHeight(),
             GL_RGBA, GL_UNSIGNED_BYTE, impl->canvas.getData());
+    }
+
+    void Image::startBatch()
+    {
+        glColor4ub(255, 255, 255, getOpacity());
+        glEnable(GL_TEXTURE_2D);
+        glEnableClientState(GL_VERTEX_ARRAY);
+        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+    }
+
+    void Image::endBatch()
+    {
+        glDisableClientState(GL_VERTEX_ARRAY);
+        glDisableClientState(GL_TEXTURE_COORD_ARRAY);
     }
 
     void Image::bind()
@@ -259,27 +274,30 @@ namespace plum
     // For when performance really matters, bind the texture and figure out blend modes ahead of time,
     // then call this in your loop. Especially important for tilemaps.
     // "raw" because it does less hand-holding. But could possibly be considered very hand-holdy.
-    void Image::rawBlitRegion(int sourceX, int sourceY, int sourceX2, int sourceY2,
-                    int destX, int destY, double angle, double scale)
+    void Image::rawBlitFrame(Sheet& sheet, int f, int x, int y)
     {
+        int sourceX, sourceY, sourceX2, sourceY2;
+
+        if(!sheet.getFrame(f, sourceX, sourceY))
+        {
+            return;
+        }
+
         sourceX = std::min(std::max(0, sourceX), impl->canvas.getWidth() - 1);
         sourceY = std::min(std::max(0, sourceY), impl->canvas.getHeight() - 1);
-        sourceX2 = std::min(std::max(0, sourceX2), impl->canvas.getWidth() - 1);
-        sourceY2 = std::min(std::max(0, sourceY2), impl->canvas.getHeight() - 1);
+        sourceX2 = std::min(std::max(0, sourceX + sheet.getWidth() - 1), impl->canvas.getWidth() - 1);
+        sourceY2 = std::min(std::max(0, sourceY + sheet.getHeight() - 1), impl->canvas.getHeight() - 1);
 
         double regionS = (double(sourceX)) / impl->canvas.getTrueWidth();
         double regionT = (double(sourceY)) / impl->canvas.getTrueHeight();
         double regionS2 = (double(sourceX2) + 1) / impl->canvas.getTrueWidth();
         double regionT2 = (double(sourceY2) + 1) / impl->canvas.getTrueHeight();
 
-        double width = double(sourceX2 - sourceX) * scale;
-        double height = double(sourceY2 - sourceY) * scale;
+        double width = double(sourceX2 - sourceX);
+        double height = double(sourceY2 - sourceY);
 
         glPushMatrix();
-
-        glTranslated(destX + width / 2.0, destY + height / 2.0, 0.0);
-        glRotated(angle, 0.0, 0.0, 1.0);
-        glTranslated(-width / 2.0, -height / 2.0, 0.0);
+        glTranslated(x, y, 0.0);
 
         const GLdouble vertexArray[] = {
             0.0, 0.0,

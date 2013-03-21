@@ -1,5 +1,4 @@
 
-#include "../core/screen.h"
 #include "../core/tilemap.h"
 #include "script.h"
 
@@ -131,16 +130,17 @@ namespace plum
         int blit(lua_State* L)
         {
             auto m = script::ptr<Tilemap>(L, 1);
-            auto spr = script::ptr<Sprite>(L, 2);
-            int worldX = script::get<int>(L, 3);
-            int worldY = script::get<int>(L, 4);
-            int destX = script::get<int>(L, 5);
-            int destY = script::get<int>(L, 6);
-            int tilesWide = script::get<int>(L, 7);
-            int tilesHigh = script::get<int>(L, 8);
-            BlendMode mode = (BlendMode) script::get<int>(L, 9, BlendPreserve);
+            auto img = script::ptr<Image>(L, 2);
+            auto spr = script::ptr<Sheet>(L, 3);
+            int worldX = script::get<int>(L, 4);
+            int worldY = script::get<int>(L, 5);
+            int destX = script::get<int>(L, 6);
+            int destY = script::get<int>(L, 7);
+            int tilesWide = script::get<int>(L, 8);
+            int tilesHigh = script::get<int>(L, 9);
+            BlendMode mode = (BlendMode) script::get<int>(L, 10, BlendPreserve);
 
-            m->blit(script::instance(L).screen(), *spr, worldX, worldY, destX, destY, tilesWide, tilesHigh, mode);
+            m->blit(*img, *spr, worldX, worldY, destX, destY, tilesWide, tilesHigh, mode);
             return 0;
         }
     }

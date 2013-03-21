@@ -1,113 +1,81 @@
-#include "canvas.h"
 #include "sprite.h"
-#include "transform.h"
 
 namespace plum
 {
-    Sprite::Sprite(const Image& image, int w, int h)
-        : image_(image),
-        frameWidth(w),
-        frameHeight(h),
-        padding(0),
-        columns(image.canvas().getWidth() / w)
-    {
-    }
-            
-    Sprite::~Sprite()
+    Sheet::Sheet(int width, int height, int columns, int rows)
+        : width(width),
+        height(height),
+        padding(false),
+        columns(columns),
+        rows(rows)
     {
     }
 
-    int Sprite::getFrameWidth() const
+    Sheet::~Sheet()
     {
-        return frameWidth;
     }
 
-    void Sprite::setFrameWidth(int value)
+    int Sheet::getWidth() const
     {
-        frameWidth = value;
+        return width;
     }
 
-    int Sprite::getFrameHeight() const
+    void Sheet::setWidth(int value)
     {
-        return frameHeight;
+        width = value;
     }
 
-    void Sprite::setFrameHeight(int value)
+    int Sheet::getHeight() const
     {
-        frameHeight = value;
+        return height;
     }
 
-    int Sprite::getPadding() const
+    void Sheet::setHeight(int value)
+    {
+        height = value;
+    }
+
+    bool Sheet::getPadding() const
     {
         return padding;
     }
 
-    void Sprite::setPadding(int value)
+    void Sheet::setPadding(bool value)
     {
         padding = value;
     }
 
-    int Sprite::getColumns() const
+    int Sheet::getColumns() const
     {
         return columns;
     }
 
-    void Sprite::setColumns(int value)
+    void Sheet::setColumns(int value)
     {
         columns = value;
     }
 
-    Image& Sprite::image()
+    int Sheet::getRows() const
     {
-        return image_;
+        return rows;
     }
 
-    void Sprite::bind()
+    void Sheet::setRows(int value)
     {
-        image_.bind();
+        rows = value;
     }
 
-    Color Sprite::getFramePixel(int f, int x, int y)
+    bool Sheet::getFrame(int f, int& x, int& y)
     {
-        if(!columns || x < 0 || x >= frameWidth || y < 0 || y >= frameHeight) return 0;
-
-        int fx = (f % columns) * (frameWidth + padding) + padding;
-        int fy = (f / columns) * (frameHeight + padding) + padding;
-        return image_.canvas().get(fx + x, fy + y);
-    }
-
-    void Sprite::blitFrame(int x, int y, int f, BlendMode mode)
-    {
-        if(!columns) return;
-
-        int fx = (f % columns) * (frameWidth + padding) + padding;
-        int fy = (f / columns) * (frameHeight + padding) + padding;
-        image_.blitRegion(fx, fy, fx + frameWidth - 1, fy + frameHeight - 1, x, y, mode);
-    }
-
-    void Sprite::transformBlitFrame(Transform* transform, int f)
-    {
-        if(!columns) return;
-
-        Rect* old = transform->clip;
-        Rect clip(
-            (f % columns) * (frameWidth + padding) + padding,
-            (f / columns) * (frameHeight + padding) + padding,
-            frameWidth,
-            frameHeight
-        );
-
-        transform->clip = &clip;
-        image_.transformBlit(transform);
-        transform->clip = old;
-    }
-
-    void Sprite::rawBlitFrame(int x, int y, int f, double angle, double scale)
-    {
-        if(!columns) return;
-
-        int fx = (f % columns) * (frameWidth + padding) + padding;
-        int fy = (f / columns) * (frameHeight + padding) + padding;
-        image_.rawBlitRegion(fx, fy, fx + frameWidth - 1, fy + frameHeight - 1, x, y, 0, 1);
+        if(f < 0 || f >= rows * columns)
+        {
+            return false;
+        }
+        else
+        {
+            x = (f % columns) * (width + padding) + padding;
+            y = (f / columns) * (height + padding) + padding;
+            return true;
+        }
     }
 }

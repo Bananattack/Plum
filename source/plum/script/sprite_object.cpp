@@ -8,27 +8,47 @@ namespace plum
 {
     namespace script
     {
-        template<> const char* meta<Sprite>()
+        template<> const char* meta<Sheet>()
         {
-            return "plum.Sprite";
+            return "plum.Sheet";
         }
     }
 
     namespace
     {
-        typedef Sprite Self;
+        typedef Sheet Self;
 
         int create(lua_State* L)
         {
-            if(script::is<Image>(L, 1) && script::is<int>(L, 2) && script::is<int>(L, 3))
+            if(script::is<int>(L, 1) && script::is<int>(L, 2) && script::is<int>(L, 3) && script::is<int>(L, 4))
             {
-                int w = script::get<int>(L, 2);
-                int h = script::get<int>(L, 3);
-                auto img = script::ptr<Image>(L, 1);
-                script::push(L, new Sprite(*img, w, h), LUA_NOREF);
+                int frameWidth = script::get<int>(L, 1);
+                int frameHeight = script::get<int>(L, 2);
+                int columns = script::get<int>(L, 3);
+                int rows = script::get<int>(L, 4);
+                script::push(L, new Sheet(frameWidth, frameHeight, columns, rows), LUA_NOREF);
                 return 1;
             }
-            luaL_error(L, "Attempt to call plum.Sprite constructor with invalid argument types.\r\nMust be (Image img, int frameWidth, int frameHeight).");
+            else if(script::is<int>(L, 1) && script::is<int>(L, 2) && script::is<Image>(L, 3))
+            {
+                int frameWidth = script::get<int>(L, 1);
+                int frameHeight = script::get<int>(L, 2);
+                auto img = script::ptr<Image>(L, 3);
+                script::push(L, new Sheet(frameWidth, frameHeight, img->canvas().getWidth() / frameWidth, img->canvas().getHeight() / frameHeight), LUA_NOREF);
+                return 1;
+            }
+            else if(script::is<int>(L, 1) && script::is<int>(L, 2) && script::is<Canvas>(L, 3))
+            {
+                int frameWidth = script::get<int>(L, 1);
+                int frameHeight = script::get<int>(L, 2);
+                auto canvas = script::ptr<Canvas>(L, 3);
+                script::push(L, new Sheet(frameWidth, frameHeight, canvas->getWidth() / frameWidth, canvas->getHeight() / frameHeight), LUA_NOREF);
+                return 1;
+            }
+            luaL_error(L, "Attempt to call plum.Sheet constructor with invalid argument types.\r\n"
+                "Must be (int frameWidth, int frameHeight, int columns, int rows)"
+                " or (int frameWidth, int frameHeight, Image img)"
+                " or (int frameWidth, int frameHeight, Canvas canvas).");
             return 0;
         }
 
@@ -52,107 +72,91 @@ namespace plum
             return script::wrapped<Self>(L, 1)->tostring(L);
         }
 
-        int get_image(lua_State* L)
+        int getFrame(lua_State* L)
         {
-            auto spr = script::ptr<Sprite>(L, 1);
-
-            // Push reference to this, so the spritesheet stays around
-            // as long as it's required for the child.
-            lua_pushvalue(L, 1);
-            int ref = luaL_ref(L, LUA_REGISTRYINDEX);
-
-            script::push(L, &spr->image(), ref);
-            return 1;
-        }
-
-        int blitFrame(lua_State* L)
-        {
-            auto spr = script::ptr<Sprite>(L, 1);
-            int x = script::get<int>(L, 2);
-            int y = script::get<int>(L, 3);
-            int f = script::get<int>(L, 4);
-            BlendMode mode = (BlendMode) script::get<int>(L, 5, BlendPreserve);
-
-            spr->blitFrame(x, y, f, mode);
-            return 0;
-        }
-
-        int drawFrame(lua_State* L)
-        {
-            auto spr = script::ptr<Sprite>(L, 1);
-            auto transform = script::ptr<Transform>(L, 2);
-            int f = script::get<int>(L, 3);
-
-            spr->transformBlitFrame(transform, f);
-
-            return 0;
-        }
-
-        int getFramePixel(lua_State* L)
-        {
-            auto spr = script::ptr<Sprite>(L, 1);
+            auto spr = script::ptr<Sheet>(L, 1);
             int f = script::get<int>(L, 2);
-            int x = script::get<int>(L, 3);
-            int y = script::get<int>(L, 4);
-            int pixel = spr->getFramePixel(f, x, y);
 
-            script::push(L, pixel);
+            int x, y;
+            if(spr->getFrame(f, x, y))
+            {
+               script::push(L, x);
+               script::push(L, y);
+               return 2;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
+        int get_width(lua_State* L)
+        {
+            auto spr = script::ptr<Sheet>(L, 1);
+            script::push(L, spr->getWidth());
             return 1;
         }
 
-        int get_frameWidth(lua_State* L)
+        int set_width(lua_State* L)
         {
-            auto spr = script::ptr<Sprite>(L, 1);
-            script::push(L, spr->getFrameWidth());
-            return 1;
-        }
-
-        int set_frameWidth(lua_State* L)
-        {
-            auto spr = script::ptr<Sprite>(L, 1);
-            spr->setFrameWidth(script::get<int>(L, 2));
+            auto spr = script::ptr<Sheet>(L, 1);
+            spr->setWidth(script::get<int>(L, 2));
             return 0;
         }
 
-        int get_frameHeight(lua_State* L)
+        int get_height(lua_State* L)
         {
-            auto spr = script::ptr<Sprite>(L, 1);
-            script::push(L, spr->getFrameHeight());
+            auto spr = script::ptr<Sheet>(L, 1);
+            script::push(L, spr->getHeight());
             return 1;
         }
 
-        int set_frameHeight(lua_State* L)
+        int set_height(lua_State* L)
         {
-            auto spr = script::ptr<Sprite>(L, 1);
-            spr->setFrameHeight(script::get<int>(L, 2));
+            auto spr = script::ptr<Sheet>(L, 1);
+            spr->setHeight(script::get<int>(L, 2));
             return 0;
         }
 
         int get_padding(lua_State* L)
         {
-            auto spr = script::ptr<Sprite>(L, 1);
+            auto spr = script::ptr<Sheet>(L, 1);
             script::push(L, spr->getPadding());
             return 1;
         }
 
         int set_padding(lua_State* L)
         {
-            auto spr = script::ptr<Sprite>(L, 1);
-            spr->setPadding(script::get<int>(L, 2));
+            auto spr = script::ptr<Sheet>(L, 1);
+            spr->setPadding(script::get<bool>(L, 2));
             return 0;
         }
 
         int get_columns(lua_State* L)
         {
-            auto spr = script::ptr<Sprite>(L, 1);
+            auto spr = script::ptr<Sheet>(L, 1);
             script::push(L, spr->getColumns());
             return 1;
         }
 
         int set_columns(lua_State* L)
         {
-            auto spr = script::ptr<Sprite>(L, 1);
+            auto spr = script::ptr<Sheet>(L, 1);
             spr->setColumns(script::get<int>(L, 2));
+            return 0;
+        }
+
+        int get_rows(lua_State* L)
+        {
+            auto spr = script::ptr<Sheet>(L, 1);
+            script::push(L, spr->getRows());
+            return 1;
+        }
+
+        int set_rows(lua_State* L)
+        {
+            auto spr = script::ptr<Sheet>(L, 1);
+            spr->setRows(script::get<int>(L, 2));
             return 0;
         }
     }
@@ -173,18 +177,17 @@ namespace plum
                 {"__index", index},
                 {"__newindex", newindex},
                 {"__tostring", tostring},
-                {"blitFrame", blitFrame},
-                {"drawFrame", drawFrame},
-                {"getFramePixel", getFramePixel},
-                {"get_frameWidth", get_frameWidth},
-                {"set_frameWidth", set_frameWidth},
-                {"get_frameHeight", get_frameHeight},
-                {"set_frameHeight", set_frameHeight},
+                {"getFrame", getFrame},
+                {"get_width", get_width},
+                {"set_width", set_width},
+                {"get_height", get_height},
+                {"set_height", set_height},
                 {"get_padding", get_padding},
                 {"set_padding", set_padding},
                 {"get_columns", get_columns},
                 {"set_columns", set_columns},
-                {"get_image", get_image},
+                {"get_rows", get_rows},
+                {"set_rows", set_rows},
                 {nullptr, nullptr}
             };
             luaL_setfuncs(L, functions, 0);
@@ -194,8 +197,8 @@ namespace plum
             // Push plum namespace.
             lua_getglobal(L, "plum");
 
-            // plum.Sprite = <function create>
-            script::push(L, "Sprite");
+            // plum.Sheet = <function create>
+            script::push(L, "Sheet");
             lua_pushcfunction(L, create);
             lua_settable(L, -3);
 

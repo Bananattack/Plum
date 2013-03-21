@@ -10,6 +10,7 @@
 namespace plum
 {
     class Canvas;
+    class Sheet;
     struct Transform;
 
     class Image
@@ -22,6 +23,8 @@ namespace plum
             const Canvas& canvas() const;
             void refresh();
 
+            void startBatch();
+            void endBatch();
             void bind();
 
             void blit(int x, int y, BlendMode mode);
@@ -36,8 +39,7 @@ namespace plum
                     int destX, int destY, double angle, BlendMode mode);
             void rotateScaleBlitRegion(int sourceX, int sourceY, int sourceX2, int sourceY2,
                     int destX, int destY, double angle, double scale, BlendMode mode);
-            void rawBlitRegion(int sourceX, int sourceY, int sourceX2, int sourceY2,
-                    int destX, int destY, double angle, double scale);
+            void rawBlitFrame(Sheet& sheet, int f, int x, int y);
             void transformBlit(Transform* transform);
 
             class Impl;

@@ -1,43 +1,32 @@
 #ifndef PLUM_SPRITE_H
 #define PLUM_SPRITE_H
 
-#include "color.h"
-#include "blending.h"
-#include "image.h"
-
 namespace plum
 {
-    struct Transform;
-    class Canvas;
-    class Sprite
+    class Sheet
     {
         public:
-            Sprite(const Image& image, int w, int h);
-            ~Sprite();
+            Sheet(int width, int height, int columns, int rows);
+            ~Sheet();
 
-            int getFrameWidth() const;
-            int getFrameHeight() const;
-            int getPadding() const;
+            int getWidth() const;
+            int getHeight() const;
+            bool getPadding() const;
             int getColumns() const;
+            int getRows() const;
 
-            void setFrameWidth(int value);
-            void setFrameHeight(int value);
-            void setPadding(int value);
+            void setWidth(int value);
+            void setHeight(int value);
+            void setPadding(bool value);
             void setColumns(int value);
+            void setRows(int value);
 
-            Image& image();
-
-            void bind();
-            Color getFramePixel(int f, int x, int y);
-            void blitFrame(int x, int y, int f, BlendMode mode);
-            void transformBlitFrame(Transform* transform, int f);
-            void rawBlitFrame(int x, int y, int f, double angle, double scale);
+            bool getFrame(int f, int& x, int& y);
 
         private:
-            Image image_;
-            int frameWidth, frameHeight;
-            int padding;
-            int columns;
+            int width, height;
+            int columns, rows;
+            bool padding;
     };
 }
 

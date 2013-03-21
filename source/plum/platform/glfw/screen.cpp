@@ -124,7 +124,7 @@ namespace plum
         glLoadIdentity();
         glOrtho(0, impl->width, impl->height, 0, -1, 1);
         glViewport(0, 0, impl->trueWidth, impl->trueHeight);
-        glLineWidth(scale);
+        glLineWidth(float(scale));
 
         glDisable(GL_DEPTH_TEST);
 
@@ -139,20 +139,6 @@ namespace plum
         glfwSwapInterval(1);
         glfwShowWindow(window);
         impl->context = impl->engine.impl->registerWindow(window);
-    }
-
-    void Screen::startBatch()
-    {
-        glColor4ub(255, 255, 255, getOpacity());
-        glEnable(GL_TEXTURE_2D);
-        glEnableClientState(GL_VERTEX_ARRAY);
-        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-    }
-
-    void Screen::endBatch()
-    {
-        glDisableClientState(GL_VERTEX_ARRAY);
-        glDisableClientState(GL_TEXTURE_COORD_ARRAY);
     }
 
     void Screen::clear(Color color)
