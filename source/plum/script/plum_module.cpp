@@ -192,8 +192,6 @@ namespace plum
             initSongObject(L);
             initFileObject(L);
             initCanvasObject(L);
-            initPointObject(L);
-            initRectObject(L);
             initTransformObject(L);
             initImageObject(L);
             initSheetObject(L);

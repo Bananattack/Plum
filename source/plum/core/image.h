@@ -27,20 +27,11 @@ namespace plum
             void endBatch();
             void bind();
 
-            void blit(int x, int y, BlendMode mode);
-            void scaleBlit(int x, int y, int width, int height, BlendMode mode);
-            void rotateBlit(int x, int y, double angle, BlendMode mode);
-            void rotateScaleBlit(int x, int y, double angle, double scale, BlendMode mode);
-            void blitRegion(int sourceX, int sourceY, int sourceX2, int sourceY2,
-                    int destX, int destY, BlendMode mode);
-            void scaleBlitRegion(int sourceX, int sourceY, int sourceX2, int sourceY2,
-                    int destX, int destY, int scaledWidth, int scaledHeight, BlendMode mode);
-            void rotateBlitRegion(int sourceX, int sourceY, int sourceX2, int sourceY2,
-                    int destX, int destY, double angle, BlendMode mode);
-            void rotateScaleBlitRegion(int sourceX, int sourceY, int sourceX2, int sourceY2,
-                    int destX, int destY, double angle, double scale, BlendMode mode);
-            void rawBlitFrame(Sheet& sheet, int f, int x, int y);
-            void transformBlit(Transform* transform);
+            void draw(int x, int y);
+            void draw(int x, int y, const Transform& transform);
+            void drawFrame(const Sheet& sheet, int f, int x, int y);
+            void drawFrame(const Sheet& sheet, int f, int x, int y, const Transform& transform);
+            void drawFrameRaw(const Sheet& sheet, int f, int x, int y);
 
             class Impl;
             std::shared_ptr<Impl> impl;

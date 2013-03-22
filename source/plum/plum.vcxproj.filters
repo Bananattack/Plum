@@ -60,12 +60,6 @@
     <ClCompile Include="script\plum_module.cpp">
       <Filter>Source Files\script</Filter>
     </ClCompile>
-    <ClCompile Include="script\point_object.cpp">
-      <Filter>Source Files\script</Filter>
-    </ClCompile>
-    <ClCompile Include="script\rect_object.cpp">
-      <Filter>Source Files\script</Filter>
-    </ClCompile>
     <ClCompile Include="script\script.cpp">
       <Filter>Source Files\script</Filter>
     </ClCompile>

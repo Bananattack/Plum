@@ -10,7 +10,7 @@ do local Self = {}
     function Self:renderLayer(layer)
         plum.screen.opacity = layer == 2 and 127 or 192
         for i, cloud in ipairs(self.clouds[layer]) do
-            cloud.image:blit(cloud.x - world.x, cloud.y)
+            cloud.image:draw(cloud.x - world.x, cloud.y)
         end
         --resource.font.plain:PrintCenter(plum.screen.width / 2, layer * 10, tostring(#self.clouds[layer]))
         plum.screen.opacity = 255

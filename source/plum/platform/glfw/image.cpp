@@ -119,58 +119,18 @@ namespace plum
         impl->bind();
     }
 
-    void Image::blit(int x, int y, BlendMode mode)
+    void Image::draw(int x, int y)
     {
-        scaleBlitRegion(0, 0, impl->canvas.getWidth(), impl->canvas.getHeight(), x, y, impl->canvas.getWidth(), impl->canvas.getHeight(), mode);
-    }
-
-    void Image::scaleBlit(int x, int y, int width, int height, BlendMode mode)
-    {
-        scaleBlitRegion(0, 0, impl->canvas.getWidth(), impl->canvas.getHeight(), x, y, width, height, mode);
-    }
-
-    void Image::blitRegion(int sourceX, int sourceY, int sourceX2, int sourceY2,
-                    int destX, int destY, BlendMode mode)
-    {
-        scaleBlitRegion(sourceX, sourceY, sourceX2, sourceY2, destX, destY,
-            std::abs(sourceX2 - sourceX) + 1, std::abs(sourceY2 - sourceY) + 1, mode);
-    }
-
-    void Image::scaleBlitRegion(int sourceX, int sourceY, int sourceX2, int sourceY2,
-                    int destX, int destY, int scaledWidth, int scaledHeight, BlendMode mode)
-    {
-        if(sourceX > sourceX2)
-        {
-            std::swap(sourceX, sourceX2);
-        }
-        if(sourceY > sourceY2)
-        {
-            std::swap(sourceY, sourceY2);
-        }
-        sourceX = std::min(std::max(0, sourceX), impl->canvas.getWidth() - 1);
-        sourceY = std::min(std::max(0, sourceY), impl->canvas.getHeight() - 1);
-        sourceX2 = std::min(std::max(0, sourceX2), impl->canvas.getWidth() - 1);
-        sourceY2 = std::min(std::max(0, sourceY2), impl->canvas.getHeight() - 1);
-
-        double regionS = (double(sourceX)) / impl->canvas.getTrueWidth();
-        double regionT = (double(sourceY)) / impl->canvas.getTrueHeight();
-        double regionS2 = (double(sourceX2) + 1) / impl->canvas.getTrueWidth();
-        double regionT2 = (double(sourceY2) + 1) / impl->canvas.getTrueHeight();
-
-        useHardwareBlender(mode);
-        glColor4ub(255, 255, 255, getOpacity());
-
-        glPushMatrix();
-        bind();
-
-        glTranslated(destX, destY, 0);
-
+        double regionS = 0;
+        double regionT = 0;
+        double regionS2 = double(impl->canvas.getWidth()) / impl->canvas.getTrueWidth();
+        double regionT2 = double(impl->canvas.getHeight()) / impl->canvas.getTrueHeight();
 
         const GLdouble vertexArray[] = {
-            0.0, 0.0,
-            0.0, scaledHeight,
-            scaledWidth, scaledHeight,
-            scaledWidth, 0.0,
+            x, y,
+            x, y + impl->canvas.getHeight(),
+            x + impl->canvas.getWidth(), y + impl->canvas.getHeight(),
+            x + impl->canvas.getWidth(), y,
         };
 
         const GLdouble textureArray[] = {
@@ -180,69 +140,42 @@ namespace plum
             regionS2, regionT,
         };
 
-
-        glEnableClientState(GL_VERTEX_ARRAY);
-        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-
+        useHardwareBlender(BlendPreserve);
+        glColor4ub(255, 255, 255, getOpacity());
+        bind();
+        
+        startBatch();
         glVertexPointer(2, GL_DOUBLE, 0, vertexArray);
         glTexCoordPointer(2, GL_DOUBLE, 0, textureArray);
         glDrawArrays(GL_QUADS, 0, 4);
-        
-        glDisableClientState(GL_VERTEX_ARRAY);
-        glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-
-        glPopMatrix();
+        endBatch();
     }
 
-    void Image::rotateBlit(int x, int y, double angle, BlendMode mode)
+    void Image::draw(int x, int y, const Transform& transform)
     {
-        rotateScaleBlitRegion(0, 0, impl->canvas.getWidth(), impl->canvas.getHeight(), x, y, angle, 1.0, mode);
-    }
+        uint8_t r, g, b, a;
+        transform.tint.channels(r, g, b, a);
 
-    void Image::rotateScaleBlit(int x, int y, double angle, double scale, BlendMode mode)
-    {
-        rotateScaleBlitRegion(0, 0, impl->canvas.getWidth(), impl->canvas.getHeight(), x, y, angle, scale, mode);
-    }
+        double regionS = 0;
+        double regionT = 0;
+        double regionS2 = double(impl->canvas.getWidth()) / impl->canvas.getTrueWidth();
+        double regionT2 = double(impl->canvas.getHeight()) / impl->canvas.getTrueHeight();
 
-    void Image::rotateBlitRegion(int sourceX, int sourceY, int sourceX2, int sourceY2,
-                    int destX, int destY, double angle, BlendMode mode)
-    {
-        rotateScaleBlitRegion(sourceX, sourceY, sourceX2, sourceY2, destX, destY, angle, 1.0, mode);
-    }
+        double width = double(impl->canvas.getWidth());
+        double height = double(impl->canvas.getHeight());
 
-    void Image::rotateScaleBlitRegion(int sourceX, int sourceY, int sourceX2, int sourceY2,
-                    int destX, int destY, double angle, double scale, BlendMode mode)
-    {
-        if(sourceX > sourceX2)
-        {
-            std::swap(sourceX, sourceX2);
-        }
-        if(sourceY > sourceY2)
-        {
-            std::swap(sourceY, sourceY2);
-        }
-        sourceX = std::min(std::max(0, sourceX), impl->canvas.getWidth() - 1);
-        sourceY = std::min(std::max(0, sourceY), impl->canvas.getHeight() - 1);
-        sourceX2 = std::min(std::max(0, sourceX2), impl->canvas.getWidth() - 1);
-        sourceY2 = std::min(std::max(0, sourceY2), impl->canvas.getHeight() - 1);
-
-        double regionS = (double(sourceX)) / impl->canvas.getTrueWidth();
-        double regionT = (double(sourceY)) / impl->canvas.getTrueHeight();
-        double regionS2 = (double(sourceX2) + 1) / impl->canvas.getTrueWidth();
-        double regionT2 = (double(sourceY2) + 1) / impl->canvas.getTrueHeight();
-
-        double width = double(sourceX2 - sourceX) * scale;
-        double height = double(sourceY2 - sourceY) * scale;
-
-        useHardwareBlender(mode);
-        glColor4ub(255, 255, 255, getOpacity());
+        useHardwareBlender(transform.mode);
+        glColor4ub(r, g, b, a * getOpacity() / 255);
 
         glPushMatrix();
         bind();
 
-        glTranslated(destX + width / 2.0, destY + height / 2.0, 0.0);
-        glRotated(angle, 0.0, 0.0, 1.0);
-        glTranslated(-width / 2.0, -height / 2.0, 0.0);
+        glTranslated(x, y, 0.0);
+        glTranslated(floor(width / 2), floor(height / 2), 0.0);
+
+        glScaled(transform.scaleX * (1 - transform.mirror * 2), transform.scaleY, 0.0);
+        glRotated(transform.angle, 0.0, 0.0, 1.0);
+        glTranslated(-floor(width / 2), -floor(height / 2), 0.0);
 
         const GLdouble vertexArray[] = {
             0.0, 0.0,
@@ -258,127 +191,58 @@ namespace plum
             regionS2, regionT,
         };
 
-        glEnableClientState(GL_VERTEX_ARRAY);
-        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-
+        startBatch();
         glVertexPointer(2, GL_DOUBLE, 0, vertexArray);
         glTexCoordPointer(2, GL_DOUBLE, 0, textureArray);
         glDrawArrays(GL_QUADS, 0, 4);
-        
-        glDisableClientState(GL_VERTEX_ARRAY);
-        glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+        endBatch();
 
         glPopMatrix();
     }
 
-    // For when performance really matters, bind the texture and figure out blend modes ahead of time,
-    // then call this in your loop. Especially important for tilemaps.
-    // "raw" because it does less hand-holding. But could possibly be considered very hand-holdy.
-    void Image::rawBlitFrame(Sheet& sheet, int f, int x, int y)
+    void Image::drawFrame(const Sheet& sheet, int f, int x, int y)
     {
-        int sourceX, sourceY, sourceX2, sourceY2;
+        useHardwareBlender(BlendPreserve);
+        glColor4ub(255, 255, 255, getOpacity());
+        bind();
+
+        startBatch();
+        drawFrameRaw(sheet, f, x, y);
+        endBatch();
+    }
+
+    void Image::drawFrame(const Sheet& sheet, int f, int x, int y, const Transform& transform)
+    {
+        uint8_t r, g, b, a;
+        transform.tint.channels(r, g, b, a);
+
+        int sourceX, sourceY;
 
         if(!sheet.getFrame(f, sourceX, sourceY))
         {
             return;
         }
 
-        sourceX = std::min(std::max(0, sourceX), impl->canvas.getWidth() - 1);
-        sourceY = std::min(std::max(0, sourceY), impl->canvas.getHeight() - 1);
-        sourceX2 = std::min(std::max(0, sourceX + sheet.getWidth() - 1), impl->canvas.getWidth() - 1);
-        sourceY2 = std::min(std::max(0, sourceY + sheet.getHeight() - 1), impl->canvas.getHeight() - 1);
-
         double regionS = (double(sourceX)) / impl->canvas.getTrueWidth();
         double regionT = (double(sourceY)) / impl->canvas.getTrueHeight();
-        double regionS2 = (double(sourceX2) + 1) / impl->canvas.getTrueWidth();
-        double regionT2 = (double(sourceY2) + 1) / impl->canvas.getTrueHeight();
+        double regionS2 = (double(sourceX + sheet.getWidth())) / impl->canvas.getTrueWidth();
+        double regionT2 = (double(sourceY + sheet.getHeight())) / impl->canvas.getTrueHeight();
 
-        double width = double(sourceX2 - sourceX);
-        double height = double(sourceY2 - sourceY);
+        double width = double(sheet.getWidth());
+        double height = double(sheet.getHeight());
 
-        glPushMatrix();
-        glTranslated(x, y, 0.0);
-
-        const GLdouble vertexArray[] = {
-            0.0, 0.0,
-            0.0, height + 1.0,
-            width + 1.0, height + 1.0,
-            width + 1.0, 0.0,
-        };
-
-        const GLdouble textureArray[] = {
-            regionS, regionT,
-            regionS, regionT2,
-            regionS2, regionT2,
-            regionS2, regionT,
-        };
-
-        glVertexPointer(2, GL_DOUBLE, 0, vertexArray);
-        glTexCoordPointer(2, GL_DOUBLE, 0, textureArray);
-        glDrawArrays(GL_QUADS, 0, 4);
-
-        glPopMatrix();
-    }
-
-    // Draws image, based on a transformation object (saves on complex arg passing)
-    void Image::transformBlit(Transform* transform)
-    {
-        double sourceX, sourceY, sourceX2, sourceY2;
-        uint8_t r, g, b, a;
-        transform->tint.channels(r, g, b, a);
-
-        if(transform->clip)
-        {
-            sourceX = std::min<double>(std::max(0.0, transform->clip->x), impl->canvas.getWidth() - 1);
-            sourceY = std::min<double>(std::max(0.0, transform->clip->y), impl->canvas.getHeight() - 1);
-            sourceX2 = std::min<double>(sourceX + transform->clip->width, impl->canvas.getWidth()) - 1;
-            sourceY2 = std::min<double>(sourceY + transform->clip->height, impl->canvas.getHeight()) - 1;
-        }
-        else
-        {
-            sourceX = sourceY = 0;
-            sourceX2 = impl->canvas.getWidth() - 1;
-            sourceY2 = impl->canvas.getHeight() - 1;
-        }
-
-        double regionS = (double(sourceX)) / impl->canvas.getTrueWidth();
-        double regionT = (double(sourceY)) / impl->canvas.getTrueHeight();
-        double regionS2 = (double(sourceX2) + 1) / impl->canvas.getTrueWidth();
-        double regionT2 = (double(sourceY2) + 1) / impl->canvas.getTrueHeight();
-
-        double width = double(sourceX2 - sourceX);
-        double height = double(sourceY2 - sourceY);
-
-        useHardwareBlender(transform->mode);
+        useHardwareBlender(transform.mode);
         glColor4ub(r, g, b, a * getOpacity() / 255);
 
         glPushMatrix();
         bind();
 
-        if(transform->position)
-        {
-            glTranslated(transform->position->x, transform->position->y, 0.0);
-        }
-        if(transform->pivot)
-        {
-            glTranslated(transform->pivot->x, transform->pivot->y, 0.0);
-        }
+        glTranslated(x, y, 0.0);
+        glTranslated(floor(width / 2), floor(height / 2), 0.0);
 
-        if(transform->scale)
-        {
-            glScaled(transform->scale->x * (1 - transform->mirror * 2), transform->scale->y, 0.0);
-        }
-        else
-        {
-            glScaled((1 - transform->mirror * 2), 1.0, 0.0);
-        }
-
-        glRotated(transform->angle, 0.0, 0.0, 1.0);
-
-        if(transform->pivot)
-        {
-            glTranslated(-transform->pivot->x, -transform->pivot->y, 0.0);
-        }
+        glScaled(transform.scaleX * (1 - transform.mirror * 2), transform.scaleY, 0.0);
+        glRotated(transform.angle, 0.0, 0.0, 1.0);
+        glTranslated(-floor(width / 2), -floor(height / 2), 0.0);
 
         const GLdouble vertexArray[] = {
             0.0, 0.0,
@@ -394,16 +258,45 @@ namespace plum
             regionS2, regionT,
         };
 
-        glEnableClientState(GL_VERTEX_ARRAY);
-        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+        startBatch();
+        glVertexPointer(2, GL_DOUBLE, 0, vertexArray);
+        glTexCoordPointer(2, GL_DOUBLE, 0, textureArray);
+        glDrawArrays(GL_QUADS, 0, 4);
+        endBatch();
+
+        glPopMatrix();
+    }
+
+    void Image::drawFrameRaw(const Sheet& sheet, int f, int x, int y)
+    {
+        int sourceX, sourceY;
+
+        if(!sheet.getFrame(f, sourceX, sourceY))
+        {
+            return;
+        }
+
+        double regionS = (double(sourceX)) / impl->canvas.getTrueWidth();
+        double regionT = (double(sourceY)) / impl->canvas.getTrueHeight();
+        double regionS2 = (double(sourceX + sheet.getWidth())) / impl->canvas.getTrueWidth();
+        double regionT2 = (double(sourceY + sheet.getHeight())) / impl->canvas.getTrueHeight();
+
+        const GLdouble vertexArray[] = {
+            x, y,
+            x, y + sheet.getHeight(),
+            x + sheet.getWidth(), y + sheet.getHeight(),
+            x + sheet.getWidth(), y,
+        };
+
+        const GLdouble textureArray[] = {
+            regionS, regionT,
+            regionS, regionT2,
+            regionS2, regionT2,
+            regionS2, regionT,
+        };
 
         glVertexPointer(2, GL_DOUBLE, 0, vertexArray);
         glTexCoordPointer(2, GL_DOUBLE, 0, textureArray);
         glDrawArrays(GL_QUADS, 0, 4);
-        
-        glDisableClientState(GL_VERTEX_ARRAY);
-        glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-
-        glPopMatrix();
     }
 }

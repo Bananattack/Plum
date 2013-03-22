@@ -15,140 +15,10 @@ namespace plum
     namespace
     {
         typedef Transform Self;
-        Point ZeroPoint;
-        Point UnitPoint;
-
-        enum
-        {
-            REF_POSITION = 1,
-            REF_CLIP,
-            REF_SCALE,
-            REF_PIVOT
-        };
-
         int create(lua_State* L)
         {
-            const char* const CONSTRUCT_ERR = "Bad plum.Transform constructor call.";
-
-            // Validate constructor argument, must be table or nil.
-            int argumentType = lua_type(L, 1);
-
-            if(argumentType != LUA_TNONE && argumentType != LUA_TNIL && argumentType != LUA_TTABLE)
-            {
-                luaL_error(L, "%s Argument must be a table or nil. Got %s value instead.", CONSTRUCT_ERR, luaL_typename(L, 1));
-            }
-
-            // Create transform object.
             Self* t = new Self();
-            // Push transform object.
             auto w = script::push(L, t, LUA_NOREF);
-
-            // Push argument.
-            lua_pushvalue(L, 1);
-            if(argumentType == LUA_TTABLE)
-            {
-                // position
-                lua_getfield(L, -1, "position");
-                if(!script::is<nullptr_t>(L, -1))
-                {
-                    if(!script::is<Point>(L, -1))
-                    {
-                        luaL_error(L, "%s 'position' must be a plum.Point or nil. Got %s value instead.", CONSTRUCT_ERR, luaL_typename(L, -1));
-                    }
-                    t->position = script::ptr<Point>(L, -1);
-                }
-                else
-                {
-                    t->position = &ZeroPoint;
-                }
-                w->setAttribute(L, REF_POSITION);
-                lua_pop(L, 1);
-
-                // clip
-                lua_getfield(L, -1, "clip");
-                if(!script::is<nullptr_t>(L, -1))
-                {
-                    if(!script::is<Rect>(L, -1))
-                    {
-                        luaL_error(L, "%s 'clip' must be a plum.Rect or nil. Got %s value instead.", CONSTRUCT_ERR, luaL_typename(L, -1));
-                    }
-                    t->clip = script::ptr<Rect>(L, -1);
-                }
-                w->setAttribute(L, REF_CLIP);
-                lua_pop(L, 1);
-
-                // scale
-                lua_getfield(L, -1, "scale");
-                if(!script::is<nullptr_t>(L, -1))
-                {
-                    if(!script::is<Point>(L, -1))
-                    {
-                        luaL_error(L, "%s 'scale' must be a plum.Point or nil. Got %s value instead.", CONSTRUCT_ERR, luaL_typename(L, -1));
-                    }
-                    t->scale = script::ptr<Point>(L, -1);
-                }
-                else
-                {
-                    t->scale = &UnitPoint;
-                }
-                w->setAttribute(L, REF_SCALE);
-                lua_pop(L, 1);
-
-                // pivot
-                lua_getfield(L, -1, "pivot");
-                if(!script::is<nullptr_t>(L, -1))
-                {
-                    if(!script::is<Point>(L, -1))
-                    {
-                        luaL_error(L, "%s 'pivot' must be a plum.Point or nil. Got %s value instead.", CONSTRUCT_ERR, luaL_typename(L, -1));
-                    }
-                    t->pivot = script::ptr<Point>(L, -1);
-                }
-                else
-                {
-                    t->pivot = &ZeroPoint;
-                }
-                w->setAttribute(L, REF_PIVOT);
-                lua_pop(L, 1);
-
-                // angle
-                lua_getfield(L, -1, "angle");
-                if(script::is<double>(L, -1))
-                {
-                    t->angle = script::get<double>(L, -1);
-                }
-                else if(!script::is<nullptr_t>(L, -1))
-                {
-                    luaL_error(L, "%s angle must be a number.", CONSTRUCT_ERR);
-                }
-                lua_pop(L, 1);
-
-                // mode
-                lua_getfield(L, -1, "mode");
-                if(script::is<int>(L, -1))
-                {
-                    t->mode = (BlendMode) script::get<int>(L, -1);
-                }
-                else if(!script::is<nullptr_t>(L, -1))
-                {
-                    luaL_error(L, "%s mode must be an integer.", CONSTRUCT_ERR);
-                }
-                lua_pop(L, 1);
-
-                // tint
-                lua_getfield(L, -1, "tint");
-                if(script::is<int>(L, -1))
-                {
-                    t->tint = script::get<int>(L, -1);    
-                }
-                else if(!script::is<nullptr_t>(L, -1))
-                {
-                    luaL_error(L, "%s tint must be an integer.", CONSTRUCT_ERR);
-                }
-                lua_pop(L, 1);
-            }
-            lua_pop(L, 1);
-
             return 1;
         }
 
@@ -232,99 +102,33 @@ namespace plum
             return 0;
         }
 
-        int get_position(lua_State* L)
+        int get_scaleX(lua_State* L)
         {
-            script::wrapped<Transform>(L, 1)->getAttribute(L, REF_POSITION);
+            auto t = script::ptr<Transform>(L, 1);
+            script::push(L, t->scaleX);
             return 1;
         }
 
-        int get_clip(lua_State* L)
+        int set_scaleX(lua_State* L)
         {
-            script::wrapped<Transform>(L, 1)->getAttribute(L, REF_CLIP);
-            return 1;
-        }
-
-        int get_scale(lua_State* L)
-        {
-            script::wrapped<Transform>(L, 1)->getAttribute(L, REF_SCALE);
-            return 1;
-        }
-
-        int get_pivot(lua_State* L)
-        {
-            script::wrapped<Transform>(L, 1)->getAttribute(L, REF_PIVOT);
-            return 1;
-        }
-
-        int set_position(lua_State* L)
-        {
-            auto wrapper = script::wrapped<Transform>(L, 1);
-            if(lua_isnil(L, 2))
-            {
-                script::push(L, nullptr);
-                wrapper->data->position = &ZeroPoint;
-            }
-            else
-            {
-                auto value = script::ptr<Point>(L, 2);
-                lua_pushvalue(L, 2);
-                wrapper->data->position = value;
-            }
-            wrapper->setAttribute(L, REF_POSITION);
+            auto t = script::ptr<Transform>(L, 1);
+            auto value = script::get<double>(L, 2);
+            t->scaleX = value;
             return 0;
         }
 
-        int set_clip(lua_State* L)
+        int get_scaleY(lua_State* L)
         {
-            auto wrapper = script::wrapped<Transform>(L, 1);
-            if(lua_isnil(L, 2))
-            {
-                script::push(L, nullptr);
-                wrapper->data->clip = nullptr;
-            }
-            else
-            {
-                auto value = script::ptr<Rect>(L, 2);
-                lua_pushvalue(L, 2);
-                wrapper->data->clip = value;
-            }
-            wrapper->setAttribute(L, REF_CLIP);
-            return 0;
+            auto t = script::ptr<Transform>(L, 1);
+            script::push(L, t->scaleY);
+            return 1;
         }
 
-        int set_scale(lua_State* L)
+        int set_scaleY(lua_State* L)
         {
-            auto wrapper = script::wrapped<Transform>(L, 1);
-            if(lua_isnil(L, 2))
-            {
-                script::push(L, nullptr);
-                wrapper->data->scale = &UnitPoint;
-            }
-            else
-            {
-                auto value = script::ptr<Point>(L, 2);
-                lua_pushvalue(L, 2);
-                wrapper->data->scale = value;
-            }
-            wrapper->setAttribute(L, REF_SCALE);
-            return 0;
-        }
-
-        int set_pivot(lua_State* L)
-        {
-            auto wrapper = script::wrapped<Transform>(L, 1);
-            if(lua_isnil(L, 2))
-            {
-                script::push(L, nullptr);
-                wrapper->data->pivot = &ZeroPoint;
-            }
-            else
-            {
-                auto value = script::ptr<Point>(L, 2);
-                lua_pushvalue(L, 2);
-                wrapper->data->pivot = value;
-            }
-            wrapper->setAttribute(L, REF_PIVOT);
+            auto t = script::ptr<Transform>(L, 1);
+            auto value = script::get<double>(L, 2);
+            t->scaleY = value;
             return 0;
         }
     }
@@ -333,10 +137,6 @@ namespace plum
     {
         void initTransformObject(lua_State* L)
         {
-            // Defaults for points.
-            ZeroPoint.x = ZeroPoint.y = 0;
-            UnitPoint.x = UnitPoint.y = 1;
-
             luaL_newmetatable(L, meta<Self>());
             // Duplicate the metatable on the stack.
             lua_pushvalue(L, -1);
@@ -357,14 +157,10 @@ namespace plum
                 {"set_mode", set_mode},
                 {"get_tint", get_tint},
                 {"set_tint", set_tint},
-                {"get_position", get_position},
-                {"get_clip", get_clip},
-                {"get_scale", get_scale},
-                {"get_pivot", get_pivot},
-                {"set_position", set_position},
-                {"set_clip", set_clip},
-                {"set_scale", set_scale},
-                {"set_pivot", set_pivot},
+                {"get_scaleX", get_scaleX},
+                {"set_scaleX", set_scaleX},
+                {"get_scaleY", get_scaleY},
+                {"set_scaleY", set_scaleY},
                 {nullptr, nullptr}
             };
             luaL_setfuncs(L, functions, 0);

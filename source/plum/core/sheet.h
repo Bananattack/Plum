@@ -21,7 +21,7 @@ namespace plum
             void setColumns(int value);
             void setRows(int value);
 
-            bool getFrame(int f, int& x, int& y);
+            bool getFrame(int f, int& x, int& y) const;
 
         private:
             int width, height;

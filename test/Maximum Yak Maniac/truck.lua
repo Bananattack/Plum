@@ -20,6 +20,9 @@ do local Self = {}
         self.evil = math.random()
 
         self.fudge = math.random(200, 1000)
+
+        self.transform = plum.Transform()
+        
         return self
     end
     
@@ -92,7 +95,10 @@ do local Self = {}
     
     function Self:render()
         plum.screen.opacity = self.opacity
-        self.frame:rotateScaleBlit(self.x - world.x + (self.derailed and math.random(-5, 5) or 0), self.y - self.frame.height + 20 + (self.derailed and math.random(-5, 5) or 0), self.angle, self.scale)
+        self.transform.angle = self.angle
+        self.transform.scaleX = self.scale
+        self.transform.scaleY = self.scale
+        self.frame:draw(self.x - world.x + (self.derailed and math.random(-5, 5) or 0), self.y - self.frame.height + 20 + (self.derailed and math.random(-5, 5) or 0), self.transform)
         plum.screen.opacity = 255
     end
     

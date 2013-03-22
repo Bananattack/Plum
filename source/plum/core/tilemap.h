@@ -26,7 +26,7 @@ namespace plum
             void solidRect(int tx, int ty, int tx2, int ty2, unsigned int tileIndex);
             void line(int tx, int ty, int tx2, int ty2, unsigned int tileIndex);
             void stamp(int tx, int ty, Tilemap* dest);
-            void blit(Image& img, Sheet& sheet, int worldX, int worldY, int destX, int destY, int tilesWide, int tilesHigh, BlendMode mode = BlendPreserve);
+            void blit(Image& img, const Sheet& sheet, int worldX, int worldY, int destX, int destY, int tilesWide, int tilesHigh, BlendMode mode = BlendPreserve);
 
         private:
             int width, height;

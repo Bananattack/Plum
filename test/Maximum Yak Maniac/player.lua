@@ -30,7 +30,8 @@ do local Self = {}
         self.image.eat = createSpriteFrame(resource.image.yak.eat, PlayerOneColor, color)
         self.frame = self.image.idle.left
         self.hitbox = { width = self.frame.width, height = self.frame.height }
-        
+        self.transform = plum.Transform()
+
         self.scoreCounter = 0
         self.scoreAccel = 0
         
@@ -275,14 +276,16 @@ do local Self = {}
         if self.hide then
             return
         end
+
         plum.screen:solidCircle(self.x - world.x + self.frame.width / 2, world.floorY, 20, 3, plum.color.rgb(0, 0, 0, 127))
         if self.hurtCounter > 0 then
             if self.hurtCounter % 8 < 4 then
-                self.frame:rotateBlit(self.x - world.x, self.y, self.angle + math.random(-50, 50) * (self.hurtCounter >= 150 and 1 or 0))
+                self.transform.angle = self.angle + math.random(-50, 50) * (self.hurtCounter >= 150 and 1 or 0)
             end
         else
-            self.frame:rotateBlit(self.x - world.x, self.y, self.angle)
+            self.transform.angle = self.angle
         end
+        self.frame:draw(self.x - world.x, self.y, self.transform)
 
         if self.timer < 600 and self.timer > 0 then
             (self.timer % 10 < 5 and resource.font.bigYellow or resource.font.bigRed):printCenter(self.x - world.x + self.frame.width / 2, self.y - 10 + math.sin(math.rad(self.timer) * 10) * 5, tostring(math.floor(self.timer / 100)))

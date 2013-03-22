@@ -217,7 +217,7 @@ namespace plum
 
         template<> inline bool is<nullptr_t>(lua_State* L, int index)
         {
-            return lua_isnil(L, index) != 0;
+            return lua_isnil(L, index) != 0 || lua_isnone(L, index) != 0;
         }
 
 
@@ -367,8 +367,6 @@ namespace plum
         void initSongObject(lua_State* L);
         void initFileObject(lua_State* L);
         void initCanvasObject(lua_State* L);
-        void initPointObject(lua_State* L);
-        void initRectObject(lua_State* L);
         void initTransformObject(lua_State* L);
         void initImageObject(lua_State* L);
         void initSheetObject(lua_State* L);

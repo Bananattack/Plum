@@ -52,7 +52,7 @@ do local Self = {}
         if self.shakeTimer > 0 then
             x = x + math.random(-5, 5)
         end
-        self.frame:blit(x, self.y)
+        self.frame:draw(x, self.y)
     end
     
     function Self:damage(damage, player)

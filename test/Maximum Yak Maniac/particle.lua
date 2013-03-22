@@ -14,7 +14,7 @@ do local Self = {}
     end
 
     function Self:render()
-        self.frame:blit(self.x - world.x, self.y)
+        self.frame:draw(self.x - world.x, self.y)
     end
 
     function Self:update()

@@ -15,13 +15,13 @@ do local Self = {}
         return self
     end
 
-    function Self:blit(x, y)
+    function Self:draw(x, y)
         x = (x + self.xofs) * self.parallax
         y = y + self.yofs
         local w = self.texture.width
         local sx = (x + w) % w
         for i = -1, plum.screen.width / w + 2 do
-            self.texture:blit(sx + (i * w), y - self.texture.height)
+            self.texture:draw(sx + (i * w), y - self.texture.height)
         end
         plum.screen:solidRect(0, y, plum.screen.width, y + self.height, self.color)
     end
@@ -141,9 +141,9 @@ do local Self = {}
         plum.screen:solidRect(0, 0, plum.screen.width, plum.screen.height, plum.color.rgb(0x1F, 0xD1, 0xE0))
         self.sky:renderLayer(1)
         
-        grass[1]:blit(self.x, 0)
-        grass[2]:blit(self.x, 0)
-        grass[3]:blit(self.x, 0)
+        grass[1]:draw(self.x, 0)
+        grass[2]:draw(self.x, 0)
+        grass[3]:draw(self.x, 0)
 
         local sprites = self.sprites
         for idx, s in ipairs(sprites) do
@@ -163,7 +163,7 @@ do local Self = {}
             s:render()
         end
         
-        grass[4]:blit(self.x, 0)
+        grass[4]:draw(self.x, 0)
         self.sky:renderLayer(2)
         
         if self.gameOver then

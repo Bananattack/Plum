@@ -2,6 +2,7 @@
 #include "script.h"
 #include "../core/image.h"
 #include "../core/canvas.h"
+#include "../core/sheet.h"
 
 namespace plum
 {
@@ -56,133 +57,43 @@ namespace plum
             return script::wrapped<Self>(L, 1)->tostring(L);
         }
 
-        int blit(lua_State* L)
-        {
-            auto img = script::ptr<Self>(L, 1);
-            auto x = script::get<int>(L, 2);
-            auto y = script::get<int>(L, 3);
-            auto mode = BlendMode(script::get<int>(L, 4, BlendPreserve));
-
-            img->blit(x, y, mode);
-
-            return 0;
-        }
-
         int draw(lua_State* L)
         {
             auto img = script::ptr<Self>(L, 1);
-            auto transform = script::ptr<Transform>(L, 2);
-
-            img->transformBlit(transform);
-
-            return 0;
-        }
-
-        int blitRegion(lua_State* L)
-        {
-            auto img = script::ptr<Self>(L, 1);
-            auto sx = script::get<int>(L, 2);
-            auto sy = script::get<int>(L, 3);
-            auto sx2 = script::get<int>(L, 4);
-            auto sy2 = script::get<int>(L, 5);
-            auto dx = script::get<int>(L, 6);
-            auto dy = script::get<int>(L, 7);
-            auto mode = BlendMode(script::get<int>(L, 8, BlendPreserve));
-
-            img->blitRegion(sx, sy, sx2, sy2, dx, dy, mode);
-
-            return 0;
-        }
-
-        int scaleBlit(lua_State* L)
-        {
-            auto img = script::ptr<Self>(L, 1);
             auto x = script::get<int>(L, 2);
             auto y = script::get<int>(L, 3);
-            auto width = script::get<int>(L, 4);
-            auto height = script::get<int>(L, 5);
-            auto mode = BlendMode(script::get<int>(L, 6, BlendPreserve));
+            auto transform = script::is<nullptr_t>(L, 4) ? nullptr : script::ptr<Transform>(L, 4);
 
-            img->scaleBlit(x, y, width, height, mode);
-
-            return 0;
-        }
-
-        int scaleBlitRegion(lua_State* L)
-        {
-            auto img = script::ptr<Self>(L, 1);
-            auto sx = script::get<int>(L, 2);
-            auto sy = script::get<int>(L, 3);
-            auto sx2 = script::get<int>(L, 4);
-            auto sy2 = script::get<int>(L, 5);
-            auto dx = script::get<int>(L, 6);
-            auto dy = script::get<int>(L, 7);
-            auto scaledWidth = script::get<int>(L, 8);
-            auto scaledHeight = script::get<int>(L, 9);
-            auto mode = BlendMode(script::get<int>(L, 10, BlendPreserve));
-
-            img->scaleBlitRegion(sx, sy, sx2, sy2, dx, dy, scaledWidth, scaledHeight, mode);
+            if(transform)
+            {
+                img->draw(x, y, *transform);
+            }
+            else
+            {
+                img->draw(x, y);
+            }
 
             return 0;
         }
 
-        int rotateBlit(lua_State* L)
+        int drawFrame(lua_State* L)
         {
             auto img = script::ptr<Self>(L, 1);
-            auto x = script::get<int>(L, 2);
-            auto y = script::get<int>(L, 3);
-            auto angle = script::get<double>(L, 4);
-            auto mode = BlendMode(script::get<int>(L, 5, BlendPreserve));
+            auto sheet = script::ptr<Sheet>(L, 2);
+            auto frame = script::get<int>(L, 3);
+            auto x = script::get<int>(L, 4);
+            auto y = script::get<int>(L, 5);
+            auto transform = script::is<nullptr_t>(L, 6) ? nullptr : script::ptr<Transform>(L, 6);
 
-            img->rotateBlit(x, y, angle, mode);
+            if(transform)
+            {
+                img->drawFrame(*sheet, frame, x, y, *transform);
+            }
+            else
+            {
+                img->drawFrame(*sheet, frame, x, y);
+            }
 
-            return 0;
-        }
-
-        int rotateBlitRegion(lua_State* L)
-        {
-            auto img = script::ptr<Self>(L, 1);
-            auto sx = script::get<int>(L, 2);
-            auto sy = script::get<int>(L, 3);
-            auto sx2 = script::get<int>(L, 4);
-            auto sy2 = script::get<int>(L, 5);
-            auto dx = script::get<int>(L, 6);
-            auto dy = script::get<int>(L, 7);
-            auto angle = script::get<double>(L, 8);
-            auto mode = BlendMode(script::get<int>(L, 9, BlendPreserve));
-
-            img->rotateBlitRegion(sx, sy, sx2, sy2, dx, dy, angle, mode);
-            return 0;
-        }
-
-        int rotateScaleBlit(lua_State* L)
-        {
-            auto img = script::ptr<Self>(L, 1);
-            auto x = script::get<int>(L, 2);
-            auto y = script::get<int>(L, 3);
-            auto angle = script::get<double>(L, 4);
-            auto scale = script::get<double>(L, 5);
-            auto mode = BlendMode(script::get<int>(L, 6, BlendPreserve));
-
-            img->rotateScaleBlit(x, y, angle, scale, mode);
-
-            return 0;
-        }
-
-        int rotateScaleBlitRegion(lua_State* L)
-        {
-            auto img = script::ptr<Self>(L, 1);
-            auto sx = script::get<int>(L, 2);
-            auto sy = script::get<int>(L, 3);
-            auto sx2 = script::get<int>(L, 4);
-            auto sy2 = script::get<int>(L, 5);
-            auto dx = script::get<int>(L, 6);
-            auto dy = script::get<int>(L, 7);
-            auto angle = script::get<double>(L, 8);
-            auto scale = script::get<double>(L, 9);
-            auto mode = BlendMode(script::get<int>(L, 10, BlendPreserve));
-
-            img->rotateScaleBlitRegion(sx, sy, sx2, sy2, dx, dy, angle, scale, mode);
             return 0;
         }
 
@@ -256,15 +167,8 @@ namespace plum
                 {"__index", index},
                 {"__newindex", newindex},
                 {"__tostring", tostring},
-                {"blit", blit},
                 {"draw", draw},
-                {"blitRegion", blitRegion},
-                {"scaleBlit", scaleBlit},
-                {"scaleBlitRegion", scaleBlitRegion},
-                {"rotateBlit", rotateBlit},
-                {"rotateBlitRegion", rotateBlitRegion},
-                {"rotateScaleBlit", rotateScaleBlit},
-                {"rotateScaleBlitRegion", rotateScaleBlitRegion},
+                {"drawFrame", drawFrame},
                 {"refresh", refresh},
                 {"get_width", get_width},
                 {"get_height", get_height},

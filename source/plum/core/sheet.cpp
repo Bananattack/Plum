@@ -65,7 +65,7 @@ namespace plum
         rows = value;
     }
 
-    bool Sheet::getFrame(int f, int& x, int& y)
+    bool Sheet::getFrame(int f, int& x, int& y) const
     {
         if(f < 0 || f >= rows * columns)
         {

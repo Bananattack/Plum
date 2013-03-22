@@ -125,8 +125,6 @@
     <ClCompile Include="script\keyboard_object.cpp" />
     <ClCompile Include="script\mouse_object.cpp" />
     <ClCompile Include="script\plum_module.cpp" />
-    <ClCompile Include="script\point_object.cpp" />
-    <ClCompile Include="script\rect_object.cpp" />
     <ClCompile Include="script\screen_object.cpp" />
     <ClCompile Include="script\script.cpp" />
     <ClCompile Include="script\sheet_object.cpp" />

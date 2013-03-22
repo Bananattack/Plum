@@ -369,7 +369,7 @@ namespace plum
         }
     }
 
-    void Tilemap::blit(Image& img, Sheet& sheet, int worldX, int worldY, int destX, int destY, int tilesWide, int tilesHigh, BlendMode mode)
+    void Tilemap::blit(Image& img, const Sheet& sheet, int worldX, int worldY, int destX, int destY, int tilesWide, int tilesHigh, BlendMode mode)
     {
         if(tilesWide < 0 || tilesHigh < 0) return;
 
@@ -406,7 +406,7 @@ namespace plum
         {
             for(j = 0; j < tilesWide; ++j)
             {
-                img.rawBlitFrame(sheet,
+                img.drawFrameRaw(sheet,
                     data[(tileY + i) * width + (tileX + j)],
                     j * sheet.getWidth() + xofs + destX,
                     i * sheet.getHeight() + yofs + destY);

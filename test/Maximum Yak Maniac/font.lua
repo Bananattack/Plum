@@ -28,6 +28,8 @@ do local Self = {}
 
         self.cellWidth = self.cellWidth or canvas.width - 1
         self.cellHeight = self.cellHeight or canvas.height - 1
+        self.sheet = plum.Sheet(self.cellWidth, self.cellHeight, columns, rows)
+        self.sheet.padding = true
 
         -- Initialize glyph widths, which might be replaced later if variable width mode is enabled.
         local width = self.cellWidth
@@ -73,11 +75,8 @@ do local Self = {}
         end
     end
 
-    local function printChar(self, x, y, c, mode)
-        local fx = ((c - 32) % self.columns) * (self.cellWidth + 1) + 1
-        local fy = math.floor((c - 32) / self.columns) * (self.cellHeight + 1) + 1
-
-        self.image:blitRegion(fx, fy, fx + self.cellWidth - 1, fy + self.cellHeight - 1, x, y, mode)
+    local function printChar(self, x, y, c)
+        self.image:drawFrame(self.sheet, c - 32, x, y)
     end
 
     function Self:textWidth(s, k)
@@ -108,7 +107,7 @@ do local Self = {}
         return k and w or maxWidth
     end
 
-    function Self:print(x, y, s, mode)
+    function Self:print(x, y, s)
         local widths = self.widths
         local height = self.cellHeight
         local letterSpacing = self.letterSpacing
@@ -122,13 +121,13 @@ do local Self = {}
             elseif c == 9 then
                 j = j + widths[1] * 4
             elseif c >= 32 and c < 128 then
-                printChar(self, j, y, c, mode)
+                printChar(self, j, y, c)
                 j = j + widths[c - 31] + letterSpacing
             end
         end
     end
 
-    function Self:printRight(x, y, s, mode)
+    function Self:printRight(x, y, s)
         local widths = self.widths
         local height = self.cellHeight
         local letterSpacing = self.letterSpacing
@@ -146,13 +145,13 @@ do local Self = {}
             elseif c == 9 then
                 j = j + widths[1] * 4
             elseif c >= 32 and c < 128 then
-                printChar(self, j - ofs, y, c, mode)
+                printChar(self, j - ofs, y, c)
                 j = j + widths[c - 31] + letterSpacing
             end
         end
     end
 
-    function Self:printCenter(x, y, s, mode)
+    function Self:printCenter(x, y, s)
         local widths = self.widths
         local height = self.cellHeight
         local letterSpacing = self.letterSpacing
@@ -170,7 +169,7 @@ do local Self = {}
             elseif c == 9 then
                 j = j + widths[1] * 4
             elseif c >= 32 and c < 128 then
-                printChar(self, j - ofs, y, c, mode)
+                printChar(self, j - ofs, y, c)
                 j = j + widths[c - 31] + letterSpacing
             end
         end

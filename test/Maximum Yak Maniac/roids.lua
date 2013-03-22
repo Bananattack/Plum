@@ -13,6 +13,9 @@ do local Self = {}
         self.angleSpeed = (math.random(0, 100) < 50 and -1 or 1) * (math.random() + 1) * 3
         self.scale = math.random(80, 200) / 100
         self.amount = 300 * (self.scale / 2)
+
+        self.transform = plum.Transform()
+
         return self
     end
     
@@ -32,7 +35,8 @@ do local Self = {}
     
     function Self:render()
         plum.screen:solidCircle(self.x - world.x + self.frame.width / 2, world.floorY, 15, 8, plum.color.rgb(0, 0, 0, 127))
-        self.frame:rotateScaleBlit(self.x - world.x, self.y - self.frame.height + 20, self.angle, self.scale)
+        self.transform.angle = self.angle
+        self.frame:draw(self.x - world.x, self.y - self.frame.height + 20, self.transform)
     end
     
     function Self:damage(damage, player)

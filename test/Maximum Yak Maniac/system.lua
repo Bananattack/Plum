@@ -200,10 +200,10 @@ function intro()
 
             local frame = player.frame[eating and 'eat' or 'idle'][i][player.direction[i]]
             if playerCount == 1 then
-                frame:blit(plum.screen.width / 2 - frame.width / 2, player.y[i] + (jumping and -20 or 0))
+                frame:draw(plum.screen.width / 2 - frame.width / 2, player.y[i] + (jumping and -20 or 0))
             else
                 resource.font.plain:print(player.x[i], player.y[i] - 40, "Player " .. i)
-                frame:blit(player.x[i], player.y[i] + (jumping and -20 or 0))
+                frame:draw(player.x[i], player.y[i] + (jumping and -20 or 0))
             end
 
             plum.screen.opacity = 255
