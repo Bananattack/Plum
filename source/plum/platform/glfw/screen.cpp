@@ -3,6 +3,8 @@
 
 #include "engine.h"
 #include "../../core/screen.h"
+#include "../../core/image.h"
+#include "../../core/transform.h"
 
 namespace plum
 {
@@ -33,7 +35,14 @@ namespace plum
     {
         public:
             Impl(Engine& engine)
-                : engine(engine)
+                : engine(engine),
+                windowed(true),
+                transformBound(false),
+                trueWidth(0),
+                trueHeight(0),
+                width(0),
+                height(0),
+                scale(1)
             {
                 hook = engine.addUpdateHook([this](){ update(); });
             }
@@ -52,6 +61,7 @@ namespace plum
             std::shared_ptr<WindowContext> context;
 
             bool windowed;
+            bool transformBound;
 
             int trueWidth, trueHeight;
             int width, height;
@@ -139,6 +149,53 @@ namespace plum
         glfwSwapInterval(1);
         glfwShowWindow(window);
         impl->context = impl->engine.impl->registerWindow(window);
+    }
+
+    void Screen::bind(Image& image)
+    {
+        glColor4ub(255, 255, 255, getOpacity());
+        useHardwareBlender(BlendPreserve);
+        glEnableClientState(GL_VERTEX_ARRAY);
+        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
+        glEnable(GL_TEXTURE_2D);
+        image.bindRaw();
+    }
+
+    void Screen::bind(const Transform& transform, int x, int y, int width, int height)
+    {
+        uint8_t r, g, b, a;
+        transform.tint.channels(r, g, b, a);
+        glColor4ub(r, g, b, a * getOpacity() / 255);
+        useHardwareBlender(transform.mode);
+        glEnableClientState(GL_VERTEX_ARRAY);
+        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
+        glPushMatrix();
+        glTranslated(x, y, 0.0);
+        glTranslated(width / 2, height / 2, 0.0);
+        glScaled(transform.scaleX * (1 - transform.mirror * 2), transform.scaleY, 0.0);
+        glRotated(transform.angle, 0.0, 0.0, 1.0);
+        glTranslated(-width / 2, -height / 2, 0.0);
+        impl->transformBound = true;
+    }
+
+    void Screen::bind(Image& image, const Transform& transform, int x, int y, int width, int height)
+    {
+        bind(transform, x, y, width, height);
+
+        glEnable(GL_TEXTURE_2D);
+        image.bindRaw();
+    }
+
+    void Screen::unbind()
+    {
+        if(impl->transformBound)
+        {
+            glPopMatrix();
+        }
+        glDisableClientState(GL_VERTEX_ARRAY);
+        glDisableClientState(GL_TEXTURE_COORD_ARRAY);
     }
 
     void Screen::clear(Color color)

@@ -23,13 +23,12 @@ namespace plum
             const Canvas& canvas() const;
             void refresh();
 
-            void startBatch(BlendMode mode, Color tint);
-            void endBatch();
+            void draw(int x, int y, Screen& dest);
+            void draw(int x, int y, const Transform& transform, Screen& dest);
+            void drawFrame(const Sheet& sheet, int f, int x, int y, Screen& dest);
+            void drawFrame(const Sheet& sheet, int f, int x, int y, const Transform& transform, Screen& dest);
 
-            void draw(int x, int y);
-            void draw(int x, int y, const Transform& transform);
-            void drawFrame(const Sheet& sheet, int f, int x, int y);
-            void drawFrame(const Sheet& sheet, int f, int x, int y, const Transform& transform);
+            void bindRaw();
             void drawRaw(int x, int y);
             void drawFrameRaw(const Sheet& sheet, int f, int x, int y);
 

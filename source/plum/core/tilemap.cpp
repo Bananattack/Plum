@@ -369,14 +369,14 @@ namespace plum
         }
     }
 
-    void Tilemap::draw(Image& img, const Sheet& sheet, int worldX, int worldY, int destX, int destY, int tilesWide, int tilesHigh)
+    void Tilemap::draw(Image& img, const Sheet& sheet, int sourceX, int sourceY, int destX, int destY, int tilesWide, int tilesHigh, Screen& dest)
     {
         if(tilesWide < 0 || tilesHigh < 0) return;
 
-        int xofs = -(worldX % sheet.getWidth());
-        int yofs = -(worldY % sheet.getHeight());
-        int tileX = worldX / sheet.getWidth();
-        int tileY = worldY / sheet.getHeight();
+        int xofs = -(sourceX % sheet.getWidth());
+        int yofs = -(sourceY % sheet.getHeight());
+        int tileX = sourceX / sheet.getWidth();
+        int tileY = sourceY / sheet.getHeight();
 
         // Clip the tile region to make sure things don't crash.
         if(tileX < 0)
@@ -398,7 +398,7 @@ namespace plum
 
         int i, j;
 
-        img.startBatch(BlendPreserve, Color::White);
+        dest.bind(img);
         for(i = 0; i < tilesHigh; ++i)
         {
             for(j = 0; j < tilesWide; ++j)
@@ -409,6 +409,6 @@ namespace plum
                     i * sheet.getHeight() + yofs + destY);
             }
         }
-        img.endBatch();
+        dest.unbind();
     }
 }

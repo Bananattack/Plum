@@ -10,7 +10,9 @@ namespace plum
     void useHardwareBlender(BlendMode mode);
     void useHardwareColor(int r, int g, int b, int a);
 
+    class Image;
     class Engine;
+    struct Transform;
     class Screen
     {
         public:
@@ -23,6 +25,11 @@ namespace plum
             int getTrueHeight() const;
             void setTitle(const std::string& title);
             void setResolution(int width, int height, int scale, bool win);
+
+            void bind(Image& image);
+            void bind(const Transform& transform, int x, int y, int width, int height);
+            void bind(Image& image, const Transform& transform, int x, int y, int width, int height);
+            void unbind();
 
             void clear(Color color);
             void setPixel(int x, int y, Color color, BlendMode mode = BlendPreserve);

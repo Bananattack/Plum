@@ -99,74 +99,37 @@ namespace plum
             GL_RGBA, GL_UNSIGNED_BYTE, impl->canvas.getData());
     }
 
-    void Image::startBatch(BlendMode mode, Color tint)
+    void Image::draw(int x, int y, Screen& dest)
     {
-        uint8_t r, g, b, a;
-        tint.channels(r, g, b, a);
-        glColor4ub(r, g, b, a * getOpacity() / 255);
-
-        useHardwareBlender(mode);
-        glEnable(GL_TEXTURE_2D);
-        glEnableClientState(GL_VERTEX_ARRAY);
-        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-        impl->bind();
-    }
-
-    void Image::endBatch()
-    {
-        glDisableClientState(GL_VERTEX_ARRAY);
-        glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-    }
-
-    void Image::draw(int x, int y)
-    {
-        startBatch(BlendPreserve, Color::White);
+        dest.bind(*this);
         drawRaw(x, y);
-        endBatch();
+        dest.unbind();
     }
 
-    void Image::draw(int x, int y, const Transform& transform)
+    void Image::draw(int x, int y, const Transform& transform, Screen& dest)
     {
-        glPushMatrix();
-        glTranslated(x, y, 0.0);
-        glTranslated(impl->canvas.getWidth() / 2, impl->canvas.getHeight() / 2, 0.0);
-        glScaled(transform.scaleX * (1 - transform.mirror * 2), transform.scaleY, 0.0);
-        glRotated(transform.angle, 0.0, 0.0, 1.0);
-        glTranslated(-impl->canvas.getWidth() / 2, -impl->canvas.getHeight() / 2, 0.0);
-
-        startBatch(transform.mode, transform.tint);
+        dest.bind(*this, transform, x, y, impl->canvas.getWidth(), impl->canvas.getHeight());
         drawRaw(0, 0);
-        endBatch();
-
-        glPopMatrix();
+        dest.unbind();
     }
 
-    void Image::drawFrame(const Sheet& sheet, int f, int x, int y)
+    void Image::drawFrame(const Sheet& sheet, int f, int x, int y, Screen& dest)
     {
-        startBatch(BlendPreserve, Color::White);
+        dest.bind(*this);
         drawFrameRaw(sheet, f, x, y);
-        endBatch();
+        dest.unbind();
     }
 
-    void Image::drawFrame(const Sheet& sheet, int f, int x, int y, const Transform& transform)
+    void Image::drawFrame(const Sheet& sheet, int f, int x, int y, const Transform& transform, Screen& dest)
     {
-        uint8_t r, g, b, a;
-        transform.tint.channels(r, g, b, a);
-        useHardwareBlender(transform.mode);
-        glColor4ub(r, g, b, a * getOpacity() / 255);
-
-        glPushMatrix();
-        glTranslated(x, y, 0.0);
-        glTranslated(sheet.getWidth() / 2, sheet.getHeight() / 2, 0.0);
-        glScaled(transform.scaleX * (1 - transform.mirror * 2), transform.scaleY, 0.0);
-        glRotated(transform.angle, 0.0, 0.0, 1.0);
-        glTranslated(-sheet.getWidth() / 2, -sheet.getHeight() / 2, 0.0);
-
-        startBatch(transform.mode, transform.tint);
+        dest.bind(*this, transform, x, y, sheet.getWidth(), sheet.getHeight());
         drawFrameRaw(sheet, f, 0, 0);
-        endBatch();
+        dest.unbind();
+    }
 
-        glPopMatrix();
+    void Image::bindRaw()
+    {
+        impl->bind();
     }
 
     void Image::drawRaw(int x, int y)

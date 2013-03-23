@@ -66,11 +66,11 @@ namespace plum
 
             if(transform)
             {
-                img->draw(x, y, *transform);
+                img->draw(x, y, *transform, script::instance(L).screen());
             }
             else
             {
-                img->draw(x, y);
+                img->draw(x, y, script::instance(L).screen());
             }
 
             return 0;
@@ -87,11 +87,11 @@ namespace plum
 
             if(transform)
             {
-                img->drawFrame(*sheet, frame, x, y, *transform);
+                img->drawFrame(*sheet, frame, x, y, *transform, script::instance(L).screen());
             }
             else
             {
-                img->drawFrame(*sheet, frame, x, y);
+                img->drawFrame(*sheet, frame, x, y, script::instance(L).screen());
             }
 
             return 0;
