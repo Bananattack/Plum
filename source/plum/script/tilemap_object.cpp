@@ -138,7 +138,6 @@ namespace plum
             int destY = script::get<int>(L, 7);
             int tilesWide = script::get<int>(L, 8);
             int tilesHigh = script::get<int>(L, 9);
-            BlendMode mode = (BlendMode) script::get<int>(L, 10, BlendPreserve);
 
             m->draw(*img, *spr, worldX, worldY, destX, destY, tilesWide, tilesHigh, script::instance(L).screen());
             return 0;

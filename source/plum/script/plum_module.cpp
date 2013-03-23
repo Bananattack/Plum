@@ -59,18 +59,6 @@ namespace plum
             return 0;
         }
 
-        int setTitle(lua_State* L)
-        {
-            int argumentCount = lua_gettop(L);
-
-            if(argumentCount >= 1)
-            {
-                script::instance(L).screen().setTitle(lua_tostring(L, 1));
-            }
-            
-            return 0;
-        }
-
         int rgb(lua_State* L)
         {
             auto r = script::get<int>(L, 1);
@@ -111,7 +99,6 @@ namespace plum
                 {"exit", exit},
                 {"sleep", sleep},
                 {"refresh", refresh},
-                {"setTitle", setTitle},
                 {nullptr, nullptr},
             };
             luaL_newmetatable(L, "plum");

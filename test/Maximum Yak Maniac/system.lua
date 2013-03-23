@@ -127,7 +127,7 @@ function update()
         i = i + 1
     end
     plum.sleep(10)
-    plum.setTitle(Title .. ' ' .. plum.timer.fps)
+    plum.screen.title = Title .. ' ' .. plum.timer.fps
 end
 
 playerCount = 1
@@ -237,7 +237,7 @@ end
 resource.song.city:play()
 
 --vx.SetResolution(320, 240)
-plum.setTitle(Title)
+plum.screen.title = Title
 
 intro()
 

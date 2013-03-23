@@ -87,7 +87,7 @@ namespace plum
         int get_opacity(lua_State* L)
         {
             luaL_checkudata(L, 1, Meta);
-            script::push(L, getOpacity());
+            script::push(L, script::instance(L).screen().getOpacity());
             return 1;
         }
 
@@ -95,7 +95,21 @@ namespace plum
         {
             luaL_checkudata(L, 1, Meta);
             int v = script::get<int>(L, 2);
-            setOpacity(v);
+            script::instance(L).screen().setOpacity(v);
+            return 0;
+        }
+
+        int get_title(lua_State* L)
+        {
+            luaL_checkudata(L, 1, Meta);
+            script::push(L, script::instance(L).screen().getTitle().c_str());
+            return 1;
+        }
+
+        int set_title(lua_State* L)
+        {
+            luaL_checkudata(L, 1, Meta);
+            script::instance(L).screen().setTitle(script::get<const char*>(L, 2));
             return 0;
         }
 
@@ -108,6 +122,8 @@ namespace plum
             {"get_height", get_height},
             {"get_opacity", get_opacity},
             {"set_opacity", set_opacity},
+            {"get_title", get_title},
+            {"set_title", set_title},
             {nullptr, nullptr},
         };
     }

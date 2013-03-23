@@ -21,6 +21,7 @@ namespace plum
                 height(0),
                 trueWidth(0),
                 trueHeight(0),
+                opacity(255),
                 clipX(0),
                 clipY(0),
                 clipX2(0),
@@ -34,6 +35,7 @@ namespace plum
                 height(height),
                 trueWidth(width),
                 trueHeight(height),
+                opacity(255),
                 clipX(0),
                 clipY(0),
                 clipX2(width - 1),
@@ -48,6 +50,7 @@ namespace plum
                 height(height),
                 trueWidth(trueWidth),
                 trueHeight(trueHeight),
+                opacity(255),
                 clipX(0),
                 clipY(0),
                 clipX2(width - 1),
@@ -62,6 +65,7 @@ namespace plum
                 height(other.height),
                 trueWidth(other.trueWidth),
                 trueHeight(other.trueHeight),
+                opacity(other.opacity),
                 clipX(other.clipX),
                 clipY(other.clipY),
                 clipX2(other.clipX2),
@@ -76,6 +80,7 @@ namespace plum
                 height(other.height),
                 trueWidth(other.trueWidth),
                 trueHeight(other.trueHeight),
+                opacity(other.opacity),
                 clipX(other.clipX),
                 clipY(other.clipY),
                 clipX2(other.clipX2),
@@ -109,21 +114,12 @@ namespace plum
                 std::swap(height, other.height);
                 std::swap(trueWidth, other.trueWidth);
                 std::swap(trueHeight, other.trueHeight);
+                std::swap(opacity, other.opacity);
                 std::swap(clipX, other.clipX);
                 std::swap(clipY, other.clipY);
                 std::swap(clipX2, other.clipX2);
                 std::swap(clipY2, other.clipY2);
                 std::swap(data, other.data);
-            }
-
-            int getTrueWidth() const
-            {
-                return trueWidth;
-            }
-
-            int getTrueHeight() const
-            {
-                return trueHeight;
             }
 
             int getWidth() const
@@ -136,9 +132,19 @@ namespace plum
                 return height;
             }
 
-            Color* getData() const
+            int getTrueWidth() const
             {
-                return data;
+                return trueWidth;
+            }
+
+            int getTrueHeight() const
+            {
+                return trueHeight;
+            }
+
+            int getOpacity() const
+            {
+                return opacity;
             }
 
             void getClipRegion(int& x, int& y, int& x2, int& y2) const
@@ -147,6 +153,16 @@ namespace plum
                 y = clipY;
                 x2 = clipX2;
                 y2 = clipY2;
+            }
+
+            Color* getData() const
+            {
+                return data;
+            }
+
+            void setOpacity(int value)
+            {
+                opacity = value;
             }
 
             void restoreClipRegion()
@@ -223,7 +239,7 @@ namespace plum
             {
                 if(data && x >= clipX && x < clipX2 && y >= clipY && y < clipY2)
                 {
-                    blend<Blend>(color, data[y * trueWidth + x]);
+                    blend<Blend>(color, data[y * trueWidth + x], opacity);
                 }                
             }
 
@@ -324,7 +340,7 @@ namespace plum
                 // A single pixel
                 if(x == x2 && y == y2)
                 {
-                    blend<Blend>(color, data[y * trueWidth + x]);
+                    blend<Blend>(color, data[y * trueWidth + x], opacity);
                     return;
                 }
                 // Horizontal line
@@ -338,7 +354,7 @@ namespace plum
                     // Draw it.
                     for(int i = x; i <= x2; ++i)
                     {
-                        blend<Blend>(color, data[y * trueWidth + i]);
+                        blend<Blend>(color, data[y * trueWidth + i], opacity);
                     }
                     return;
                 }
@@ -353,7 +369,7 @@ namespace plum
                     // Draw it.
                     for(int i = y; i <= y2; ++i)
                     {
-                        blend<Blend>(color, data[i * trueWidth + x]);
+                        blend<Blend>(color, data[i * trueWidth + x], opacity);
                     }
                     return;
                 }
@@ -412,7 +428,7 @@ namespace plum
                         yaccum += yreset;
                     }
 
-                    blend<Blend>(color, data[cy * trueWidth + cx]);
+                    blend<Blend>(color, data[cy * trueWidth + cx], opacity);
 
                     if(xreset == 0 && cx == x2) done = true;
                     if(yreset == 0 && cy == y2) done = true;
@@ -458,14 +474,14 @@ namespace plum
                 // Draw the horizontal lines of the rectangle.
                 for(i = x; i <= x2; ++i)
                 {
-                    blend<Blend>(color, data[y * trueWidth + i]);
-                    blend<Blend>(color, data[y2 * trueWidth + i]);
+                    blend<Blend>(color, data[y * trueWidth + i], opacity);
+                    blend<Blend>(color, data[y2 * trueWidth + i], opacity);
                 }
                 // Draw the vertical lines of the rectangle.
                 for(i = y; i <= y2; ++i)
                 {
-                    blend<Blend>(color, data[i * trueWidth + x]);
-                    blend<Blend>(color, data[i * trueWidth + x2]);
+                    blend<Blend>(color, data[i * trueWidth + x], opacity);
+                    blend<Blend>(color, data[i * trueWidth + x2], opacity);
                 }
             }
 
@@ -509,7 +525,7 @@ namespace plum
                 {
                     for(j = x; j <= x2; ++j)
                     {
-                        blend<Blend>(color, data[i * trueWidth + j]);
+                        blend<Blend>(color, data[i * trueWidth + j], opacity);
                     }
                 }
             }
@@ -552,12 +568,12 @@ namespace plum
                             plotX = cx - x;
                             if(plotX >= clipX && plotX <= clipX2)
                             {
-                                blend<Blend>(color, data[plotY * trueWidth + plotX]);
+                                blend<Blend>(color, data[plotY * trueWidth + plotX], opacity);
                             }
                             plotX = cx + x;
                             if(plotX >= clipX && plotX <= clipX2)
                             {
-                                blend<Blend>(color, data[plotY * trueWidth + plotX]);
+                                blend<Blend>(color, data[plotY * trueWidth + plotX], opacity);
                             }
                         }
                         if(y)
@@ -568,12 +584,12 @@ namespace plum
                                 plotX = cx - x;
                                 if(plotX >= clipX && plotX <= clipX2)
                                 {
-                                    blend<Blend>(color, data[plotY * trueWidth + plotX]);
+                                    blend<Blend>(color, data[plotY * trueWidth + plotX], opacity);
                                 }
                                 plotX = cx + x;
                                 if(plotX >= clipX && plotX <= clipX2)
                                 {
-                                    blend<Blend>(color, data[plotY * trueWidth + plotX]);
+                                    blend<Blend>(color, data[plotY * trueWidth + plotX], opacity);
                                 }
                             }
                         }
@@ -612,14 +628,14 @@ namespace plum
                             plotX = cx - x;
                             if(plotX >= clipX && plotX <= clipX2)
                             {
-                                blend<Blend>(color, data[plotY * trueWidth + plotX]);
+                                blend<Blend>(color, data[plotY * trueWidth + plotX], opacity);
                             }
                             if(x)
                             {
                                 plotX = cx + x;
                                 if(plotX >= clipX && plotX <= clipX2)
                                 {
-                                    blend<Blend>(color, data[plotY * trueWidth + plotX]);
+                                    blend<Blend>(color, data[plotY * trueWidth + plotX], opacity);
                                 }
                             }
                         }
@@ -631,14 +647,14 @@ namespace plum
                                 plotX = cx - x;
                                 if(plotX >= clipX && plotX <= clipX2)
                                 {
-                                    blend<Blend>(color, data[plotY * trueWidth + plotX]);
+                                    blend<Blend>(color, data[plotY * trueWidth + plotX], opacity);
                                 }
                                 if(x)
                                 {
                                     plotX = cx + x;
                                     if(plotX >= clipX && plotX <= clipX2)
                                     {
-                                        blend<Blend>(color, data[plotY * trueWidth + plotX]);
+                                        blend<Blend>(color, data[plotY * trueWidth + plotX], opacity);
                                     }
                                 }
                             }
@@ -697,7 +713,7 @@ namespace plum
                         {
                             for(i = plotX; i <= plotX2; ++i)
                             {
-                                blend<Blend>(color, data[plotY * trueWidth + i]);
+                                blend<Blend>(color, data[plotY * trueWidth + i], opacity);
                             }
                         }
                         if(y)
@@ -707,7 +723,7 @@ namespace plum
                             {
                                 for(i = plotX; i <= plotX2; ++i)
                                 {
-                                    blend<Blend>(color, data[plotY * trueWidth + i]);
+                                    blend<Blend>(color, data[plotY * trueWidth + i], opacity);
                                 }
                             }
                             lastY = y;
@@ -746,7 +762,7 @@ namespace plum
                         {
                             for(i = plotX; i <= plotX2; ++i)
                             {
-                                blend<Blend>(color, data[plotY * trueWidth + i]);
+                                blend<Blend>(color, data[plotY * trueWidth + i], opacity);
                             }
                         }
                         plotY = cy + y;
@@ -754,7 +770,7 @@ namespace plum
                         {
                             for(i = plotX; i <= plotX2; ++i)
                             {
-                                blend<Blend>(color, data[plotY * trueWidth + i]);
+                                blend<Blend>(color, data[plotY * trueWidth + i], opacity);
                             }
                         }
                         lastY = y;
@@ -812,7 +828,7 @@ namespace plum
                 {
                     for(j = sourceX; j <= sourceX2; ++j)
                     {
-                        blend<Blend>(data[i * trueWidth + j], dest.data[(i + y) * dest.trueWidth + (j + x)]);
+                        blend<Blend>(data[i * trueWidth + j], dest.data[(i + y) * dest.trueWidth + (j + x)], dest.opacity);
                     }
                 }
             }
@@ -912,7 +928,7 @@ namespace plum
                 {
                     for(j = sourceX; j <= sourceX2; ++j)
                     {
-                        blend<Blend>(data[(((i * yRatio + sy) >> 16) + sy) * trueWidth + ((j * xRatio + sx) >> 16) + sx], dest.data[(i + dy) * dest.trueWidth + (j + dx)]);
+                        blend<Blend>(data[(((i * yRatio + sy) >> 16) + sy) * trueWidth + ((j * xRatio + sx) >> 16) + sx], dest.data[(i + dy) * dest.trueWidth + (j + dx)], dest.opacity);
                     }
                 }        
             }
@@ -1022,7 +1038,7 @@ namespace plum
                         sourceY = plotY >> 16;
                         if(sourceX >= sx && sourceX <= sx2 && sourceY >= sy && sourceY <= sy2)
                         {
-                            blend<Blend>(data[sourceY * trueWidth + sourceX], dest.data[destY * dest.trueWidth + destX]);
+                            blend<Blend>(data[sourceY * trueWidth + sourceX], dest.data[destY * dest.trueWidth + destX], dest.opacity);
                         }
                         plotX += cosine;
                         plotY -= sine;
@@ -1033,6 +1049,7 @@ namespace plum
         private:
             int width, height;
             int trueWidth, trueHeight;
+            int opacity;
 
             int clipX, clipY;
             int clipX2, clipY2;

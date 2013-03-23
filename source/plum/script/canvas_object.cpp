@@ -449,6 +449,23 @@ namespace plum
 
             return 1;
         }
+
+        int get_opacity(lua_State* L)
+        {
+            auto canvas = script::ptr<Self>(L, 1);
+            script::push(L, canvas->getOpacity());
+
+            return 1;
+        }
+
+        int set_opacity(lua_State* L)
+        {
+            auto canvas = script::ptr<Self>(L, 1);
+            auto value = script::get<int>(L, 2);
+            canvas->setOpacity(value);
+
+            return 0;
+        }
     }
 
     namespace script
@@ -491,6 +508,8 @@ namespace plum
                 {"get_trueHeight", getTrueHeight},
                 {"get_width", get_width},
                 {"get_height", get_height},
+                {"get_opacity", get_opacity},
+                {"set_opacity", set_opacity},
                 {nullptr, nullptr}
             };
             luaL_setfuncs(L, functions, 0);

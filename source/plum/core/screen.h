@@ -20,6 +20,10 @@ namespace plum
             int getHeight() const;
             int getTrueWidth() const;
             int getTrueHeight() const;
+            int getOpacity() const;
+            const std::string& getTitle() const;
+
+            void setOpacity(int value);
             void setTitle(const std::string& title);
             void setResolution(int width, int height, int scale, bool win);
 

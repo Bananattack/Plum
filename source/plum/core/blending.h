@@ -16,19 +16,16 @@ namespace plum
         BlendSubtract    // Subtracts the RGB value of the source from the dest
     };
 
-    int getOpacity();
-    void setOpacity(int alpha);
+    template<BlendMode Blend> void blend(const Color& source, Color& dest, int opacity);
 
-    template<BlendMode Blend> void blend(const Color& source, Color& dest);
-
-    template<> inline void blend<BlendOpaque>(const Color& source, Color& dest)
+    template<> inline void blend<BlendOpaque>(const Color& source, Color& dest, int opacity)
     {
         dest = source;
     }
 
-    template<> inline void blend<BlendMerge>(const Color& source, Color& dest)
+    template<> inline void blend<BlendMerge>(const Color& source, Color& dest, int opacity)
     {
-        int sourceAlpha = source[AlphaChannel] * getOpacity() / 255;
+        int sourceAlpha = source[AlphaChannel] * opacity / 255;
         int finalAlpha = sourceAlpha + ((255 - sourceAlpha) * dest[AlphaChannel]) / 255;
         sourceAlpha = (finalAlpha == 0) ? 0 : sourceAlpha * 255 / finalAlpha;
 
@@ -39,9 +36,9 @@ namespace plum
             finalAlpha);
     }
 
-    template<> inline void blend<BlendPreserve>(const Color& source, Color& dest)
+    template<> inline void blend<BlendPreserve>(const Color& source, Color& dest, int opacity)
     {
-        int sourceAlpha = source[AlphaChannel] * getOpacity() / 255;
+        int sourceAlpha = source[AlphaChannel] * opacity / 255;
         dest = Color(
             uint8_t((sourceAlpha * (int(source[RedChannel]) - int(dest[RedChannel]))) / 255 + int(dest[RedChannel])),
             uint8_t((sourceAlpha * (int(source[GreenChannel]) - int(dest[GreenChannel]))) / 255 + int(dest[GreenChannel])),
@@ -49,9 +46,9 @@ namespace plum
             dest[AlphaChannel]);
     }
 
-    template<> inline void blend<BlendAdd>(const Color& source, Color& dest)
+    template<> inline void blend<BlendAdd>(const Color& source, Color& dest, int opacity)
     {
-        int sourceAlpha = source[AlphaChannel] * getOpacity() / 255;
+        int sourceAlpha = source[AlphaChannel] * opacity / 255;
         dest = Color(
             uint8_t(std::min((sourceAlpha * int(source[RedChannel])) / 255 + int(dest[RedChannel]), 255)),
             uint8_t(std::min((sourceAlpha * int(source[GreenChannel])) / 255 + int(dest[GreenChannel]), 255)),
@@ -59,9 +56,9 @@ namespace plum
             dest[AlphaChannel]);
     }
 
-    template<> inline void blend<BlendSubtract>(const Color& source, Color& dest)
+    template<> inline void blend<BlendSubtract>(const Color& source, Color& dest, int opacity)
     {
-        int sourceAlpha = source[AlphaChannel] * getOpacity() / 255;
+        int sourceAlpha = source[AlphaChannel] * opacity / 255;
         dest = Color(
             uint8_t(std::max((sourceAlpha * -int(source[RedChannel])) / 255 + int(dest[RedChannel]), 0)),
             uint8_t(std::max((sourceAlpha * -int(source[GreenChannel])) / 255 + int(dest[GreenChannel]), 0)),

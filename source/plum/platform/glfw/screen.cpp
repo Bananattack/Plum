@@ -45,7 +45,8 @@ namespace plum
                 trueHeight(0),
                 width(0),
                 height(0),
-                scale(1)
+                scale(1),
+                opacity(255)
             {
                 hook = engine.addUpdateHook([this](){ update(); });
             }
@@ -66,9 +67,12 @@ namespace plum
             bool windowed;
             bool transformBound;
 
+
             int trueWidth, trueHeight;
             int width, height;
             int scale;
+            int opacity;
+            std::string title;
     };
 
     Screen::Screen(Engine& engine, int width, int height, int scale, bool win)
@@ -101,8 +105,24 @@ namespace plum
         return impl->trueHeight;
     }
 
+    int Screen::getOpacity() const
+    {
+        return impl->opacity;
+    }
+
+    const std::string& Screen::getTitle() const
+    {
+        return impl->title;
+    }
+
+    void Screen::setOpacity(int value)
+    {
+        impl->opacity = value;
+    }
+
     void Screen::setTitle(const std::string& title)
     {
+        impl->title = title;
         glfwSetWindowTitle(impl->context->window(), title.c_str());
     }
 
@@ -205,7 +225,7 @@ namespace plum
     {
         uint8_t r, g, b, a;
         color.channels(r, g, b, a);
-        if(a == 255)
+        if(a * getOpacity() / 255 == 255)
         {
             glClearColor(r / 255.0f, g / 255.0f, b / 255.0f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT);
@@ -220,7 +240,7 @@ namespace plum
     {
         uint8_t r, g, b, a;
         color.channels(r, g, b, a);
-        glColor4ub(r, g, b, a);
+        glColor4ub(r, g, b, a * getOpacity() / 255);
         useHardwareBlender(BlendPreserve);
         glDisable(GL_TEXTURE_2D);
 
