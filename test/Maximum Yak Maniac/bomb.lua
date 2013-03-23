@@ -2,6 +2,7 @@ do local Self = {}
     function Bomb(x, y)
         local self = setmetatable({}, {__index = Self})
         self.frame = resource.image.bomb[1]
+        self.shadow = createCircleImage(15, 8, plum.color.rgb(0, 0, 0, 127))
         self.hitbox = { width = self.frame.width, height = self.frame.height }
         self.z = 50
         self.isEdible = true
@@ -69,7 +70,7 @@ do local Self = {}
     end
     
     function Self:render()
-        plum.screen:solidCircle(self.x - world.x + self.frame.width / 2, world.floorY, 15, 8, plum.color.rgb(0, 0, 0, 127))
+        self.shadow:draw(self.x - world.x + self.frame.width / 2 - self.shadow.width / 2, world.floorY - self.shadow.height / 2)
         self.transform.angle = self.angle
         self.transform.scaleX = self.scale
         self.transform.scaleY = self.scale

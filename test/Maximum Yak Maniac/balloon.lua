@@ -2,6 +2,7 @@ do local Self = {}
     function Balloon(x, minY, maxY)
         local self = setmetatable({}, {__index = Self})
         self.frame = plum.Image(randomItem(resource.image.balloon).canvas)
+        self.shadow = createCircleImage(15, 8, plum.color.rgb(0, 0, 0, 127))
         self.color = plum.color.hsv(math.random(0, 359), 255, 255)
         self.frame.canvas:replaceColor(plum.color.White, self.color)
         local r, g, b = plum.color.channels(self.color)
@@ -35,7 +36,7 @@ do local Self = {}
     end
     
     function Self:render()
-        plum.screen:solidCircle(self.x - world.x + self.frame.width / 2, world.floorY, 15, 8, plum.color.rgb(0, 0, 0, 127))
+        self.shadow:draw(self.x - world.x + self.frame.width / 2 - self.shadow.width / 2, world.floorY - self.shadow.height / 2)
         self.transform.angle = self.angle
         self.frame:draw(self.x - world.x, self.y - self.frame.height + 100, self.transform)
     end

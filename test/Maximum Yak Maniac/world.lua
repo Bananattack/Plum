@@ -23,7 +23,7 @@ do local Self = {}
         for i = -1, plum.screen.width / w + 2 do
             self.texture:draw(sx + (i * w), y - self.texture.height)
         end
-        plum.screen:solidRect(0, y, plum.screen.width, y + self.height, self.color)
+        plum.screen:clear(0, y, plum.screen.width, y + self.height, self.color)
     end
 end
 
@@ -112,7 +112,7 @@ do local Self = {}
         local t2 = math.max(players[2].timer, 0)
         
         if playerCount > 1 then
-            plum.screen:solidRect(1, 10, 6, 50, PlayerOneColor)
+            plum.screen:clear(1, 10, 6, 50, PlayerOneColor)
             resource.font.plain:print(10, 10, tostring(1000000000 + players[1].score):sub(2, 10))
             
             fnt = players[1].healCounter > 0 and resource.font.bigGreen or (players[1].hurtCounter > 0 and resource.font.bigRed or resource.font.big)
@@ -126,7 +126,7 @@ do local Self = {}
             resource.font.plain:printRight(plum.screen.width - 10, 40, "Player 2")
         end
             
-        plum.screen:solidRect(plum.screen.width - 1, 10, plum.screen.width - 6, 50, PlayerTwoColor)
+        plum.screen:clear(plum.screen.width - 1, 10, plum.screen.width - 6, 50, PlayerTwoColor)
         resource.font.plain:printRight(plum.screen.width - 10, 10,  tostring(1000000000 + players[2].score):sub(2, 10))
         
         fnt = players[2].healCounter > 0 and resource.font.bigGreen or (players[2].hurtCounter > 0 and resource.font.bigRed or resource.font.big)
@@ -138,7 +138,7 @@ do local Self = {}
     
     function Self:render()
         local grass = self.grass
-        plum.screen:solidRect(0, 0, plum.screen.width, plum.screen.height, plum.color.rgb(0x1F, 0xD1, 0xE0))
+        plum.screen:clear(0, 0, plum.screen.width, plum.screen.height, plum.color.rgb(0x1F, 0xD1, 0xE0))
         self.sky:renderLayer(1)
         
         grass[1]:draw(self.x, 0)
@@ -168,7 +168,7 @@ do local Self = {}
         
         if self.gameOver then
             plum.screen.opacity = 127
-            plum.screen:solidRect(0, 0, plum.screen.width, plum.screen.height, plum.color.Black)
+            plum.screen:clear(0, 0, plum.screen.width, plum.screen.height, plum.color.Black)
             plum.screen.opacity = 255
             resource.font.bigYellow:printCenter(plum.screen.width / 2, plum.screen.height / 2 - 30, "GAME OVER")
             if playerCount == 2 then

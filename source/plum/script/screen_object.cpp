@@ -53,122 +53,20 @@ namespace plum
         int clear(lua_State* L)
         {
             luaL_checkudata(L, 1, Meta);
-            Color color = script::get<int>(L, 2);
-
-            script::instance(L).screen().clear(color);
-            return 0;
-        }
-
-        int setPixel(lua_State* L)
-        {
-            luaL_checkudata(L, 1, Meta);
-            int x = script::get<int>(L, 2);
-            int y = script::get<int>(L, 3);
-            Color color = script::get<int>(L, 4);
-            BlendMode mode = (BlendMode) script::get<int>(L, 5, BlendPreserve);
-
-            script::instance(L).screen().setPixel(x, y, color, mode);
-            return 0;
-        }
-
-        int rect(lua_State* L)
-        {
-            luaL_checkudata(L, 1, Meta);
-            int x = script::get<int>(L, 2);
-            int y = script::get<int>(L, 3);
-            int x2 = script::get<int>(L, 4);
-            int y2 = script::get<int>(L, 5);
-            Color color = script::get<int>(L, 6);
-            BlendMode mode = (BlendMode) script::get<int>(L, 7, BlendPreserve);
-
-            script::instance(L).screen().rect(x, y, x2, y2, color, mode);
-            return 0;
-        }
-
-        int solidRect(lua_State* L)
-        {
-            luaL_checkudata(L, 1, Meta);
-            int x = script::get<int>(L, 2);
-            int y = script::get<int>(L, 3);
-            int x2 = script::get<int>(L, 4);
-            int y2 = script::get<int>(L, 5);
-            Color color = script::get<int>(L, 6);
-            BlendMode mode = (BlendMode) script::get<int>(L, 7, BlendPreserve);
-
-            script::instance(L).screen().solidRect(x, y, x2, y2, color, mode);
-            return 0;
-        }
-
-        int line(lua_State* L)
-        {
-            luaL_checkudata(L, 1, Meta);
-            int x = script::get<int>(L, 2);
-            int y = script::get<int>(L, 3);
-            int x2 = script::get<int>(L, 4);
-            int y2 = script::get<int>(L, 5);
-            Color color = script::get<int>(L, 6);
-            BlendMode mode = (BlendMode) script::get<int>(L, 7, BlendPreserve);
-
-            script::instance(L).screen().line(x, y, x2, y2, color, mode);
-            return 0;
-        }
-
-        int horizontalGradientRect(lua_State* L)
-        {
-            luaL_checkudata(L, 1, Meta);
-            int x = script::get<int>(L, 2);
-            int y = script::get<int>(L, 3);
-            int x2 = script::get<int>(L, 4);
-            int y2 = script::get<int>(L, 5);
-            Color color = script::get<int>(L, 6);
-            Color color2 = script::get<int>(L, 7);
-            BlendMode mode = (BlendMode) script::get<int>(L, 8, BlendPreserve);
-
-            script::instance(L).screen().horizontalGradientRect(x, y, x2, y2, color, color2, mode);
-            return 0;
-        }
-
-        int verticalGradientRect(lua_State* L)
-        {
-            luaL_checkudata(L, 1, Meta);
-            int x = script::get<int>(L, 2);
-            int y = script::get<int>(L, 3);
-            int x2 = script::get<int>(L, 4);
-            int y2 = script::get<int>(L, 5);
-            Color color = script::get<int>(L, 6);
-            Color color2 = script::get<int>(L, 7);
-            BlendMode mode = (BlendMode) script::get<int>(L, 8, BlendPreserve);
-
-            script::instance(L).screen().verticalGradientRect(x, y, x2, y2, color, color2, mode);
-            return 0;
-        }
-
-
-        int circle(lua_State* L)
-        {
-            luaL_checkudata(L, 1, Meta);
-            int x = script::get<int>(L, 2);
-            int y = script::get<int>(L, 3);
-            int xrad = script::get<int>(L, 4);
-            int yrad = script::get<int>(L, 5);
-            Color color = script::get<int>(L, 6);
-            BlendMode mode = (BlendMode) script::get<int>(L, 7, BlendPreserve);
-
-            script::instance(L).screen().circle(x, y, xrad, yrad, color, mode);
-            return 0;
-        }
-
-        int solidCircle(lua_State* L)
-        {
-            luaL_checkudata(L, 1, Meta);
-            int x = script::get<int>(L, 2);
-            int y = script::get<int>(L, 3);
-            int xrad = script::get<int>(L, 4);
-            int yrad = script::get<int>(L, 5);
-            Color color = script::get<int>(L, 6);
-            BlendMode mode = (BlendMode) script::get<int>(L, 7, BlendPreserve);
-
-            script::instance(L).screen().solidCircle(x, y, xrad, yrad, color, mode);
+            if(script::is<nullptr_t>(L, 3))
+            {
+                Color color = script::get<int>(L, 2);
+                script::instance(L).screen().clear(color);
+            }
+            else
+            {
+                int x = script::get<int>(L, 2);
+                int y = script::get<int>(L, 3);
+                int x2 = script::get<int>(L, 4);
+                int y2 = script::get<int>(L, 5);
+                Color color = script::get<int>(L, 6);
+                script::instance(L).screen().clear(x, y, x2, y2, color);
+            }
             return 0;
         }
 
@@ -206,14 +104,6 @@ namespace plum
             {"__newindex", newindex},
             {"__tostring", tostring},
             {"clear", clear},
-            {"setPixel", setPixel},
-            {"line", line},
-            {"rect", rect},
-            {"solidRect", solidRect},
-            {"circle", circle},
-            {"solidCircle", solidCircle},
-            {"horizontalGradientRect", horizontalGradientRect},
-            {"verticalGradientRect", verticalGradientRect},
             {"get_width", get_width},
             {"get_height", get_height},
             {"get_opacity", get_opacity},

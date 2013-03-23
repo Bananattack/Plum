@@ -28,6 +28,7 @@ do local Self = {}
         self.image = {}
         self.image.idle = createSpriteFrame(resource.image.yak.idle, PlayerOneColor, color)
         self.image.eat = createSpriteFrame(resource.image.yak.eat, PlayerOneColor, color)
+        self.shadow = createCircleImage(20, 3, plum.color.rgb(0, 0, 0, 127))
         self.frame = self.image.idle.left
         self.hitbox = { width = self.frame.width, height = self.frame.height }
         self.transform = plum.Transform()
@@ -277,7 +278,7 @@ do local Self = {}
             return
         end
 
-        plum.screen:solidCircle(self.x - world.x + self.frame.width / 2, world.floorY, 20, 3, plum.color.rgb(0, 0, 0, 127))
+        self.shadow:draw(self.x - world.x + self.frame.width / 2 - self.shadow.width / 2, world.floorY - self.shadow.height / 2)
         if self.hurtCounter > 0 then
             if self.hurtCounter % 8 < 4 then
                 self.transform.angle = self.angle + math.random(-50, 50) * (self.hurtCounter >= 150 and 1 or 0)

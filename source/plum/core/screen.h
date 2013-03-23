@@ -7,9 +7,6 @@
 
 namespace plum
 {
-    void useHardwareBlender(BlendMode mode);
-    void useHardwareColor(int r, int g, int b, int a);
-
     class Image;
     class Engine;
     struct Transform;
@@ -32,14 +29,7 @@ namespace plum
             void unbind();
 
             void clear(Color color);
-            void setPixel(int x, int y, Color color, BlendMode mode = BlendPreserve);
-            void line(int x, int y, int x2, int y2, Color color, BlendMode mode = BlendPreserve);
-            void rect(int x, int y, int x2, int y2, Color color, BlendMode mode = BlendPreserve);
-            void solidRect(int x, int y, int x2, int y2, Color color, BlendMode mode = BlendPreserve);
-            void horizontalGradientRect(int x, int y, int x2, int y2, Color color, Color color2, BlendMode mode = BlendPreserve);
-            void verticalGradientRect(int x, int y, int x2, int y2, Color color, Color color2, BlendMode mode = BlendPreserve);
-            void circle(int x, int y, int horizontalRadius, int verticalRadius, Color color, BlendMode mode = BlendPreserve);
-            void solidCircle(int x, int y, int horizontalRadius, int verticalRadius, Color color, BlendMode mode = BlendPreserve);
+            void clear(int x, int y, int x2, int y2, Color color);
 
             class Impl;
             std::shared_ptr<Impl> impl;

@@ -111,7 +111,7 @@ renderList = {}
 updateList = {}
 
 function render()
-    plum.screen:solidRect(0, 0, plum.screen.width, plum.screen.height, 0)
+    plum.screen:clear(0, 0, plum.screen.width, plum.screen.height, 0)
     for i, f in ipairs(renderList) do
         f()
     end
@@ -149,13 +149,13 @@ function intro()
     }
 
     while not plum.key.Enter.pressed do
-        plum.screen:solidRect(0, 0, plum.screen.width, plum.screen.height, plum.color.rgb(20 + math.sin(math.rad(plum.timer.time) / 3) * 20, 0, 20 + math.cos(math.rad(plum.timer.time) / 3) * 20))
+        plum.screen:clear(0, 0, plum.screen.width, plum.screen.height, plum.color.rgb(20 + math.sin(math.rad(plum.timer.time) / 3) * 20, 0, 20 + math.cos(math.rad(plum.timer.time) / 3) * 20))
         
 
         if playerCount == 1 then
             plum.screen.opacity = 0
         end        
-        plum.screen:solidRect(1, 10, 6, 50, PlayerOneColor)
+        plum.screen:clear(1, 10, 6, 50, PlayerOneColor)
         resource.font.plain:print(10, 10, "Controls:")
         resource.font.plain:print(10, 20, "A/D = Move")
         resource.font.plain:print(10, 30, "W = Jump")
@@ -166,7 +166,7 @@ function intro()
         resource.font.plain:print(10, 30, "X = Jump")
         resource.font.plain:print(10, 40, "Square = Eat")]]
         
-        plum.screen:solidRect(plum.screen.width - 6, 10, plum.screen.width - 1, 50, PlayerTwoColor)
+        plum.screen:clear(plum.screen.width - 6, 10, plum.screen.width - 1, 50, PlayerTwoColor)
         resource.font.plain:printRight(plum.screen.width - 10, 10, "Controls:")
         resource.font.plain:printRight(plum.screen.width - 10, 20, "Left/Right = Move")
         resource.font.plain:printRight(plum.screen.width - 10, 30, "Up = Jump")

@@ -8,26 +8,29 @@
 
 namespace plum
 {
-    void useHardwareBlender(BlendMode mode)
+    namespace
     {
-        switch(mode)
+        void useHardwareBlender(BlendMode mode)
         {
-            case BlendOpaque:
-                glDisable(GL_BLEND);
-                break;
-            case BlendMerge:
-            case BlendPreserve:
-            default:
-                glEnable(GL_BLEND);
-                glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-                break;
-            case BlendAdd:
-                glEnable(GL_BLEND);
-                glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-                break;
-            case BlendSubtract:
-                glDisable(GL_BLEND);
-                break;
+            switch(mode)
+            {
+                case BlendOpaque:
+                    glDisable(GL_BLEND);
+                    break;
+                case BlendMerge:
+                case BlendPreserve:
+                default:
+                    glEnable(GL_BLEND);
+                    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                    break;
+                case BlendAdd:
+                    glEnable(GL_BLEND);
+                    glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+                    break;
+                case BlendSubtract:
+                    glDisable(GL_BLEND);
+                    break;
+            }
         }
     }
 
@@ -202,90 +205,24 @@ namespace plum
     {
         uint8_t r, g, b, a;
         color.channels(r, g, b, a);
-        glClearColor(r / 255.0f,
-                g / 255.0f,
-                b / 255.0f,
-                a / 255.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
-        glMatrixMode(GL_MODELVIEW);
-        glLoadIdentity();
+        if(a == 255)
+        {
+            glClearColor(r / 255.0f, g / 255.0f, b / 255.0f, 1.0f);
+            glClear(GL_COLOR_BUFFER_BIT);
+        }
+        else
+        {
+            clear(0, 0, impl->width, impl->height, color);
+        }
     }
 
-    // Dear god I hope nobody uses this for anything intensive.
-    void Screen::setPixel(int x, int y, Color color, BlendMode mode)
-    {
-        solidRect(x, y, x, y, color, mode);
-    }
-
-    void Screen::line(int x, int y, int x2, int y2, Color color, BlendMode mode)
+    void Screen::clear(int x, int y, int x2, int y2, Color color)
     {
         uint8_t r, g, b, a;
         color.channels(r, g, b, a);
-
-        useHardwareBlender(mode);
-
-        const GLdouble vertexArray[] = { x, y, x2, y2 };
+        glColor4ub(r, g, b, a);
+        useHardwareBlender(BlendPreserve);
         glDisable(GL_TEXTURE_2D);
-
-        glColor4ub(r, g, b, a * getOpacity() / 255);
-        glEnableClientState(GL_VERTEX_ARRAY);
-        glVertexPointer(2, GL_DOUBLE, 0, vertexArray);
-        glDrawArrays(GL_LINES, 0, 2);
-        glDisableClientState(GL_VERTEX_ARRAY);
-    }
-
-    void Screen::rect(int x, int y, int x2, int y2, Color color, BlendMode mode)
-    {
-        uint8_t r, g, b, a;
-        color.channels(r, g, b, a);
-
-        useHardwareBlender(mode);
-
-        if(x > x2)
-        {
-            std::swap(x, x2);
-        }
-        if(y > y2)
-        {
-            std::swap(y, y2);
-        }
-
-        const GLdouble vertexArray[] = {
-            x - 0.5, y - 0.5,
-            x + 0.5, y - 0.5,
-            x + 0.5, y2 + 0.5,
-            x - 0.5, y2 + 0.5,
-
-            x - 0.5, y2 - 0.5,
-            x2 + 0.5, y2 - 0.5,
-            x2 + 0.5, y2 + 0.5,
-            x - 0.5, y2 + 0.5,
-
-            x2 - 0.5, y - 0.5,
-            x2 + 0.5, y - 0.5,
-            x2 + 0.5, y2 + 0.5,
-            x2 - 0.5, y2 + 0.5,
-
-            x - 0.5, y - 0.5,
-            x2 + 0.5, y - 0.5,
-            x2 + 0.5, y + 0.5,
-            x - 0.5, y + 0.5,
-        };
-        glDisable(GL_TEXTURE_2D);
-
-        glColor4ub(r, g, b, a * getOpacity() / 255);
-        glEnableClientState(GL_VERTEX_ARRAY);
-        glVertexPointer(2, GL_DOUBLE, 0, vertexArray);
-        glDrawArrays(GL_QUADS, 0, 16);
-        glDisableClientState(GL_VERTEX_ARRAY);
-    }
-
-    void Screen::solidRect(int x, int y, int x2, int y2, Color color, BlendMode mode)
-    {
-        uint8_t r, g, b, a;
-        color.channels(r, g, b, a);    
-
-        useHardwareBlender(mode);
 
         if(x > x2)
         {
@@ -302,150 +239,10 @@ namespace plum
             x2 + 0.5, y2 + 0.5,
             x - 0.5, y2 + 0.5,
         };
-        glDisable(GL_TEXTURE_2D);
 
-        glColor4ub(r, g, b, a * getOpacity() / 255);
         glEnableClientState(GL_VERTEX_ARRAY);
         glVertexPointer(2, GL_DOUBLE, 0, vertexArray);
         glDrawArrays(GL_QUADS, 0, 4);
-        glDisableClientState(GL_VERTEX_ARRAY);
-    }
-
-    void Screen::horizontalGradientRect(int x, int y, int x2, int y2, Color color, Color color2, BlendMode mode)
-    {
-        uint8_t r, g, b, a;
-        uint8_t r2, g2, b2, a2;
-        color.channels(r, g, b, a);
-        color2.channels(r2, g2, b2, a2);
-
-        useHardwareBlender(mode);
-
-        if(x > x2)
-        {
-            std::swap(x, x2);
-        }
-        if(y > y2)
-        {
-            std::swap(y, y2);
-        }
-
-        const GLdouble vertexArray[] = {
-            x - 1, y - 1,
-            x2 + 1, y - 1,
-            x2 + 1, y2,
-            x - 1, y2,
-        };
-        const uint8_t colorArray[] = {
-            r2, g2, b2, a2 * getOpacity() / 255,
-            r, g, b, a * getOpacity() / 255,
-            r, g, b, a * getOpacity() / 255,
-            r2, g2, b2, a2 * getOpacity() / 255,
-        };
-        glDisable(GL_TEXTURE_2D);
-
-        glEnableClientState(GL_VERTEX_ARRAY);
-        glEnableClientState(GL_COLOR_ARRAY);
-        glVertexPointer(2, GL_DOUBLE, 0, vertexArray);
-        glColorPointer(4, GL_UNSIGNED_BYTE, 0, colorArray);
-        glDrawArrays(GL_QUADS, 0, 4);
-        glDisableClientState(GL_COLOR_ARRAY);
-        glDisableClientState(GL_VERTEX_ARRAY);
-    }
-
-    void Screen::verticalGradientRect(int x, int y, int x2, int y2, Color color, Color color2, BlendMode mode)
-    {
-        uint8_t r, g, b, a;
-        uint8_t r2, g2, b2, a2;
-        color.channels(r, g, b, a);
-        color2.channels(r2, g2, b2, a2);
-
-        useHardwareBlender(mode);
-
-        if(x > x2)
-        {
-            std::swap(x, x2);
-        }
-        if(y > y2)
-        {
-            std::swap(y, y2);
-        }
-
-        const GLdouble vertexArray[] = {
-            x - 1, y - 1,
-            x2 + 1, y - 1,
-            x2 + 1, y2,
-            x - 1, y2,
-        };
-        const uint8_t colorArray[] = {
-            r, g, b, a * getOpacity() / 255,
-            r, g, b, a * getOpacity() / 255,
-            r2, g2, b2, a2 * getOpacity() / 255,
-            r2, g2, b2, a2 * getOpacity() / 255,
-        };
-        glDisable(GL_TEXTURE_2D);
-
-        glEnableClientState(GL_VERTEX_ARRAY);
-        glEnableClientState(GL_COLOR_ARRAY);
-        glVertexPointer(2, GL_DOUBLE, 0, vertexArray);
-        glColorPointer(4, GL_UNSIGNED_BYTE, 0, colorArray);
-        glDrawArrays(GL_QUADS, 0, 4);
-        glDisableClientState(GL_COLOR_ARRAY);
-        glDisableClientState(GL_VERTEX_ARRAY);
-    }
-
-    void Screen::circle(int x, int y, int horizontalRadius, int verticalRadius, Color color, BlendMode mode)
-    {
-        uint8_t r, g, b, a;
-        color.channels(r, g, b, a);
-
-        useHardwareBlender(mode);
-
-        double px = x;
-        double py = y + verticalRadius;
-
-        GLdouble vertexArray[360 * 2];
-        for(int i = 0; i < 360; ++i)
-        {
-            vertexArray[i * 2] = px;
-            vertexArray[i * 2 + 1] = py;
-            px = x + (horizontalRadius * (double) sin(i * M_PI / 180.0));
-            py = y + (verticalRadius * (double) cos(i * M_PI / 180.0));
-        }
-
-        glDisable(GL_TEXTURE_2D);
-
-        glColor4ub(r, g, b, a * getOpacity() / 255);
-        glEnableClientState(GL_VERTEX_ARRAY);
-        glVertexPointer(2, GL_DOUBLE, 0, vertexArray);
-        glDrawArrays(GL_LINE_LOOP, 0, 360);
-        glDisableClientState(GL_VERTEX_ARRAY);
-    }
-
-    void Screen::solidCircle(int x, int y, int horizontalRadius, int verticalRadius, Color color, BlendMode mode)
-    {
-        uint8_t r, g, b, a;
-        color.channels(r, g, b, a);
-
-        useHardwareBlender(mode);
-
-        double px = x;
-        double py = y + verticalRadius;
-
-        GLdouble vertexArray[360 * 2];
-        for(int i = 0; i < 360; ++i)
-        {
-            vertexArray[i * 2] = px;
-            vertexArray[i * 2 + 1] = py;
-            px = x + (horizontalRadius * (double) sin(i * M_PI / 180.0));
-            py = y + (verticalRadius * (double) cos(i * M_PI / 180.0));
-        }
-
-        glDisable(GL_TEXTURE_2D);
-
-        glColor4ub(r, g, b, a * getOpacity() / 255);
-        glEnableClientState(GL_VERTEX_ARRAY);
-        glVertexPointer(2, GL_DOUBLE, 0, vertexArray);
-        glDrawArrays(GL_TRIANGLE_FAN, 0, 360);
         glDisableClientState(GL_VERTEX_ARRAY);
     }
 }

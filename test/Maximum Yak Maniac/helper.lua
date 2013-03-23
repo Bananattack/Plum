@@ -35,3 +35,10 @@ function createFlipped(img)
     result:refresh()
     return result
 end
+
+function createCircleImage(xr, yr, color)
+    local canvas = plum.Canvas(xr * 2 + 1, yr * 2 + 1)
+    canvas:clear(0)
+    canvas:solidCircle(canvas.width / 2, canvas.height / 2, xr, yr, color, plum.blend.Opaque)
+    return plum.Image(canvas)
+end
