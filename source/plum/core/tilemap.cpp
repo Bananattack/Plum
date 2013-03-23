@@ -369,7 +369,7 @@ namespace plum
         }
     }
 
-    void Tilemap::blit(Image& img, const Sheet& sheet, int worldX, int worldY, int destX, int destY, int tilesWide, int tilesHigh, BlendMode mode)
+    void Tilemap::draw(Image& img, const Sheet& sheet, int worldX, int worldY, int destX, int destY, int tilesWide, int tilesHigh)
     {
         if(tilesWide < 0 || tilesHigh < 0) return;
 
@@ -398,10 +398,7 @@ namespace plum
 
         int i, j;
 
-        img.startBatch();
-        img.bind();
-
-        useHardwareBlender(mode);
+        img.startBatch(BlendPreserve, Color::White);
         for(i = 0; i < tilesHigh; ++i)
         {
             for(j = 0; j < tilesWide; ++j)

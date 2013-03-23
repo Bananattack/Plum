@@ -62,7 +62,6 @@ namespace plum
 
             void bind()
             {
-                glEnable(GL_TEXTURE_2D);
                 glBindTexture(GL_TEXTURE_2D, textureID); 
             }
 
@@ -94,18 +93,23 @@ namespace plum
 
     void Image::refresh()
     {
-        bind();
+        impl->bind();
         glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0,
             impl->canvas.getTrueWidth(), impl->canvas.getTrueHeight(),
             GL_RGBA, GL_UNSIGNED_BYTE, impl->canvas.getData());
     }
 
-    void Image::startBatch()
+    void Image::startBatch(BlendMode mode, Color tint)
     {
-        glColor4ub(255, 255, 255, getOpacity());
+        uint8_t r, g, b, a;
+        tint.channels(r, g, b, a);
+        glColor4ub(r, g, b, a * getOpacity() / 255);
+
+        useHardwareBlender(mode);
         glEnable(GL_TEXTURE_2D);
         glEnableClientState(GL_VERTEX_ARRAY);
         glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+        impl->bind();
     }
 
     void Image::endBatch()
@@ -114,12 +118,58 @@ namespace plum
         glDisableClientState(GL_TEXTURE_COORD_ARRAY);
     }
 
-    void Image::bind()
+    void Image::draw(int x, int y)
     {
-        impl->bind();
+        startBatch(BlendPreserve, Color::White);
+        drawRaw(x, y);
+        endBatch();
     }
 
-    void Image::draw(int x, int y)
+    void Image::draw(int x, int y, const Transform& transform)
+    {
+        glPushMatrix();
+        glTranslated(x, y, 0.0);
+        glTranslated(impl->canvas.getWidth() / 2, impl->canvas.getHeight() / 2, 0.0);
+        glScaled(transform.scaleX * (1 - transform.mirror * 2), transform.scaleY, 0.0);
+        glRotated(transform.angle, 0.0, 0.0, 1.0);
+        glTranslated(-impl->canvas.getWidth() / 2, -impl->canvas.getHeight() / 2, 0.0);
+
+        startBatch(transform.mode, transform.tint);
+        drawRaw(0, 0);
+        endBatch();
+
+        glPopMatrix();
+    }
+
+    void Image::drawFrame(const Sheet& sheet, int f, int x, int y)
+    {
+        startBatch(BlendPreserve, Color::White);
+        drawFrameRaw(sheet, f, x, y);
+        endBatch();
+    }
+
+    void Image::drawFrame(const Sheet& sheet, int f, int x, int y, const Transform& transform)
+    {
+        uint8_t r, g, b, a;
+        transform.tint.channels(r, g, b, a);
+        useHardwareBlender(transform.mode);
+        glColor4ub(r, g, b, a * getOpacity() / 255);
+
+        glPushMatrix();
+        glTranslated(x, y, 0.0);
+        glTranslated(sheet.getWidth() / 2, sheet.getHeight() / 2, 0.0);
+        glScaled(transform.scaleX * (1 - transform.mirror * 2), transform.scaleY, 0.0);
+        glRotated(transform.angle, 0.0, 0.0, 1.0);
+        glTranslated(-sheet.getWidth() / 2, -sheet.getHeight() / 2, 0.0);
+
+        startBatch(transform.mode, transform.tint);
+        drawFrameRaw(sheet, f, 0, 0);
+        endBatch();
+
+        glPopMatrix();
+    }
+
+    void Image::drawRaw(int x, int y)
     {
         double regionS = 0;
         double regionT = 0;
@@ -140,131 +190,9 @@ namespace plum
             regionS2, regionT,
         };
 
-        useHardwareBlender(BlendPreserve);
-        glColor4ub(255, 255, 255, getOpacity());
-        bind();
-        
-        startBatch();
         glVertexPointer(2, GL_DOUBLE, 0, vertexArray);
         glTexCoordPointer(2, GL_DOUBLE, 0, textureArray);
         glDrawArrays(GL_QUADS, 0, 4);
-        endBatch();
-    }
-
-    void Image::draw(int x, int y, const Transform& transform)
-    {
-        uint8_t r, g, b, a;
-        transform.tint.channels(r, g, b, a);
-
-        double regionS = 0;
-        double regionT = 0;
-        double regionS2 = double(impl->canvas.getWidth()) / impl->canvas.getTrueWidth();
-        double regionT2 = double(impl->canvas.getHeight()) / impl->canvas.getTrueHeight();
-
-        double width = double(impl->canvas.getWidth());
-        double height = double(impl->canvas.getHeight());
-
-        useHardwareBlender(transform.mode);
-        glColor4ub(r, g, b, a * getOpacity() / 255);
-
-        glPushMatrix();
-        bind();
-
-        glTranslated(x, y, 0.0);
-        glTranslated(floor(width / 2), floor(height / 2), 0.0);
-
-        glScaled(transform.scaleX * (1 - transform.mirror * 2), transform.scaleY, 0.0);
-        glRotated(transform.angle, 0.0, 0.0, 1.0);
-        glTranslated(-floor(width / 2), -floor(height / 2), 0.0);
-
-        const GLdouble vertexArray[] = {
-            0.0, 0.0,
-            0.0, height + 1.0,
-            width + 1.0, height + 1.0,
-            width + 1.0, 0.0,
-        };
-
-        const GLdouble textureArray[] = {
-            regionS, regionT,
-            regionS, regionT2,
-            regionS2, regionT2,
-            regionS2, regionT,
-        };
-
-        startBatch();
-        glVertexPointer(2, GL_DOUBLE, 0, vertexArray);
-        glTexCoordPointer(2, GL_DOUBLE, 0, textureArray);
-        glDrawArrays(GL_QUADS, 0, 4);
-        endBatch();
-
-        glPopMatrix();
-    }
-
-    void Image::drawFrame(const Sheet& sheet, int f, int x, int y)
-    {
-        useHardwareBlender(BlendPreserve);
-        glColor4ub(255, 255, 255, getOpacity());
-        bind();
-
-        startBatch();
-        drawFrameRaw(sheet, f, x, y);
-        endBatch();
-    }
-
-    void Image::drawFrame(const Sheet& sheet, int f, int x, int y, const Transform& transform)
-    {
-        uint8_t r, g, b, a;
-        transform.tint.channels(r, g, b, a);
-
-        int sourceX, sourceY;
-
-        if(!sheet.getFrame(f, sourceX, sourceY))
-        {
-            return;
-        }
-
-        double regionS = (double(sourceX)) / impl->canvas.getTrueWidth();
-        double regionT = (double(sourceY)) / impl->canvas.getTrueHeight();
-        double regionS2 = (double(sourceX + sheet.getWidth())) / impl->canvas.getTrueWidth();
-        double regionT2 = (double(sourceY + sheet.getHeight())) / impl->canvas.getTrueHeight();
-
-        double width = double(sheet.getWidth());
-        double height = double(sheet.getHeight());
-
-        useHardwareBlender(transform.mode);
-        glColor4ub(r, g, b, a * getOpacity() / 255);
-
-        glPushMatrix();
-        bind();
-
-        glTranslated(x, y, 0.0);
-        glTranslated(floor(width / 2), floor(height / 2), 0.0);
-
-        glScaled(transform.scaleX * (1 - transform.mirror * 2), transform.scaleY, 0.0);
-        glRotated(transform.angle, 0.0, 0.0, 1.0);
-        glTranslated(-floor(width / 2), -floor(height / 2), 0.0);
-
-        const GLdouble vertexArray[] = {
-            0.0, 0.0,
-            0.0, height + 1.0,
-            width + 1.0, height + 1.0,
-            width + 1.0, 0.0,
-        };
-
-        const GLdouble textureArray[] = {
-            regionS, regionT,
-            regionS, regionT2,
-            regionS2, regionT2,
-            regionS2, regionT,
-        };
-
-        startBatch();
-        glVertexPointer(2, GL_DOUBLE, 0, vertexArray);
-        glTexCoordPointer(2, GL_DOUBLE, 0, textureArray);
-        glDrawArrays(GL_QUADS, 0, 4);
-        endBatch();
-
-        glPopMatrix();
     }
 
     void Image::drawFrameRaw(const Sheet& sheet, int f, int x, int y)

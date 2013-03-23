@@ -127,7 +127,7 @@ namespace plum
             return 0;
         }
 
-        int blit(lua_State* L)
+        int draw(lua_State* L)
         {
             auto m = script::ptr<Tilemap>(L, 1);
             auto img = script::ptr<Image>(L, 2);
@@ -140,7 +140,7 @@ namespace plum
             int tilesHigh = script::get<int>(L, 9);
             BlendMode mode = (BlendMode) script::get<int>(L, 10, BlendPreserve);
 
-            m->blit(*img, *spr, worldX, worldY, destX, destY, tilesWide, tilesHigh, mode);
+            m->draw(*img, *spr, worldX, worldY, destX, destY, tilesWide, tilesHigh);
             return 0;
         }
     }
@@ -168,7 +168,7 @@ namespace plum
                 {"rect", rect},
                 {"solidRect", solidRect},
                 {"stamp", stamp},
-                {"blit", blit},
+                {"draw", draw},
                 {nullptr, nullptr}
             };
             luaL_setfuncs(L, functions, 0);

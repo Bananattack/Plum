@@ -23,14 +23,14 @@ namespace plum
             const Canvas& canvas() const;
             void refresh();
 
-            void startBatch();
+            void startBatch(BlendMode mode, Color tint);
             void endBatch();
-            void bind();
 
             void draw(int x, int y);
             void draw(int x, int y, const Transform& transform);
             void drawFrame(const Sheet& sheet, int f, int x, int y);
             void drawFrame(const Sheet& sheet, int f, int x, int y, const Transform& transform);
+            void drawRaw(int x, int y);
             void drawFrameRaw(const Sheet& sheet, int f, int x, int y);
 
             class Impl;
