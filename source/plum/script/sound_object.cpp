@@ -11,51 +11,6 @@ namespace plum
         }
     }
 
-    namespace
-    {
-        typedef Sound Self;
-        int create(lua_State* L)
-        {
-            auto filename = script::get<const char*>(L, 1);
-            auto sound = new Sound();
-            script::instance(L).audio().loadSound(filename, false, *sound);
-            script::push(L, sound, LUA_NOREF);
-            return 1;
-        }
-
-        int gc(lua_State* L)
-        {
-            return script::wrapped<Self>(L, 1)->gc(L);
-        }
-
-        int index(lua_State* L)
-        {
-            return script::wrapped<Self>(L, 1)->index(L);
-        }
-
-        int newindex(lua_State* L)
-        {
-            return script::wrapped<Self>(L, 1)->newindex(L);
-        }
-
-        int tostring(lua_State* L)
-        {
-            return script::wrapped<Self>(L, 1)->tostring(L);
-        }
-
-        int play(lua_State* L)
-        {
-            auto s = script::ptr<Sound>(L, 1);
-
-            Channel c;
-            script::instance(L).audio().loadChannel(*s, c);
-            c.play();
-
-            // TODO: push channel reference;
-            return 0;
-        }
-    }
-
     namespace script
     {
         void initSoundObject(lua_State* L)
@@ -68,11 +23,33 @@ namespace plum
 
             // Put the members into the metatable.
             const luaL_Reg functions[] = {
-                {"__index", index},
-                {"__newindex", newindex},
-                {"__tostring", tostring},
-                {"__gc", gc},
-                {"play", play},
+                {"__gc", [](lua_State* L)
+                {
+                    return script::wrapped<Sound>(L, 1)->gc(L);
+                }},
+                {"__index", [](lua_State* L)
+                {
+                    return script::wrapped<Sound>(L, 1)->index(L);
+                }},
+                {"__newindex", [](lua_State* L)
+                {
+                    return script::wrapped<Sound>(L, 1)->newindex(L);
+                }},
+                {"__tostring", [](lua_State* L)
+                {
+                    return script::wrapped<Sound>(L, 1)->tostring(L);
+                }},
+                {"play", [](lua_State* L)
+                {
+                    auto s = script::ptr<Sound>(L, 1);
+
+                    Channel c;
+                    script::instance(L).audio().loadChannel(*s, c);
+                    c.play();
+
+                    // TODO: push channel reference;
+                    return 0;
+                }},
                 {nullptr, nullptr}
             };
             luaL_setfuncs(L, functions, 0);
@@ -83,7 +60,14 @@ namespace plum
 
             // plum.sound = <function soundNew>
             script::push(L, "Sound");
-            lua_pushcfunction(L, create);
+            lua_pushcfunction(L, [](lua_State* L)
+            {
+                auto filename = script::get<const char*>(L, 1);
+                auto sound = new Sound();
+                script::instance(L).audio().loadSound(filename, false, *sound);
+                script::push(L, sound, LUA_NOREF);
+                return 1;
+            });
             lua_settable(L, -3);
 
             // Pop plum namespace.

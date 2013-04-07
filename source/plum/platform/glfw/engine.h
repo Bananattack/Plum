@@ -11,9 +11,6 @@ namespace plum
     enum EventType
     {
         EventClose,
-        EventMouseButton,
-        EventMouseMove,
-        EventMouseScroll,
         EventKeyboard,
     };
 
@@ -27,24 +24,6 @@ namespace plum
                 {
                     GLFWwindow window;
                 } close;
-                union
-                {
-                    struct
-                    {
-                        GLFWwindow window;
-                        int button, action;
-                    } button;
-                    struct
-                    {
-                        GLFWwindow window;
-                        int x, y;
-                    } move;
-                    struct
-                    {
-                        GLFWwindow window;
-                        double dx, dy;
-                    } scroll;
-                } mouse;
                 struct
                 {
                     GLFWwindow window;

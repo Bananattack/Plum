@@ -54,9 +54,6 @@
     <ClCompile Include="script\keyboard_object.cpp">
       <Filter>Source Files\script</Filter>
     </ClCompile>
-    <ClCompile Include="script\mouse_object.cpp">
-      <Filter>Source Files\script</Filter>
-    </ClCompile>
     <ClCompile Include="script\plum_module.cpp">
       <Filter>Source Files\script</Filter>
     </ClCompile>

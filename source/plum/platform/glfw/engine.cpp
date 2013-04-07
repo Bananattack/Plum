@@ -48,36 +48,6 @@ namespace plum
             return GL_TRUE;
         });
 
-        glfwSetMouseButtonCallback(window, [](GLFWwindow window, int button, int action)
-        {
-            Event event;
-            event.type = EventMouseButton;
-            event.mouse.button.window = window;
-            event.mouse.button.button = button;
-            event.mouse.button.action = action;
-            dispatch(window, event);
-        });
-
-        glfwSetCursorPosCallback(window, [](GLFWwindow window, int x, int y)
-        {
-            Event event;
-            event.type = EventMouseMove;
-            event.keyboard.window = window;
-            event.mouse.move.x = x;
-            event.mouse.move.y = y;
-            dispatch(window, event);
-        });
-
-        glfwSetScrollCallback(window, [](GLFWwindow window, double dx, double dy)
-        {
-            Event event;
-            event.type = EventMouseScroll;
-            event.keyboard.window = window;
-            event.mouse.scroll.dx = dx;
-            event.mouse.scroll.dy = dy;
-            dispatch(window, event);
-        });
-
         glfwSetKeyCallback(window, [](GLFWwindow window, int key, int action)
         {
             Event event;

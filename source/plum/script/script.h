@@ -24,7 +24,7 @@ namespace plum
     class Script
     {
         public:
-            Script(Engine& engine, Timer& timer, Keyboard& keyboard, Mouse& mouse, Audio& audio, Screen& screen);
+            Script(Engine& engine, Timer& timer, Keyboard& keyboard, Audio& audio, Screen& screen);
             ~Script();
 
             Engine& engine()
@@ -40,11 +40,6 @@ namespace plum
             Keyboard& keyboard()
             {
                 return keyboard_;
-            }
-
-            Mouse& mouse()
-            {
-                return mouse_;
             }
 
             Audio& audio()
@@ -64,7 +59,6 @@ namespace plum
             Engine& engine_;
             Timer& timer_;
             Keyboard& keyboard_;
-            Mouse& mouse_;
             Audio& audio_;
             Screen& screen_;
 
@@ -361,7 +355,6 @@ namespace plum
 
         void initInputObject(lua_State* L);
         void initKeyboardModule(lua_State* L);
-        void initMouseModule(lua_State* L);
 
         void initSoundObject(lua_State* L);
         void initSongObject(lua_State* L);

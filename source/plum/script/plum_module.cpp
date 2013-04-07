@@ -13,92 +13,50 @@
 
 namespace plum
 {
-    namespace
-    {
-        const char* const libraryName = "plum";
-
-        int exit(lua_State* L)
-        {
-            int argumentCount = lua_gettop(L);
-
-            if(argumentCount >= 1)
-            {
-                const char* message = lua_tostring(L, 1);
-                if(message)
-                {
-                    script::instance(L).engine().quit(message);
-                }
-                else
-                {
-                    script::instance(L).engine().quit("nil");
-                }
-            }
-            else
-            {
-                script::instance(L).engine().quit();
-            }
-            
-            return 0;
-        }
-
-        int sleep(lua_State* L)
-        {
-            auto ms = script::get<int>(L, 1);
-#ifdef _WIN32
-            Sleep(ms);
-#else
-            usleep(ms * 1000);
-#endif
-            return 0;
-        }
-
-        int refresh(lua_State* L)
-        {
-            auto& script = script::instance(L);
-            script.engine().refresh();
-            return 0;
-        }
-
-        int rgb(lua_State* L)
-        {
-            auto r = script::get<int>(L, 1);
-            auto g = script::get<int>(L, 2);
-            auto b = script::get<int>(L, 3);
-            auto a = script::get<int>(L, 4, 255);
-            script::push(L, int(plum::rgb(r, g, b, a)));
-            return 1;
-        }
-
-        int channels(lua_State* L)
-        {
-            uint8_t r, g, b, a;
-            Color(script::get<int>(L, 1)).channels(r, g, b, a);
-            script::push(L, r);
-            script::push(L, g);
-            script::push(L, b);
-            script::push(L, a);
-            return 4;
-        }
-
-        int hsv(lua_State* L)
-        {
-            auto h = script::get<int>(L, 1);
-            auto s = script::get<int>(L, 2);
-            auto v = script::get<int>(L, 3);
-            auto a = script::get<int>(L, 4, 255);
-            script::push(L, int(plum::hsv(h, s, v, a)));
-            return 1;
-        }
-    }
-
     namespace script
     {
         void initLibrary(lua_State* L)
         {
             const luaL_Reg functions[] = {
-                {"exit", exit},
-                {"sleep", sleep},
-                {"refresh", refresh},
+                {"exit", [](lua_State* L)
+                {
+                    int argumentCount = lua_gettop(L);
+
+                    if(argumentCount >= 1)
+                    {
+                        const char* message = lua_tostring(L, 1);
+                        if(message)
+                        {
+                            script::instance(L).engine().quit(message);
+                        }
+                        else
+                        {
+                            script::instance(L).engine().quit("nil");
+                        }
+                    }
+                    else
+                    {
+                        script::instance(L).engine().quit();
+                    }
+            
+                    return 0;
+                }},
+                {"sleep", [](lua_State* L)
+                {
+                    auto ms = script::get<int>(L, 1);
+#ifdef _WIN32
+                    Sleep(ms);
+#else
+                    usleep(ms * 1000);
+#endif
+                    return 0;
+                }},
+                {"refresh", [](lua_State* L)
+                {
+                    auto& script = script::instance(L);
+                    script.engine().refresh();
+                    return 0;
+                }},
                 {nullptr, nullptr},
             };
             luaL_newmetatable(L, "plum");
@@ -131,13 +89,38 @@ namespace plum
             script::push(L, int(Color::Black));
             lua_setfield(L, -2, "Black");
 
-            lua_pushcfunction(L, rgb);
+            lua_pushcfunction(L, [](lua_State* L)
+            {
+                auto r = script::get<int>(L, 1);
+                auto g = script::get<int>(L, 2);
+                auto b = script::get<int>(L, 3);
+                auto a = script::get<int>(L, 4, 255);
+                script::push(L, int(plum::rgb(r, g, b, a)));
+                return 1;
+            });
             lua_setfield(L, -2, "rgb");
 
-            lua_pushcfunction(L, hsv);
+            lua_pushcfunction(L, [](lua_State* L)
+            {
+                auto h = script::get<int>(L, 1);
+                auto s = script::get<int>(L, 2);
+                auto v = script::get<int>(L, 3);
+                auto a = script::get<int>(L, 4, 255);
+                script::push(L, int(plum::hsv(h, s, v, a)));
+                return 1;
+            });
             lua_setfield(L, -2, "hsv");
 
-            lua_pushcfunction(L, channels);
+            lua_pushcfunction(L, ([](lua_State* L)
+            {
+                uint8_t r, g, b, a;
+                Color(script::get<int>(L, 1)).channels(r, g, b, a);
+                script::push(L, r);
+                script::push(L, g);
+                script::push(L, b);
+                script::push(L, a);
+                return 4;
+            }));
             lua_setfield(L, -2, "channels");
 
             // Done with 'color' now.
@@ -173,7 +156,6 @@ namespace plum
 
             initInputObject(L);
             initKeyboardModule(L);
-            initMouseModule(L);
 
             initSoundObject(L);
             initSongObject(L);

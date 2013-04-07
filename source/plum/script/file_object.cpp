@@ -15,41 +15,6 @@ namespace plum
     namespace
     {
         typedef File Self;
-        int create(lua_State* L)
-        {
-            auto filename = script::get<const char*>(L, 1);
-            auto modeString = script::get<const char*>(L, 2);
-            FileOpenMode mode;
-
-            if(modeString[0] == 'r')
-            {
-                mode = FileRead;
-            }
-            else if(modeString[0] == 'w')
-            {
-                mode = FileWrite;
-            }
-            else if(modeString[0] == 'a')
-            {
-                mode = FileAppend;
-            }
-            else
-            {
-                luaL_error(L, "Attempt to call plum.File constructor with invalid mode argument (argument #2).\r\nMust be 'r', 'w' or 'a'.");
-                return 0;
-            }
-
-            auto f = new File(filename, mode);
-            // Failure.
-            if(!f->isActive())
-            {    
-                delete f;
-                return 0;
-            }
-
-            script::push(L, f, LUA_NOREF);
-            return 1;
-        }
 
         int gc(lua_State* L)
         {
@@ -384,7 +349,41 @@ namespace plum
 
             // plum.File = <function create>
             script::push(L, "File");
-            lua_pushcfunction(L, create);
+            lua_pushcfunction(L, [](lua_State* L)
+            {
+                auto filename = script::get<const char*>(L, 1);
+                auto modeString = script::get<const char*>(L, 2);
+                FileOpenMode mode;
+
+                if(modeString[0] == 'r')
+                {
+                    mode = FileRead;
+                }
+                else if(modeString[0] == 'w')
+                {
+                    mode = FileWrite;
+                }
+                else if(modeString[0] == 'a')
+                {
+                    mode = FileAppend;
+                }
+                else
+                {
+                    luaL_error(L, "Attempt to call plum.File constructor with invalid mode argument (argument #2).\r\nMust be 'r', 'w' or 'a'.");
+                    return 0;
+                }
+
+                auto f = new File(filename, mode);
+                // Failure.
+                if(!f->isActive())
+                {    
+                    delete f;
+                    return 0;
+                }
+
+                script::push(L, f, LUA_NOREF);
+                return 1;
+            });
             lua_settable(L, -3);
 
             // Pop plum namespace.

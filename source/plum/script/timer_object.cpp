@@ -4,68 +4,6 @@
 
 namespace plum
 {
-    namespace
-    {
-        int timerGetField(lua_State* L)
-        {
-            std::string fieldName(script::get<const char*>(L, 2));
-            if(luaL_getmetafield(L, 1, std::string("get_" + fieldName).c_str()))
-            {
-                lua_pushvalue(L, 1);
-                lua_call(L, 1, 1);
-                return 1;
-            }
-            return luaL_getmetafield(L, 1, fieldName.c_str());
-        }
-
-        int timerSetField(lua_State* L)
-        {
-            std::string fieldName(script::get<const char*>(L, 2));
-            if(luaL_getmetafield(L, 1, std::string("get_" + fieldName).c_str()))
-            {
-                luaL_error(L, "Attempt to modify readonly field '%s' on plum_timer.", fieldName.c_str());
-                lua_pop(L, 1);
-                return 0;
-            }
-            luaL_error(L, "Attempt to modify unknown field '%s' on plum_timer.", fieldName.c_str());
-            return 0;
-        }
-
-        int timerToString(lua_State* L)
-        {
-            script::push(L, "(plum.timer singleton)");
-            return 1;
-        }
-
-        int timerGetTime(lua_State* L)
-        {
-            script::push(L, script::instance(L).timer().getTime());
-            return 1;
-        }
-
-        int timerGetGap(lua_State* L)
-        {
-            script::push(L, script::instance(L).timer().getDelta());
-            return 1;
-        }
-
-        int timerGetFPS(lua_State* L)
-        {
-            script::push(L, script::instance(L).timer().getFPS());
-            return 1;
-        }
-
-        const luaL_Reg functions[] = {
-            { "__index", timerGetField },
-            { "__newindex", timerSetField },
-            { "__tostring",    timerToString },
-            { "get_time", timerGetTime },
-            { "get_gap", timerGetGap },
-            { "get_fps", timerGetFPS },
-            { nullptr, nullptr }
-        };
-    }
-
     namespace script
     {
         void initTimerModule(lua_State* L)
@@ -77,6 +15,52 @@ namespace plum
             // metatable.__index = metatable
             lua_setfield(L, -2, "__index");
             // Put the members into the metatable.
+            const luaL_Reg functions[] = {
+                {"__index", [](lua_State* L)
+                {
+                    std::string fieldName(script::get<const char*>(L, 2));
+                    if(luaL_getmetafield(L, 1, std::string("get_" + fieldName).c_str()))
+                    {
+                        lua_pushvalue(L, 1);
+                        lua_call(L, 1, 1);
+                        return 1;
+                    }
+                    return luaL_getmetafield(L, 1, fieldName.c_str());
+                }},
+                {"__newindex", [](lua_State* L)
+                {
+                    std::string fieldName(script::get<const char*>(L, 2));
+                    if(luaL_getmetafield(L, 1, std::string("get_" + fieldName).c_str()))
+                    {
+                        luaL_error(L, "Attempt to modify readonly field '%s' on plum_timer.", fieldName.c_str());
+                        lua_pop(L, 1);
+                        return 0;
+                    }
+                    luaL_error(L, "Attempt to modify unknown field '%s' on plum_timer.", fieldName.c_str());
+                    return 0;
+                }},
+                {"__tostring", [](lua_State* L)
+                {
+                    script::push(L, "(plum.timer singleton)");
+                    return 1;
+                }},
+                {"get_time", [](lua_State* L)
+                {
+                    script::push(L, script::instance(L).timer().getTime());
+                    return 1;
+                }},
+                {"get_gap", [](lua_State* L)
+                {
+                    script::push(L, script::instance(L).timer().getDelta());
+                    return 1;
+                }},
+                {"get_fps", [](lua_State* L)
+                {
+                    script::push(L, script::instance(L).timer().getFPS());
+                    return 1;
+                }},
+                {nullptr, nullptr}
+            };
             luaL_setfuncs(L, functions, 0);
             lua_pop(L, 1);
 

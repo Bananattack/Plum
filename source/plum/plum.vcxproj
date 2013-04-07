@@ -125,7 +125,6 @@
     <ClCompile Include="script\image_object.cpp" />
     <ClCompile Include="script\input_object.cpp" />
     <ClCompile Include="script\keyboard_object.cpp" />
-    <ClCompile Include="script\mouse_object.cpp" />
     <ClCompile Include="script\plum_module.cpp" />
     <ClCompile Include="script\screen_object.cpp" />
     <ClCompile Include="script\script.cpp" />

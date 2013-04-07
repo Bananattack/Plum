@@ -24,7 +24,6 @@ int main(int argc, char** argv)
 
         plum::Engine engine;
         plum::Keyboard keyboard(engine);
-        plum::Mouse mouse(engine);
         plum::Timer timer(engine);
         plum::Audio audio(engine, silent);
         plum::Screen screen(engine, xres, yres, scale, windowed);
@@ -54,7 +53,7 @@ int main(int argc, char** argv)
 
         try
         {
-            plum::Script script(engine, timer, keyboard, mouse, audio, screen);
+            plum::Script script(engine, timer, keyboard, audio, screen);
             script.run("system.lua");
         }
         catch(const std::runtime_error& e)

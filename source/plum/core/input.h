@@ -154,25 +154,6 @@ namespace plum
             class Impl;
             std::shared_ptr<Impl> impl;
     };
-
-    class Mouse
-    {
-        public:
-            Mouse(Engine& engine);
-            ~Mouse();
-
-            Input& getLeft();
-            Input& getMiddle();
-            Input& getRight();
-            Input& getWheelUp();
-            Input& getWheelDown();
-
-            double getX();
-            double getY();
-
-            class Impl;
-            std::shared_ptr<Impl> impl;
-    };
 }
 
 #endif
