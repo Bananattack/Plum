@@ -12,100 +12,102 @@ require 'player'
 require 'world'
 require 'font'
 
-Title = 'Maximum Yak Maniac'
-resource = {
-    song = {
-        city = plum.Song('resources/Jiggy.it')
-    };
-    sound = {
-        blast = {
-            plum.Sound('resources/blast_1.ogg');
-            plum.Sound('resources/blast_2.ogg');
-            plum.Sound('resources/blast_3.ogg');
-            plum.Sound('resources/blast_4.ogg');
+function init()
+    Title = 'Maximum Yak Maniac'
+    resource = {
+        song = {
+            city = plum.Song('resources/Jiggy.it')
         };
-        ouch = plum.Sound('resources/explode2.ogg');
-        bomb = plum.Sound('resources/explode3.ogg');
-        rage = plum.Sound('resources/rage.ogg');
-        heal = plum.Sound('resources/heart.ogg');
-        jump = plum.Sound('resources/jump_cartoony.ogg');
-        thud = plum.Sound('resources/explode.ogg');
-        balloonDeath = plum.Sound('resources/hiss.ogg');
-    };
-    font = {
-        plain = Font(plum.Image('resources/font1.png'));
-        big = Font(plum.Image('resources/font_big.png'));
-        bigRed = Font(plum.Image('resources/font_big_red.png'));
-        bigGreen = Font(plum.Image('resources/font_big_green.png'));
-        bigYellow = Font(plum.Image('resources/font_big_yellow.png'));
-    };
-    image = {
-        yak = {
-            idle = plum.Image('resources/maximum_yac_idle.png');
-            eat = plum.Image('resources/maximum_yac_eat.png');
-        };
-        cloud = {
-            plum.Image('resources/cloud_1.png');
-            plum.Image('resources/cloud_2.png');
-        };
-        bigBuilding = {
-            plum.Image('resources/big_building_1.png');
-        };
-        building = {
-            plum.Image('resources/building_1.png');
-            plum.Image('resources/building_3.png');
-            plum.Image('resources/building_4.png');
-            plum.Image('resources/building_5.png');
-        };
-        poof = {
-            plum.Image('resources/poof_1.png');
-            plum.Image('resources/poof_2.png');
-            plum.Image('resources/poof_3.png');
-            plum.Image('resources/poof_4.png');
-            plum.Image('resources/poof_5.png');
-            plum.Image('resources/poof_6.png');
-            plum.Image('resources/poof_7.png');
-        };
-        boom = {
-            plum.Image('resources/boom1.png');
-            plum.Image('resources/boom2.png');
-            plum.Image('resources/boom3.png');
-            plum.Image('resources/boom4.png');
-            plum.Image('resources/boom5.png');
-            plum.Image('resources/boom6.png');
-            plum.Image('resources/boom7.png');
-        };
-        roids = {
-            good = {
-                plum.Image('resources/pizza.png');
-                plum.Image('resources/spaghetti.png');
-                plum.Image('resources/apple_r.png');
-                plum.Image('resources/apple_g.png');
-                plum.Image('resources/strawberry.png');
-                plum.Image('resources/watermelon.png');
-                plum.Image('resources/blueberry.png');
+        sound = {
+            blast = {
+                plum.Sound('resources/blast_1.ogg');
+                plum.Sound('resources/blast_2.ogg');
+                plum.Sound('resources/blast_3.ogg');
+                plum.Sound('resources/blast_4.ogg');
             };
-            bad = {
-                plum.Image('resources/syringe.png');
-            }
+            ouch = plum.Sound('resources/explode2.ogg');
+            bomb = plum.Sound('resources/explode3.ogg');
+            rage = plum.Sound('resources/rage.ogg');
+            heal = plum.Sound('resources/heart.ogg');
+            jump = plum.Sound('resources/jump_cartoony.ogg');
+            thud = plum.Sound('resources/explode.ogg');
+            balloonDeath = plum.Sound('resources/hiss.ogg');
         };
-        bomb = {
-            plum.Image('resources/bomb.png');
-            plum.Image('resources/bomb2.png');
+        font = {
+            plain = Font(plum.Image('resources/font1.png'));
+            big = Font(plum.Image('resources/font_big.png'));
+            bigRed = Font(plum.Image('resources/font_big_red.png'));
+            bigGreen = Font(plum.Image('resources/font_big_green.png'));
+            bigYellow = Font(plum.Image('resources/font_big_yellow.png'));
         };
-        balloon = {
-            plum.Image('resources/balloon_1.png');
-            plum.Image('resources/balloon_2.png');
-            plum.Image('resources/balloon_3.png');
+        image = {
+            yak = {
+                idle = plum.Image('resources/maximum_yac_idle.png');
+                eat = plum.Image('resources/maximum_yac_eat.png');
+            };
+            cloud = {
+                plum.Image('resources/cloud_1.png');
+                plum.Image('resources/cloud_2.png');
+            };
+            bigBuilding = {
+                plum.Image('resources/big_building_1.png');
+            };
+            building = {
+                plum.Image('resources/building_1.png');
+                plum.Image('resources/building_3.png');
+                plum.Image('resources/building_4.png');
+                plum.Image('resources/building_5.png');
+            };
+            poof = {
+                plum.Image('resources/poof_1.png');
+                plum.Image('resources/poof_2.png');
+                plum.Image('resources/poof_3.png');
+                plum.Image('resources/poof_4.png');
+                plum.Image('resources/poof_5.png');
+                plum.Image('resources/poof_6.png');
+                plum.Image('resources/poof_7.png');
+            };
+            boom = {
+                plum.Image('resources/boom1.png');
+                plum.Image('resources/boom2.png');
+                plum.Image('resources/boom3.png');
+                plum.Image('resources/boom4.png');
+                plum.Image('resources/boom5.png');
+                plum.Image('resources/boom6.png');
+                plum.Image('resources/boom7.png');
+            };
+            roids = {
+                good = {
+                    plum.Image('resources/pizza.png');
+                    plum.Image('resources/spaghetti.png');
+                    plum.Image('resources/apple_r.png');
+                    plum.Image('resources/apple_g.png');
+                    plum.Image('resources/strawberry.png');
+                    plum.Image('resources/watermelon.png');
+                    plum.Image('resources/blueberry.png');
+                };
+                bad = {
+                    plum.Image('resources/syringe.png');
+                }
+            };
+            bomb = {
+                plum.Image('resources/bomb.png');
+                plum.Image('resources/bomb2.png');
+            };
+            balloon = {
+                plum.Image('resources/balloon_1.png');
+                plum.Image('resources/balloon_2.png');
+                plum.Image('resources/balloon_3.png');
+            };
+            truck = {
+                left = plum.Image('resources/truck.png');
+                right = createFlipped(plum.Image('resources/truck.png'));
+            };
+            
+            grass = plum.Image('resources/grass.png');
         };
-        truck = {
-            left = plum.Image('resources/truck.png');
-            right = createFlipped(plum.Image('resources/truck.png'));
-        };
-        
-        grass = plum.Image('resources/grass.png');
     };
-};
+end
 
 renderList = {}
 updateList = {}
@@ -130,7 +132,10 @@ function update()
     plum.screen.title = Title .. ' ' .. plum.timer.fps
 end
 
+
 playerCount = 1
+done = false
+
 function intro()
     local player = {
         frame = {
@@ -234,16 +239,19 @@ function intro()
     end
 end
 
-resource.song.city:play()
+function play()
+    resource.song.city:play()
 
---vx.SetResolution(320, 240)
-plum.screen.title = Title
+    plum.screen.title = Title
+    intro()
 
-intro()
-
-while true do
-    update()
-    render()
+    while true do
+        update()
+        render()
+    end
 end
+
+init()
+play()
 
 

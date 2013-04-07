@@ -2,6 +2,7 @@
 #define PLUM_VIDEO_H
 
 #include <string>
+#include <memory>
 #include "color.h"
 #include "blending.h"
 

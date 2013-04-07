@@ -17,55 +17,6 @@ namespace plum
             auto impl = context->impl();
             impl->events.push_back(event);
         }
-
-        int handleClose(GLFWwindow window)
-        {
-            Event event;
-            event.type = EventClose;
-            event.close.window = window;
-            dispatch(window, event);
-            return GL_TRUE;
-        }
-
-        void handleMouseButton(GLFWwindow window, int button, int action)
-        {
-            Event event;
-            event.type = EventMouseButton;
-            event.mouse.button.window = window;
-            event.mouse.button.button = button;
-            event.mouse.button.action = action;
-            dispatch(window, event);
-        }
-
-        void handleMouseMove(GLFWwindow window, int x, int y)
-        {
-            Event event;
-            event.type = EventMouseMove;
-            event.keyboard.window = window;
-            event.mouse.move.x = x;
-            event.mouse.move.y = y;
-            dispatch(window, event);
-        }
-
-        void handleMouseScroll(GLFWwindow window, double dx, double dy)
-        {
-            Event event;
-            event.type = EventMouseScroll;
-            event.keyboard.window = window;
-            event.mouse.scroll.dx = dx;
-            event.mouse.scroll.dy = dy;
-            dispatch(window, event);
-        }
-
-        void handleKeyboard(GLFWwindow window, int key, int action)
-        {
-            Event event;
-            event.type = EventKeyboard;
-            event.keyboard.window = window;
-            event.keyboard.key = key;
-            event.keyboard.action = action;
-            dispatch(window, event);
-        }
     }
 
     void Engine::Impl::quit(const std::string& message)
@@ -88,11 +39,54 @@ namespace plum
         windows.append(ptr);
 
         glfwSetWindowUserPointer(window, ptr.get());
-        glfwSetWindowCloseCallback(window, handleClose);
-        glfwSetMouseButtonCallback(window, handleMouseButton);
-        glfwSetCursorPosCallback(window, handleMouseMove);
-        glfwSetScrollCallback(window, handleMouseScroll);
-        glfwSetKeyCallback(window, handleKeyboard);
+        glfwSetWindowCloseCallback(window, [](GLFWwindow window)
+        {
+            Event event;
+            event.type = EventClose;
+            event.close.window = window;
+            dispatch(window, event);
+            return GL_TRUE;
+        });
+
+        glfwSetMouseButtonCallback(window, [](GLFWwindow window, int button, int action)
+        {
+            Event event;
+            event.type = EventMouseButton;
+            event.mouse.button.window = window;
+            event.mouse.button.button = button;
+            event.mouse.button.action = action;
+            dispatch(window, event);
+        });
+
+        glfwSetCursorPosCallback(window, [](GLFWwindow window, int x, int y)
+        {
+            Event event;
+            event.type = EventMouseMove;
+            event.keyboard.window = window;
+            event.mouse.move.x = x;
+            event.mouse.move.y = y;
+            dispatch(window, event);
+        });
+
+        glfwSetScrollCallback(window, [](GLFWwindow window, double dx, double dy)
+        {
+            Event event;
+            event.type = EventMouseScroll;
+            event.keyboard.window = window;
+            event.mouse.scroll.dx = dx;
+            event.mouse.scroll.dy = dy;
+            dispatch(window, event);
+        });
+
+        glfwSetKeyCallback(window, [](GLFWwindow window, int key, int action)
+        {
+            Event event;
+            event.type = EventKeyboard;
+            event.keyboard.window = window;
+            event.keyboard.key = key;
+            event.keyboard.action = action;
+            dispatch(window, event);
+        });
         
         return ptr;
     }
@@ -106,19 +100,16 @@ namespace plum
             {
                 break;
             }
-
-            auto& events(events);
-            for(auto e = events.begin(), eventEnd = events.end(); e != eventEnd; ++e)
+            for(const auto& e : events)
             {
-                auto& eventHooks(eventHooks);
-                for(auto h = eventHooks.begin(), hookEnd = eventHooks.end(); h != hookEnd; ++h)
+				for(const auto& h : eventHooks)
                 {
-                    if(auto f = h->lock())
+                    if(auto f = h.lock())
                     {
-                        (*f)(*e);
+                        (*f)(e);
                     }
                 }
-                if(e->type == EventClose)
+                if(e.type == EventClose)
                 {
                     quit("");
                 }
@@ -127,10 +118,9 @@ namespace plum
             events.clear();
         }
 
-        auto& updateHooks(updateHooks);
-        for(auto it = updateHooks.begin(), end = updateHooks.end(); it != end; ++it)
+        for(const auto h : updateHooks)
         {
-            if(auto f = it->lock())
+            if(auto f = h.lock())
             {
                 (*f)();
             }
