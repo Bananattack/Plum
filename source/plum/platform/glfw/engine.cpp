@@ -102,7 +102,7 @@ namespace plum
             }
             for(const auto& e : events)
             {
-				for(const auto& h : eventHooks)
+                for(const auto& h : eventHooks)
                 {
                     if(auto f = h.lock())
                     {

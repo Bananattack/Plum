@@ -24,29 +24,29 @@ namespace plum
             // Put the members into the metatable.
             const luaL_Reg functions[] = {
                 {"__index", [](lua_State* L)
-				{
-					return script::wrapped<Input>(L, 1)->index(L);
-				}},
+                {
+                    return script::wrapped<Input>(L, 1)->index(L);
+                }},
                 {"__newindex", [](lua_State* L)
-				{
-					return script::wrapped<Input>(L, 1)->newindex(L);
-				}},
+                {
+                    return script::wrapped<Input>(L, 1)->newindex(L);
+                }},
                 {"__tostring", [](lua_State* L)
-				{
-					return script::wrapped<Input>(L, 1)->tostring(L);
-				}},
+                {
+                    return script::wrapped<Input>(L, 1)->tostring(L);
+                }},
                 {"get_pressed", [](lua_State* L)
-				{
-					auto inp = script::ptr<Input>(L, 1);
-					script::push(L, inp->isPressed());
-					return 1;
-				}},
+                {
+                    auto inp = script::ptr<Input>(L, 1);
+                    script::push(L, inp->isPressed());
+                    return 1;
+                }},
                 {"set_pressed", [](lua_State* L)
-				{
-					auto inp = script::ptr<Input>(L, 1);
-					inp->setPressed(script::get<bool>(L, 2));
-					return 0;
-				}},
+                {
+                    auto inp = script::ptr<Input>(L, 1);
+                    inp->setPressed(script::get<bool>(L, 2));
+                    return 0;
+                }},
                 {nullptr, nullptr}
             };
             luaL_setfuncs(L, functions, 0);
@@ -58,11 +58,11 @@ namespace plum
             // plum.input = <function inputNew>
             script::push(L, "_Input");
             lua_pushcfunction(L, [](lua_State* L)
-			{
-				Input* input = (Input*) lua_touserdata(L, 1);
-				script::push(L, input, LUA_NOREF);
-				return 1;
-			});
+            {
+                Input* input = (Input*) lua_touserdata(L, 1);
+                script::push(L, input, LUA_NOREF);
+                return 1;
+            });
             lua_settable(L, -3);
 
             // Pop plum namespace.
