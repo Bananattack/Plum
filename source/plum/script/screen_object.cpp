@@ -145,7 +145,7 @@ namespace plum
                 int width = script::get<int>(L, 1);
                 int height = script::get<int>(L, 2);
                 int scale = script::get<int>(L, 3, 1);
-                int win = script::get<int>(L, 4, true);
+                bool win = script::is<bool>(L, 4) ? script::get<bool>(L, 4) : true;
 
                 auto scr = new Screen(script::instance(L).engine(), width, height, scale, win);
                 auto wrap = script::push(L, scr, LUA_NOREF);

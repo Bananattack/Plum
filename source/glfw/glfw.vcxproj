@@ -13,19 +13,18 @@
   <ItemGroup>
     <ClCompile Include="src\clipboard.c" />
     <ClCompile Include="src\context.c" />
-    <ClCompile Include="src\fullscreen.c" />
     <ClCompile Include="src\gamma.c" />
     <ClCompile Include="src\init.c" />
     <ClCompile Include="src\input.c" />
     <ClCompile Include="src\joystick.c" />
+    <ClCompile Include="src\monitor.c" />
     <ClCompile Include="src\time.c" />
     <ClCompile Include="src\wgl_context.c" />
     <ClCompile Include="src\win32_clipboard.c" />
-    <ClCompile Include="src\win32_fullscreen.c" />
     <ClCompile Include="src\win32_gamma.c" />
     <ClCompile Include="src\win32_init.c" />
     <ClCompile Include="src\win32_joystick.c" />
-    <ClCompile Include="src\win32_native.c" />
+    <ClCompile Include="src\win32_monitor.c" />
     <ClCompile Include="src\win32_time.c" />
     <ClCompile Include="src\win32_window.c" />
     <ClCompile Include="src\window.c" />

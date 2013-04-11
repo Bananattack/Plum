@@ -17,9 +17,6 @@
     <ClCompile Include="src\context.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\fullscreen.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\gamma.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -41,9 +38,6 @@
     <ClCompile Include="src\win32_clipboard.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\win32_fullscreen.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\win32_gamma.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -53,9 +47,6 @@
     <ClCompile Include="src\win32_joystick.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\win32_native.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\win32_time.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -63,6 +54,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\window.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\monitor.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\win32_monitor.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

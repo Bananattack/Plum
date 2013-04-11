@@ -24,6 +24,7 @@ namespace plum
             ~Screen();
 
             bool getDefaultClose() const;
+            bool getWindowed() const;
             int getWidth() const;
             int getHeight() const;
             int getTrueWidth() const;
@@ -32,6 +33,7 @@ namespace plum
             const std::string& getTitle() const;
 
             void setDefaultClose(bool value);
+            void setWindowed(bool value);
             void setOpacity(int value);
             void setTitle(const std::string& value);
 

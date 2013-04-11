@@ -21,7 +21,7 @@ namespace plum
     {
         public:
             EventType type;
-            GLFWwindow window;
+            GLFWwindow* window;
             union
             {
                 struct
@@ -87,7 +87,7 @@ namespace plum
     {
         public:
             WeakList<std::function<void()>> updateHooks;
-            GLFWwindow root;
+            GLFWwindow* root;
 
             Impl();
             ~Impl();

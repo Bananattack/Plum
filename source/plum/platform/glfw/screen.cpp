@@ -15,6 +15,7 @@ namespace plum
             Impl(Engine& engine)
                 : engine(engine),
                 window(nullptr),
+                interrupt(false),
                 defaultClose(true),
                 windowed(true),
                 transformBound(false),
@@ -86,8 +87,9 @@ namespace plum
             Keyboard keyboard;
 
             std::shared_ptr<Engine::UpdateHook> hook;
-            GLFWwindow window;
+            GLFWwindow* window;
 
+            bool interrupt;
             bool defaultClose;
             bool windowed;
             bool transformBound;
@@ -124,10 +126,13 @@ namespace plum
             }
         }
 
-        void dispatch(GLFWwindow window, const Event& event)
+        void dispatch(GLFWwindow* window, const Event& event)
         {
             auto impl = (Screen::Impl*) glfwGetWindowUserPointer(window);
-            impl->events.push_back(event);
+            if(!impl->interrupt)
+            {
+                impl->events.push_back(event);
+            }
         }
     }
 
@@ -144,6 +149,11 @@ namespace plum
     bool Screen::getDefaultClose() const
     {
         return impl->defaultClose;
+    }
+
+    bool Screen::getWindowed() const
+    {
+        return impl->windowed;
     }
 
     int Screen::getWidth() const
@@ -181,6 +191,11 @@ namespace plum
         impl->defaultClose = value;
     }
 
+    void Screen::setWindowed(bool value)
+    {
+        impl->resize(impl->trueWidth, impl->trueHeight, value);
+    }
+
     void Screen::setOpacity(int value)
     {
         impl->opacity = value;
@@ -216,27 +231,29 @@ namespace plum
 
     void Screen::Impl::resize(int trueWidth, int trueHeight, bool windowed)
     {
+        interrupt = true;
         this->windowed = windowed;
 
         // TODO: borderless fake fullscreen mode.
         if(!window)
         {
-            auto window = glfwCreateWindow(trueWidth, trueHeight, (windowed ? GLFW_WINDOWED : GLFW_WINDOWED), "", engine.impl->root);
+            auto window = glfwCreateWindow(trueWidth, trueHeight, "", nullptr, engine.impl->root);
             if(!window)
             {
                 throw std::runtime_error("Screen settings were not compatible your graphics card.\r\n");
             }
             glfwSetWindowUserPointer(window, this);
-            glfwSetWindowCloseCallback(window, [](GLFWwindow window)
+            glfwSetWindowCloseCallback(window, [](GLFWwindow* window)
             {
+                glfwSetWindowShouldClose(window, GL_FALSE);
+
                 Event event;
                 event.type = EventClose;
                 event.window = window;
                 dispatch(window, event);
-                return GL_TRUE;
             });
 
-            glfwSetKeyCallback(window, [](GLFWwindow window, int key, int action)
+            glfwSetKeyCallback(window, [](GLFWwindow* window, int key, int action)
             {
                 Event event;
                 event.type = EventKeyboard;
@@ -246,7 +263,7 @@ namespace plum
                 dispatch(window, event);
             });
 
-            glfwSetWindowSizeCallback(window, [](GLFWwindow window, int w, int h)
+            glfwSetWindowSizeCallback(window, [](GLFWwindow* window, int w, int h)
             {
                 Event event;
                 event.type = EventResize;
@@ -295,6 +312,7 @@ namespace plum
 
         this->trueWidth = trueWidth;
         this->trueHeight = trueHeight;
+        interrupt = false;
     }
 
     void Screen::setResolution(int width, int height, int scale, bool win)

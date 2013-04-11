@@ -136,7 +136,7 @@ namespace plum
         switch(event.type)
         {
             case EventKeyboard:
-                keys[event.keyboard.key].setPressed(event.keyboard.action == GLFW_PRESS);
+                keys[event.keyboard.key].setPressed(event.keyboard.action != GLFW_RELEASE);
                 break;
             default: break;
         }
