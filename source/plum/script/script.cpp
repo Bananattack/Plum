@@ -12,13 +12,11 @@ namespace plum
         std::unordered_map<lua_State*, Script*> instances;
     }
 
-    Script::Script(Engine& engine, Timer& timer, Keyboard& keyboard, Audio& audio, Screen& screen)
+    Script::Script(Engine& engine, Timer& timer, Audio& audio)
         : L(luaL_newstate()),
         engine_(engine),
         timer_(timer),
-        keyboard_(keyboard),
-        audio_(audio),
-        screen_(screen)
+        audio_(audio)
     {
         luaL_openlibs(L);
         lua_gc(L, LUA_GCSETSTEPMUL, 400);

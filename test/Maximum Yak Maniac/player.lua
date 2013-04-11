@@ -118,7 +118,7 @@ do local Self = {}
         end
         
         self.timer = self.timer - 3
-        if self.x + self.frame.width + self.timer >= world.x + plum.screen.width then
+        if self.x + self.frame.width + self.timer >= world.x + screen.width then
             self.offscreen = true
         end
     end
@@ -268,8 +268,8 @@ do local Self = {}
     function Self:clampPosition()
         if self.x < world.x then
             self.x = world.x
-        elseif self.x > world.x + plum.screen.width - 40 - self.frame.width then
-            self.x = world.x + plum.screen.width - 40 - self.frame.width
+        elseif self.x > world.x + screen.width - 40 - self.frame.width then
+            self.x = world.x + screen.width - 40 - self.frame.width
         end
     end
     
@@ -278,7 +278,7 @@ do local Self = {}
             return
         end
 
-        self.shadow:draw(self.x - world.x + self.frame.width / 2 - self.shadow.width / 2, world.floorY - self.shadow.height / 2)
+        self.shadow:draw(self.x - world.x + self.frame.width / 2 - self.shadow.width / 2, world.floorY - self.shadow.height / 2, screen)
         if self.hurtCounter > 0 then
             if self.hurtCounter % 8 < 4 then
                 self.transform.angle = self.angle + math.random(-50, 50) * (self.hurtCounter >= 150 and 1 or 0)
@@ -286,10 +286,10 @@ do local Self = {}
         else
             self.transform.angle = self.angle
         end
-        self.frame:draw(self.x - world.x, self.y, self.transform)
+        self.frame:draw(self.x - world.x, self.y, self.transform, screen)
 
         if self.timer < 600 and self.timer > 0 then
-            (self.timer % 10 < 5 and resource.font.bigYellow or resource.font.bigRed):printCenter(self.x - world.x + self.frame.width / 2, self.y - 10 + math.sin(math.rad(self.timer) * 10) * 5, tostring(math.floor(self.timer / 100)))
+            (self.timer % 10 < 5 and resource.font.bigYellow or resource.font.bigRed):printCenter(self.x - world.x + self.frame.width / 2, self.y - 10 + math.sin(math.rad(self.timer) * 10) * 5, tostring(math.floor(self.timer / 100)), screen)
         end
     end
 

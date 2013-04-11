@@ -23,37 +23,27 @@ int main(int argc, char** argv)
         auto windowed = config.get<bool>("windowed", true);
 
         plum::Engine engine;
-        plum::Keyboard keyboard(engine);
         plum::Timer timer(engine);
         plum::Audio audio(engine, silent);
-        plum::Screen screen(engine, xres, yres, scale, windowed);
 
         auto hook = engine.addUpdateHook([&]() {
-            if(keyboard[plum::KeyTilde].isPressed())
+            if(timer.getSpeed() == plum::TimerSpeedFastForward)
             {
                 audio.setPitch(1.0 * plum::Timer::FastForwardMultiplier);
-                timer.setSpeed(plum::TimerSpeedFastForward);
             }
-            else if(keyboard[plum::KeyLeftShift].isPressed())
+            else if(timer.getSpeed() == plum::TimerSpeedSlowMotion)
             {
                 audio.setPitch(1.0 / plum::Timer::SlowMotionDivisor);
-                timer.setSpeed(plum::TimerSpeedSlowMotion);
             }
             else
             {
                 audio.setPitch(1.0);
-                timer.setSpeed(plum::TimerSpeedNormal);
-            }
-            if((keyboard[plum::KeyLeftAlt].isPressed() || keyboard[plum::KeyRightAlt].isPressed())
-            && (keyboard[plum::KeyF4].isPressed() || keyboard[plum::KeyX].isPressed()))
-            {
-                engine.quit();
             }
         });
 
         try
         {
-            plum::Script script(engine, timer, keyboard, audio, screen);
+            plum::Script script(engine, timer, audio);
             script.run("system.lua");
         }
         catch(const std::runtime_error& e)

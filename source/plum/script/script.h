@@ -24,7 +24,7 @@ namespace plum
     class Script
     {
         public:
-            Script(Engine& engine, Timer& timer, Keyboard& keyboard, Audio& audio, Screen& screen);
+            Script(Engine& engine, Timer& timer, Audio& audio);
             ~Script();
 
             Engine& engine()
@@ -37,19 +37,9 @@ namespace plum
                 return timer_;
             }
 
-            Keyboard& keyboard()
-            {
-                return keyboard_;
-            }
-
             Audio& audio()
             {
                 return audio_;
-            }
-
-            Screen& screen()
-            {
-                return screen_;
             }
 
             void run(const std::string& filename);
@@ -58,9 +48,7 @@ namespace plum
             lua_State* L;
             Engine& engine_;
             Timer& timer_;
-            Keyboard& keyboard_;
             Audio& audio_;
-            Screen& screen_;
 
             Script(const Script&);
             void operator =(const Script&);
@@ -350,21 +338,20 @@ namespace plum
 
         void initLibrary(lua_State* L);
 
-        void initVideoModule(lua_State* L);
         void initTimerModule(lua_State* L);
 
-        void initInputObject(lua_State* L);
-        void initKeyboardModule(lua_State* L);
-
-        void initSoundObject(lua_State* L);
-        void initSongObject(lua_State* L);
-        void initFileObject(lua_State* L);
         void initCanvasObject(lua_State* L);
-        void initTransformObject(lua_State* L);
+        void initFileObject(lua_State* L);
         void initImageObject(lua_State* L);
+        void initInputObject(lua_State* L);
+        void initScreenObject(lua_State* L);
         void initSheetObject(lua_State* L);
-        void initFontObject(lua_State* L);
+        void initSongObject(lua_State* L);
+        void initSoundObject(lua_State* L);
         void initTilemapObject(lua_State* L);
+        void initTransformObject(lua_State* L);
+
+        void pushKeyboardTable(lua_State* L, Keyboard& key);
     }
 
 }

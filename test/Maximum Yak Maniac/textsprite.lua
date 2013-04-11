@@ -12,7 +12,7 @@ do local Self = {}
     end
 
     function Self:render()
-        self.font:print(self.x - world.x, self.y, self.text)
+        self.font:print(self.x - world.x, self.y, self.text, screen)
     end
 
     function Self:update()

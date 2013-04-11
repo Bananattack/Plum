@@ -9,16 +9,6 @@
 
 namespace plum
 {
-    namespace
-    {
-        void dispatch(GLFWwindow window, const Event& event)
-        {
-            auto context = (WindowContext*) glfwGetWindowUserPointer(window);
-            auto impl = context->impl();
-            impl->events.push_back(event);
-        }
-    }
-
     void Engine::Impl::quit(const std::string& message)
     {
         if(message.length())
@@ -33,61 +23,8 @@ namespace plum
         throw SystemExit(0);
     }
 
-    std::shared_ptr<WindowContext> Engine::Impl::registerWindow(GLFWwindow window)
-    {
-        auto ptr = std::make_shared<WindowContext>(this, window);
-        windows.append(ptr);
-
-        glfwSetWindowUserPointer(window, ptr.get());
-        glfwSetWindowCloseCallback(window, [](GLFWwindow window)
-        {
-            Event event;
-            event.type = EventClose;
-            event.close.window = window;
-            dispatch(window, event);
-            return GL_TRUE;
-        });
-
-        glfwSetKeyCallback(window, [](GLFWwindow window, int key, int action)
-        {
-            Event event;
-            event.type = EventKeyboard;
-            event.keyboard.window = window;
-            event.keyboard.key = key;
-            event.keyboard.action = action;
-            dispatch(window, event);
-        });
-        
-        return ptr;
-    }
-
     void Engine::Impl::refresh()
     {
-        while(true)
-        {
-            glfwPollEvents();
-            if(events.size() == 0)
-            {
-                break;
-            }
-            for(const auto& e : events)
-            {
-                for(const auto& h : eventHooks)
-                {
-                    if(auto f = h.lock())
-                    {
-                        (*f)(e);
-                    }
-                }
-                if(e.type == EventClose)
-                {
-                    quit("");
-                }
-                eventHooks.cleanup();
-            }
-            events.clear();
-        }
-
         for(const auto h : updateHooks)
         {
             if(auto f = h.lock())
@@ -115,13 +52,6 @@ namespace plum
     void Engine::quit(const std::string& message)
     {
         impl->quit(message);
-    }
-
-    std::shared_ptr<Engine::EventHook> Engine::addEventHook(const EventHook& hook)
-    {
-        auto ptr = std::make_shared<Engine::EventHook>(hook);
-        impl->eventHooks.append(ptr);
-        return ptr;
     }
 
     std::shared_ptr<Engine::UpdateHook> Engine::addUpdateHook(const UpdateHook& hook)

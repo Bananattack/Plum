@@ -3,17 +3,23 @@
 
 #include <string>
 #include <memory>
+#include <functional>
 #include "color.h"
 #include "blending.h"
 
 namespace plum
 {
+    class Event;
     class Image;
     class Engine;
+    class Input;
+    class Keyboard;
     struct Transform;
     class Screen
     {
         public:
+            typedef std::function<void(const Event&)> EventHook;
+
             Screen(Engine& engine, int width, int height, int scale, bool win);
             ~Screen();
 
@@ -26,6 +32,10 @@ namespace plum
 
             void setOpacity(int value);
             void setTitle(const std::string& title);
+
+            Input& closeButton();
+            Keyboard& keyboard();
+            std::shared_ptr<EventHook> addEventHook(const EventHook& hook);
             void setResolution(int width, int height, int scale, bool win);
 
             void bind(Image& image);

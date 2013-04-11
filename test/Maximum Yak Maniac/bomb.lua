@@ -27,7 +27,7 @@ do local Self = {}
         end
 
         self.scale = self.baseScale + (math.sin(math.rad(self.timer) * 3) * 0.2)
-        if self.x < world.x + plum.screen.width then
+        if self.x < world.x + screen.width then
             self.timer = self.timer - 1
         end
 
@@ -70,11 +70,11 @@ do local Self = {}
     end
     
     function Self:render()
-        self.shadow:draw(self.x - world.x + self.frame.width / 2 - self.shadow.width / 2, world.floorY - self.shadow.height / 2)
+        self.shadow:draw(self.x - world.x + self.frame.width / 2 - self.shadow.width / 2, world.floorY - self.shadow.height / 2, screen)
         self.transform.angle = self.angle
         self.transform.scaleX = self.scale
         self.transform.scaleY = self.scale
-        self.frame:draw(self.x - world.x, self.y - self.frame.height + 20, self.transform)
+        self.frame:draw(self.x - world.x, self.y - self.frame.height + 20, self.transform, screen)
     end
     
     function Self:damage(damage, player)

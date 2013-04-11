@@ -6,6 +6,7 @@
 namespace plum
 {
     class Engine;
+    class Screen;
     class Input
     {
         public:
@@ -146,7 +147,7 @@ namespace plum
     class Keyboard
     {
         public:
-            Keyboard(Engine& engine);
+            Keyboard();
             ~Keyboard();
 
             Input& operator[](Key k);

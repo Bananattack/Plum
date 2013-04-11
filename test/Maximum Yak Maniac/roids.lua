@@ -35,9 +35,9 @@ do local Self = {}
     end
     
     function Self:render()
-        self.shadow:draw(self.x - world.x + self.frame.width / 2 - self.shadow.width / 2, world.floorY - self.shadow.height / 2)
+        self.shadow:draw(self.x - world.x + self.frame.width / 2 - self.shadow.width / 2, world.floorY - self.shadow.height / 2, screen)
         self.transform.angle = self.angle
-        self.frame:draw(self.x - world.x, self.y - self.frame.height + 20, self.transform)
+        self.frame:draw(self.x - world.x, self.y - self.frame.height + 20, self.transform, screen)
     end
     
     function Self:damage(damage, player)
@@ -49,8 +49,8 @@ do local Self = {}
             player:addTime(self.amount)
         end
 
-        if world.spawnOffset > plum.screen.width * 5 and math.random() < (world.spawnOffset > plum.screen.width * 15 and 0.3 or 0.1) then
-            table.insert(world.sprites, Bomb(world.x + math.random(0, plum.screen.width), -math.random(50, 100)))
+        if world.spawnOffset > screen.width * 5 and math.random() < (world.spawnOffset > screen.width * 15 and 0.3 or 0.1) then
+            table.insert(world.sprites, Bomb(world.x + math.random(0, screen.width), -math.random(50, 100)))
         end
     end
 end

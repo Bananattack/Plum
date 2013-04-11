@@ -30,6 +30,14 @@ namespace plum
                 {"__newindex", [](lua_State* L)
                 {
                     std::string fieldName(script::get<const char*>(L, 2));
+                    /* L, 3 is the value to set. */
+                    if(luaL_getmetafield(L, 1, std::string("set_" + fieldName).c_str()))
+                    {
+                        lua_pushvalue(L, 1);
+                        lua_pushvalue(L, 3);
+                        lua_call(L, 2, 0);
+                        return 0;
+                    }
                     if(luaL_getmetafield(L, 1, std::string("get_" + fieldName).c_str()))
                     {
                         luaL_error(L, "Attempt to modify readonly field '%s' on plum_timer.", fieldName.c_str());
@@ -58,6 +66,37 @@ namespace plum
                 {
                     script::push(L, script::instance(L).timer().getFPS());
                     return 1;
+                }},
+                {"get_speed", [](lua_State* L)
+                {
+                    switch(script::instance(L).timer().getSpeed())
+                    {
+                        case plum::TimerSpeedSlowMotion:
+                            script::push(L, "s");
+                            return 1;
+                        case plum::TimerSpeedFastForward:
+                            script::push(L, "f");
+                            return 1;
+                        default:
+                            script::push(L, "n");
+                            return 1;
+                    }
+                }},
+                {"set_speed", [](lua_State* L)
+                {
+                    const char* speed = script::get<const char*>(L, 2);
+                    switch(speed[0])
+                    {
+                        case 's':
+                            script::instance(L).timer().setSpeed(plum::TimerSpeedSlowMotion);
+                            return 0;
+                        case 'f':
+                            script::instance(L).timer().setSpeed(plum::TimerSpeedFastForward);
+                            return 0;
+                        default:
+                            script::instance(L).timer().setSpeed(plum::TimerSpeedNormal);
+                            return 0;
+                    }
                 }},
                 {nullptr, nullptr}
             };

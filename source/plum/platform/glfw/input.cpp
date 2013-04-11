@@ -1,6 +1,7 @@
 #include <functional>
 
 #include "engine.h"
+#include "../../core/screen.h"
 #include "../../core/input.h"
 
 namespace plum    
@@ -122,38 +123,27 @@ namespace plum
 
 
 
-    class Keyboard::Impl
+    Keyboard::Impl::Impl()
     {
-        public:
-            Impl(Engine& engine)
-                : engine(engine)
-            {
-                hook = engine.addEventHook([this](const Event& event){ handle(event); });
-            }
+    }
 
-            ~Impl()
-            {
-            }
+    Keyboard::Impl::~Impl()
+    {
+    }
 
-            void handle(const Event& event)
-            {
-                switch(event.type)
-                {
-                    case EventKeyboard:
-                        keys[event.keyboard.key].setPressed(event.keyboard.action == GLFW_PRESS);
-                        break;
-                    default: break;
-                }
-            }
-            
+    void Keyboard::Impl::handle(const Event& event)
+    {
+        switch(event.type)
+        {
+            case EventKeyboard:
+                keys[event.keyboard.key].setPressed(event.keyboard.action == GLFW_PRESS);
+                break;
+            default: break;
+        }
+    }
 
-            Engine& engine;
-            std::shared_ptr<Engine::EventHook> hook;
-            Input keys[GLFW_KEY_LAST];
-    };
-
-    Keyboard::Keyboard(Engine& engine)
-        : impl(new Impl(engine))
+    Keyboard::Keyboard()
+        : impl(new Impl())
     {
     }
 

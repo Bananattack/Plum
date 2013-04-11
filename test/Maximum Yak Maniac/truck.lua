@@ -72,7 +72,7 @@ do local Self = {}
             else
                 self.dispose = true
                 
-                local bad = self.evil > (world.spawnOffset > plum.screen.width * 15 and 0.2 or 0.6)
+                local bad = self.evil > (world.spawnOffset > screen.width * 15 and 0.2 or 0.6)
                 if bad and math.random() < 0.3 then
                     table.insert(world.sprites, Bomb(self.x + self.frame.width / 2 + math.random(-200, 100), self.y - self.frame.height / 2 - math.random(-self.frame.height / 4, self.frame.height / 4)))
                 else
@@ -81,25 +81,25 @@ do local Self = {}
                     end
                 end
                 if bad and math.random() < 0.4 then
-                    table.insert(world.sprites, Bomb(world.x + math.random(0, plum.screen.width), -math.random(20, 50)))
+                    table.insert(world.sprites, Bomb(world.x + math.random(0, screen.width), -math.random(20, 50)))
                 end
             end
         end
         
         if self.dir == 'left' and self.x + self.frame.width < world.x then
             self.dispose = true
-        elseif self.dir == 'right' and self.x > world.x + plum.screen.width then
+        elseif self.dir == 'right' and self.x > world.x + screen.width then
             self.dispose = true
         end
     end
     
     function Self:render()
-        plum.screen.opacity = self.opacity
+        screen.opacity = self.opacity
         self.transform.angle = self.angle
         self.transform.scaleX = self.scale
         self.transform.scaleY = self.scale
-        self.frame:draw(self.x - world.x + (self.derailed and math.random(-5, 5) or 0), self.y - self.frame.height + 20 + (self.derailed and math.random(-5, 5) or 0), self.transform)
-        plum.screen.opacity = 255
+        self.frame:draw(self.x - world.x + (self.derailed and math.random(-5, 5) or 0), self.y - self.frame.height + 20 + (self.derailed and math.random(-5, 5) or 0), self.transform, screen)
+        screen.opacity = 255
     end
     
     function Self:damage(damage, player)

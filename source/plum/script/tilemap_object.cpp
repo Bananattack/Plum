@@ -121,8 +121,9 @@ namespace plum
                     int destY = script::get<int>(L, 7);
                     int tilesWide = script::get<int>(L, 8);
                     int tilesHigh = script::get<int>(L, 9);
+                    auto screen = script::ptr<Screen>(L, 10);
 
-                    m->draw(*img, *spr, worldX, worldY, destX, destY, tilesWide, tilesHigh, script::instance(L).screen());
+                    m->draw(*img, *spr, worldX, worldY, destX, destY, tilesWide, tilesHigh, *screen);
                     return 0;
                 }},
                 {nullptr, nullptr}

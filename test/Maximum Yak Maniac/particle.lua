@@ -14,7 +14,7 @@ do local Self = {}
     end
 
     function Self:render()
-        self.frame:draw(self.x - world.x, self.y)
+        self.frame:draw(self.x - world.x, self.y, screen)
     end
 
     function Self:update()

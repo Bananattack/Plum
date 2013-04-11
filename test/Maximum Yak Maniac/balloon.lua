@@ -36,9 +36,9 @@ do local Self = {}
     end
     
     function Self:render()
-        self.shadow:draw(self.x - world.x + self.frame.width / 2 - self.shadow.width / 2, world.floorY - self.shadow.height / 2)
+        self.shadow:draw(self.x - world.x + self.frame.width / 2 - self.shadow.width / 2, world.floorY - self.shadow.height / 2, screen)
         self.transform.angle = self.angle
-        self.frame:draw(self.x - world.x, self.y - self.frame.height + 100, self.transform)
+        self.frame:draw(self.x - world.x, self.y - self.frame.height + 100, self.transform, screen)
     end
     
     function Self:damage(damage, player)
@@ -46,11 +46,11 @@ do local Self = {}
         table.insert(world.sprites, Particle(self.x + math.random(-20, self.frame.width + 20), self.y + math.random(0, self.frame.height)))
         table.insert(world.sprites, Particle(self.x + math.random(-20, self.frame.width + 20), self.y + math.random(0, self.frame.height)))
         if math.random() < 0.65 then
-            table.insert(world.sprites, Roids(math.random(math.max(world.x, self.x - 20), math.min(world.x + plum.screen.width, self.x + 20)), self.y - 30 - math.random(0, self.frame.height)))
-        elseif math.random() < (world.spawnOffset > plum.screen.width * 15 and 0.4 or 0.15) then
-            table.insert(world.sprites, Bomb(math.random(math.max(world.x, self.x - 20), math.min(world.x + plum.screen.width, self.x + 20)), self.y - 30 - math.random(0, self.frame.height)))
+            table.insert(world.sprites, Roids(math.random(math.max(world.x, self.x - 20), math.min(world.x + screen.width, self.x + 20)), self.y - 30 - math.random(0, self.frame.height)))
+        elseif math.random() < (world.spawnOffset > screen.width * 15 and 0.4 or 0.15) then
+            table.insert(world.sprites, Bomb(math.random(math.max(world.x, self.x - 20), math.min(world.x + screen.width, self.x + 20)), self.y - 30 - math.random(0, self.frame.height)))
         end
-        if math.random() < (world.spawnOffset > plum.screen.width * 15 and 0.6 or 0.5) then
+        if math.random() < (world.spawnOffset > screen.width * 15 and 0.6 or 0.5) then
             if math.random() < 0.5 then
                 table.insert(world.sprites, Truck(world.spawnOffset + 200, world.floorY - 50, 'left'))
             else

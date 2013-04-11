@@ -5,6 +5,8 @@
 #include <vector>
 
 #include "../../core/engine.h"
+#include "../../core/screen.h"
+#include "../../core/input.h"
 
 namespace plum
 {
@@ -18,15 +20,12 @@ namespace plum
     {
         public:
             EventType type;
+            GLFWwindow window;
             union
             {
+                struct {} close;
                 struct
                 {
-                    GLFWwindow window;
-                } close;
-                struct
-                {
-                    GLFWwindow window;
                     int key, action;
                 } keyboard;
             };
@@ -68,41 +67,22 @@ namespace plum
             std::vector<std::weak_ptr<T>> items;
     };
 
-    class WindowContext
+    class Keyboard::Impl
     {
         public:
-            WindowContext(Engine::Impl* impl, GLFWwindow window)
-                : impl_(impl), window_(window)
-            {
-            }
+            Impl();
+            ~Impl();
 
-            ~WindowContext()
-            {
-                glfwDestroyWindow(window_);
-            }
-
-            GLFWwindow window() const
-            {
-                return window_;
-            }
-
-            Engine::Impl* impl() const
-            {
-                return impl_;
-            }
-
-        private:
-            Engine::Impl* impl_;
-            GLFWwindow window_;
+            void handle(const Event& event);
+            
+            std::shared_ptr<Screen::EventHook> hook;
+            Input keys[GLFW_KEY_LAST];
     };
 
     class Engine::Impl
     {
         public:
-            WeakList<std::function<void(const Event&)>> eventHooks;
             WeakList<std::function<void()>> updateHooks;
-            WeakList<WindowContext> windows;
-            std::vector<Event> events;
 
             Impl()
             {
@@ -119,7 +99,6 @@ namespace plum
             }
 
             void quit(const std::string& message);
-            std::shared_ptr<WindowContext> registerWindow(GLFWwindow win);
             void refresh();
     };
 }

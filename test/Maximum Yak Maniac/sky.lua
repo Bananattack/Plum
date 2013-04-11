@@ -3,24 +3,24 @@ do local Self = {}
         local self = setmetatable({}, {__index = Self})
         self.clouds = {{}, {}}
         self.cloudMovementSpeed = { 0.0625, 0.50 }
-        self.spawnOffset = { plum.screen.width + 50, plum.screen.width + 100 }
+        self.spawnOffset = { screen.width + 50, screen.width + 100 }
         return self
     end
     
     function Self:renderLayer(layer)
-        plum.screen.opacity = layer == 2 and 127 or 192
+        screen.opacity = layer == 2 and 127 or 192
         for i, cloud in ipairs(self.clouds[layer]) do
-            cloud.image:draw(cloud.x - world.x, cloud.y)
+            cloud.image:draw(cloud.x - world.x, cloud.y, screen)
         end
-        --resource.font.plain:PrintCenter(plum.screen.width / 2, layer * 10, tostring(#self.clouds[layer]))
-        plum.screen.opacity = 255
+        --resource.font.plain:PrintCenter(screen.width / 2, layer * 10, tostring(#self.clouds[layer]))
+        screen.opacity = 255
     end
     
     function Self:update()
         -- Spawn new clouds
         for layer = 1, 2 do
-            if self.spawnOffset[layer] < world.x + plum.screen.width then
-                self.spawnOffset[layer] = world.x + plum.screen.width
+            if self.spawnOffset[layer] < world.x + screen.width then
+                self.spawnOffset[layer] = world.x + screen.width
             end
   
             -- Move clouds
@@ -37,7 +37,7 @@ do local Self = {}
                 if layer == 1 then
                     c = Cloud(self.spawnOffset[layer], math.random(0,  80), layer)
                 elseif layer == 2 then
-                    c = Cloud(self.spawnOffset[layer], math.random(100, plum.screen.height - 80), layer)
+                    c = Cloud(self.spawnOffset[layer], math.random(100, screen.height - 80), layer)
                 end
                 if c then
                     if layer == 1 then

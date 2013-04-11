@@ -75,8 +75,8 @@ do local Self = {}
         end
     end
 
-    local function printChar(self, x, y, c)
-        self.image:drawFrame(self.sheet, c - 32, x, y)
+    local function printChar(self, x, y, c, dest)
+        self.image:drawFrame(self.sheet, c - 32, x, y, dest)
     end
 
     function Self:textWidth(s, k)
@@ -107,7 +107,7 @@ do local Self = {}
         return k and w or maxWidth
     end
 
-    function Self:print(x, y, s)
+    function Self:print(x, y, s, dest)
         local widths = self.widths
         local height = self.cellHeight
         local letterSpacing = self.letterSpacing
@@ -121,13 +121,13 @@ do local Self = {}
             elseif c == 9 then
                 j = j + widths[1] * 4
             elseif c >= 32 and c < 128 then
-                printChar(self, j, y, c)
+                printChar(self, j, y, c, dest)
                 j = j + widths[c - 31] + letterSpacing
             end
         end
     end
 
-    function Self:printRight(x, y, s)
+    function Self:printRight(x, y, s, dest)
         local widths = self.widths
         local height = self.cellHeight
         local letterSpacing = self.letterSpacing
@@ -145,13 +145,13 @@ do local Self = {}
             elseif c == 9 then
                 j = j + widths[1] * 4
             elseif c >= 32 and c < 128 then
-                printChar(self, j - ofs, y, c)
+                printChar(self, j - ofs, y, c, dest)
                 j = j + widths[c - 31] + letterSpacing
             end
         end
     end
 
-    function Self:printCenter(x, y, s)
+    function Self:printCenter(x, y, s, dest)
         local widths = self.widths
         local height = self.cellHeight
         local letterSpacing = self.letterSpacing
@@ -169,7 +169,7 @@ do local Self = {}
             elseif c == 9 then
                 j = j + widths[1] * 4
             elseif c >= 32 and c < 128 then
-                printChar(self, j - ofs, y, c)
+                printChar(self, j - ofs, y, c, dest)
                 j = j + widths[c - 31] + letterSpacing
             end
         end

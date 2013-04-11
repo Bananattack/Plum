@@ -2,12 +2,88 @@
 #include <GL/glfw3.h>
 
 #include "engine.h"
+#include "../../core/input.h"
 #include "../../core/screen.h"
 #include "../../core/image.h"
 #include "../../core/transform.h"
 
 namespace plum
 {
+    class Screen::Impl
+    {
+        public:
+            Impl(Engine& engine)
+                : engine(engine),
+                windowed(true),
+                transformBound(false),
+                trueWidth(0),
+                trueHeight(0),
+                width(0),
+                height(0),
+                scale(1),
+                opacity(255)
+            {
+                hook = engine.addUpdateHook([this](){ update(); });
+            }
+
+            ~Impl()
+            {
+                if(window)
+                {
+                    glfwDestroyWindow(window);
+                }
+            }
+
+            void update()
+            {
+                while(true)
+                {
+                    glfwPollEvents();
+                    if(events.size() == 0)
+                    {
+                        break;
+                    }
+                    for(const auto& e : events)
+                    {
+                        for(const auto& h : eventHooks)
+                        {
+                            if(auto f = h.lock())
+                            {
+                                (*f)(e);
+                            }
+                        }
+                        if(e.type == EventClose)
+                        {
+                            closeButton.setPressed(true);
+                        }
+                        eventHooks.cleanup();
+                    }
+                    events.clear();
+                }
+
+                glfwSwapBuffers(window);
+            }
+
+            WeakList<std::function<void(const Event&)>> eventHooks;
+            std::vector<Event> events;
+
+            Engine& engine;
+            Input closeButton;
+            Keyboard keyboard;
+
+            std::shared_ptr<Engine::UpdateHook> hook;
+            GLFWwindow window;
+
+            bool windowed;
+            bool transformBound;
+
+            int trueWidth, trueHeight;
+            int width, height;
+            int scale;
+            int opacity;
+            std::string title;
+    };
+
     namespace
     {
         void useHardwareBlender(BlendMode mode)
@@ -32,48 +108,13 @@ namespace plum
                     break;
             }
         }
+
+        void dispatch(GLFWwindow window, const Event& event)
+        {
+            auto screen = (Screen*) glfwGetWindowUserPointer(window);
+            screen->impl->events.push_back(event);
+        }
     }
-
-    class Screen::Impl
-    {
-        public:
-            Impl(Engine& engine)
-                : engine(engine),
-                windowed(true),
-                transformBound(false),
-                trueWidth(0),
-                trueHeight(0),
-                width(0),
-                height(0),
-                scale(1),
-                opacity(255)
-            {
-                hook = engine.addUpdateHook([this](){ update(); });
-            }
-
-            ~Impl()
-            {
-            }
-
-            void update()
-            {
-                glfwSwapBuffers(context->window());
-            }
-
-            Engine& engine;
-            std::shared_ptr<Engine::UpdateHook> hook;
-            std::shared_ptr<WindowContext> context;
-
-            bool windowed;
-            bool transformBound;
-
-
-            int trueWidth, trueHeight;
-            int width, height;
-            int scale;
-            int opacity;
-            std::string title;
-    };
 
     Screen::Screen(Engine& engine, int width, int height, int scale, bool win)
         : impl(new Impl(engine))
@@ -123,7 +164,24 @@ namespace plum
     void Screen::setTitle(const std::string& title)
     {
         impl->title = title;
-        glfwSetWindowTitle(impl->context->window(), title.c_str());
+        glfwSetWindowTitle(impl->window, title.c_str());
+    }
+
+    Input& Screen::closeButton()
+    {
+        return impl->closeButton;
+    }
+
+    Keyboard& Screen::keyboard()
+    {
+        return impl->keyboard;
+    }
+
+    std::shared_ptr<Screen::EventHook> Screen::addEventHook(const EventHook& hook)
+    {
+        auto ptr = std::make_shared<Screen::EventHook>(hook);
+        impl->eventHooks.append(ptr);
+        return ptr;
     }
 
     void Screen::setResolution(int width, int height, int scale, bool win)
@@ -171,7 +229,30 @@ namespace plum
 
         glfwSwapInterval(1);
         glfwShowWindow(window);
-        impl->context = impl->engine.impl->registerWindow(window);
+
+        glfwSetWindowUserPointer(window, this);
+        glfwSetWindowCloseCallback(window, [](GLFWwindow window)
+        {
+            Event event;
+            event.type = EventClose;
+            event.window = window;
+            dispatch(window, event);
+            return GL_TRUE;
+        });
+
+        glfwSetKeyCallback(window, [](GLFWwindow window, int key, int action)
+        {
+            Event event;
+            event.type = EventKeyboard;
+            event.window = window;
+            event.keyboard.key = key;
+            event.keyboard.action = action;
+            dispatch(window, event);
+        });
+
+        impl->keyboard.impl->hook = addEventHook([this](const Event& event){ impl->keyboard.impl->handle(event); });
+
+        impl->window = window;
     }
 
     void Screen::bind(Image& image)

@@ -151,20 +151,18 @@ namespace plum
             lua_setglobal(L, "plum");
 
             // Load all the submodule and object definitions contained within Plum.
-            initVideoModule(L);
             initTimerModule(L);
 
-            initInputObject(L);
-            initKeyboardModule(L);
-
-            initSoundObject(L);
-            initSongObject(L);
-            initFileObject(L);
             initCanvasObject(L);
-            initTransformObject(L);
+            initFileObject(L);
             initImageObject(L);
+            initInputObject(L);
+            initScreenObject(L);
             initSheetObject(L);
+            initSongObject(L);
+            initSoundObject(L);
             initTilemapObject(L);
+            initTransformObject(L);
         }
     }
 }

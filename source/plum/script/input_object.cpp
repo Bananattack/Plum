@@ -51,22 +51,6 @@ namespace plum
             };
             luaL_setfuncs(L, functions, 0);
             lua_pop(L, 1);
-
-            // Push plum namespace.
-            lua_getglobal(L, "plum");
-
-            // plum.input = <function inputNew>
-            script::push(L, "_Input");
-            lua_pushcfunction(L, [](lua_State* L)
-            {
-                Input* input = (Input*) lua_touserdata(L, 1);
-                script::push(L, input, LUA_NOREF);
-                return 1;
-            });
-            lua_settable(L, -3);
-
-            // Pop plum namespace.
-            lua_pop(L, 1);
         }
     }
 }

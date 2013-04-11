@@ -41,10 +41,7 @@ namespace plum
             void refresh();
             void quit(const std::string& message = "");
 
-            typedef std::function<void(const Event&)> EventHook;
             typedef std::function<void()> UpdateHook;
-
-            std::shared_ptr<EventHook> addEventHook(const EventHook& hook);
             std::shared_ptr<UpdateHook> addUpdateHook(const UpdateHook& hook);
 
             class Impl;

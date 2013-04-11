@@ -5,7 +5,7 @@ do local Self = {}
         self.isBuilding = true
         self.isBig = math.random() < 0.1
         self.hasRoids = math.random() < 0.7
-        self.isBad = world.spawnOffset > plum.screen.width * 5 and math.random() > 0.6
+        self.isBad = world.spawnOffset > screen.width * 5 and math.random() > 0.6
         self.z = 0
         self.score = 5000
         self.frame = self.isBig and randomItem(resource.image.bigBuilding) or randomItem(resource.image.building)
@@ -52,7 +52,7 @@ do local Self = {}
         if self.shakeTimer > 0 then
             x = x + math.random(-5, 5)
         end
-        self.frame:draw(x, self.y)
+        self.frame:draw(x, self.y, screen)
     end
     
     function Self:damage(damage, player)
@@ -62,10 +62,10 @@ do local Self = {}
         table.insert(world.sprites, Particle(self.x + math.random(-20, self.frame.width - 44), self.y + math.random(0, self.frame.height)))
         if self.hasRoids and math.random(0, 100) < 75 then
             if self.isBad and math.random(0, 100) < 50 then
-                table.insert(world.sprites, Bomb(math.random(math.max(world.x, self.x - plum.screen.width / 3), math.min(world.x + plum.screen.width, self.x + plum.screen.width / 3)), math.random(-300, -10), self.isBad))
+                table.insert(world.sprites, Bomb(math.random(math.max(world.x, self.x - screen.width / 3), math.min(world.x + screen.width, self.x + screen.width / 3)), math.random(-300, -10), self.isBad))
             else
                 for i = 1, math.random(3, 5) do
-                    table.insert(world.sprites, Roids(math.random(math.max(world.x, self.x - plum.screen.width / 3), math.min(world.x + plum.screen.width, self.x + plum.screen.width / 3)), math.random(-300, -10), self.isBad))
+                    table.insert(world.sprites, Roids(math.random(math.max(world.x, self.x - screen.width / 3), math.min(world.x + screen.width, self.x + screen.width / 3)), math.random(-300, -10), self.isBad))
                 end
             end
         end

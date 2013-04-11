@@ -47,15 +47,16 @@ namespace plum
                     auto img = script::ptr<Image>(L, 1);
                     auto x = script::get<int>(L, 2);
                     auto y = script::get<int>(L, 3);
-                    auto transform = script::is<nullptr_t>(L, 4) ? nullptr : script::ptr<Transform>(L, 4);
+                    auto transform = script::is<nullptr_t>(L, 5) ? nullptr : script::ptr<Transform>(L, 4);
+                    auto screen = script::is<nullptr_t>(L, 5) ? script::ptr<Screen>(L, 4) : script::ptr<Screen>(L, 5);
 
                     if(transform)
                     {
-                        img->draw(x, y, *transform, script::instance(L).screen());
+                        img->draw(x, y, *transform, *screen);
                     }
                     else
                     {
-                        img->draw(x, y, script::instance(L).screen());
+                        img->draw(x, y, *screen);
                     }
 
                     return 0;
@@ -67,15 +68,16 @@ namespace plum
                     auto frame = script::get<int>(L, 3);
                     auto x = script::get<int>(L, 4);
                     auto y = script::get<int>(L, 5);
-                    auto transform = script::is<nullptr_t>(L, 6) ? nullptr : script::ptr<Transform>(L, 6);
+                    auto transform = script::is<nullptr_t>(L, 7) ? nullptr : script::ptr<Transform>(L, 6);
+                    auto screen = script::is<nullptr_t>(L, 7) ? script::ptr<Screen>(L, 6) : script::ptr<Screen>(L, 7);
 
                     if(transform)
                     {
-                        img->drawFrame(*sheet, frame, x, y, *transform, script::instance(L).screen());
+                        img->drawFrame(*sheet, frame, x, y, *transform, *screen);
                     }
                     else
                     {
-                        img->drawFrame(*sheet, frame, x, y, script::instance(L).screen());
+                        img->drawFrame(*sheet, frame, x, y, *screen);
                     }
 
                     return 0;
