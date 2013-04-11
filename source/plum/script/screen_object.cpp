@@ -101,6 +101,18 @@ namespace plum
                     screen->setTitle(script::get<const char*>(L, 2));
                     return 0;
                 }},
+                {"get_defaultClose", [](lua_State* L)
+                {
+                    auto screen = script::ptr<Screen>(L, 1);
+                    script::push(L, screen->getDefaultClose());
+                    return 1;
+                }},
+                {"set_defaultClose", [](lua_State* L)
+                {
+                    auto screen = script::ptr<Screen>(L, 1);
+                    screen->setDefaultClose(script::get<bool>(L, 2));
+                    return 0;
+                }},
                 {"get_key", [](lua_State* L)
                 {
                     script::wrapped<Screen>(L, 1)->getAttribute(L, KeyAttribute);

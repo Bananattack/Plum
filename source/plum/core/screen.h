@@ -23,6 +23,7 @@ namespace plum
             Screen(Engine& engine, int width, int height, int scale, bool win);
             ~Screen();
 
+            bool getDefaultClose() const;
             int getWidth() const;
             int getHeight() const;
             int getTrueWidth() const;
@@ -30,8 +31,9 @@ namespace plum
             int getOpacity() const;
             const std::string& getTitle() const;
 
+            void setDefaultClose(bool value);
             void setOpacity(int value);
-            void setTitle(const std::string& title);
+            void setTitle(const std::string& value);
 
             Input& closeButton();
             Keyboard& keyboard();

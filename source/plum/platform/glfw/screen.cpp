@@ -15,6 +15,7 @@ namespace plum
             Impl(Engine& engine)
                 : engine(engine),
                 window(nullptr),
+                defaultClose(true),
                 windowed(true),
                 transformBound(false),
                 trueWidth(0),
@@ -59,6 +60,10 @@ namespace plum
                                 resize(e.resize.width, e.resize.height, false);
                                 break;
                             case EventClose:
+                                if(defaultClose)
+                                {
+                                    engine.quit();
+                                }
                                 closeButton.setPressed(true);
                                 break;
                         }
@@ -83,6 +88,7 @@ namespace plum
             std::shared_ptr<Engine::UpdateHook> hook;
             GLFWwindow window;
 
+            bool defaultClose;
             bool windowed;
             bool transformBound;
 
@@ -135,6 +141,11 @@ namespace plum
     {
     }
 
+    bool Screen::getDefaultClose() const
+    {
+        return impl->defaultClose;
+    }
+
     int Screen::getWidth() const
     {
         return impl->width;
@@ -165,15 +176,20 @@ namespace plum
         return impl->title;
     }
 
+    void Screen::setDefaultClose(bool value)
+    {
+        impl->defaultClose = value;
+    }
+
     void Screen::setOpacity(int value)
     {
         impl->opacity = value;
     }
 
-    void Screen::setTitle(const std::string& title)
+    void Screen::setTitle(const std::string& value)
     {
-        impl->title = title;
-        glfwSetWindowTitle(impl->window, title.c_str());
+        impl->title = value;
+        glfwSetWindowTitle(impl->window, value.c_str());
     }
 
     Input& Screen::closeButton()
