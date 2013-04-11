@@ -253,7 +253,6 @@ namespace plum
         impl->keyboard.impl->hook = addEventHook([this](const Event& event){ impl->keyboard.impl->handle(event); });
 
         impl->window = window;
-        glfwMakeContextCurrent(impl->engine.impl->root);
     }
 
     void Screen::bind(Image& image)
@@ -304,7 +303,6 @@ namespace plum
         }
         glDisableClientState(GL_VERTEX_ARRAY);
         glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-        glfwMakeContextCurrent(impl->engine.impl->root);
     }
 
     void Screen::clear(Color color)

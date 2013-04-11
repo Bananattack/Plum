@@ -119,6 +119,7 @@ function render()
     for i, f in ipairs(renderList) do
         f()
     end
+    screen2:clear(0, 0, screen.width, screen.height, plum.color.rgb(math.random(0, 255), math.random(0, 255), math.random(0, 255)))
 
     plum.refresh()
 end
