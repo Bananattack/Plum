@@ -9,6 +9,26 @@
 
 namespace plum
 {
+    Engine::Impl::Impl()
+    {
+        if(!glfwInit())
+        {
+            quit("Couldn't initialize glfw.\n");
+        }
+        glfwSetTime(0.0);
+
+        glfwWindowHint(GLFW_VISIBLE, GL_FALSE);
+        root = glfwCreateWindow(1, 1, GLFW_WINDOWED, "", nullptr);
+        glfwMakeContextCurrent(root);
+        glEnable(GL_TEXTURE_2D);
+    }
+
+    Engine::Impl::~Impl()
+    {
+        glfwDestroyWindow(root);
+        glfwTerminate();
+    }
+
     void Engine::Impl::quit(const std::string& message)
     {
         if(message.length())

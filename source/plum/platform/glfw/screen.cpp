@@ -199,7 +199,7 @@ namespace plum
             height = 480;
         }
 
-        auto window = glfwCreateWindow(width * scale, height * scale, (impl->windowed ? GLFW_WINDOWED : GLFW_FULLSCREEN), "", nullptr);
+        auto window = glfwCreateWindow(width * scale, height * scale, (impl->windowed ? GLFW_WINDOWED : GLFW_FULLSCREEN), "", impl->engine.impl->root);
         if(!window)
         {
             throw std::runtime_error("Screen settings were not compatible your graphics card.\r\n");
@@ -253,10 +253,12 @@ namespace plum
         impl->keyboard.impl->hook = addEventHook([this](const Event& event){ impl->keyboard.impl->handle(event); });
 
         impl->window = window;
+        glfwMakeContextCurrent(impl->engine.impl->root);
     }
 
     void Screen::bind(Image& image)
     {
+        glfwMakeContextCurrent(impl->window);
         glColor4ub(255, 255, 255, getOpacity());
         useHardwareBlender(BlendPreserve);
         glEnableClientState(GL_VERTEX_ARRAY);
@@ -268,6 +270,8 @@ namespace plum
 
     void Screen::bind(const Transform& transform, int x, int y, int width, int height)
     {
+        glfwMakeContextCurrent(impl->window);
+
         uint8_t r, g, b, a;
         transform.tint.channels(r, g, b, a);
         glColor4ub(r, g, b, a * getOpacity() / 255);
@@ -300,6 +304,7 @@ namespace plum
         }
         glDisableClientState(GL_VERTEX_ARRAY);
         glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+        glfwMakeContextCurrent(impl->engine.impl->root);
     }
 
     void Screen::clear(Color color)
@@ -319,6 +324,8 @@ namespace plum
 
     void Screen::clear(int x, int y, int x2, int y2, Color color)
     {
+        glfwMakeContextCurrent(impl->window);
+
         uint8_t r, g, b, a;
         color.channels(r, g, b, a);
         glColor4ub(r, g, b, a * getOpacity() / 255);
@@ -345,5 +352,6 @@ namespace plum
         glVertexPointer(2, GL_DOUBLE, 0, vertexArray);
         glDrawArrays(GL_QUADS, 0, 4);
         glDisableClientState(GL_VERTEX_ARRAY);
+        glfwMakeContextCurrent(impl->engine.impl->root);
     }
 }

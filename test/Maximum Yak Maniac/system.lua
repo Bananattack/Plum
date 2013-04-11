@@ -119,6 +119,7 @@ function render()
     for i, f in ipairs(renderList) do
         f()
     end
+
     plum.refresh()
 end
 

@@ -83,20 +83,10 @@ namespace plum
     {
         public:
             WeakList<std::function<void()>> updateHooks;
+            GLFWwindow root;
 
-            Impl()
-            {
-                if(!glfwInit())
-                {
-                    quit("Couldn't initialize glfw.\n");
-                }
-                glfwSetTime(0.0);
-            }
-
-            ~Impl()
-            {
-                glfwTerminate();
-            }
+            Impl();
+            ~Impl();
 
             void quit(const std::string& message);
             void refresh();
