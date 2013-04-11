@@ -14,6 +14,7 @@ namespace plum
     {
         EventClose,
         EventKeyboard,
+        EventResize
     };
 
     class Event
@@ -23,7 +24,10 @@ namespace plum
             GLFWwindow window;
             union
             {
-                struct {} close;
+                struct
+                {
+                    int width, height;
+                } resize;
                 struct
                 {
                     int key, action;

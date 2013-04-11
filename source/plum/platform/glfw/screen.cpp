@@ -14,6 +14,7 @@ namespace plum
         public:
             Impl(Engine& engine)
                 : engine(engine),
+                window(nullptr),
                 windowed(true),
                 transformBound(false),
                 trueWidth(0),
@@ -52,9 +53,14 @@ namespace plum
                                 (*f)(e);
                             }
                         }
-                        if(e.type == EventClose)
+                        switch(e.type)
                         {
-                            closeButton.setPressed(true);
+                            case EventResize:
+                                resize(e.resize.width, e.resize.height, false);
+                                break;
+                            case EventClose:
+                                closeButton.setPressed(true);
+                                break;
                         }
                         eventHooks.cleanup();
                     }
@@ -63,6 +69,9 @@ namespace plum
 
                 glfwSwapBuffers(window);
             }
+
+            std::shared_ptr<Screen::EventHook> addEventHook(const EventHook& hook);
+            void resize(int trueWidth, int trueHeight, bool windowed);
 
             WeakList<std::function<void(const Event&)>> eventHooks;
             std::vector<Event> events;
@@ -111,8 +120,8 @@ namespace plum
 
         void dispatch(GLFWwindow window, const Event& event)
         {
-            auto screen = (Screen*) glfwGetWindowUserPointer(window);
-            screen->impl->events.push_back(event);
+            auto impl = (Screen::Impl*) glfwGetWindowUserPointer(window);
+            impl->events.push_back(event);
         }
     }
 
@@ -177,34 +186,73 @@ namespace plum
         return impl->keyboard;
     }
 
-    std::shared_ptr<Screen::EventHook> Screen::addEventHook(const EventHook& hook)
+    std::shared_ptr<Screen::EventHook> Screen::Impl::addEventHook(const EventHook& hook)
     {
         auto ptr = std::make_shared<Screen::EventHook>(hook);
-        impl->eventHooks.append(ptr);
+        eventHooks.append(ptr);
         return ptr;
     }
 
-    void Screen::setResolution(int width, int height, int scale, bool win)
+    std::shared_ptr<Screen::EventHook> Screen::addEventHook(const EventHook& hook)
     {
-        impl->windowed = win;
+        return impl->addEventHook(hook);
+    }
 
-        impl->width = width;
-        impl->height = height;
-        impl->scale = scale;
+    void Screen::Impl::resize(int trueWidth, int trueHeight, bool windowed)
+    {
+        this->windowed = windowed;
 
-        // Fullscreen is usually not supported for low-res, so upscale everything!
-        if(!impl->windowed && (width < 640 || height < 480))
-        {
-            width = 640;
-            height = 480;
-        }
-
-        auto window = glfwCreateWindow(width * scale, height * scale, (impl->windowed ? GLFW_WINDOWED : GLFW_FULLSCREEN), "", impl->engine.impl->root);
+        // TODO: borderless fake fullscreen mode.
         if(!window)
         {
-            throw std::runtime_error("Screen settings were not compatible your graphics card.\r\n");
+            auto window = glfwCreateWindow(trueWidth, trueHeight, (windowed ? GLFW_WINDOWED : GLFW_WINDOWED), "", engine.impl->root);
+            if(!window)
+            {
+                throw std::runtime_error("Screen settings were not compatible your graphics card.\r\n");
+            }
+            glfwSetWindowUserPointer(window, this);
+            glfwSetWindowCloseCallback(window, [](GLFWwindow window)
+            {
+                Event event;
+                event.type = EventClose;
+                event.window = window;
+                dispatch(window, event);
+                return GL_TRUE;
+            });
+
+            glfwSetKeyCallback(window, [](GLFWwindow window, int key, int action)
+            {
+                Event event;
+                event.type = EventKeyboard;
+                event.window = window;
+                event.keyboard.key = key;
+                event.keyboard.action = action;
+                dispatch(window, event);
+            });
+
+            glfwSetWindowSizeCallback(window, [](GLFWwindow window, int w, int h)
+            {
+                Event event;
+                event.type = EventResize;
+                event.window = window;
+                event.resize.width = w;
+                event.resize.height = h;
+                dispatch(window, event);
+            });
+
+            keyboard.impl->hook = addEventHook([this](const Event& event){ keyboard.impl->handle(event); });
+
+            glfwSwapInterval(1);
+            glfwShowWindow(window);
+
+            this->window = window;
         }
-        glfwGetWindowSize(window, &impl->trueWidth, &impl->trueHeight);
+        glfwGetWindowSize(window, &trueWidth, &trueHeight);
+        scale = std::max(std::min((trueWidth + width / 2) / width, (trueWidth + height / 2) / height), 1);
+        glfwSetWindowSize(window, width * scale, height * scale);
+
+        glfwGetWindowSize(window, &trueWidth, &trueHeight);
+        scale = std::max(std::min(trueWidth / width, trueHeight / height), 1);
 
         glfwMakeContextCurrent(window);
         glEnable(GL_BLEND);
@@ -213,46 +261,33 @@ namespace plum
 
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
-        glOrtho(0, impl->width, impl->height, 0, -1, 1);
-        glViewport(0, 0, impl->trueWidth, impl->trueHeight);
+        glOrtho(0, width, height, 0, -1, 1);
+
+        glClearColor(0.0, 0.0, 0.0, 1.0);
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        glViewport((trueWidth - width * scale) / 2, (trueHeight - height * scale) / 2, width * scale, height * scale);
         glLineWidth(float(scale));
 
         glDisable(GL_DEPTH_TEST);
 
-        glScissor(0, 0, impl->trueWidth, impl->trueHeight);
+        glScissor((trueWidth - width * scale) / 2, (trueHeight - height * scale) / 2, width * scale, height * scale);
         glEnable(GL_SCISSOR_TEST);
-
-        glClearColor(0.0, 0.0, 0.0, 1.0);
 
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
 
-        glfwSwapInterval(1);
-        glfwShowWindow(window);
+        this->trueWidth = trueWidth;
+        this->trueHeight = trueHeight;
+    }
 
-        glfwSetWindowUserPointer(window, this);
-        glfwSetWindowCloseCallback(window, [](GLFWwindow window)
-        {
-            Event event;
-            event.type = EventClose;
-            event.window = window;
-            dispatch(window, event);
-            return GL_TRUE;
-        });
+    void Screen::setResolution(int width, int height, int scale, bool win)
+    {
+        impl->width = width;
+        impl->height = height;
+        impl->scale = scale;
 
-        glfwSetKeyCallback(window, [](GLFWwindow window, int key, int action)
-        {
-            Event event;
-            event.type = EventKeyboard;
-            event.window = window;
-            event.keyboard.key = key;
-            event.keyboard.action = action;
-            dispatch(window, event);
-        });
-
-        impl->keyboard.impl->hook = addEventHook([this](const Event& event){ impl->keyboard.impl->handle(event); });
-
-        impl->window = window;
+        impl->resize(width * scale, height * scale, win);
     }
 
     void Screen::bind(Image& image)
