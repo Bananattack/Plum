@@ -268,9 +268,13 @@ namespace plum
 
         if(!previousWindowedWidth)
         {
+            int x, y;
+
             GLFWvidmode mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-            previousWindowedX = (mode.width - width * scale) / 2; 
-            previousWindowedY = (mode.height - height * scale) / 2; 
+            glfwGetMonitorPos(glfwGetPrimaryMonitor(), &x, &y);
+
+            previousWindowedX =  (mode.width - width * scale) / 2 + x; 
+            previousWindowedY = (mode.height - height * scale) / 2 + y;
             previousWindowedWidth = width * scale;
             previousWindowedHeight = height * scale;
         }
@@ -281,19 +285,44 @@ namespace plum
             glfwDefaultWindowHints();
             glfwWindowHint(GLFW_VISIBLE, GL_FALSE);
 
+            int dx = 0;
+            int dy = 0;
             int w = trueWidth;
             int h = trueHeight;
 
             if(!windowed)
             {
-                GLFWvidmode mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+                int count;
+                GLFWmonitor** monitors = glfwGetMonitors(&count);
+                GLFWmonitor* dest = monitors[0];
+                for(int i = 1; i < count; i++)
+                {
+                    int x, y;
+                    glfwGetMonitorPos(monitors[i], &x, &y);
+                    GLFWvidmode mode = glfwGetVideoMode(dest);
+
+                    if(previousWindowedX >= x
+                        && previousWindowedX < x + mode.width 
+                        && previousWindowedY >= y
+                        && previousWindowedY < y + mode.height)
+                    {
+                        dest = monitors[i];
+                        dx = x;
+                        dy = y;
+                    }
+                }
+
+                GLFWvidmode mode = glfwGetVideoMode(dest);
                 w = mode.width;
                 h = mode.height;
+
                 glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
                 glfwWindowHint(GLFW_DECORATED, GL_FALSE);
             }
-            if(windowed && previousWindowedWidth)
+            if(windowed)
             {
+                dx = previousWindowedX;
+                dy = previousWindowedY;
                 w = previousWindowedWidth;
                 h = previousWindowedHeight;
             }
@@ -303,15 +332,8 @@ namespace plum
             {
                 throw std::runtime_error("Screen settings were not compatible your graphics card.\r\n");
             }
-
-            if(!windowed)
-            {
-                glfwSetWindowPos(window, 0, 0);
-            }
-            else if(previousWindowedX)
-            {
-                glfwSetWindowPos(window, previousWindowedX, previousWindowedY);
-            }
+           
+            glfwSetWindowPos(window, dx, dy);
 
             glfwSetWindowUserPointer(window, this);
             glfwSetWindowCloseCallback(window, [](GLFWwindow* window)
