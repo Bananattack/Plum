@@ -17,6 +17,7 @@ namespace plum
         }
         glfwSetTime(0.0);
 
+        glfwDefaultWindowHints();
         glfwWindowHint(GLFW_VISIBLE, GL_FALSE);
         root = glfwCreateWindow(1, 1, "", nullptr, nullptr);
         glfwMakeContextCurrent(root);

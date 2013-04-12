@@ -140,6 +140,12 @@ function globalInputCheck()
     if screen.close.pressed or screen.key.Escape.pressed then
         plum.exit()
     end
+    if screen.key.F11.pressed or (screen.key.LeftAlt.pressed or screen.key.RightAlt.pressed) and screen.key.Enter.pressed then
+        screen.key.F11.pressed = false
+        screen.key.Enter.pressed = false
+        screen.windowed = not screen.windowed
+    end
+
     if screen.key.Tilde.pressed then
         plum.timer.speed = 'f'
     elseif screen.key.LeftShift.pressed then

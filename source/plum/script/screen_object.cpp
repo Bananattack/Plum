@@ -130,6 +130,18 @@ namespace plum
                     script::push(L, &screen->closeButton(), ref);
                     return 1;
                 }},
+                {"get_windowed", [](lua_State* L)
+                {
+                    auto screen = script::ptr<Screen>(L, 1);
+                    script::push(L, screen->getWindowed());
+                    return 1;
+                }},
+                {"set_windowed", [](lua_State* L)
+                {
+                    auto screen = script::ptr<Screen>(L, 1);
+                    screen->setWindowed(script::get<bool>(L, 2));
+                    return 0;
+                }},
                 {nullptr, nullptr},
             };
             luaL_setfuncs(L, functions, 0);

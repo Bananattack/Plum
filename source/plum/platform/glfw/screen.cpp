@@ -12,15 +12,19 @@ namespace plum
     class Screen::Impl
     {
         public:
-            Impl(Engine& engine)
+            Impl(Engine& engine, bool windowed)
                 : engine(engine),
                 window(nullptr),
                 interrupt(false),
                 defaultClose(true),
-                windowed(true),
+                windowed(windowed),
                 transformBound(false),
                 trueWidth(0),
                 trueHeight(0),
+                previousWindowedX(0),
+                previousWindowedY(0),
+                previousWindowedWidth(0),
+                previousWindowedHeight(0),
                 width(0),
                 height(0),
                 scale(1),
@@ -58,7 +62,7 @@ namespace plum
                         switch(e.type)
                         {
                             case EventResize:
-                                resize(e.resize.width, e.resize.height, false);
+                                resize(e.resize.width, e.resize.height, windowed);
                                 break;
                             case EventClose:
                                 if(defaultClose)
@@ -95,6 +99,8 @@ namespace plum
             bool transformBound;
 
             int trueWidth, trueHeight;
+            int previousWindowedX, previousWindowedY;
+            int previousWindowedWidth, previousWindowedHeight;
             int width, height;
             int scale;
             int opacity;
@@ -137,7 +143,7 @@ namespace plum
     }
 
     Screen::Screen(Engine& engine, int width, int height, int scale, bool win)
-        : impl(new Impl(engine))
+        : impl(new Impl(engine, win))
     {
         setResolution(width, height, scale, win);
     }
@@ -193,7 +199,7 @@ namespace plum
 
     void Screen::setWindowed(bool value)
     {
-        impl->resize(impl->trueWidth, impl->trueHeight, value);
+        impl->resize(impl->width * impl->scale, impl->height * impl->scale, value);
     }
 
     void Screen::setOpacity(int value)
@@ -232,16 +238,81 @@ namespace plum
     void Screen::Impl::resize(int trueWidth, int trueHeight, bool windowed)
     {
         interrupt = true;
-        this->windowed = windowed;
+
+        if(this->windowed != windowed)
+        {
+            // Unfortunately, since we can't apply new window hints after a window is
+            // created, we must destroy and recreate this window.
+            if(window)
+            {
+                if(this->windowed)
+                {
+                    if(!previousWindowedX)
+                    {
+                        GLFWvidmode mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+                        previousWindowedX = (mode.width - width * scale) / 2; 
+                        previousWindowedY = (mode.height - height * scale) / 2; 
+                    }
+                    else
+                    {
+                        glfwGetWindowPos(window, &previousWindowedX, &previousWindowedY);
+                    }
+                    glfwGetWindowSize(window, &previousWindowedWidth, &previousWindowedHeight);
+                }
+
+                glfwDestroyWindow(window);
+                window = nullptr;
+            }
+            this->windowed = windowed;
+        }
+
+        if(!previousWindowedWidth)
+        {
+            GLFWvidmode mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+            previousWindowedX = (mode.width - width * scale) / 2; 
+            previousWindowedY = (mode.height - height * scale) / 2; 
+            previousWindowedWidth = width * scale;
+            previousWindowedHeight = height * scale;
+        }
 
         // TODO: borderless fake fullscreen mode.
         if(!window)
         {
-            auto window = glfwCreateWindow(trueWidth, trueHeight, "", nullptr, engine.impl->root);
+            glfwDefaultWindowHints();
+            glfwWindowHint(GLFW_VISIBLE, GL_FALSE);
+
+            int w = trueWidth;
+            int h = trueHeight;
+
+            if(!windowed)
+            {
+                GLFWvidmode mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+                w = mode.width;
+                h = mode.height;
+                glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+                glfwWindowHint(GLFW_DECORATED, GL_FALSE);
+            }
+            if(windowed && previousWindowedWidth)
+            {
+                w = previousWindowedWidth;
+                h = previousWindowedHeight;
+            }
+
+            auto window = glfwCreateWindow(w, h, title.c_str(), nullptr, engine.impl->root);
             if(!window)
             {
                 throw std::runtime_error("Screen settings were not compatible your graphics card.\r\n");
             }
+
+            if(!windowed)
+            {
+                glfwSetWindowPos(window, 0, 0);
+            }
+            else if(previousWindowedX)
+            {
+                glfwSetWindowPos(window, previousWindowedX, previousWindowedY);
+            }
+
             glfwSetWindowUserPointer(window, this);
             glfwSetWindowCloseCallback(window, [](GLFWwindow* window)
             {
@@ -280,9 +351,12 @@ namespace plum
 
             this->window = window;
         }
-        glfwGetWindowSize(window, &trueWidth, &trueHeight);
-        scale = std::max(std::min((trueWidth + width / 2) / width, (trueWidth + height / 2) / height), 1);
-        glfwSetWindowSize(window, width * scale, height * scale);
+        if(windowed)
+        {
+            glfwGetWindowSize(window, &trueWidth, &trueHeight);
+            scale = std::max(std::min((trueWidth + width / 2) / width, (trueWidth + height / 2) / height), 1);
+            glfwSetWindowSize(window, width * scale, height * scale);
+        }
 
         glfwGetWindowSize(window, &trueWidth, &trueHeight);
         scale = std::max(std::min(trueWidth / width, trueHeight / height), 1);
