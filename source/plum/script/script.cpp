@@ -12,8 +12,10 @@ namespace plum
         std::unordered_map<lua_State*, Script*> instances;
     }
 
-    Script::Script(Engine& engine, Timer& timer, Audio& audio)
+    Script::Script(int argc, char** argv, Engine& engine, Timer& timer, Audio& audio)
         : L(luaL_newstate()),
+        argc_(argc),
+        argv_(argv),
         engine_(engine),
         timer_(timer),
         audio_(audio)

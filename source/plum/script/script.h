@@ -24,8 +24,18 @@ namespace plum
     class Script
     {
         public:
-            Script(Engine& engine, Timer& timer, Audio& audio);
+            Script(int argc, char** argv, Engine& engine, Timer& timer, Audio& audio);
             ~Script();
+
+            int argc()
+            {
+                return argc_;
+            }
+
+            char** argv()
+            {
+                return argv_;
+            }
 
             Engine& engine()
             {
@@ -46,6 +56,8 @@ namespace plum
 
         private:
             lua_State* L;
+            int argc_;
+            char** argv_;
             Engine& engine_;
             Timer& timer_;
             Audio& audio_;
@@ -290,6 +302,12 @@ namespace plum
         template<> inline uint32_t push<uint32_t>(lua_State* L, uint32_t value)
         {
             lua_pushinteger(L, value);
+            return value;
+        }
+
+        template<> inline char* push<char*>(lua_State* L, char* value)
+        {
+            lua_pushstring(L, value);
             return value;
         }
 

@@ -16,11 +16,7 @@ int main(int argc, char** argv)
     try
     {
         plum::Config config("plum.cfg");
-        auto xres = std::max(config.get<int>("xres", 320), 0);
-        auto yres = std::max(config.get<int>("yres", 240), 0);
-        auto scale = std::max(config.get<int>("scale", 2), 1);
         auto silent = config.get<bool>("silent", false);
-        auto windowed = config.get<bool>("windowed", true);
 
         plum::Engine engine;
         plum::Timer timer(engine);
@@ -43,7 +39,7 @@ int main(int argc, char** argv)
 
         try
         {
-            plum::Script script(engine, timer, audio);
+            plum::Script script(argc, argv, engine, timer, audio);
             script.run("system.lua");
         }
         catch(const std::runtime_error& e)

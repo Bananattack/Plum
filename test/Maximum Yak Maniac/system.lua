@@ -1,4 +1,4 @@
-screen = plum.Screen(640, 480, 2)
+screen = plum.Screen(683, 384, 2)
 
 require 'helper'
 require 'sky'

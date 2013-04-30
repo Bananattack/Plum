@@ -67,6 +67,22 @@ namespace plum
             // Put the members into the metatable.
             luaL_setfuncs(L, functions, 0);
 
+            // Create the 'arg' table.
+            lua_newtable(L);
+            lua_pushvalue(L, -1);
+            lua_setfield(L, -3, "arg");
+            {
+                auto& script = script::instance(L);
+                for(int i = 0; i < script.argc(); i++)
+                {
+                    script::push(L, script.argv()[i]);
+                    lua_rawseti(L, -2, i);
+                }
+            }
+
+            // Done with 'arg' now.
+            lua_pop(L, 1);
+
             // Create the 'color' table.
             lua_newtable(L);
             lua_pushvalue(L, -1);
