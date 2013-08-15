@@ -54,7 +54,35 @@ namespace plum
                 {"refresh", [](lua_State* L)
                 {
                     auto& script = script::instance(L);
-                    script.engine().refresh();
+
+                    if(lua_isfunction(L, 1))
+                    {
+                        // Create ref to function.
+                        lua_pushvalue(L, 1);
+                        int ref = luaL_ref(L, LUA_REGISTRYINDEX);
+
+                        // Create hook that calls referenced function.
+                        bool done = false;
+                        auto hook = script.engine().addUpdateHook([L, ref, &done]()
+                        {
+                            lua_rawgeti(L, LUA_REGISTRYINDEX, ref);
+                            lua_call(L, 0, 1);
+                            if(lua_toboolean(L, -1))
+                            {
+                                done = true;
+                            }
+                        });
+
+                        // Call refresh until done.
+                        while(!done)
+                        {
+                            script.engine().refresh();
+                        }
+                    }
+                    else
+                    {
+                        script.engine().refresh();
+                    }
                     return 0;
                 }},
                 {nullptr, nullptr},

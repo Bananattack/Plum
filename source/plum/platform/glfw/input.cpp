@@ -233,6 +233,8 @@ namespace plum
         return impl->buttons[GLFW_MOUSE_BUTTON_RIGHT];
     }
 
+
+
     namespace
     {
         const float Deadzone = 0.3f;
