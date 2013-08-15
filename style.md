@@ -14,7 +14,7 @@ C++
 * Use `T& foo` and `T* foo`, with the reference/pointer beside the type, not the name. Keep declarations of non-value types to one-per-variable declaration statement.
 * Don't make opaque type aliases to pointers or references -- function pointers are an exception.
 * No spaces between keywords and an open parenthesis `(` or bracket `[`.
-* Don't weirdly add spaces directly after a opening bracket or directly before a close bracket.
+* Don't weirdly add spaces directly after an opening bracket or directly before a closing bracket.
 * Add spaces or newlines after `,` and `;`
 * Add spaces between operators and their operands, except `.`, `->`, `::`, `[]`, `()` and unary operators.
 * Avoid unnecessary parentheses, learn operator precedences.
