@@ -40,7 +40,7 @@ C++
 * Avoid pure abstract interfaces (which require virtual dispatch and pointers, are nullable, and can blow up at runtime if a pure virtual call slips through), and prefer the pimpl idiom.
 * Prefer `T getFoo();` / `setFoo(T value);` for value attributes. Prefer `T& foo()` for accessors to mutable references.
 * If a `class` contains only members with trivial public get/set of private members, maybe make it `struct` with all public members and no get/set.
-* Don't `_prefix` names, `suffix_` them instead -- unlike the former, the latter isn't reserved!
+* Don't `_prefix` names, `suffix_` them instead -- unlike the former, the latter isn't potentially reserved (like `__foo` or `_Foo` would be -- `foo__`, and `Foo_` avoid this)!
 * Use anonymous namespaces whenever a global symbol is only needed for one file. Don't use C-style file-scoping `static`.
 * Try to keep things out of the headers, unless they're needed there. Compile times don't need to be slowed down further.
 
