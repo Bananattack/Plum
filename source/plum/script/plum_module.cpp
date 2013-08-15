@@ -71,6 +71,7 @@ namespace plum
                             {
                                 done = true;
                             }
+                            lua_pop(L, 1);
                         });
 
                         // Call refresh until done.
@@ -78,6 +79,8 @@ namespace plum
                         {
                             script.engine().refresh();
                         }
+
+                        luaL_unref(L, LUA_REGISTRYINDEX, ref);
                     }
                     else
                     {
