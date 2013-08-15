@@ -38,12 +38,11 @@
 //
 static void setCursorMode(_GLFWwindow* window, int newMode)
 {
-    int width, height, oldMode;
-    double centerPosX, centerPosY;
+    int oldMode;
 
     if (newMode != GLFW_CURSOR_NORMAL &&
         newMode != GLFW_CURSOR_HIDDEN &&
-        newMode != GLFW_CURSOR_CAPTURED)
+        newMode != GLFW_CURSOR_DISABLED)
     {
         _glfwInputError(GLFW_INVALID_ENUM, NULL);
         return;
@@ -53,19 +52,25 @@ static void setCursorMode(_GLFWwindow* window, int newMode)
     if (oldMode == newMode)
         return;
 
-    _glfwPlatformGetWindowSize(window, &width, &height);
+    if (window == _glfw.focusedWindow)
+    {
+        if (oldMode == GLFW_CURSOR_DISABLED)
+            _glfwPlatformSetCursorPos(window, _glfw.cursorPosX, _glfw.cursorPosY);
+        else if (newMode == GLFW_CURSOR_DISABLED)
+        {
+            int width, height;
 
-    centerPosX = width / 2.0;
-    centerPosY = height / 2.0;
+            _glfw.cursorPosX = window->cursorPosX;
+            _glfw.cursorPosY = window->cursorPosY;
 
-    if (oldMode == GLFW_CURSOR_CAPTURED || newMode == GLFW_CURSOR_CAPTURED)
-        _glfwPlatformSetCursorPos(window, centerPosX, centerPosY);
+            _glfwPlatformGetWindowSize(window, &width, &height);
+            _glfwPlatformSetCursorPos(window, width / 2.0, height / 2.0);
+        }
 
-    _glfwPlatformSetCursorMode(window, newMode);
+        _glfwPlatformSetCursorMode(window, newMode);
+    }
+
     window->cursorMode = newMode;
-
-    if (oldMode == GLFW_CURSOR_CAPTURED)
-        _glfwInputCursorMotion(window, window->cursorPosX, window->cursorPosY);
 }
 
 // Set sticky keys mode for the specified window
@@ -117,26 +122,29 @@ static void setStickyMouseButtons(_GLFWwindow* window, int enabled)
 //////                         GLFW event API                       //////
 //////////////////////////////////////////////////////////////////////////
 
-void _glfwInputKey(_GLFWwindow* window, int key, int action)
+void _glfwInputKey(_GLFWwindow* window, int key, int scancode, int action, int mods)
 {
     GLboolean repeated = GL_FALSE;
 
-    if (key < 0 || key > GLFW_KEY_LAST)
+    if (action == GLFW_RELEASE && window->key[key] == GLFW_RELEASE)
         return;
 
-    if (action == GLFW_PRESS && window->key[key] == GLFW_PRESS)
-        repeated = GL_TRUE;
+    if (key >= 0 && key <= GLFW_KEY_LAST)
+    {
+        if (action == GLFW_PRESS && window->key[key] == GLFW_PRESS)
+            repeated = GL_TRUE;
 
-    if (action == GLFW_RELEASE && window->stickyKeys)
-        window->key[key] = _GLFW_STICK;
-    else
-        window->key[key] = (char) action;
+        if (action == GLFW_RELEASE && window->stickyKeys)
+            window->key[key] = _GLFW_STICK;
+        else
+            window->key[key] = (char) action;
+    }
 
     if (repeated)
         action = GLFW_REPEAT;
 
     if (window->callbacks.key)
-        window->callbacks.key((GLFWwindow*) window, key, action);
+        window->callbacks.key((GLFWwindow*) window, key, scancode, action, mods);
 }
 
 void _glfwInputChar(_GLFWwindow* window, unsigned int character)
@@ -157,7 +165,7 @@ void _glfwInputScroll(_GLFWwindow* window, double xoffset, double yoffset)
         window->callbacks.scroll((GLFWwindow*) window, xoffset, yoffset);
 }
 
-void _glfwInputMouseClick(_GLFWwindow* window, int button, int action)
+void _glfwInputMouseClick(_GLFWwindow* window, int button, int action, int mods)
 {
     if (button < 0 || button > GLFW_MOUSE_BUTTON_LAST)
         return;
@@ -169,12 +177,12 @@ void _glfwInputMouseClick(_GLFWwindow* window, int button, int action)
         window->mouseButton[button] = (char) action;
 
     if (window->callbacks.mouseButton)
-        window->callbacks.mouseButton((GLFWwindow*) window, button, action);
+        window->callbacks.mouseButton((GLFWwindow*) window, button, action, mods);
 }
 
 void _glfwInputCursorMotion(_GLFWwindow* window, double x, double y)
 {
-    if (window->cursorMode == GLFW_CURSOR_CAPTURED)
+    if (window->cursorMode == GLFW_CURSOR_DISABLED)
     {
         if (x == 0.0 && y == 0.0)
             return;
@@ -218,7 +226,7 @@ GLFWAPI int glfwGetInputMode(GLFWwindow* handle, int mode)
 
     switch (mode)
     {
-        case GLFW_CURSOR_MODE:
+        case GLFW_CURSOR:
             return window->cursorMode;
         case GLFW_STICKY_KEYS:
             return window->stickyKeys;
@@ -238,7 +246,7 @@ GLFWAPI void glfwSetInputMode(GLFWwindow* handle, int mode, int value)
 
     switch (mode)
     {
-        case GLFW_CURSOR_MODE:
+        case GLFW_CURSOR:
             setCursorMode(window, value);
             break;
         case GLFW_STICKY_KEYS:
@@ -328,53 +336,87 @@ GLFWAPI void glfwSetCursorPos(GLFWwindow* handle, double xpos, double ypos)
     window->cursorPosX = xpos;
     window->cursorPosY = ypos;
 
-    // Do not move physical cursor in locked cursor mode
-    if (window->cursorMode == GLFW_CURSOR_CAPTURED)
+    // Do not move physical cursor if it is disabled
+    if (window->cursorMode == GLFW_CURSOR_DISABLED)
         return;
 
     // Update physical cursor position
     _glfwPlatformSetCursorPos(window, xpos, ypos);
 }
 
-GLFWAPI void glfwSetKeyCallback(GLFWwindow* handle, GLFWkeyfun cbfun)
+GLFWAPI GLFWkeyfun glfwSetKeyCallback(GLFWwindow* handle, GLFWkeyfun cbfun)
 {
     _GLFWwindow* window = (_GLFWwindow*) handle;
-    _GLFW_REQUIRE_INIT();
+    GLFWkeyfun previous;
+
+    _GLFW_REQUIRE_INIT_OR_RETURN(NULL);
+
+    previous = window->callbacks.key;
     window->callbacks.key = cbfun;
+    return previous;
 }
 
-GLFWAPI void glfwSetCharCallback(GLFWwindow* handle, GLFWcharfun cbfun)
+GLFWAPI GLFWcharfun glfwSetCharCallback(GLFWwindow* handle, GLFWcharfun cbfun)
 {
     _GLFWwindow* window = (_GLFWwindow*) handle;
-    _GLFW_REQUIRE_INIT();
+    GLFWcharfun previous;
+
+    _GLFW_REQUIRE_INIT_OR_RETURN(NULL);
+
+    previous = window->callbacks.character;
     window->callbacks.character = cbfun;
+    return previous;
 }
 
-GLFWAPI void glfwSetMouseButtonCallback(GLFWwindow* handle, GLFWmousebuttonfun cbfun)
+GLFWAPI GLFWmousebuttonfun glfwSetMouseButtonCallback(GLFWwindow* handle,
+                                                      GLFWmousebuttonfun cbfun)
 {
     _GLFWwindow* window = (_GLFWwindow*) handle;
-    _GLFW_REQUIRE_INIT();
+    GLFWmousebuttonfun previous;
+
+    _GLFW_REQUIRE_INIT_OR_RETURN(NULL);
+
+    previous = window->callbacks.mouseButton;
     window->callbacks.mouseButton = cbfun;
+    return previous;
 }
 
-GLFWAPI void glfwSetCursorPosCallback(GLFWwindow* handle, GLFWcursorposfun cbfun)
+GLFWAPI GLFWcursorposfun glfwSetCursorPosCallback(GLFWwindow* handle,
+                                                  GLFWcursorposfun cbfun)
 {
     _GLFWwindow* window = (_GLFWwindow*) handle;
-    _GLFW_REQUIRE_INIT();
+    GLFWcursorposfun previous;
+
+    _GLFW_REQUIRE_INIT_OR_RETURN(NULL);
+
+    previous = window->callbacks.cursorPos;
     window->callbacks.cursorPos = cbfun;
+    return previous;
 }
 
-GLFWAPI void glfwSetCursorEnterCallback(GLFWwindow* handle, GLFWcursorenterfun cbfun)
+GLFWAPI GLFWcursorenterfun glfwSetCursorEnterCallback(GLFWwindow* handle,
+                                                      GLFWcursorenterfun cbfun)
 {
     _GLFWwindow* window = (_GLFWwindow*) handle;
-    _GLFW_REQUIRE_INIT();
+    GLFWcursorenterfun previous;
+
+    _GLFW_REQUIRE_INIT_OR_RETURN(NULL);
+
+    previous = window->callbacks.cursorEnter;
     window->callbacks.cursorEnter = cbfun;
+    return previous;
 }
 
-GLFWAPI void glfwSetScrollCallback(GLFWwindow* handle, GLFWscrollfun cbfun)
+GLFWAPI GLFWscrollfun glfwSetScrollCallback(GLFWwindow* handle,
+                                            GLFWscrollfun cbfun)
 {
     _GLFWwindow* window = (_GLFWwindow*) handle;
-    _GLFW_REQUIRE_INIT();
+    GLFWscrollfun previous;
+
+    _GLFW_REQUIRE_INIT_OR_RETURN(NULL);
+
+    previous = window->callbacks.scroll;
     window->callbacks.scroll = cbfun;
+    return previous;
 }
 

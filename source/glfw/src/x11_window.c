@@ -58,6 +58,24 @@ typedef struct
 #define MWM_HINTS_DECORATIONS (1L << 1)
 
 
+// Translates an X event modifier state mask
+//
+static int translateState(int state)
+{
+    int mods = 0;
+
+    if (state & ShiftMask)
+        mods |= GLFW_MOD_SHIFT;
+    if (state & ControlMask)
+        mods |= GLFW_MOD_CONTROL;
+    if (state & Mod1Mask)
+        mods |= GLFW_MOD_ALT;
+    if (state & Mod4Mask)
+        mods |= GLFW_MOD_SUPER;
+
+    return mods;
+}
+
 // Translates an X Window key to internal coding
 //
 static int translateKey(int keycode)
@@ -65,8 +83,8 @@ static int translateKey(int keycode)
     // Use the pre-filled LUT (see updateKeyCodeLUT() in x11_init.c)
     if ((keycode >= 0) && (keycode < 256))
         return _glfw.x11.keyCodeLUT[keycode];
-    else
-        return -1;
+
+    return GLFW_KEY_UNKNOWN;
 }
 
 // Translates an X Window event to Unicode
@@ -154,6 +172,11 @@ static GLboolean createWindow(_GLFWwindow* window,
                             (unsigned char*) &hints,
                             sizeof(MotifWmHints) / sizeof(long));
         }
+
+        XSaveContext(_glfw.x11.display,
+                     window->x11.handle,
+                     _glfw.x11.context,
+                     (XPointer) window);
     }
 
     if (window->monitor && !_glfw.x11.hasEWMH)
@@ -199,6 +222,16 @@ static GLboolean createWindow(_GLFWwindow* window,
         }
     }
 
+    if (_glfw.x11.NET_WM_PID != None)
+    {
+        const pid_t pid = getpid();
+
+        XChangeProperty(_glfw.x11.display,  window->x11.handle,
+                        _glfw.x11.NET_WM_PID, XA_CARDINAL, 32,
+                        PropModeReplace,
+                        (unsigned char*) &pid, 1);
+    }
+
     // Set ICCCM WM_HINTS property
     {
         XWMHints* hints = XAllocWMHints();
@@ -238,7 +271,7 @@ static GLboolean createWindow(_GLFWwindow* window,
         XFree(hints);
     }
 
-    if (_glfw.x11.xi2.available)
+    if (_glfw.x11.xi.available)
     {
         // Select for XInput2 events
 
@@ -257,6 +290,9 @@ static GLboolean createWindow(_GLFWwindow* window,
 
     XRRSelectInput(_glfw.x11.display, window->x11.handle,
                    RRScreenChangeNotifyMask);
+
+    _glfwPlatformGetWindowPos(window, &window->x11.xpos, &window->x11.ypos);
+    _glfwPlatformGetWindowSize(window, &window->x11.width, &window->x11.height);
 
     return GL_TRUE;
 }
@@ -296,7 +332,6 @@ static void captureCursor(_GLFWwindow* window)
             GrabSuccess)
         {
             window->x11.cursorGrabbed = GL_TRUE;
-            window->x11.cursorCentered = GL_FALSE;
         }
     }
 }
@@ -348,6 +383,10 @@ static void enterFullscreenMode(_GLFWwindow* window)
         _glfw.x11.NET_WM_STATE != None &&
         _glfw.x11.NET_WM_STATE_FULLSCREEN != None)
     {
+        int x, y;
+        _glfwPlatformGetMonitorPos(window->monitor, &x, &y);
+        _glfwPlatformSetWindowPos(window, x, y);
+
         if (_glfw.x11.NET_ACTIVE_WINDOW != None)
         {
             // Ask the window manager to raise and focus the GLFW window
@@ -455,21 +494,6 @@ static void leaveFullscreenMode(_GLFWwindow* window)
     }
 }
 
-// Return the GLFW window corresponding to the specified X11 window
-//
-_GLFWwindow* _glfwFindWindowByHandle(Window handle)
-{
-    _GLFWwindow* window;
-
-    for (window = _glfw.windowListHead;  window;  window = window->next)
-    {
-        if (window->x11.handle == handle)
-            return window;
-    }
-
-    return NULL;
-}
-
 // Process the specified X event
 //
 static void processEvent(XEvent *event)
@@ -491,31 +515,36 @@ static void processEvent(XEvent *event)
     {
         case KeyPress:
         {
-            _glfwInputKey(window, translateKey(event->xkey.keycode), GLFW_PRESS);
+            const int key = translateKey(event->xkey.keycode);
+            const int mods = translateState(event->xkey.state);
 
-            if (!(event->xkey.state & ControlMask) &&
-                !(event->xkey.state & Mod1Mask /*Alt*/))
-            {
-            _glfwInputChar(window, translateChar(&event->xkey));
-            }
+            _glfwInputKey(window, key, event->xkey.keycode, GLFW_PRESS, mods);
+
+            if (!(mods & GLFW_MOD_CONTROL) && !(mods & GLFW_MOD_ALT))
+                _glfwInputChar(window, translateChar(&event->xkey));
 
             break;
         }
 
         case KeyRelease:
         {
-            _glfwInputKey(window, translateKey(event->xkey.keycode), GLFW_RELEASE);
+            const int key = translateKey(event->xkey.keycode);
+            const int mods = translateState(event->xkey.state);
+
+            _glfwInputKey(window, key, event->xkey.keycode, GLFW_RELEASE, mods);
             break;
         }
 
         case ButtonPress:
         {
+            const int mods = translateState(event->xbutton.state);
+
             if (event->xbutton.button == Button1)
-                _glfwInputMouseClick(window, GLFW_MOUSE_BUTTON_LEFT, GLFW_PRESS);
+                _glfwInputMouseClick(window, GLFW_MOUSE_BUTTON_LEFT, GLFW_PRESS, mods);
             else if (event->xbutton.button == Button2)
-                _glfwInputMouseClick(window, GLFW_MOUSE_BUTTON_MIDDLE, GLFW_PRESS);
+                _glfwInputMouseClick(window, GLFW_MOUSE_BUTTON_MIDDLE, GLFW_PRESS, mods);
             else if (event->xbutton.button == Button3)
-                _glfwInputMouseClick(window, GLFW_MOUSE_BUTTON_RIGHT, GLFW_PRESS);
+                _glfwInputMouseClick(window, GLFW_MOUSE_BUTTON_RIGHT, GLFW_PRESS, mods);
 
             // Modern X provides scroll events as mouse button presses
             else if (event->xbutton.button == Button4)
@@ -532,23 +561,28 @@ static void processEvent(XEvent *event)
 
         case ButtonRelease:
         {
+            const int mods = translateState(event->xbutton.state);
+
             if (event->xbutton.button == Button1)
             {
                 _glfwInputMouseClick(window,
                                      GLFW_MOUSE_BUTTON_LEFT,
-                                     GLFW_RELEASE);
+                                     GLFW_RELEASE,
+                                     mods);
             }
             else if (event->xbutton.button == Button2)
             {
                 _glfwInputMouseClick(window,
                                      GLFW_MOUSE_BUTTON_MIDDLE,
-                                     GLFW_RELEASE);
+                                     GLFW_RELEASE,
+                                     mods);
             }
             else if (event->xbutton.button == Button3)
             {
                 _glfwInputMouseClick(window,
                                      GLFW_MOUSE_BUTTON_RIGHT,
-                                     GLFW_RELEASE);
+                                     GLFW_RELEASE,
+                                     mods);
             }
             break;
         }
@@ -573,14 +607,14 @@ static void processEvent(XEvent *event)
 
         case MotionNotify:
         {
-            if (event->xmotion.x != window->x11.cursorPosX ||
-                event->xmotion.y != window->x11.cursorPosY)
+            if (event->xmotion.x != window->x11.warpPosX ||
+                event->xmotion.y != window->x11.warpPosY)
             {
                 // The cursor was moved by something other than GLFW
 
                 int x, y;
 
-                if (window->cursorMode == GLFW_CURSOR_CAPTURED)
+                if (window->cursorMode == GLFW_CURSOR_DISABLED)
                 {
                     if (_glfw.focusedWindow != window)
                         break;
@@ -594,25 +628,41 @@ static void processEvent(XEvent *event)
                     y = event->xmotion.y;
                 }
 
-                window->x11.cursorPosX = event->xmotion.x;
-                window->x11.cursorPosY = event->xmotion.y;
-                window->x11.cursorCentered = GL_FALSE;
-
                 _glfwInputCursorMotion(window, x, y);
             }
 
+            window->x11.cursorPosX = event->xmotion.x;
+            window->x11.cursorPosY = event->xmotion.y;
             break;
         }
 
         case ConfigureNotify:
         {
-            _glfwInputWindowSize(window,
-                                 event->xconfigure.width,
-                                 event->xconfigure.height);
+            if (event->xconfigure.width != window->x11.width ||
+                event->xconfigure.height != window->x11.height)
+            {
+                _glfwInputFramebufferSize(window,
+                                          event->xconfigure.width,
+                                          event->xconfigure.height);
 
-            _glfwInputWindowPos(window,
-                                event->xconfigure.x,
-                                event->xconfigure.y);
+                _glfwInputWindowSize(window,
+                                     event->xconfigure.width,
+                                     event->xconfigure.height);
+
+                window->x11.width = event->xconfigure.width;
+                window->x11.height = event->xconfigure.height;
+            }
+
+            if (event->xconfigure.x != window->x11.xpos ||
+                event->xconfigure.y != window->x11.ypos)
+            {
+                _glfwInputWindowPos(window,
+                                    event->xconfigure.x,
+                                    event->xconfigure.y);
+
+                window->x11.xpos = event->xconfigure.x;
+                window->x11.ypos = event->xconfigure.y;
+            }
 
             break;
         }
@@ -661,7 +711,7 @@ static void processEvent(XEvent *event)
         {
             _glfwInputWindowFocus(window, GL_TRUE);
 
-            if (window->cursorMode == GLFW_CURSOR_CAPTURED)
+            if (window->cursorMode == GLFW_CURSOR_DISABLED)
                 captureCursor(window);
 
             break;
@@ -671,7 +721,7 @@ static void processEvent(XEvent *event)
         {
             _glfwInputWindowFocus(window, GL_FALSE);
 
-            if (window->cursorMode == GLFW_CURSOR_CAPTURED)
+            if (window->cursorMode == GLFW_CURSOR_DISABLED)
                 showCursor(window);
 
             break;
@@ -712,33 +762,13 @@ static void processEvent(XEvent *event)
 
         case SelectionClear:
         {
-            // The ownership of the clipboard selection was lost
-
-            free(_glfw.x11.selection.string);
-            _glfw.x11.selection.string = NULL;
+            _glfwHandleSelectionClear(event);
             break;
         }
 
         case SelectionRequest:
         {
-            // The contents of the clipboard selection was requested
-
-            XSelectionRequestEvent* request = &event->xselectionrequest;
-
-            XEvent response;
-            memset(&response, 0, sizeof(response));
-
-            response.xselection.property = _glfwWriteSelection(request);
-            response.xselection.type = SelectionNotify;
-            response.xselection.display = request->display;
-            response.xselection.requestor = request->requestor;
-            response.xselection.selection = request->selection;
-            response.xselection.target = request->target;
-            response.xselection.time = request->time;
-
-            XSendEvent(_glfw.x11.display,
-                       request->requestor,
-                       False, 0, &response);
+            _glfwHandleSelectionRequest(event);
             break;
         }
 
@@ -747,7 +777,7 @@ static void processEvent(XEvent *event)
 
         case GenericEvent:
         {
-            if (event->xcookie.extension == _glfw.x11.xi2.majorOpcode &&
+            if (event->xcookie.extension == _glfw.x11.xi.majorOpcode &&
                 XGetEventData(_glfw.x11.display, &event->xcookie))
             {
                 if (event->xcookie.evtype == XI_Motion)
@@ -757,14 +787,14 @@ static void processEvent(XEvent *event)
                     window = _glfwFindWindowByHandle(data->event);
                     if (window)
                     {
-                        if (data->event_x != window->x11.cursorPosX ||
-                            data->event_y != window->x11.cursorPosY)
+                        if (data->event_x != window->x11.warpPosX ||
+                            data->event_y != window->x11.warpPosY)
                         {
                             // The cursor was moved by something other than GLFW
 
                             double x, y;
 
-                            if (window->cursorMode == GLFW_CURSOR_CAPTURED)
+                            if (window->cursorMode == GLFW_CURSOR_DISABLED)
                             {
                                 if (_glfw.focusedWindow != window)
                                     break;
@@ -778,12 +808,11 @@ static void processEvent(XEvent *event)
                                 y = data->event_y;
                             }
 
-                            window->x11.cursorPosX = data->event_x;
-                            window->x11.cursorPosY = data->event_y;
-                            window->x11.cursorCentered = GL_FALSE;
-
                             _glfwInputCursorMotion(window, x, y);
                         }
+
+                        window->x11.cursorPosX = data->event_x;
+                        window->x11.cursorPosY = data->event_y;
                     }
                 }
             }
@@ -812,6 +841,23 @@ static void processEvent(XEvent *event)
 //////////////////////////////////////////////////////////////////////////
 //////                       GLFW internal API                      //////
 //////////////////////////////////////////////////////////////////////////
+
+// Return the GLFW window corresponding to the specified X11 window
+//
+_GLFWwindow* _glfwFindWindowByHandle(Window handle)
+{
+    _GLFWwindow* window;
+
+    if (XFindContext(_glfw.x11.display,
+                     handle,
+                     _glfw.x11.context,
+                     (XPointer*) &window) != 0)
+    {
+        return NULL;
+    }
+
+    return window;
+}
 
 // Retrieve a single window property of the specified type
 // Inspired by fghGetWindowProperty from freeglut
@@ -865,26 +911,6 @@ int _glfwPlatformCreateWindow(_GLFWwindow* window,
         enterFullscreenMode(window);
     }
 
-    // Retrieve and set initial cursor position
-    {
-        Window cursorWindow, cursorRoot;
-        int windowX, windowY, rootX, rootY;
-        unsigned int mask;
-
-        XQueryPointer(_glfw.x11.display,
-                      window->x11.handle,
-                      &cursorRoot,
-                      &cursorWindow,
-                      &rootX, &rootY,
-                      &windowX, &windowY,
-                      &mask);
-
-        // TODO: Probably check for some corner cases here.
-
-        window->cursorPosX = windowX;
-        window->cursorPosY = windowY;
-    }
-
     return GL_TRUE;
 }
 
@@ -897,6 +923,13 @@ void _glfwPlatformDestroyWindow(_GLFWwindow* window)
 
     if (window->x11.handle)
     {
+        if (window->x11.handle ==
+            XGetSelectionOwner(_glfw.x11.display, _glfw.x11.CLIPBOARD))
+        {
+            _glfwPushSelectionToManager(window);
+        }
+
+        XDeleteContext(_glfw.x11.display, window->x11.handle, _glfw.x11.context);
         XUnmapWindow(_glfw.x11.display, window->x11.handle);
         XDestroyWindow(_glfw.x11.display, window->x11.handle);
         window->x11.handle = (Window) 0;
@@ -961,6 +994,7 @@ void _glfwPlatformGetWindowPos(_GLFWwindow* window, int* xpos, int* ypos)
 void _glfwPlatformSetWindowPos(_GLFWwindow* window, int xpos, int ypos)
 {
     XMoveWindow(_glfw.x11.display, window->x11.handle, xpos, ypos);
+    XFlush(_glfw.x11.display);
 }
 
 void _glfwPlatformGetWindowSize(_GLFWwindow* window, int* width, int* height)
@@ -1004,6 +1038,13 @@ void _glfwPlatformSetWindowSize(_GLFWwindow* window, int width, int height)
     }
     else
         XResizeWindow(_glfw.x11.display, window->x11.handle, width, height);
+
+    XFlush(_glfw.x11.display);
+}
+
+void _glfwPlatformGetFramebufferSize(_GLFWwindow* window, int* width, int* height)
+{
+    _glfwPlatformGetWindowSize(window, width, height);
 }
 
 void _glfwPlatformIconifyWindow(_GLFWwindow* window)
@@ -1059,13 +1100,11 @@ void _glfwPlatformPollEvents(void)
     window = _glfw.focusedWindow;
     if (window)
     {
-        if (window->cursorMode == GLFW_CURSOR_CAPTURED &&
-            !window->x11.cursorCentered)
+        if (window->cursorMode == GLFW_CURSOR_DISABLED)
         {
             int width, height;
             _glfwPlatformGetWindowSize(window, &width, &height);
             _glfwPlatformSetCursorPos(window, width / 2, height / 2);
-            window->x11.cursorCentered = GL_TRUE;
 
             // NOTE: This is a temporary fix.  It works as long as you use
             //       offsets accumulated over the course of a frame, instead of
@@ -1100,8 +1139,8 @@ void _glfwPlatformWaitEvents(void)
 void _glfwPlatformSetCursorPos(_GLFWwindow* window, double x, double y)
 {
     // Store the new position so it can be recognized later
-    window->x11.cursorPosX = x;
-    window->x11.cursorPosY = y;
+    window->x11.warpPosX = (int) x;
+    window->x11.warpPosY = (int) y;
 
     XWarpPointer(_glfw.x11.display, None, window->x11.handle,
                  0,0,0,0, (int) x, (int) y);
@@ -1117,7 +1156,7 @@ void _glfwPlatformSetCursorMode(_GLFWwindow* window, int mode)
         case GLFW_CURSOR_HIDDEN:
             hideCursor(window);
             break;
-        case GLFW_CURSOR_CAPTURED:
+        case GLFW_CURSOR_DISABLED:
             captureCursor(window);
             break;
     }

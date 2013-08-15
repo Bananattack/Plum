@@ -9,10 +9,7 @@ namespace plum
         {
             return "plum.Song";
         }
-    }
 
-    namespace script
-    {
         void initSongObject(lua_State* L)
         {
             luaL_newmetatable(L, meta<Channel>());

@@ -1,5 +1,5 @@
 #include <cmath>
-#include <GL/glfw3.h>
+#include <GLFW/glfw3.h>
 
 #include "engine.h"
 #include "../../core/input.h"
@@ -69,7 +69,7 @@ namespace plum
                                 {
                                     engine.quit();
                                 }
-                                closeButton.setPressed(true);
+                                closeButton.pressed = true;
                                 break;
                         }
                         eventHooks.cleanup();
@@ -78,6 +78,7 @@ namespace plum
                 }
 
                 glfwSwapBuffers(window);
+                engine.impl->windowless = false;
             }
 
             std::shared_ptr<Screen::EventHook> addEventHook(const EventHook& hook);
@@ -89,6 +90,7 @@ namespace plum
             Engine& engine;
             Input closeButton;
             Keyboard keyboard;
+            Mouse mouse;
 
             std::shared_ptr<Engine::UpdateHook> hook;
             GLFWwindow* window;
@@ -223,6 +225,11 @@ namespace plum
         return impl->keyboard;
     }
 
+    Mouse& Screen::mouse()
+    {
+        return impl->mouse;
+    }
+
     std::shared_ptr<Screen::EventHook> Screen::Impl::addEventHook(const EventHook& hook)
     {
         auto ptr = std::make_shared<Screen::EventHook>(hook);
@@ -249,9 +256,9 @@ namespace plum
                 {
                     if(!previousWindowedX)
                     {
-                        GLFWvidmode mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-                        previousWindowedX = (mode.width - width * scale) / 2; 
-                        previousWindowedY = (mode.height - height * scale) / 2; 
+                        auto mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+                        previousWindowedX = (mode->width - width * scale) / 2; 
+                        previousWindowedY = (mode->height - height * scale) / 2; 
                     }
                     else
                     {
@@ -270,16 +277,15 @@ namespace plum
         {
             int x, y;
 
-            GLFWvidmode mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+            auto mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
             glfwGetMonitorPos(glfwGetPrimaryMonitor(), &x, &y);
 
-            previousWindowedX =  (mode.width - width * scale) / 2 + x; 
-            previousWindowedY = (mode.height - height * scale) / 2 + y;
+            previousWindowedX =  (mode->width - width * scale) / 2 + x; 
+            previousWindowedY = (mode->height - height * scale) / 2 + y;
             previousWindowedWidth = width * scale;
             previousWindowedHeight = height * scale;
         }
 
-        // TODO: borderless fake fullscreen mode.
         if(!window)
         {
             glfwDefaultWindowHints();
@@ -299,12 +305,12 @@ namespace plum
                 {
                     int x, y;
                     glfwGetMonitorPos(monitors[i], &x, &y);
-                    GLFWvidmode mode = glfwGetVideoMode(dest);
+                    auto mode = glfwGetVideoMode(dest);
 
                     if(previousWindowedX >= x
-                        && previousWindowedX < x + mode.width 
+                        && previousWindowedX < x + mode->width 
                         && previousWindowedY >= y
-                        && previousWindowedY < y + mode.height)
+                        && previousWindowedY < y + mode->height)
                     {
                         dest = monitors[i];
                         dx = x;
@@ -312,9 +318,9 @@ namespace plum
                     }
                 }
 
-                GLFWvidmode mode = glfwGetVideoMode(dest);
-                w = mode.width;
-                h = mode.height;
+                auto mode = glfwGetVideoMode(dest);
+                w = mode->width;
+                h = mode->height;
 
                 glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
                 glfwWindowHint(GLFW_DECORATED, GL_FALSE);
@@ -345,8 +351,7 @@ namespace plum
                 event.window = window;
                 dispatch(window, event);
             });
-
-            glfwSetKeyCallback(window, [](GLFWwindow* window, int key, int action)
+            glfwSetKeyCallback(window, [](GLFWwindow* window, int key, int scancode, int action, int modifiers)
             {
                 Event event;
                 event.type = EventKeyboard;
@@ -355,7 +360,6 @@ namespace plum
                 event.keyboard.action = action;
                 dispatch(window, event);
             });
-
             glfwSetWindowSizeCallback(window, [](GLFWwindow* window, int w, int h)
             {
                 Event event;
@@ -365,8 +369,37 @@ namespace plum
                 event.resize.height = h;
                 dispatch(window, event);
             });
+            glfwSetMouseButtonCallback(window, [](GLFWwindow* window, int button, int action, int modifiers)
+            {
+                Event event;
+                event.type = EventMouseClick;
+                event.window = window;
+                event.mouse.click.button = button;
+                event.mouse.click.action = action;
+                dispatch(window, event);
+            });
+            glfwSetCursorPosCallback(window, [](GLFWwindow* window, double x, double y)
+            {
+                Event event;
+                auto impl = (Screen::Impl*) glfwGetWindowUserPointer(window);
+                event.type = EventMouseMove;
+                event.window = window;
+                event.mouse.move.x = (x - (impl->trueWidth - impl->width * impl->scale) / 2) / impl->scale;
+                event.mouse.move.y = (y - (impl->trueHeight - impl->height * impl->scale) / 2) / impl->scale;
+                dispatch(window, event);
+            });
+            glfwSetScrollCallback(window, [](GLFWwindow* window, double dx, double dy)
+            {
+                Event event;
+                event.type = EventMouseScroll;
+                event.window = window;
+                event.mouse.scroll.dx = dx;
+                event.mouse.scroll.dy = dy;
+                dispatch(window, event);
+            });
 
             keyboard.impl->hook = addEventHook([this](const Event& event){ keyboard.impl->handle(event); });
+            mouse.impl->hook = addEventHook([this](const Event& event){ mouse.impl->handle(event); });
 
             glfwSwapInterval(1);
             glfwShowWindow(window);
@@ -381,7 +414,7 @@ namespace plum
         }
 
         glfwGetWindowSize(window, &trueWidth, &trueHeight);
-        scale = std::max(std::min(trueWidth / width, trueHeight / height), 1);
+		scale = std::max(std::min(trueWidth / width, trueHeight / height), 1);
 
         glfwMakeContextCurrent(window);
         glEnable(GL_BLEND);
@@ -420,7 +453,7 @@ namespace plum
         impl->resize(width * scale, height * scale, win);
     }
 
-    void Screen::bind(Image& image)
+    void Screen::bindImage(Image& image)
     {
         glfwMakeContextCurrent(impl->window);
         glColor4ub(255, 255, 255, getOpacity());
@@ -432,7 +465,20 @@ namespace plum
         image.bindRaw();
     }
 
-    void Screen::bind(const Transform& transform, int x, int y, int width, int height)
+    void Screen::unbindImage()
+    {
+        glDisableClientState(GL_VERTEX_ARRAY);
+        glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+    }
+
+    void Screen::bindTransform()
+    {
+        glfwMakeContextCurrent(impl->window);
+        glColor4ub(255, 255, 255, getOpacity());
+        useHardwareBlender(BlendPreserve);
+    }
+
+    void Screen::bindTransform(const Transform& transform, int x, int y, int width, int height)
     {
         glfwMakeContextCurrent(impl->window);
 
@@ -440,8 +486,6 @@ namespace plum
         transform.tint.channels(r, g, b, a);
         glColor4ub(r, g, b, a * getOpacity() / 255);
         useHardwareBlender(transform.mode);
-        glEnableClientState(GL_VERTEX_ARRAY);
-        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
         glPushMatrix();
         glTranslated(x, y, 0.0);
@@ -452,22 +496,13 @@ namespace plum
         impl->transformBound = true;
     }
 
-    void Screen::bind(Image& image, const Transform& transform, int x, int y, int width, int height)
-    {
-        bind(transform, x, y, width, height);
-
-        glEnable(GL_TEXTURE_2D);
-        image.bindRaw();
-    }
-
-    void Screen::unbind()
+    void Screen::unbindTransform()
     {
         if(impl->transformBound)
         {
             glPopMatrix();
+            impl->transformBound = false;
         }
-        glDisableClientState(GL_VERTEX_ARRAY);
-        glDisableClientState(GL_TEXTURE_COORD_ARRAY);
     }
 
     void Screen::clear(Color color)

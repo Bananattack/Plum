@@ -4,7 +4,7 @@
 #include "../../core/log.h"
 
 #ifdef _WIN32
-#include <GL/glfw3native.h>
+#include <GLFW/glfw3native.h>
 #endif
 
 namespace plum
@@ -46,6 +46,7 @@ namespace plum
 
     void Engine::Impl::refresh()
     {
+        windowless = true;
         for(const auto h : updateHooks)
         {
             if(auto f = h.lock())
@@ -54,6 +55,10 @@ namespace plum
             }
         }
         updateHooks.cleanup();
+        if(windowless)
+        {
+            quit("Attempt to refresh with no screens open.");
+        }
     }
 
     Engine::Engine()

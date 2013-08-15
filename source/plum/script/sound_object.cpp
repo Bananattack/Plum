@@ -9,10 +9,7 @@ namespace plum
         {
             return "plum.Sound";
         }
-    }
 
-    namespace script
-    {
         void initSoundObject(lua_State* L)
         {
             luaL_newmetatable(L, meta<Sound>());
@@ -58,7 +55,7 @@ namespace plum
             // Push plum namespace.
             lua_getglobal(L, "plum");
 
-            // plum.sound = <function soundNew>
+            // plum.Sound = <function create>
             script::push(L, "Sound");
             lua_pushcfunction(L, [](lua_State* L)
             {

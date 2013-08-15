@@ -12,9 +12,11 @@ namespace plum
     class Event;
     class Image;
     class Engine;
-    class Input;
     class Keyboard;
+    class Mouse;
+    struct Input;
     struct Transform;
+
     class Screen
     {
         public:
@@ -39,13 +41,16 @@ namespace plum
 
             Input& closeButton();
             Keyboard& keyboard();
+            Mouse& mouse();
             std::shared_ptr<EventHook> addEventHook(const EventHook& hook);
             void setResolution(int width, int height, int scale, bool win);
 
-            void bind(Image& image);
-            void bind(const Transform& transform, int x, int y, int width, int height);
-            void bind(Image& image, const Transform& transform, int x, int y, int width, int height);
-            void unbind();
+            void bindImage(Image& image);
+            void unbindImage();
+
+            void bindTransform();
+            void bindTransform(const Transform& transform, int x, int y, int width, int height);
+            void unbindTransform();
 
             void clear(Color color);
             void clear(int x, int y, int x2, int y2, Color color);

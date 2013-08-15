@@ -154,7 +154,8 @@ typedef struct _GLFWwindowWin32
     // Various platform specific internal variables
     GLboolean           cursorCentered;
     GLboolean           cursorInside;
-    int                 oldCursorX, oldCursorY;
+    GLboolean           cursorHidden;
+    double              oldCursorX, oldCursorY;
 } _GLFWwindowWin32;
 
 
@@ -199,6 +200,8 @@ typedef struct _GLFWlibraryWin32
     } dwmapi;
 
     struct {
+        float           axes[6];
+        unsigned char   buttons[36]; // 32 buttons plus one hat
         char*           name;
     } joystick[GLFW_JOYSTICK_LAST + 1];
 
@@ -246,7 +249,7 @@ int _glfwAnalyzeContext(const _GLFWwindow* window,
                         const _GLFWfbconfig* fbconfig);
 
 // Fullscreen support
-int _glfwSetVideoMode(_GLFWmonitor* monitor, const GLFWvidmode* mode);
+GLboolean _glfwSetVideoMode(_GLFWmonitor* monitor, const GLFWvidmode* desired);
 void _glfwRestoreVideoMode(_GLFWmonitor* monitor);
 
 

@@ -11,13 +11,12 @@ namespace plum
     {
     }
 
-    bool Input::isPressed()
+    Axis::Axis()
+        : value(0)
     {
-        return pressed;
     }
 
-    void Input::setPressed(bool value)
+    Axis::~Axis()
     {
-        pressed = value;
     }
 }

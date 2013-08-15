@@ -136,7 +136,12 @@ namespace plum
         switch(event.type)
         {
             case EventKeyboard:
-                keys[event.keyboard.key].setPressed(event.keyboard.action != GLFW_RELEASE);
+                switch(event.keyboard.action)
+                {
+                    case GLFW_PRESS: keys[event.keyboard.key].pressed = true; break;
+                    case GLFW_RELEASE: keys[event.keyboard.key].pressed = false; break;
+                    default: break;
+                }
                 break;
             default: break;
         }
@@ -154,5 +159,232 @@ namespace plum
     Input& Keyboard::operator[](Key k)
     {
         return impl->keys[getGLFWKey(k)];
+    }
+
+
+
+    Mouse::Impl::Impl()
+        : x(0), y(0), scroll(0)
+    {
+    }
+
+    Mouse::Impl::~Impl()
+    {
+    }
+
+    void Mouse::Impl::handle(const Event& event)
+    {
+        switch(event.type)
+        {
+            case EventMouseClick:
+                switch(event.mouse.click.action)
+                {
+                    case GLFW_PRESS: buttons[event.mouse.click.button].pressed = true; break;
+                    case GLFW_RELEASE: buttons[event.mouse.click.button].pressed = false; break;
+                    default: break;
+                }
+                break;
+            case EventMouseMove:
+                x = event.mouse.move.x;
+                y = event.mouse.move.y;
+                break;
+            case EventMouseScroll:
+                scroll += event.mouse.scroll.dy;
+                break;
+        }
+    }
+
+    Mouse::Mouse()
+        : impl(new Impl())
+    {
+    }
+
+    Mouse::~Mouse()
+    {
+    }
+
+    double Mouse::getX() const
+    {
+        return impl->x;
+    }
+
+    double Mouse::getY() const
+    {
+        return impl->y;
+    }
+
+    double Mouse::getScroll() const
+    {
+        return impl->scroll;
+    }
+
+    Input& Mouse::left()
+    {
+        return impl->buttons[GLFW_MOUSE_BUTTON_LEFT];
+    }
+
+    Input& Mouse::middle()
+    {
+        return impl->buttons[GLFW_MOUSE_BUTTON_MIDDLE];
+    }
+
+    Input& Mouse::right()
+    {
+        return impl->buttons[GLFW_MOUSE_BUTTON_RIGHT];
+    }
+
+    namespace
+    {
+        const float Deadzone = 0.3f;
+    }
+
+    class Joystick::Impl
+    {
+        public:
+            Impl(Engine& engine, unsigned int index)
+                : engine(engine), index(index),
+                active(false), axisCount(0), buttonCount(0)
+            {
+                hook = engine.addUpdateHook([this](){ update(); });
+                memset(lastButtonState, 0, sizeof(lastButtonState));
+                update();
+            }
+
+            ~Impl()
+            {
+            }
+
+            void update()
+            {
+                active = glfwJoystickPresent(index) == GL_TRUE;
+                if(!active)
+                {
+                    return;
+                }
+
+                {
+                    int count;
+                    const float* result = glfwGetJoystickAxes(index, &count);
+
+                    axisCount = std::min((unsigned int) count, AxisMax);
+
+                    for(unsigned int i = 0; i < AxisMax; i++)
+                    {
+                        Axis& axis(axes[i]);
+                        if(i >= axisCount)
+                        {
+                            axis.value = 0;
+                        }
+                        else
+                        {
+                            axis.value = result[i];
+                        }
+
+                        if(axis.value < -Deadzone)
+                        {
+                            if(axis.sign >= 0)
+                            {
+                                axis.plus.pressed = false;
+                                axis.minus.pressed = true;
+                            }
+                            axis.sign = -1;
+                        }
+                        else if(axis.value > Deadzone)
+                        {
+                            if(axis.sign <= 0)
+                            {
+                                axis.plus.pressed = true;
+                                axis.minus.pressed = false;
+                            }
+                            axis.sign = 1;
+                        }
+                        else
+                        {
+                            if(axis.sign != 0)
+                            {
+                                axis.plus.pressed = false;
+                                axis.minus.pressed = false;
+                            }
+                            axis.sign = 0;
+                        }
+                    }
+                }
+
+                {
+                    int count;
+                    const unsigned char* result = glfwGetJoystickButtons(index, &count);
+
+                    buttonCount = std::min((unsigned int) count, ButtonMax);
+
+                    for(unsigned int i = 0; i < ButtonMax; i++)
+                    {
+                        Input& button(buttons[i]);
+                        if(i >= buttonCount)
+                        {
+                            button.pressed = false;
+                        }
+                        else
+                        {
+                            if(lastButtonState[i] != result[i])
+                            {
+                                switch(result[i])
+                                {
+                                    case GLFW_PRESS: button.pressed = true; break;
+                                    case GLFW_RELEASE: button.pressed = false; break;
+                                    default: break;
+                                }
+                            }
+
+                            lastButtonState[i] = result[i];
+                        }
+                    }
+                }
+            }
+
+            Engine& engine;
+            unsigned int index;
+            bool active;
+            unsigned int axisCount, buttonCount;
+
+            std::shared_ptr<Engine::UpdateHook> hook;
+
+            unsigned char lastButtonState[ButtonMax];
+            Input buttons[ButtonMax];
+            Axis axes[AxisMax];
+    };
+
+    Joystick::Joystick(Engine& engine, unsigned int joystickIndex)
+        : impl(new Impl(engine, joystickIndex))
+    {
+    }
+
+    bool Joystick::isActive() const
+    {
+        return impl->active;
+    }
+
+    const char* Joystick::getName() const
+    {
+        return glfwGetJoystickName(impl->index);
+    }
+
+    unsigned int Joystick::getAxisCount() const
+    {
+        return impl->axisCount;
+    }
+
+    unsigned int Joystick::getButtonCount() const
+    {
+        return impl->buttonCount;
+    }
+
+    Axis& Joystick::axis(unsigned int axisIndex)
+    {
+        return impl->axes[axisIndex];
+    }
+
+    Input& Joystick::button(unsigned int buttonIndex)
+    {
+        return impl->buttons[buttonIndex];
     }
 }

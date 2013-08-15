@@ -37,7 +37,7 @@
 // This path may need to be changed if you build GLFW using your own setup
 // We ship and use our own copy of glxext.h since GLFW uses fairly new
 // extensions and not all operating systems come with an up-to-date version
-#include "../support/GL/glxext.h"
+#include "../deps/GL/glxext.h"
 
 // Do we have support for dlopen/dlsym?
 #if defined(_GLFW_HAS_DLOPEN)
@@ -60,6 +60,7 @@
  #error "No OpenGL entry point retrieval mechanism was enabled"
 #endif
 
+#define _GLFW_PLATFORM_FBCONFIG             GLXFBConfig     glx
 #define _GLFW_PLATFORM_CONTEXT_STATE        _GLFWcontextGLX glx
 #define _GLFW_PLATFORM_LIBRARY_OPENGL_STATE _GLFWlibraryGLX glx
 
@@ -92,6 +93,12 @@ typedef struct _GLFWlibraryGLX
     int             versionMajor, versionMinor;
     int             eventBase;
     int             errorBase;
+
+    // TLS key for per-thread current context/window
+    pthread_key_t   current;
+
+    // GLX error code received by Xlib error callback
+    int             errorCode;
 
     // GLX extensions
     PFNGLXSWAPINTERVALSGIPROC             SwapIntervalSGI;

@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 2.8)
 
 set(GLFW_VERSION_MAJOR "3")
 set(GLFW_VERSION_MINOR "0")
-set(GLFW_VERSION_PATCH "0")
+set(GLFW_VERSION_PATCH "1")
 set(GLFW_VERSION_EXTRA "")
 set(GLFW_VERSION "${GLFW_VERSION_MAJOR}.${GLFW_VERSION_MINOR}")
 set(GLFW_VERSION_FULL "${GLFW_VERSION}.${GLFW_VERSION_PATCH}${GLFW_VERSION_EXTRA}")
@@ -13,13 +13,14 @@ set(LIB_SUFFIX "" CACHE STRING "Takes an empty string or 64. Directory where lib
 option(GLFW_BUILD_EXAMPLES "Build the GLFW example programs" ON)
 option(GLFW_BUILD_TESTS "Build the GLFW test programs" ON)
 option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
+option(GLFW_INSTALL "Generate installation target" ON)
 
 set(DOXYGEN_SKIP_DOT TRUE)
 find_package(Doxygen)
 
 option(GLFW_DOCUMENT_INTERNALS "Include internals in documentation" OFF)
 if (GLFW_DOCUMENT_INTERNALS)
-    set(GLFW_DOC_HEADERS "${GLFW_SOURCE_DIR}/src/internal.h")
+    set(GLFW_INTERNAL_DOCS "${GLFW_SOURCE_DIR}/src/internal.h ${GLFW_SOURCE_DIR}/docs/internal.dox")
 endif()
 
 if (APPLE)
@@ -77,6 +78,9 @@ endif()
 #--------------------------------------------------------------------
 if (BUILD_SHARED_LIBS)
     set(_GLFW_BUILD_DLL 1)
+    if (UNIX)
+        add_definitions(-fvisibility=hidden)
+    endif()
 endif()
 
 #--------------------------------------------------------------------
@@ -122,13 +126,19 @@ if (_GLFW_WIN32)
         option(USE_MSVC_RUNTIME_LIBRARY_DLL "Use MSVC runtime library DLL" ON)
 
         if (NOT USE_MSVC_RUNTIME_LIBRARY_DLL)
-            foreach (flag CMAKE_C_FLAGS CMAKE_C_FLAGS_DEBUG CMAKE_C_FLAGS_RELEASE CMAKE_C_FLAGS_MINSIZEREL CMAKE_C_FLAGS_RELWITHDEBINFO)
+            foreach (flag CMAKE_C_FLAGS
+                          CMAKE_C_FLAGS_DEBUG
+                          CMAKE_C_FLAGS_RELEASE
+                          CMAKE_C_FLAGS_MINSIZEREL
+                          CMAKE_C_FLAGS_RELWITHDEBINFO)
+
                 if (${flag} MATCHES "/MD")
                     string(REGEX REPLACE "/MD" "/MT" ${flag} "${${flag}}")
                 endif()
                 if (${flag} MATCHES "/MDd")
                     string(REGEX REPLACE "/MDd" "/MTd" ${flag} "${${flag}}")
                 endif()
+
             endforeach()
         endif()
     endif()
@@ -159,21 +169,28 @@ if (_GLFW_X11)
 
     # Set up library and include paths
     list(APPEND glfw_INCLUDE_DIRS ${X11_X11_INCLUDE_PATH})
-    list(APPEND glfw_LIBRARIES ${X11_X11_LIB})
+    list(APPEND glfw_LIBRARIES ${X11_X11_LIB} ${CMAKE_THREAD_LIBS_INIT})
+    if (UNIX AND NOT APPLE)
+        list(APPEND glfw_LIBRARIES ${RT_LIBRARY})
+    endif()
 
     # Check for XRandR (modern resolution switching and gamma control)
     if (NOT X11_Xrandr_FOUND)
         message(FATAL_ERROR "The RandR library and headers were not found")
     endif()
 
-    if (X11_Xinput_FOUND)
-        list(APPEND glfw_INCLUDE_DIRS ${X11_Xinput_INCLUDE_PATH})
-        list(APPEND glfw_LIBRARIES ${X11_Xinput_LIB})
-    endif()
-
     list(APPEND glfw_INCLUDE_DIRS ${X11_Xrandr_INCLUDE_PATH})
     list(APPEND glfw_LIBRARIES ${X11_Xrandr_LIB})
     set(GLFW_PKG_DEPS "${GLFW_PKG_DEPS} xrandr")
+
+    # Check for XInput (high-resolution cursor motion)
+    if (NOT X11_Xinput_FOUND)
+        message(FATAL_ERROR "The XInput library and headers were not found")
+    endif()
+
+    list(APPEND glfw_INCLUDE_DIRS ${X11_Xinput_INCLUDE_PATH})
+    list(APPEND glfw_LIBRARIES ${X11_Xinput_LIB})
+    set(GLFW_PKG_DEPS "${GLFW_PKG_DEPS} xi")
 
     # Check for Xf86VidMode (fallback gamma control)
     if (NOT X11_xf86vmode_FOUND)
@@ -183,11 +200,10 @@ if (_GLFW_X11)
     list(APPEND glfw_INCLUDE_DIRS ${X11_xf86vmode_INCLUDE_PATH})
     set(GLFW_PKG_DEPS "${GLFW_PKG_DEPS} xxf86vm")
 
-    # NOTE: This is a workaround for CMake bug 0006976 (missing
-    # X11_xf86vmode_LIB variable)
-    if (X11_xf86vmode_LIB)
-        list(APPEND glfw_LIBRARIES ${X11_xf86vmode_LIB})
+    if (X11_Xxf86vm_LIB)
+        list(APPEND glfw_LIBRARIES ${X11_Xxf86vm_LIB})
     else()
+        # Backwards compatibility (see CMake bug 0006976)
         list(APPEND glfw_LIBRARIES Xxf86vm)
     endif()
 
@@ -374,29 +390,41 @@ configure_file(${GLFW_SOURCE_DIR}/docs/Doxyfile.in
 configure_file(${GLFW_SOURCE_DIR}/src/config.h.in 
                ${GLFW_BINARY_DIR}/src/config.h @ONLY)
 
-#--------------------------------------------------------------------
-# Install the public headers
-# The src directory's CMakeLists.txt file installs the library
-#--------------------------------------------------------------------
-install(DIRECTORY include/GL DESTINATION include 
-        FILES_MATCHING PATTERN glfw3.h PATTERN glfw3native.h)
+configure_file(${GLFW_SOURCE_DIR}/src/glfwConfig.cmake.in
+               ${GLFW_BINARY_DIR}/src/glfwConfig.cmake @ONLY)
 
-#--------------------------------------------------------------------
-# Create and install pkg-config file on supported platforms
-#--------------------------------------------------------------------
+configure_file(${GLFW_SOURCE_DIR}/src/glfwConfigVersion.cmake.in
+               ${GLFW_BINARY_DIR}/src/glfwConfigVersion.cmake @ONLY)
+
 if (UNIX)
     configure_file(${GLFW_SOURCE_DIR}/src/glfw3.pc.in
                    ${GLFW_BINARY_DIR}/src/glfw3.pc @ONLY)
+endif()
 
-    install(FILES ${GLFW_BINARY_DIR}/src/glfw3.pc
-            DESTINATION lib${LIB_SUFFIX}/pkgconfig)
+#--------------------------------------------------------------------
+# Install files
+# The library is installed by src/CMakeLists.txt
+#--------------------------------------------------------------------
+if (GLFW_INSTALL)
+    install(DIRECTORY include/GLFW DESTINATION include 
+            FILES_MATCHING PATTERN glfw3.h PATTERN glfw3native.h)
+
+    install(FILES ${GLFW_BINARY_DIR}/src/glfwConfig.cmake
+                  ${GLFW_BINARY_DIR}/src/glfwConfigVersion.cmake
+            DESTINATION lib${LIB_SUFFIX}/cmake/glfw)
+
+    if (UNIX)
+        install(EXPORT glfwTargets DESTINATION lib${LIB_SUFFIX}/cmake/glfw)
+        install(FILES ${GLFW_BINARY_DIR}/src/glfw3.pc
+                DESTINATION lib${LIB_SUFFIX}/pkgconfig)
+    endif()
 endif()
 
 #--------------------------------------------------------------------
 # Uninstall operation
 # Don't generate this target if a higher-level project already has
 #--------------------------------------------------------------------
-if (NOT TARGET uninstall)
+if (GLFW_INSTALL AND NOT TARGET uninstall)
     configure_file(${GLFW_SOURCE_DIR}/cmake_uninstall.cmake.in
                    ${GLFW_BINARY_DIR}/cmake_uninstall.cmake IMMEDIATE @ONLY)
 

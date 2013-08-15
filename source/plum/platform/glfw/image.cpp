@@ -1,6 +1,6 @@
 #include <memory>
 
-#include <GL/glfw3.h>
+#include <GLFW/glfw3.h>
 
 #include "../../core/image.h"
 #include "../../core/sheet.h"
@@ -101,30 +101,38 @@ namespace plum
 
     void Image::draw(int x, int y, Screen& dest)
     {
-        dest.bind(*this);
+        dest.bindImage(*this);
+        dest.bindTransform();
         drawRaw(x, y);
-        dest.unbind();
+        dest.unbindTransform();
+        dest.unbindImage();
     }
 
     void Image::draw(int x, int y, const Transform& transform, Screen& dest)
     {
-        dest.bind(*this, transform, x, y, impl->canvas.getWidth(), impl->canvas.getHeight());
+        dest.bindImage(*this);
+        dest.bindTransform(transform, x, y, impl->canvas.getWidth(), impl->canvas.getHeight());
         drawRaw(0, 0);
-        dest.unbind();
+        dest.unbindTransform();
+        dest.unbindImage();
     }
 
     void Image::drawFrame(const Sheet& sheet, int f, int x, int y, Screen& dest)
     {
-        dest.bind(*this);
+        dest.bindImage(*this);
+        dest.bindTransform();
         drawFrameRaw(sheet, f, x, y);
-        dest.unbind();
+        dest.unbindTransform();
+        dest.unbindImage();
     }
 
     void Image::drawFrame(const Sheet& sheet, int f, int x, int y, const Transform& transform, Screen& dest)
     {
-        dest.bind(*this, transform, x, y, sheet.getWidth(), sheet.getHeight());
+        dest.bindImage(*this);
+        dest.bindTransform(transform, x, y, sheet.getWidth(), sheet.getHeight());
         drawFrameRaw(sheet, f, 0, 0);
-        dest.unbind();
+        dest.unbindTransform();
+        dest.unbindImage();
     }
 
     void Image::bindRaw()

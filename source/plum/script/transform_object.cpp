@@ -10,10 +10,7 @@ namespace plum
         {
             return "plum.Transform";
         }
-    }
 
-    namespace script
-    {
         void initTransformObject(lua_State* L)
         {
             luaL_newmetatable(L, meta<Transform>());

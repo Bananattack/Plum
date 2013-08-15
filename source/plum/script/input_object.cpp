@@ -10,10 +10,7 @@ namespace plum
         {
             return "plum.Input";
         }
-    }
 
-    namespace script
-    {
         void initInputObject(lua_State* L)
         {
             luaL_newmetatable(L, meta<Input>());
@@ -38,13 +35,13 @@ namespace plum
                 {"get_pressed", [](lua_State* L)
                 {
                     auto inp = script::ptr<Input>(L, 1);
-                    script::push(L, inp->isPressed());
+                    script::push(L, inp->pressed);
                     return 1;
                 }},
                 {"set_pressed", [](lua_State* L)
                 {
                     auto inp = script::ptr<Input>(L, 1);
-                    inp->setPressed(script::get<bool>(L, 2));
+                    inp->pressed = script::get<bool>(L, 2);
                     return 0;
                 }},
                 {nullptr, nullptr}

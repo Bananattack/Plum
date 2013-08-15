@@ -28,7 +28,7 @@
 //
 //========================================================================
 
-#include <GL/glfw3.h>
+#include <GLFW/glfw3.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -45,7 +45,7 @@ static void error_callback(int error, const char* description)
     fprintf(stderr, "Error: %s\n", description);
 }
 
-static void key_callback(GLFWwindow* window, int key, int action)
+static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
     printf("%0.2f Key %s\n",
            glfwGetTime(),
@@ -68,6 +68,11 @@ static void key_callback(GLFWwindow* window, int key, int action)
 static void window_size_callback(GLFWwindow* window, int width, int height)
 {
     printf("%0.2f Window resized to %ix%i\n", glfwGetTime(), width, height);
+}
+
+static void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+{
+    printf("%0.2f Framebuffer resized to %ix%i\n", glfwGetTime(), width, height);
 
     glViewport(0, 0, width, height);
 }
@@ -117,9 +122,9 @@ int main(int argc, char** argv)
 
     if (monitor)
     {
-        GLFWvidmode mode = glfwGetVideoMode(monitor);
-        width = mode.width;
-        height = mode.height;
+        const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+        width = mode->width;
+        height = mode->height;
     }
     else
     {
@@ -138,19 +143,20 @@ int main(int argc, char** argv)
     glfwSwapInterval(1);
 
     glfwSetKeyCallback(window, key_callback);
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     glfwSetWindowSizeCallback(window, window_size_callback);
     glfwSetWindowFocusCallback(window, window_focus_callback);
     glfwSetWindowIconifyCallback(window, window_iconify_callback);
 
     printf("Window is %s and %s\n",
-           glfwGetWindowParam(window, GLFW_ICONIFIED) ? "iconified" : "restored",
-           glfwGetWindowParam(window, GLFW_FOCUSED) ? "focused" : "defocused");
+           glfwGetWindowAttrib(window, GLFW_ICONIFIED) ? "iconified" : "restored",
+           glfwGetWindowAttrib(window, GLFW_FOCUSED) ? "focused" : "defocused");
 
     glEnable(GL_SCISSOR_TEST);
 
     while (!glfwWindowShouldClose(window))
     {
-        glfwGetWindowSize(window, &width, &height);
+        glfwGetFramebufferSize(window, &width, &height);
 
         glScissor(0, 0, width, height);
         glClearColor(0, 0, 0, 0);

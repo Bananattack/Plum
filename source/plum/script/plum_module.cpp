@@ -170,14 +170,18 @@ namespace plum
             initTimerModule(L);
 
             initCanvasObject(L);
+            initInputObject(L);
+            initAxisObject(L);
+            initMouseObject(L);
             initFileObject(L);
             initImageObject(L);
-            initInputObject(L);
-            initScreenObject(L);
             initSheetObject(L);
             initSongObject(L);
             initSoundObject(L);
+            initScreenObject(L);
+            initSpriteObject(L);
             initTilemapObject(L);
+            initJoystickObject(L);
             initTransformObject(L);
         }
     }

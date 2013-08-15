@@ -7,7 +7,7 @@ if (MSVC)
     add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 endif()
 
-set(common_HEADERS ${GLFW_SOURCE_DIR}/include/GL/glfw3.h internal.h)
+set(common_HEADERS ${GLFW_SOURCE_DIR}/include/GLFW/glfw3.h internal.h)
 set(common_SOURCES clipboard.c context.c gamma.c init.c input.c joystick.c
                    monitor.c time.c window.c)
 
@@ -81,5 +81,7 @@ if (BUILD_SHARED_LIBS)
     target_link_libraries(glfw LINK_INTERFACE_LIBRARIES)
 endif()
 
-install(TARGETS glfw DESTINATION lib${LIB_SUFFIX} )
+if (GLFW_INSTALL)
+    install(TARGETS glfw EXPORT glfwTargets DESTINATION lib${LIB_SUFFIX})
+endif()
 

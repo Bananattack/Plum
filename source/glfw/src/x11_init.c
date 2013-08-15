@@ -30,6 +30,8 @@
 
 #include "internal.h"
 
+#include <X11/Xresource.h>
+
 #include <stdlib.h>
 #include <string.h>
 #include <limits.h>
@@ -37,13 +39,13 @@
 
 // Translate an X11 key code to a GLFW key code.
 //
-static int keyCodeToGLFWKeyCode(int keyCode)
+static int translateKey(int keyCode)
 {
     int keySym;
 
     // Valid key code range is  [8,255], according to the XLib manual
     if (keyCode < 8 || keyCode > 255)
-        return -1;
+        return GLFW_KEY_UNKNOWN;
 
     // Try secondary keysym, for numeric keypad keys
     // Note: This way we always force "NumLock = ON", which is intentional
@@ -209,8 +211,8 @@ static int keyCodeToGLFWKeyCode(int keyCode)
         default:                break;
     }
 
-    // No matching translation was found, so return -1
-    return -1;
+    // No matching translation was found
+    return GLFW_KEY_UNKNOWN;
 }
 
 // Update the key code LUT
@@ -223,7 +225,7 @@ static void updateKeyCodeLUT(void)
 
     // Clear the LUT
     for (keyCode = 0;  keyCode < 256;  keyCode++)
-        _glfw.x11.keyCodeLUT[keyCode] = -1;
+        _glfw.x11.keyCodeLUT[keyCode] = GLFW_KEY_UNKNOWN;
 
     // Use XKB to determine physical key locations independently of the current
     // keyboard layout
@@ -294,7 +296,7 @@ static void updateKeyCodeLUT(void)
         else if (strcmp(name, "AB10") == 0) keyCodeGLFW = GLFW_KEY_SLASH;
         else if (strcmp(name, "BKSL") == 0) keyCodeGLFW = GLFW_KEY_BACKSLASH;
         else if (strcmp(name, "LSGT") == 0) keyCodeGLFW = GLFW_KEY_WORLD_1;
-        else keyCodeGLFW = -1;
+        else keyCodeGLFW = GLFW_KEY_UNKNOWN;
 
         // Update the key code LUT
         if ((keyCode >= 0) && (keyCode < 256))
@@ -309,7 +311,7 @@ static void updateKeyCodeLUT(void)
     for (keyCode = 0;  keyCode < 256;  keyCode++)
     {
         if (_glfw.x11.keyCodeLUT[keyCode] < 0)
-            _glfw.x11.keyCodeLUT[keyCode] = keyCodeToGLFWKeyCode(keyCode);
+            _glfw.x11.keyCodeLUT[keyCode] = translateKey(keyCode);
     }
 }
 
@@ -398,19 +400,16 @@ static void detectEWMH(void)
 
     _glfw.x11.NET_WM_STATE =
         getSupportedAtom(supportedAtoms, atomCount, "_NET_WM_STATE");
-
     _glfw.x11.NET_WM_STATE_FULLSCREEN =
         getSupportedAtom(supportedAtoms, atomCount, "_NET_WM_STATE_FULLSCREEN");
-
     _glfw.x11.NET_WM_NAME =
         getSupportedAtom(supportedAtoms, atomCount, "_NET_WM_NAME");
-
     _glfw.x11.NET_WM_ICON_NAME =
         getSupportedAtom(supportedAtoms, atomCount, "_NET_WM_ICON_NAME");
-
+    _glfw.x11.NET_WM_PID =
+        getSupportedAtom(supportedAtoms, atomCount, "_NET_WM_PID");
     _glfw.x11.NET_WM_PING =
         getSupportedAtom(supportedAtoms, atomCount, "_NET_WM_PING");
-
     _glfw.x11.NET_ACTIVE_WINDOW =
         getSupportedAtom(supportedAtoms, atomCount, "_NET_ACTIVE_WINDOW");
 
@@ -432,10 +431,9 @@ static GLboolean initDisplay(void)
         return GL_FALSE;
     }
 
-    // As the API currently doesn't understand multiple display devices, we hard-code
-    // this choice and hope for the best
     _glfw.x11.screen = DefaultScreen(_glfw.x11.display);
     _glfw.x11.root = RootWindow(_glfw.x11.display, _glfw.x11.screen);
+    _glfw.x11.context = XUniqueContext();
 
     // Find or create window manager atoms
     _glfw.x11.WM_STATE = XInternAtom(_glfw.x11.display, "WM_STATE", False);
@@ -479,18 +477,18 @@ static GLboolean initDisplay(void)
 
     if (XQueryExtension(_glfw.x11.display,
                         "XInputExtension",
-                        &_glfw.x11.xi2.majorOpcode,
-                        &_glfw.x11.xi2.eventBase,
-                        &_glfw.x11.xi2.errorBase))
+                        &_glfw.x11.xi.majorOpcode,
+                        &_glfw.x11.xi.eventBase,
+                        &_glfw.x11.xi.errorBase))
     {
-        _glfw.x11.xi2.versionMajor = 2;
-        _glfw.x11.xi2.versionMinor = 0;
+        _glfw.x11.xi.versionMajor = 2;
+        _glfw.x11.xi.versionMinor = 0;
 
         if (XIQueryVersion(_glfw.x11.display,
-                           &_glfw.x11.xi2.versionMajor,
-                           &_glfw.x11.xi2.versionMinor) != BadRequest)
+                           &_glfw.x11.xi.versionMajor,
+                           &_glfw.x11.xi.versionMinor) != BadRequest)
         {
-            _glfw.x11.xi2.available = GL_TRUE;
+            _glfw.x11.xi.available = GL_TRUE;
         }
     }
 
@@ -536,22 +534,22 @@ static GLboolean initDisplay(void)
         XInternAtom(_glfw.x11.display, "UTF8_STRING", False);
     _glfw.x11.COMPOUND_STRING =
         XInternAtom(_glfw.x11.display, "COMPOUND_STRING", False);
+    _glfw.x11.ATOM_PAIR = XInternAtom(_glfw.x11.display, "ATOM_PAIR", False);
 
     // Find or create selection property atom
-    _glfw.x11.selection.property =
+    _glfw.x11.GLFW_SELECTION =
         XInternAtom(_glfw.x11.display, "GLFW_SELECTION", False);
 
     // Find or create standard clipboard atoms
     _glfw.x11.TARGETS = XInternAtom(_glfw.x11.display, "TARGETS", False);
+    _glfw.x11.MULTIPLE = XInternAtom(_glfw.x11.display, "MULTIPLE", False);
     _glfw.x11.CLIPBOARD = XInternAtom(_glfw.x11.display, "CLIPBOARD", False);
 
-    // Find or create selection target atoms
-    _glfw.x11.selection.formats[_GLFW_CLIPBOARD_FORMAT_UTF8] =
-        _glfw.x11.UTF8_STRING;
-    _glfw.x11.selection.formats[_GLFW_CLIPBOARD_FORMAT_COMPOUND] =
-        _glfw.x11.COMPOUND_STRING;
-    _glfw.x11.selection.formats[_GLFW_CLIPBOARD_FORMAT_STRING] =
-        XA_STRING;
+    // Find or create clipboard manager atoms
+    _glfw.x11.CLIPBOARD_MANAGER =
+        XInternAtom(_glfw.x11.display, "CLIPBOARD_MANAGER", False);
+    _glfw.x11.SAVE_TARGETS =
+        XInternAtom(_glfw.x11.display, "SAVE_TARGETS", False);
 
     return GL_TRUE;
 }

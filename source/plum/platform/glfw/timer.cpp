@@ -1,6 +1,6 @@
 #include <algorithm>
 
-#include <GL/glfw3.h>
+#include <GLFW/glfw3.h>
 
 #include "../../core/timer.h"
 #include "../../core/engine.h"

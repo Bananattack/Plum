@@ -110,6 +110,7 @@
     <ClCompile Include="core\input.cpp" />
     <ClCompile Include="core\log.cpp" />
     <ClCompile Include="core\sheet.cpp" />
+    <ClCompile Include="core\sprite.cpp" />
     <ClCompile Include="core\tilemap.cpp" />
     <ClCompile Include="platform\corona\canvas.cpp" />
     <ClCompile Include="platform\glfw\engine.cpp" />
@@ -120,17 +121,21 @@
     <ClCompile Include="platform\plaidaudio\audio.cpp" />
     <ClCompile Include="platform\plaidaudio\codec_modplug.cpp" />
     <ClCompile Include="plum.cpp" />
+    <ClCompile Include="script\axis_object.cpp" />
     <ClCompile Include="script\canvas_object.cpp" />
     <ClCompile Include="script\file_object.cpp" />
     <ClCompile Include="script\image_object.cpp" />
     <ClCompile Include="script\input_object.cpp" />
+    <ClCompile Include="script\joystick_object.cpp" />
     <ClCompile Include="script\keyboard_object.cpp" />
+    <ClCompile Include="script\mouse_object.cpp" />
     <ClCompile Include="script\plum_module.cpp" />
     <ClCompile Include="script\screen_object.cpp" />
     <ClCompile Include="script\script.cpp" />
     <ClCompile Include="script\sheet_object.cpp" />
     <ClCompile Include="script\song_object.cpp" />
     <ClCompile Include="script\sound_object.cpp" />
+    <ClCompile Include="script\sprite_object.cpp" />
     <ClCompile Include="script\tilemap_object.cpp" />
     <ClCompile Include="script\timer_object.cpp" />
     <ClCompile Include="script\transform_object.cpp" />
@@ -148,6 +153,7 @@
     <ClInclude Include="core\log.h" />
     <ClInclude Include="core\screen.h" />
     <ClInclude Include="core\sheet.h" />
+    <ClInclude Include="core\sprite.h" />
     <ClInclude Include="core\tilemap.h" />
     <ClInclude Include="core\timer.h" />
     <ClInclude Include="core\transform.h" />

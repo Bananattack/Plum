@@ -80,15 +80,6 @@ int _glfwPlatformInit(void)
 {
     _glfw.ns.autoreleasePool = [[NSAutoreleasePool alloc] init];
 
-    _glfw.nsgl.framework =
-        CFBundleGetBundleWithIdentifier(CFSTR("com.apple.opengl"));
-    if (_glfw.nsgl.framework == NULL)
-    {
-        _glfwInputError(GLFW_PLATFORM_ERROR,
-                        "NSGL: Failed to locate OpenGL framework");
-        return GL_FALSE;
-    }
-
 #if defined(_GLFW_USE_CHDIR)
     changeToResourcesDirectory();
 #endif
@@ -111,8 +102,6 @@ int _glfwPlatformInit(void)
 
 void _glfwPlatformTerminate(void)
 {
-    // TODO: Probably other cleanup
-
     if (_glfw.ns.eventSource)
     {
         CFRelease(_glfw.ns.eventSource);
@@ -125,6 +114,9 @@ void _glfwPlatformTerminate(void)
 
     [_glfw.ns.autoreleasePool release];
     _glfw.ns.autoreleasePool = nil;
+
+    [_glfw.ns.cursor release];
+    _glfw.ns.cursor = nil;
 
     _glfwTerminateJoysticks();
 

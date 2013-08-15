@@ -21,6 +21,7 @@ namespace plum
     class Mouse;
     class Screen;
     class Audio;
+    struct Axis;
     class Script
     {
         public:
@@ -359,16 +360,22 @@ namespace plum
         void initTimerModule(lua_State* L);
 
         void initCanvasObject(lua_State* L);
+        void initInputObject(lua_State* L);
+        void initAxisObject(lua_State* L);
+        void initMouseObject(lua_State* L);
         void initFileObject(lua_State* L);
         void initImageObject(lua_State* L);
-        void initInputObject(lua_State* L);
-        void initScreenObject(lua_State* L);
         void initSheetObject(lua_State* L);
         void initSongObject(lua_State* L);
         void initSoundObject(lua_State* L);
+        void initScreenObject(lua_State* L);
+        void initSpriteObject(lua_State* L);
         void initTilemapObject(lua_State* L);
+        void initJoystickObject(lua_State* L);
         void initTransformObject(lua_State* L);
 
+        void pushAxisObject(lua_State* L, Axis& mouse);
+        void pushMouseObject(lua_State* L, Mouse& mouse);
         void pushKeyboardTable(lua_State* L, Keyboard& key);
     }
 

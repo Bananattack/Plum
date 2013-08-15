@@ -131,7 +131,7 @@ GLFWAPI int glfwInit(void)
     }
 
     _glfw.monitors = _glfwPlatformGetMonitors(&_glfw.monitorCount);
-    if (!_glfw.monitors)
+    if (_glfw.monitors == NULL)
     {
         _glfwErrorCallback(GLFW_PLATFORM_ERROR, "No monitors found");
         _glfwPlatformTerminate();
@@ -160,11 +160,13 @@ GLFWAPI void glfwTerminate(void)
     for (i = 0;  i < _glfw.monitorCount;  i++)
     {
         _GLFWmonitor* monitor = _glfw.monitors[i];
-        if (monitor->rampChanged)
+        if (monitor->originalRamp.size)
             _glfwPlatformSetGammaRamp(monitor, &monitor->originalRamp);
     }
 
-    _glfwDestroyMonitors();
+    _glfwDestroyMonitors(_glfw.monitors, _glfw.monitorCount);
+    _glfw.monitors = NULL;
+    _glfw.monitorCount = 0;
 
     _glfwPlatformTerminate();
 
@@ -188,8 +190,10 @@ GLFWAPI const char* glfwGetVersionString(void)
     return _glfwPlatformGetVersionString();
 }
 
-GLFWAPI void glfwSetErrorCallback(GLFWerrorfun cbfun)
+GLFWAPI GLFWerrorfun glfwSetErrorCallback(GLFWerrorfun cbfun)
 {
+    GLFWerrorfun previous = _glfwErrorCallback;
     _glfwErrorCallback = cbfun;
+    return previous;
 }
 

@@ -188,6 +188,15 @@ glfwMakeContextCurrent after creating a window before you can call any OpenGL
 functions.
 
 
+@subsection moving_repeat Key repeat
+
+The `GLFW_KEY_REPEAT` enable has been removed and key repeat is always enabled
+for both keys and characters.  A new key action, `GLFW_REPEAT`, has been added
+to allow the [key callback](@ref GLFWkeyfun) to distinguish an initial key press
+from a repeat.  Note that @ref glfwGetKey still returns only `GLFW_PRESS` or
+`GLFW_RELEASE`.
+
+
 @subsection moving_keys Physical key input
 
 GLFW 3 key tokens map to physical keys, unlike in GLFW 2 where they mapped to
@@ -206,6 +215,16 @@ give you the characters being input, as opposed to the keys being pressed.
 GLFW 3 has key tokens for all keys on a standard 105 key keyboard, so instead of
 having to remember whether to check for `'a'` or `'A'`, you now check for
 `GLFW_KEY_A`.
+
+
+@subsection moving_joystick Joystick input
+
+The `glfwGetJoystickPos` function has been renamed to @ref glfwGetJoystickAxes.
+
+The `glfwGetJoystickParam` function and the `GLFW_PRESENT`, `GLFW_AXES` and
+`GLFW_BUTTONS` tokens have been replaced by the @ref glfwJoystickPresent
+function as well as axis and button counts returned by the @ref
+glfwGetJoystickAxes and @ref glfwGetJoystickButtons functions.
 
 
 @subsection moving_video_modes Video mode enumeration
@@ -236,11 +255,11 @@ terminated and re-initialized.
 
 @subsection moving_renamed_files Library and header file
 
-The GLFW 3 header is named @ref glfw3.h, to avoid collisions with the GLFW 2
-`glfw.h` header, in case they are both installed.  Similarly, the GLFW 3 library
-is named `glfw3,` except when it's installed as a shared library on Unix-like
-systems, where it uses the [soname](https://en.wikipedia.org/wiki/soname)
-`libglfw.so.3`.
+The GLFW 3 header is named @ref glfw3.h and moved to the `GLFW` directory, to
+avoid collisions with the headers of other major versions.  Similarly, the GLFW
+3 library is named `glfw3,` except when it's installed as a shared library on
+Unix-like systems, where it uses the
+[soname](https://en.wikipedia.org/wiki/soname) `libglfw.so.3`.
 
 
 @subsection moving_renamed_functions Functions
@@ -257,8 +276,10 @@ systems, where it uses the [soname](https://en.wikipedia.org/wiki/soname)
 | `glfwSetMousePosCallback`   | @ref glfwSetCursorPosCallback |       |
 | `glfwSetMouseWheelCallback` | @ref glfwSetScrollCallback    | Accepts two-dimensional scroll offsets as doubles |
 | `glfwGetJoystickPos`        | @ref glfwGetJoystickAxes      |       |
-| `glfwGetGLVersion`          | @ref glfwGetWindowParam       | Use `GLFW_OPENGL_VERSION_MAJOR`, `GLFW_OPENGL_VERSION_MINOR` and `GLFW_OPENGL_REVISION` |
+| `glfwGetWindowParam`        | @ref glfwGetWindowAttrib      |       |
+| `glfwGetGLVersion`          | @ref glfwGetWindowAttrib      | Use `GLFW_CONTEXT_VERSION_MAJOR`, `GLFW_CONTEXT_VERSION_MINOR` and `GLFW_CONTEXT_REVISION` |
 | `glfwGetDesktopMode`        | @ref glfwGetVideoMode         | Returns the current mode of a monitor |
+| `glfwGetJoystickParam`      | @ref glfwJoystickPresent      | The axis and button counts are provided by @ref glfwGetJoystickAxes and @ref glfwGetJoystickButtons |
 
 @subsection moving_renamed_tokens Tokens
 
@@ -269,7 +290,7 @@ systems, where it uses the [soname](https://en.wikipedia.org/wiki/soname)
 | `GLFW_FSAA_SAMPLES`         | `GLFW_SAMPLES`               | Renamed to match the OpenGL API |
 | `GLFW_ACTIVE`               | `GLFW_FOCUSED`               | Renamed to match the window focus callback |
 | `GLFW_WINDOW_NO_RESIZE`     | `GLFW_RESIZABLE`             | The default has been inverted |
-| `GLFW_MOUSE_CURSOR`         | `GLFW_CURSOR_MODE`           | Used with @ref glfwSetInputMode |
+| `GLFW_MOUSE_CURSOR`         | `GLFW_CURSOR`                | Used with @ref glfwSetInputMode |
 | `GLFW_KEY_ESC`              | `GLFW_KEY_ESCAPE`            |       |
 | `GLFW_KEY_DEL`              | `GLFW_KEY_DELETE`            |       |
 | `GLFW_KEY_PAGEUP`           | `GLFW_KEY_PAGE_UP`           |       |

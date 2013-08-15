@@ -30,7 +30,7 @@
 //
 //========================================================================
 
-#include <GL/glfw3.h>
+#include <GLFW/glfw3.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -41,15 +41,15 @@ static double cursor_y;
 
 static void toggle_cursor(GLFWwindow* window)
 {
-    if (glfwGetInputMode(window, GLFW_CURSOR_MODE) == GLFW_CURSOR_CAPTURED)
+    if (glfwGetInputMode(window, GLFW_CURSOR) == GLFW_CURSOR_DISABLED)
     {
         printf("Released cursor\n");
-        glfwSetInputMode(window, GLFW_CURSOR_MODE, GLFW_CURSOR_NORMAL);
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
     }
     else
     {
         printf("Captured cursor\n");
-        glfwSetInputMode(window, GLFW_CURSOR_MODE, GLFW_CURSOR_CAPTURED);
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     }
 }
 
@@ -65,7 +65,7 @@ static void cursor_position_callback(GLFWwindow* window, double x, double y)
     cursor_y = y;
 }
 
-static void key_callback(GLFWwindow* window, int key, int action)
+static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
     switch (key)
     {
@@ -87,7 +87,7 @@ static void key_callback(GLFWwindow* window, int key, int action)
     }
 }
 
-static void window_size_callback(GLFWwindow* window, int width, int height)
+static void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
     glViewport(0, 0, width, height);
 }
@@ -104,7 +104,7 @@ static GLFWwindow* open_window(void)
     glfwGetCursorPos(window, &cursor_x, &cursor_y);
     printf("Cursor position: %f %f\n", cursor_x, cursor_y);
 
-    glfwSetWindowSizeCallback(window, window_size_callback);
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     glfwSetCursorPosCallback(window, cursor_position_callback);
     glfwSetKeyCallback(window, key_callback);
 

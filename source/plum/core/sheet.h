@@ -1,5 +1,5 @@
-#ifndef PLUM_SPRITE_H
-#define PLUM_SPRITE_H
+#ifndef PLUM_SHEET_H
+#define PLUM_SHEET_H
 
 namespace plum
 {

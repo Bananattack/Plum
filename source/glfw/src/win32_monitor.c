@@ -50,23 +50,26 @@
 
 // Change the current video mode
 //
-int _glfwSetVideoMode(_GLFWmonitor* monitor, const GLFWvidmode* mode)
+GLboolean _glfwSetVideoMode(_GLFWmonitor* monitor, const GLFWvidmode* desired)
 {
     GLFWvidmode current;
     const GLFWvidmode* best;
     DEVMODE dm;
 
-    best = _glfwChooseVideoMode(monitor, mode);
+    best = _glfwChooseVideoMode(monitor, desired);
 
     _glfwPlatformGetVideoMode(monitor, &current);
     if (_glfwCompareVideoModes(&current, best) == 0)
         return GL_TRUE;
 
+    ZeroMemory(&dm, sizeof(dm));
     dm.dmSize = sizeof(DEVMODE);
-    dm.dmFields     = DM_PELSWIDTH | DM_PELSHEIGHT | DM_BITSPERPEL;
-    dm.dmPelsWidth  = best->width;
-    dm.dmPelsHeight = best->height;
-    dm.dmBitsPerPel = best->redBits + best->greenBits + best->blueBits;
+    dm.dmFields           = DM_PELSWIDTH | DM_PELSHEIGHT | DM_BITSPERPEL |
+                            DM_DISPLAYFREQUENCY;
+    dm.dmPelsWidth        = best->width;
+    dm.dmPelsHeight       = best->height;
+    dm.dmBitsPerPel       = best->redBits + best->greenBits + best->blueBits;
+    dm.dmDisplayFrequency = best->refreshRate;
 
     if (dm.dmBitsPerPel < 15 || dm.dmBitsPerPel >= 24)
         dm.dmBitsPerPel = 32;
@@ -104,10 +107,10 @@ _GLFWmonitor** _glfwPlatformGetMonitors(int* count)
     DWORD adapterIndex = 0;
     int primaryIndex = 0;
 
+    *count = 0;
+
     for (;;)
     {
-        // Enumerate display adapters
-
         DISPLAY_DEVICE adapter, display;
         char* name;
         HDC dc;
@@ -148,7 +151,11 @@ _GLFWmonitor** _glfwPlatformGetMonitors(int* count)
         name = _glfwCreateUTF8FromWideString(display.DeviceString);
         if (!name)
         {
-            // TODO: wat
+            _glfwDestroyMonitors(monitors, found);
+            _glfwInputError(GLFW_PLATFORM_ERROR,
+                            "Failed to convert string to UTF-8");
+
+            free(monitors);
             return NULL;
         }
 
@@ -158,12 +165,6 @@ _GLFWmonitor** _glfwPlatformGetMonitors(int* count)
 
         free(name);
         DeleteDC(dc);
-
-        if (!monitors[found])
-        {
-            // TODO: wat
-            return NULL;
-        }
 
         wcscpy(monitors[found]->win32.name, adapter.DeviceName);
         found++;
@@ -178,6 +179,11 @@ _GLFWmonitor** _glfwPlatformGetMonitors(int* count)
 
     *count = found;
     return monitors;
+}
+
+GLboolean _glfwPlatformIsSameMonitor(_GLFWmonitor* first, _GLFWmonitor* second)
+{
+    return wcscmp(first->win32.name, second->win32.name) == 0;
 }
 
 void _glfwPlatformGetMonitorPos(_GLFWmonitor* monitor, int* xpos, int* ypos)
@@ -224,8 +230,9 @@ GLFWvidmode* _glfwPlatformGetVideoModes(_GLFWmonitor* monitor, int* found)
             continue;
         }
 
-        mode.width = dm.dmPelsWidth;
+        mode.width  = dm.dmPelsWidth;
         mode.height = dm.dmPelsHeight;
+        mode.refreshRate = dm.dmDisplayFrequency;
         _glfwSplitBPP(dm.dmBitsPerPel,
                       &mode.redBits,
                       &mode.greenBits,
@@ -271,6 +278,7 @@ void _glfwPlatformGetVideoMode(_GLFWmonitor* monitor, GLFWvidmode* mode)
 
     mode->width  = dm.dmPelsWidth;
     mode->height = dm.dmPelsHeight;
+    mode->refreshRate = dm.dmDisplayFrequency;
     _glfwSplitBPP(dm.dmBitsPerPel,
                   &mode->redBits,
                   &mode->greenBits,

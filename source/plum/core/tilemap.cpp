@@ -1,6 +1,6 @@
 #include "image.h"
-#include "tilemap.h"
 #include "sheet.h"
+#include "tilemap.h"
 
 namespace plum
 {
@@ -398,7 +398,8 @@ namespace plum
 
         int i, j;
 
-        dest.bind(img);
+        dest.bindImage(img);
+        dest.bindTransform();
         for(i = 0; i < tilesHigh; ++i)
         {
             for(j = 0; j < tilesWide; ++j)
@@ -409,6 +410,7 @@ namespace plum
                     i * sheet.getHeight() + yofs + destY);
             }
         }
-        dest.unbind();
+        dest.unbindTransform();
+        dest.unbindImage();
     }
 }

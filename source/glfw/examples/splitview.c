@@ -11,7 +11,7 @@
 //========================================================================
 
 #define GLFW_INCLUDE_GLU
-#include <GL/glfw3.h>
+#include <GLFW/glfw3.h>
 
 #include <math.h>
 #include <stdio.h>
@@ -354,10 +354,10 @@ static void drawAllViews(void)
 
 
 //========================================================================
-// Window size callback function
+// Framebuffer size callback function
 //========================================================================
 
-static void windowSizeFun(GLFWwindow* window, int w, int h)
+static void framebufferSizeFun(GLFWwindow* window, int w, int h)
 {
     width  = w;
     height = h > 0 ? h : 1;
@@ -385,18 +385,18 @@ static void cursorPosFun(GLFWwindow* window, double x, double y)
     switch (active_view)
     {
         case 1:
-            rot_x += (int) y - ypos;
-            rot_z += (int) x - xpos;
+            rot_x += (int) (y - ypos);
+            rot_z += (int) (x - xpos);
             do_redraw = 1;
             break;
         case 3:
-            rot_x += (int) y - ypos;
-            rot_y += (int) x - xpos;
+            rot_x += (int) (y - ypos);
+            rot_y += (int) (x - xpos);
             do_redraw = 1;
             break;
         case 4:
-            rot_y += (int) x - xpos;
-            rot_z += (int) y - ypos;
+            rot_y += (int) (x - xpos);
+            rot_z += (int) (y - ypos);
             do_redraw = 1;
             break;
         default:
@@ -414,7 +414,7 @@ static void cursorPosFun(GLFWwindow* window, double x, double y)
 // Mouse button callback function
 //========================================================================
 
-static void mouseButtonFun(GLFWwindow* window, int button, int action)
+static void mouseButtonFun(GLFWwindow* window, int button, int action, int mods)
 {
     if ((button == GLFW_MOUSE_BUTTON_LEFT) && action == GLFW_PRESS)
     {
@@ -434,7 +434,7 @@ static void mouseButtonFun(GLFWwindow* window, int button, int action)
     do_redraw = 1;
 }
 
-static void key_callback(GLFWwindow* window, int key, int action)
+static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
         glfwSetWindowShouldClose(window, GL_TRUE);
@@ -467,7 +467,7 @@ int main(void)
     }
 
     // Set callback functions
-    glfwSetWindowSizeCallback(window, windowSizeFun);
+    glfwSetFramebufferSizeCallback(window, framebufferSizeFun);
     glfwSetWindowRefreshCallback(window, windowRefreshFun);
     glfwSetCursorPosCallback(window, cursorPosFun);
     glfwSetMouseButtonCallback(window, mouseButtonFun);
@@ -477,8 +477,8 @@ int main(void)
     glfwMakeContextCurrent(window);
     glfwSwapInterval(1);
 
-    glfwGetWindowSize(window, &width, &height);
-    windowSizeFun(window, width, height);
+    glfwGetFramebufferSize(window, &width, &height);
+    framebufferSizeFun(window, width, height);
 
     // Main loop
     for (;;)

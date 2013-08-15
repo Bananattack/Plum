@@ -12,10 +12,7 @@ namespace plum
         {
             return "plum.Image";
         }
-    }
 
-    namespace script
-    {
         void initImageObject(lua_State* L)
         {
             luaL_newmetatable(L, meta<Image>());

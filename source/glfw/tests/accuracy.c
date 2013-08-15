@@ -30,7 +30,7 @@
 //========================================================================
 
 #define GLFW_INCLUDE_GLU
-#include <GL/glfw3.h>
+#include <GLFW/glfw3.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -56,7 +56,7 @@ static void error_callback(int error, const char* description)
     fprintf(stderr, "Error: %s\n", description);
 }
 
-static void window_size_callback(GLFWwindow* window, int width, int height)
+static void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
     window_width = width;
     window_height = height;
@@ -74,7 +74,7 @@ static void cursor_position_callback(GLFWwindow* window, double x, double y)
     cursor_y = y;
 }
 
-static void key_callback(GLFWwindow* window, int key, int action)
+static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
     if (key == GLFW_KEY_SPACE && action == GLFW_PRESS)
         set_swap_interval(window, 1 - swap_interval);
@@ -98,13 +98,13 @@ int main(void)
     }
 
     glfwSetCursorPosCallback(window, cursor_position_callback);
-    glfwSetWindowSizeCallback(window, window_size_callback);
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     glfwSetKeyCallback(window, key_callback);
 
     glfwMakeContextCurrent(window);
 
-    glfwGetWindowSize(window, &width, &height);
-    window_size_callback(window, width, height);
+    glfwGetFramebufferSize(window, &width, &height);
+    framebuffer_size_callback(window, width, height);
 
     set_swap_interval(window, swap_interval);
 
@@ -113,8 +113,8 @@ int main(void)
         glClear(GL_COLOR_BUFFER_BIT);
 
         glBegin(GL_LINES);
-        glVertex2f(0.f, (GLfloat) window_height - cursor_y);
-        glVertex2f((GLfloat) window_width, (GLfloat) window_height - cursor_y);
+        glVertex2f(0.f, (GLfloat) (window_height - cursor_y));
+        glVertex2f((GLfloat) window_width, (GLfloat) (window_height - cursor_y));
         glVertex2f((GLfloat) cursor_x, 0.f);
         glVertex2f((GLfloat) cursor_x, (GLfloat) window_height);
         glEnd();

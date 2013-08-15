@@ -191,7 +191,7 @@ namespace plum
             
             Color get(int x, int y) const
             {
-                if(data && x >= clipX && x < clipX2 && y >= clipY && y < clipY2)
+                if(data && x >= clipX && x <= clipX2 && y >= clipY && y <= clipY2)
                 {
                     return data[y * trueWidth + x];
                 }

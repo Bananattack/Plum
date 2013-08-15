@@ -12,10 +12,7 @@ namespace plum
         {
             return "plum.Sheet";
         }
-    }
 
-    namespace script
-    {
         void initSheetObject(lua_State* L)
         {
             luaL_newmetatable(L, meta<Sheet>());

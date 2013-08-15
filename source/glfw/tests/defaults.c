@@ -23,13 +23,13 @@
 //
 //========================================================================
 //
-// This test creates a windowed mode window with all parameters set to
-// default values and then reports the actual parameters of the created
+// This test creates a windowed mode window with all window hints set to
+// default values and then reports the actual attributes of the created
 // window and context
 //
 //========================================================================
 
-#include <GL/glfw3.h>
+#include <GLFW/glfw3.h>
 #include <GL/glext.h>
 
 #include <stdio.h>
@@ -37,18 +37,18 @@
 
 typedef struct
 {
-    int param;
+    int attrib;
     const char* ext;
     const char* name;
-} ParamGL;
+} AttribGL;
 
 typedef struct
 {
-    int param;
+    int attrib;
     const char* name;
-} ParamGLFW;
+} AttribGLFW;
 
-static ParamGL gl_params[] =
+static AttribGL gl_attribs[] =
 {
     { GL_RED_BITS, NULL, "red bits" },
     { GL_GREEN_BITS, NULL, "green bits" },
@@ -61,7 +61,7 @@ static ParamGL gl_params[] =
     { 0, NULL, NULL }
 };
 
-static ParamGLFW glfw_params[] =
+static AttribGLFW glfw_attribs[] =
 {
     { GLFW_CONTEXT_VERSION_MAJOR, "Context version major" },
     { GLFW_CONTEXT_VERSION_MINOR, "Context version minor" },
@@ -96,30 +96,30 @@ int main(void)
     }
 
     glfwMakeContextCurrent(window);
-    glfwGetWindowSize(window, &width, &height);
+    glfwGetFramebufferSize(window, &width, &height);
 
-    printf("window size: %ix%i\n", width, height);
+    printf("framebuffer size: %ix%i\n", width, height);
 
-    for (i = 0;  glfw_params[i].name;   i++)
+    for (i = 0;  glfw_attribs[i].name;   i++)
     {
         printf("%s: %i\n",
-               glfw_params[i].name,
-               glfwGetWindowParam(window, glfw_params[i].param));
+               glfw_attribs[i].name,
+               glfwGetWindowAttrib(window, glfw_attribs[i].attrib));
     }
 
-    for (i = 0;  gl_params[i].name;   i++)
+    for (i = 0;  gl_attribs[i].name;   i++)
     {
         GLint value = 0;
 
-        if (gl_params[i].ext)
+        if (gl_attribs[i].ext)
         {
-            if (!glfwExtensionSupported(gl_params[i].ext))
+            if (!glfwExtensionSupported(gl_attribs[i].ext))
                 continue;
         }
 
-        glGetIntegerv(gl_params[i].param, &value);
+        glGetIntegerv(gl_attribs[i].attrib, &value);
 
-        printf("%s: %i\n", gl_params[i].name, value);
+        printf("%s: %i\n", gl_attribs[i].name, value);
     }
 
     glfwDestroyWindow(window);

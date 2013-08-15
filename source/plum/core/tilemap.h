@@ -1,7 +1,5 @@
 #ifndef PLUM_TILEMAP_H
 #define PLUM_TILEMAP_H
-#include "color.h"
-#include "blending.h"
 
 namespace plum
 {

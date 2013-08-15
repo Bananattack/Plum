@@ -10,10 +10,7 @@ namespace plum
         {
             return "plum.Tilemap";
         }
-    }
 
-    namespace script
-    {
         void initTilemapObject(lua_State* L)
         {
             luaL_newmetatable(L, meta<Tilemap>());

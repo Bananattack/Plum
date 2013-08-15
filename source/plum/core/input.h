@@ -2,22 +2,28 @@
 #define PLUM_INPUT_H
 
 #include <memory>
+#include <string>
 
 namespace plum
 {
     class Engine;
     class Screen;
-    class Input
+    struct Input
     {
-        public:
-            Input();
-            ~Input();
+        Input();
+        ~Input();
 
-            bool isPressed();
-            void setPressed(bool value);
+        bool pressed;
+    };
 
-        private:
-            bool pressed;
+    struct Axis
+    {
+        Axis();
+        ~Axis();
+
+        double value;
+        int sign;
+        Input plus, minus;
     };
 
     enum Key
@@ -151,6 +157,45 @@ namespace plum
             ~Keyboard();
 
             Input& operator[](Key k);
+
+            class Impl;
+            std::shared_ptr<Impl> impl;
+    };
+
+    class Mouse
+    {
+        public:
+            Mouse();
+            ~Mouse();
+
+            double getX() const;
+            double getY() const;
+            double getScroll() const;
+
+            Input& left();
+            Input& middle();
+            Input& right();
+
+            class Impl;
+            std::shared_ptr<Impl> impl;
+    };
+
+    class Joystick
+    {
+        public:
+            static const unsigned int ButtonMax = 32;
+            static const unsigned int AxisMax = 8;
+
+            Joystick(Engine& engine, unsigned int joystickIndex);
+            ~Joystick();
+
+            bool isActive() const;
+            const char* getName() const;
+            unsigned int getAxisCount() const;
+            unsigned int getButtonCount() const;
+
+            Axis& axis(unsigned int axisIndex);
+            Input& button(unsigned int buttonIndex);
 
             class Impl;
             std::shared_ptr<Impl> impl;

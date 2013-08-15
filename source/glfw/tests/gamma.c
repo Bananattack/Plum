@@ -28,7 +28,7 @@
 //
 //========================================================================
 
-#include <GL/glfw3.h>
+#include <GLFW/glfw3.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -60,7 +60,7 @@ static void error_callback(int error, const char* description)
     fprintf(stderr, "Error: %s\n", description);
 }
 
-static void key_callback(GLFWwindow* window, int key, int action)
+static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
     if (action != GLFW_PRESS)
         return;
@@ -91,7 +91,7 @@ static void key_callback(GLFWwindow* window, int key, int action)
     }
 }
 
-static void size_callback(GLFWwindow* window, int width, int height)
+static void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
     glViewport(0, 0, width, height);
 }
@@ -127,9 +127,9 @@ int main(int argc, char** argv)
 
     if (monitor)
     {
-        GLFWvidmode mode = glfwGetVideoMode(monitor);
-        width = mode.width;
-        height = mode.height;
+        const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+        width = mode->width;
+        height = mode->height;
     }
     else
     {
@@ -150,7 +150,7 @@ int main(int argc, char** argv)
     glfwSwapInterval(1);
 
     glfwSetKeyCallback(window, key_callback);
-    glfwSetWindowSizeCallback(window, size_callback);
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
     glMatrixMode(GL_PROJECTION);
     glOrtho(-1.f, 1.f, -1.f, 1.f, -1.f, 1.f);

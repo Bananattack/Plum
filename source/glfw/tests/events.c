@@ -31,11 +31,12 @@
 //
 //========================================================================
 
-#include <GL/glfw3.h>
+#include <GLFW/glfw3.h>
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include <string.h>
 #include <locale.h>
 
 // These must match the input mode defaults
@@ -171,6 +172,7 @@ static const char* get_key_name(int key)
         case GLFW_KEY_LEFT_SUPER:   return "LEFT SUPER";
         case GLFW_KEY_RIGHT_SUPER:  return "RIGHT SUPER";
         case GLFW_KEY_MENU:         return "MENU";
+        case GLFW_KEY_UNKNOWN:      return "UNKNOWN";
 
         default:                    return NULL;
     }
@@ -206,6 +208,24 @@ static const char* get_button_name(int button)
     return NULL;
 }
 
+static const char* get_mods_name(int mods)
+{
+    static char name[512];
+
+    name[0] = '\0';
+
+    if (mods & GLFW_MOD_SHIFT)
+        strcat(name, " shift");
+    if (mods & GLFW_MOD_CONTROL)
+        strcat(name, " control");
+    if (mods & GLFW_MOD_ALT)
+        strcat(name, " alt");
+    if (mods & GLFW_MOD_SUPER)
+        strcat(name, " super");
+
+    return name;
+}
+
 static const char* get_character_string(int character)
 {
     // This assumes UTF-8, which is stupid
@@ -236,6 +256,15 @@ static void window_pos_callback(GLFWwindow* window, int x, int y)
 static void window_size_callback(GLFWwindow* window, int width, int height)
 {
     printf("%08x at %0.3f: Window size: %i %i\n",
+           counter++,
+           glfwGetTime(),
+           width,
+           height);
+}
+
+static void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+{
+    printf("%08x at %0.3f: Framebuffer size: %i %i\n",
            counter++,
            glfwGetTime(),
            width,
@@ -278,16 +307,19 @@ static void window_iconify_callback(GLFWwindow* window, int iconified)
            iconified ? "iconified" : "restored");
 }
 
-static void mouse_button_callback(GLFWwindow* window, int button, int action)
+static void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 {
     const char* name = get_button_name(button);
 
     printf("%08x at %0.3f: Mouse button %i", counter++, glfwGetTime(), button);
 
     if (name)
-        printf(" (%s) was %s\n", name, get_action_name(action));
-    else
-        printf(" was %s\n", get_action_name(action));
+        printf(" (%s)", name);
+
+    if (mods)
+        printf(" (with%s)", get_mods_name(mods));
+
+    printf(" was %s\n", get_action_name(action));
 }
 
 static void cursor_position_callback(GLFWwindow* window, double x, double y)
@@ -308,16 +340,20 @@ static void scroll_callback(GLFWwindow* window, double x, double y)
     printf("%08x at %0.3f: Scroll: %0.3f %0.3f\n", counter++, glfwGetTime(), x, y);
 }
 
-static void key_callback(GLFWwindow* window, int key, int action)
+static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
     const char* name = get_key_name(key);
 
-    printf("%08x at %0.3f: Key 0x%04x", counter++, glfwGetTime(), key);
+    printf("%08x at %0.3f: Key 0x%04x Scancode 0x%04x",
+           counter++, glfwGetTime(), key, scancode);
 
     if (name)
-        printf(" (%s) was %s\n", name, get_action_name(action));
-    else
-        printf(" was %s\n", get_action_name(action));
+        printf(" (%s)", name);
+
+    if (mods)
+        printf(" (with%s)", get_mods_name(mods));
+
+    printf(" was %s\n", get_action_name(action));
 
     if (action != GLFW_PRESS)
         return;
@@ -348,7 +384,7 @@ void monitor_callback(GLFWmonitor* monitor, int event)
     if (event == GLFW_CONNECTED)
     {
         int x, y, widthMM, heightMM;
-        GLFWvidmode mode = glfwGetVideoMode(monitor);
+        const GLFWvidmode* mode = glfwGetVideoMode(monitor);
 
         glfwGetMonitorPos(monitor, &x, &y);
         glfwGetMonitorPhysicalSize(monitor, &widthMM, &heightMM);
@@ -357,7 +393,7 @@ void monitor_callback(GLFWmonitor* monitor, int event)
                counter++,
                glfwGetTime(),
                glfwGetMonitorName(monitor),
-               mode.width, mode.height,
+               mode->width, mode->height,
                x, y,
                widthMM, heightMM);
     }
@@ -397,6 +433,7 @@ int main(void)
 
     glfwSetWindowPosCallback(window, window_pos_callback);
     glfwSetWindowSizeCallback(window, window_size_callback);
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     glfwSetWindowCloseCallback(window, window_close_callback);
     glfwSetWindowRefreshCallback(window, window_refresh_callback);
     glfwSetWindowFocusCallback(window, window_focus_callback);
@@ -417,7 +454,12 @@ int main(void)
     printf("Main loop starting\n");
 
     while (!glfwWindowShouldClose(window))
+    {
         glfwWaitEvents();
+
+        // Workaround for an issue with msvcrt and mintty
+        fflush(stdout);
+    }
 
     glfwTerminate();
     exit(EXIT_SUCCESS);

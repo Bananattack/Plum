@@ -32,7 +32,7 @@
 #include <math.h>
 
 #define GLFW_INCLUDE_GLU
-#include <GL/glfw3.h>
+#include <GLFW/glfw3.h>
 
 
 /*****************************************************************************
@@ -43,7 +43,7 @@
 void init( void );
 void display( void );
 void reshape( GLFWwindow* window, int w, int h );
-void key_callback( GLFWwindow* window, int key, int action );
+void key_callback( GLFWwindow* window, int key, int scancode, int action, int mods );
 void DrawBoingBall( void );
 void BounceBall( double dt );
 void DrawBoingBallBand( GLfloat long_lo, GLfloat long_hi );
@@ -245,7 +245,7 @@ void reshape( GLFWwindow* window, int w, int h )
               0.0, -1.0, 0.0 );         /* up vector */
 }
 
-void key_callback( GLFWwindow* window, int key, int action )
+void key_callback( GLFWwindow* window, int key, int scancode, int action, int mods )
 {
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
         glfwSetWindowShouldClose(window, GL_TRUE);
@@ -589,13 +589,13 @@ int main( void )
        exit( EXIT_FAILURE );
    }
 
-   glfwSetWindowSizeCallback(window, reshape);
+   glfwSetFramebufferSizeCallback(window, reshape);
    glfwSetKeyCallback(window, key_callback);
 
    glfwMakeContextCurrent(window);
    glfwSwapInterval( 1 );
 
-   glfwGetWindowSize(window, &width, &height);
+   glfwGetFramebufferSize(window, &width, &height);
    reshape(window, width, height);
 
    glfwSetTime( 0.0 );

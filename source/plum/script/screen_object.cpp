@@ -15,7 +15,9 @@ namespace plum
         {
             enum
             {
-                KeyAttribute = 1
+                KeyAttribute = 1,
+                MouseAttribute = 2,
+                CloseButtonAttribute = 3
             };
         }
 
@@ -118,16 +120,14 @@ namespace plum
                     script::wrapped<Screen>(L, 1)->getAttribute(L, KeyAttribute);
                     return 1;
                 }},
+                {"get_mouse", [](lua_State* L)
+                {
+                    script::wrapped<Screen>(L, 1)->getAttribute(L, MouseAttribute);
+                    return 1;
+                }},
                 {"get_close", [](lua_State* L)
                 {
-                    auto screen = script::ptr<Screen>(L, 1);
-
-                    // Push reference to this, so the image stays around
-                    // as long as it's required for the child.
-                    lua_pushvalue(L, 1);
-                    int ref = luaL_ref(L, LUA_REGISTRYINDEX);
-
-                    script::push(L, &screen->closeButton(), ref);
+                    script::wrapped<Screen>(L, 1)->getAttribute(L, CloseButtonAttribute);
                     return 1;
                 }},
                 {"get_windowed", [](lua_State* L)
@@ -164,6 +164,17 @@ namespace plum
 
                 pushKeyboardTable(L, scr->keyboard());
                 wrap->setAttribute(L, KeyAttribute);
+                lua_pop(L, 1);
+
+                lua_pushvalue(L, -1);
+                pushMouseObject(L, scr->mouse());
+                wrap->setAttribute(L, MouseAttribute);
+                lua_pop(L, 1);
+
+                lua_pushvalue(L, -1);
+                int ref = luaL_ref(L, LUA_REGISTRYINDEX);
+                script::push(L, &scr->closeButton(), ref);
+                wrap->setAttribute(L, CloseButtonAttribute);
                 lua_pop(L, 1);
                 
                 return 1;

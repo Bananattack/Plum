@@ -32,11 +32,6 @@
 #include <pthread.h>
 
 
-// The per-thread current context/window pointer
-//
-static pthread_key_t _glfwCurrentTLS;
-
-
 //////////////////////////////////////////////////////////////////////////
 //////                       GLFW internal API                      //////
 //////////////////////////////////////////////////////////////////////////
@@ -45,10 +40,19 @@ static pthread_key_t _glfwCurrentTLS;
 //
 int _glfwInitContextAPI(void)
 {
-    if (pthread_key_create(&_glfwCurrentTLS, NULL) != 0)
+    if (pthread_key_create(&_glfw.nsgl.current, NULL) != 0)
     {
         _glfwInputError(GLFW_PLATFORM_ERROR,
                         "NSOpenGL: Failed to create context TLS");
+        return GL_FALSE;
+    }
+
+    _glfw.nsgl.framework =
+        CFBundleGetBundleWithIdentifier(CFSTR("com.apple.opengl"));
+    if (_glfw.nsgl.framework == NULL)
+    {
+        _glfwInputError(GLFW_PLATFORM_ERROR,
+                        "NSGL: Failed to locate OpenGL framework");
         return GL_FALSE;
     }
 
@@ -59,7 +63,7 @@ int _glfwInitContextAPI(void)
 //
 void _glfwTerminateContextAPI(void)
 {
-    pthread_key_delete(_glfwCurrentTLS);
+    pthread_key_delete(_glfw.nsgl.current);
 }
 
 // Create the OpenGL context
@@ -142,13 +146,7 @@ int _glfwCreateContext(_GLFWwindow* window,
     NSOpenGLPixelFormatAttribute attributes[40];
 
     ADD_ATTR(NSOpenGLPFADoubleBuffer);
-
-    if (wndconfig->monitor)
-    {
-        ADD_ATTR(NSOpenGLPFANoRecovery);
-        ADD_ATTR2(NSOpenGLPFAScreenMask,
-                  CGDisplayIDToOpenGLDisplayMask(CGMainDisplayID()));
-    }
+    ADD_ATTR(NSOpenGLPFAClosestPolicy);
 
 #if MAC_OS_X_VERSION_MAX_ALLOWED >= 1070
     if (wndconfig->glMajor > 2)
@@ -242,12 +240,12 @@ void _glfwPlatformMakeContextCurrent(_GLFWwindow* window)
     else
         [NSOpenGLContext clearCurrentContext];
 
-    pthread_setspecific(_glfwCurrentTLS, window);
+    pthread_setspecific(_glfw.nsgl.current, window);
 }
 
 _GLFWwindow* _glfwPlatformGetCurrentContext(void)
 {
-    return (_GLFWwindow*) pthread_getspecific(_glfwCurrentTLS);
+    return (_GLFWwindow*) pthread_getspecific(_glfw.nsgl.current);
 }
 
 void _glfwPlatformSwapBuffers(_GLFWwindow* window)

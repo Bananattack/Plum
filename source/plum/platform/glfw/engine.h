@@ -1,7 +1,7 @@
 #ifndef PLUM_GLFW_ENGINE_H
 #define PLUM_GLFW_ENGINE_H
 
-#include <GL/glfw3.h>
+#include <GLFW/glfw3.h>
 #include <vector>
 
 #include "../../core/engine.h"
@@ -14,7 +14,10 @@ namespace plum
     {
         EventClose,
         EventKeyboard,
-        EventResize
+        EventResize,
+        EventMouseClick,
+        EventMouseMove,
+        EventMouseScroll
     };
 
     class Event
@@ -32,6 +35,21 @@ namespace plum
                 {
                     int key, action;
                 } keyboard;
+                union
+                {
+                    struct
+                    {
+                        int button, action;
+                    } click;
+                    struct
+                    {
+                        double x, y;
+                    } move;
+                    struct
+                    {
+                        double dx, dy;
+                    } scroll;
+                } mouse;
             };
     };
 
@@ -83,11 +101,25 @@ namespace plum
             Input keys[GLFW_KEY_LAST];
     };
 
+    class Mouse::Impl
+    {
+        public:
+            Impl();
+            ~Impl();
+
+            void handle(const Event& event);
+            
+            std::shared_ptr<Screen::EventHook> hook;
+            Input buttons[GLFW_MOUSE_BUTTON_LAST];
+            double x, y, scroll;
+    };
+
     class Engine::Impl
     {
         public:
             WeakList<std::function<void()>> updateHooks;
             GLFWwindow* root;
+            bool windowless;
 
             Impl();
             ~Impl();

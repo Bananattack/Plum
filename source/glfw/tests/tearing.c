@@ -28,24 +28,30 @@
 //
 //========================================================================
 
-#include <GL/glfw3.h>
+#include <GLFW/glfw3.h>
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 
 static int swap_interval;
+static double frame_rate;
 
-static void set_swap_interval(GLFWwindow* window, int interval)
+static void update_window_title(GLFWwindow* window)
 {
     char title[256];
 
-    swap_interval = interval;
-    glfwSwapInterval(swap_interval);
-
-    sprintf(title, "Tearing detector (interval %i)", swap_interval);
+    sprintf(title, "Tearing detector (interval %i, %0.1f Hz)",
+            swap_interval, frame_rate);
 
     glfwSetWindowTitle(window, title);
+}
+
+static void set_swap_interval(GLFWwindow* window, int interval)
+{
+    swap_interval = interval;
+    glfwSwapInterval(swap_interval);
+    update_window_title(window);
 }
 
 static void error_callback(int error, const char* description)
@@ -53,12 +59,12 @@ static void error_callback(int error, const char* description)
     fprintf(stderr, "Error: %s\n", description);
 }
 
-static void window_size_callback(GLFWwindow* window, int width, int height)
+static void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
     glViewport(0, 0, width, height);
 }
 
-static void key_callback(GLFWwindow* window, int key, int action)
+static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
     if (key == GLFW_KEY_SPACE && action == GLFW_PRESS)
         set_swap_interval(window, 1 - swap_interval);
@@ -67,6 +73,8 @@ static void key_callback(GLFWwindow* window, int key, int action)
 int main(void)
 {
     float position;
+    unsigned long frame_count = 0;
+    double last_time, current_time;
     GLFWwindow* window;
 
     glfwSetErrorCallback(error_callback);
@@ -82,9 +90,12 @@ int main(void)
     }
 
     glfwMakeContextCurrent(window);
-    set_swap_interval(window, swap_interval);
+    set_swap_interval(window, 0);
 
-    glfwSetWindowSizeCallback(window, window_size_callback);
+    last_time = glfwGetTime();
+    frame_rate = 0.0;
+
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     glfwSetKeyCallback(window, key_callback);
 
     glMatrixMode(GL_PROJECTION);
@@ -100,6 +111,17 @@ int main(void)
 
         glfwSwapBuffers(window);
         glfwPollEvents();
+
+        frame_count++;
+
+        current_time = glfwGetTime();
+        if (current_time - last_time > 1.0)
+        {
+            frame_rate = frame_count / (current_time - last_time);
+            frame_count = 0;
+            last_time = current_time;
+            update_window_title(window);
+        }
     }
 
     glfwTerminate();

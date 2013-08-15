@@ -76,10 +76,10 @@
     <ClInclude Include="src\config.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\GL\glfw3.h">
+    <ClInclude Include="include\GLFW\glfw3.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\GL\glfw3native.h">
+    <ClInclude Include="include\GLFW\glfw3native.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

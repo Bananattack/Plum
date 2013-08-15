@@ -33,8 +33,9 @@
 //
 //========================================================================
 
-#include <GL/glfw3.h>
+#include <GLFW/glfw3.h>
 
+#include <time.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -43,7 +44,7 @@ static void error_callback(int error, const char* description)
     fprintf(stderr, "Error: %s\n", description);
 }
 
-static void window_size_callback(GLFWwindow* window, int width, int height)
+static void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
     glViewport(0, 0, width, height);
 }
@@ -53,7 +54,7 @@ static void window_close_callback(GLFWwindow* window)
     printf("Close callback triggered\n");
 }
 
-static void key_callback(GLFWwindow* window, int key, int action)
+static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
     if (action != GLFW_PRESS)
         return;
@@ -81,13 +82,21 @@ static GLFWwindow* open_window(int width, int height, GLFWmonitor* monitor)
     glfwMakeContextCurrent(window);
     glfwSwapInterval(1);
 
-    glfwSetWindowSizeCallback(window, window_size_callback);
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     glfwSetWindowCloseCallback(window, window_close_callback);
     glfwSetKeyCallback(window, key_callback);
 
-    printf("Opening %s mode window took %0.3f seconds\n",
-           monitor ? "fullscreen" : "windowed",
-           glfwGetTime() - base);
+    if (monitor)
+    {
+        printf("Opening full screen window on monitor %s took %0.3f seconds\n",
+               glfwGetMonitorName(monitor),
+               glfwGetTime() - base);
+    }
+    else
+    {
+        printf("Opening regular window took %0.3f seconds\n",
+               glfwGetTime() - base);
+    }
 
     return window;
 }
@@ -103,6 +112,8 @@ int main(int argc, char** argv)
 {
     int count = 0;
     GLFWwindow* window;
+
+    srand((unsigned int) time(NULL));
 
     glfwSetErrorCallback(error_callback);
 

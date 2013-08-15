@@ -34,9 +34,10 @@
 // This path may need to be changed if you build GLFW using your own setup
 // We ship and use our own copy of wglext.h since GLFW uses fairly new
 // extensions and not all operating systems come with an up-to-date version
-#include "../support/GL/wglext.h"
+#include "../deps/GL/wglext.h"
 
 
+#define _GLFW_PLATFORM_FBCONFIG             int             wgl
 #define _GLFW_PLATFORM_CONTEXT_STATE        _GLFWcontextWGL wgl
 #define _GLFW_PLATFORM_LIBRARY_OPENGL_STATE _GLFWlibraryWGL wgl
 
@@ -56,7 +57,7 @@ typedef struct _GLFWcontextWGL
 
     // Platform specific extensions (context specific)
     PFNWGLSWAPINTERVALEXTPROC           SwapIntervalEXT;
-    PFNWGLCHOOSEPIXELFORMATARBPROC      ChoosePixelFormatARB;
+    PFNWGLGETPIXELFORMATATTRIBIVARBPROC GetPixelFormatAttribivARB;
     PFNWGLGETEXTENSIONSSTRINGEXTPROC    GetExtensionsStringEXT;
     PFNWGLGETEXTENSIONSSTRINGARBPROC    GetExtensionsStringARB;
     PFNWGLCREATECONTEXTATTRIBSARBPROC   CreateContextAttribsARB;
@@ -77,7 +78,7 @@ typedef struct _GLFWcontextWGL
 typedef struct _GLFWlibraryWGL
 {
     GLboolean   hasTLS;
-    DWORD       tls;
+    DWORD       current;
 
 } _GLFWlibraryWGL;
 

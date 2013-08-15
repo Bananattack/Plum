@@ -30,7 +30,7 @@
 //========================================================================
 
 #define GLFW_INCLUDE_GLU
-#include <GL/glfw3.h>
+#include <GLFW/glfw3.h>
 #include <GL/glext.h>
 
 #include <stdio.h>
@@ -43,22 +43,22 @@ static void error_callback(int error, const char* description)
     fprintf(stderr, "Error: %s\n", description);
 }
 
-static void window_size_callback(GLFWwindow* window, int width, int height)
+static void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
     glViewport(0, 0, width, height);
 }
 
-static void key_callback(GLFWwindow* window, int key, int action)
+static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-  if (action != GLFW_PRESS)
-    return;
+    if (action != GLFW_PRESS)
+        return;
 
-  switch (key)
-  {
-    case GLFW_KEY_SPACE:
-      glfwSetTime(0.0);
-      break;
-  }
+    switch (key)
+    {
+        case GLFW_KEY_SPACE:
+            glfwSetTime(0.0);
+            break;
+    }
 }
 
 static void usage(void)
@@ -107,7 +107,7 @@ int main(int argc, char** argv)
     }
 
     glfwSetKeyCallback(window, key_callback);
-    glfwSetWindowSizeCallback(window, window_size_callback);
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
     glfwMakeContextCurrent(window);
     glfwSwapInterval(1);
