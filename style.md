@@ -24,9 +24,9 @@ C++
 * Use C++11 features, like `auto`, lambdas (stateless ones work with C libs), range-based `for` loops, pointer types (`shared_ptr`, `weak_ptr` and `unique_ptr`).
 * Use `const` qualifiers (const methods, pointers, references) often! If you're not mutating particular data, make that fact explicit!
 * Use `unsigned` types whenever negative numbers are not necessary.
-* Use `bool` for booleans, `char` for characters, `int` for integers, `double` for floating point, `uintN_t` types for explicitly-sized integer types.
-* Use `const char*` and `const std::string&` for strings, the latter when memory ownership comes into question.
+* Use the most appropriate number types: `bool` for booleans, `char` for platform-defined characters, `int` for platform-defined integers, `double` for platform-defined floating point, `size_t` for unsigned sizes, `intN_t`/`uintN_t` types for explicitly-sized integer types, etc.
 * Use `enum` types whenever there are a restricted set of integer values that map to specific meanings.
+* Use `std::string` and `const std::string&` for strings -- and occasionally use `const char*` when it makes sense.
 * Never use `using` to import other namespaces.
 * Keep as much code as possible in `namespace plum`
 * Avoid adding any global variables or class-static variables, and keep them to the smallest scope they are needed.
