@@ -19,13 +19,13 @@ It supports all the basic needs of a simple 2D game:
 * Timing
 * Keyboard input
 * Mouse input
-* Joypad input (forthcoming)
+* Joystick input
 
 
 Compiling
 ---------
 
-- **To compile on Windows (Visual Studio 2010):**
+- **To compile on Windows (Visual Studio 2012 (requires the November 2012 CTP)):**
   Open up `Plum.sln`, then hit Build Solution, and everything should work.
   The compiled executable is named "Plum.exe".
   - For release builds, it is located in the `test/` folder.
