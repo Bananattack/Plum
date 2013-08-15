@@ -11,6 +11,8 @@ C++
 * Prefer `CAPS_WITH_UNDERSCORES` for macros.
 * Prefer `//` to `/* ... */` for comments, except when commenting out a large chunk of code.
 * Braces should be on the next line for control structures.
+* Use `T& foo` and `T* foo`, with the reference/pointer beside the type, not the name. Keep declarations of non-value types to one-per-variable declaration statement.
+* Don't make opaque type aliases to pointers or references -- function pointers are an exception.
 * No spaces between keywords and an open parentheses `(`.
 * Add a spaces or newlines after `,` and `;`
 * Add spaces between operators and their operands, except `.`, `->`, `::`, `[]`, `()` and unary operators.
@@ -22,7 +24,9 @@ C++
 * Use C++11 features, like `auto`, lambdas (stateless ones work with C libs), range-based `for` loops, pointer types (`shared_ptr`, `weak_ptr` and `unique_ptr`).
 * Use `const` qualifiers (const methods, pointers, references) often! If you're not mutating particular data, make that fact explicit!
 * Use `unsigned` types whenever negative numbers are not necessary.
-* User `enum` types whenever there are a restricted set of integer values that map to specific meanings.
+* Use `bool` for booleans, `char` for characters, `int` for integers, `double` for floating point, `uintN_t` types for explicitly-sized integer types.
+* Use `const char*` and `const std::string&` for strings, the latter when memory ownership comes into question.
+* Use `enum` types whenever there are a restricted set of integer values that map to specific meanings.
 * Never use `using` to import other namespaces.
 * Keep as much code as possible in `namespace plum`
 * Avoid adding any global variables or class-static variables, and keep them to the smallest scope they are needed.
