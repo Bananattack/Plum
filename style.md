@@ -14,7 +14,7 @@ C++
 * Use `T& foo` and `T* foo`, with the reference/pointer beside the type, not the name. Keep declarations of non-value types to one-per-variable declaration statement.
 * Don't make opaque type aliases to pointers or references -- function pointers are an exception.
 * No spaces between keywords and an open parentheses `(`.
-* Add a spaces or newlines after `,` and `;`
+* Add spaces or newlines after `,` and `;`
 * Add spaces between operators and their operands, except `.`, `->`, `::`, `[]`, `()` and unary operators.
 * Avoid unnecessary parentheses, learn operator precedences.
 * When you can, try to order includes and symbols lexicographically -- by ascending size and by alphabetical order.
@@ -32,16 +32,19 @@ C++
 * Avoid adding any global variables or class-static variables, and keep them to the smallest scope they are needed.
 * Avoid pointers when possible, and avoid writing code that uses `new`/`delete`. If you absolutely need to, use `<memory>` pointer types, or be extremely careful.
 * Avoid nullable types
-* Avoid inheritance
+* Avoid inheritance and subclasses 
 * Avoid virtual dispatch
 * Prefer references to pointers -- they aren't nullable, or rebindable, and thus they are much safer.
 * Create things as value types when possible, avoid unnecessary copying by using references.
-* Separate interface from implementation, by using a variant of pimpl-idiom in types: `class Impl; std::shared_ptr<Impl> impl;`
-* Avoid pure abstract interfaces (which require virtual dispatch and pointers, are nullable, and can blow up at runtime if a pure virtual call slips through), and prefer the pimpl idiom.
+* Separate high-level interface from platform-specific implementation, by using a variant of pimpl-idiom in types: `class Impl; std::shared_ptr<Impl> impl;` -- define the `Impl` type in a .cpp (or a private internal-use header, when you have to).
+* Avoid pure abstract interfaces (which require virtual dispatch and pointers, are nullable, and can blow up at runtime if a pure virtual call slips through). Instead, prefer the pimpl idiom.
 * Prefer `T getFoo();` / `setFoo(T value);` for value attributes. Prefer `T& foo()` for accessors to mutable references.
 * If a `class` contains only members with trivial public get/set of private members, maybe make it `struct` with all public members and no get/set.
 * Don't `_prefix` names, `suffix_` them instead -- unlike the former, the latter isn't potentially reserved (like `__foo` or `_Foo` would be -- `foo__`, and `Foo_` avoid this)!
 * Use anonymous namespaces whenever a global symbol is only needed for one file. Don't use C-style file-scoping `static`.
 * Try to keep things out of the headers, unless they're needed there. Compile times don't need to be slowed down further.
+* No `goto`.
+* Exceptions are okay, sometimes.
+* Prefer `switch` over `if` whenever branching on a enumeration type. Always include a `default` clause.
 
 I dunno, there's probably more to it, but hopefully that's a good guide.
