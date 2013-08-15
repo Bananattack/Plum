@@ -36,7 +36,7 @@ C++
 * Avoid virtual dispatch
 * Prefer references to pointers -- they aren't nullable, or rebindable, and thus they are much safer.
 * Create things as value types when possible, avoid unnecessary copying by using references.
-* Separate high-level interface from platform-specific implementation, by using a variant of pimpl-idiom in types: `class Impl; std::shared_ptr<Impl> impl;` -- define the `Impl` type in a .cpp (or a private internal-use header, when you have to).
+* Separate high-level interface from platform-specific implementation, by using a variant of pimpl-idiom in types: `class T { ... class Impl; std::shared_ptr<Impl> impl; }` -- define the `T::Impl` type in a .cpp (or a private internal-use header, when you have to).
 * Avoid pure abstract interfaces (which require virtual dispatch and pointers, are nullable, and can blow up at runtime if a pure virtual call slips through). Instead, prefer the pimpl idiom.
 * Prefer `T getFoo();` / `setFoo(T value);` for value attributes. Prefer `T& foo()` for accessors to mutable references.
 * If a `class` contains only members with trivial public get/set of private members, maybe make it `struct` with all public members and no get/set.
