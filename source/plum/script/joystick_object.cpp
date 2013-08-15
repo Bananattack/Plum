@@ -89,7 +89,7 @@ namespace plum
             lua_pushcfunction(L, [](lua_State* L)
             {
                 auto index = (unsigned int) script::get<int>(L, 1);
-                auto joystick = new Joystick(script::instance(L).engine(), index);
+                auto joystick = new Joystick(script::instance(L).engine(), index - 1);
                 auto wrap = script::push(L, joystick, LUA_NOREF);
 
                 lua_newtable(L);
