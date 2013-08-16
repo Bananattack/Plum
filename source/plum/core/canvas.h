@@ -237,7 +237,7 @@ namespace plum
 
             template<BlendMode Blend> void dot(int x, int y, Color color)
             {
-                if(data && x >= clipX && x < clipX2 && y >= clipY && y < clipY2)
+                if(data && x >= clipX && x <= clipX2 && y >= clipY && y <= clipY2)
                 {
                     blend<Blend>(color, data[y * trueWidth + x], opacity);
                 }                
