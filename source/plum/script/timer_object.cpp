@@ -52,11 +52,11 @@ namespace plum
                     script::push(L, "(plum.timer singleton)");
                     return 1;
                 }},
-				{"__pairs", [](lua_State* L)
+                {"__pairs", [](lua_State* L)
                 {
-					lua_getglobal(L, "next");
-					luaL_getmetatable(L, "plum_timer");
-					lua_pushnil(L);
+                    lua_getglobal(L, "next");
+                    luaL_getmetatable(L, "plum_timer");
+                    lua_pushnil(L);
                     return 3;
                 }},
                 {"get_time", [](lua_State* L)

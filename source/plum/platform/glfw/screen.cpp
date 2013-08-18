@@ -414,7 +414,7 @@ namespace plum
         }
 
         glfwGetWindowSize(window, &trueWidth, &trueHeight);
-		scale = std::max(std::min(trueWidth / width, trueHeight / height), 1);
+        scale = std::max(std::min(trueWidth / width, trueHeight / height), 1);
 
         glfwMakeContextCurrent(window);
         glEnable(GL_BLEND);

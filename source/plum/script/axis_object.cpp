@@ -32,7 +32,7 @@ namespace plum
                 {"__index", [](lua_State* L) { return script::wrapped<Axis>(L, 1)->index(L); }},
                 {"__newindex", [](lua_State* L) { return script::wrapped<Axis>(L, 1)->newindex(L); }},
                 {"__tostring", [](lua_State* L) { return script::wrapped<Axis>(L, 1)->tostring(L); }},
-				{"__pairs", [](lua_State* L) { return script::wrapped<Axis>(L, 1)->pairs(L); }},
+                {"__pairs", [](lua_State* L) { return script::wrapped<Axis>(L, 1)->pairs(L); }},
                 {"get_value", [](lua_State* L)
                 {
                     auto axis = script::ptr<Axis>(L, 1);

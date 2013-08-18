@@ -27,7 +27,7 @@ namespace plum
                 {"__index", [](lua_State* L) { return script::wrapped<Image>(L, 1)->index(L); }},
                 {"__newindex", [](lua_State* L) { return script::wrapped<Image>(L, 1)->newindex(L); }},
                 {"__tostring", [](lua_State* L) { return script::wrapped<Image>(L, 1)->tostring(L); }},
-				{"__pairs", [](lua_State* L) { return script::wrapped<Image>(L, 1)->pairs(L); }},
+                {"__pairs", [](lua_State* L) { return script::wrapped<Image>(L, 1)->pairs(L); }},
                 {"draw", [](lua_State* L)
                 {
                     auto img = script::ptr<Image>(L, 1);

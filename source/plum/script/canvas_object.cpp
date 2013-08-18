@@ -61,7 +61,7 @@ namespace plum
             return script::wrapped<Self>(L, 1)->tostring(L);
         }
 
-		int pairs(lua_State* L)
+        int pairs(lua_State* L)
         {
             return script::wrapped<Self>(L, 1)->pairs(L);
         }
@@ -489,7 +489,7 @@ namespace plum
                 {"__index", index},
                 {"__newindex", newindex},
                 {"__tostring", tostring},
-				{"__pairs", pairs},
+                {"__pairs", pairs},
                 {"restoreClipRegion", restoreClipRegion},
                 {"setClipRegion", setClipRegion},
                 {"getPixel", getPixel},

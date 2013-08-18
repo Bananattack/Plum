@@ -321,7 +321,7 @@ namespace plum
                 {"__index", index},
                 {"__newindex", newindex},
                 {"__tostring", tostring},
-				{"__pairs", pairs},
+                {"__pairs", pairs},
                 {"close", close},
                 {"readU8", readU8},
                 {"readU16", readU16},

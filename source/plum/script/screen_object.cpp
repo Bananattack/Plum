@@ -35,7 +35,7 @@ namespace plum
                 {"__index", [](lua_State* L) { return script::wrapped<Screen>(L, 1)->index(L); }},
                 {"__newindex", [](lua_State* L) { return script::wrapped<Screen>(L, 1)->newindex(L); }},
                 {"__tostring", [](lua_State* L) { return script::wrapped<Screen>(L, 1)->tostring(L); }},
-				{"__pairs", [](lua_State* L) { return script::wrapped<Screen>(L, 1)->pairs(L); }},
+                {"__pairs", [](lua_State* L) { return script::wrapped<Screen>(L, 1)->pairs(L); }},
                 {"clear", [](lua_State* L)
                 {
                     auto screen = script::ptr<Screen>(L, 1);
