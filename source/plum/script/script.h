@@ -162,6 +162,14 @@ namespace plum
                 lua_pushstring(L, meta<T>());
                 return 1;
             }
+
+			int pairs(lua_State* L)
+			{
+				lua_getglobal(L, "next");
+				luaL_getmetatable(L, meta<T>());
+				lua_pushnil(L);
+				return 3;
+			}
         };
 
         template<typename T> const char* meta();

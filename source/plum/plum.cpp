@@ -1,4 +1,3 @@
-#include "core/log.h"
 #include "core/audio.h"
 #include "core/screen.h"
 #include "core/config.h"
@@ -7,16 +6,60 @@
 #include "core/input.h"
 #include "script/script.h"
 
+#include <cstdio>
 #include <cstdlib>
 #include <stdexcept>
 
+#ifdef _WIN32
+#include <io.h>
+#include <fcntl.h>
+#include <windows.h>
+
+int main(int argc, char** argv);
+int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
+{
+    return main(__argc, __argv);
+}
+
+namespace
+{
+	void redirect(bool console)
+	{
+		if(console && AllocConsole())
+		{
+			*stdout = *_fdopen(_open_osfhandle((intptr_t) GetStdHandle(STD_OUTPUT_HANDLE), _O_TEXT), "w");
+			*stderr = *_fdopen(_open_osfhandle((intptr_t) GetStdHandle(STD_ERROR_HANDLE), _O_TEXT), "w");
+		}
+		else
+		{
+			freopen("stdout.log", "w", stdout);
+			freopen("stderr.log", "w", stderr);
+		}
+		setvbuf(stdout, nullptr, _IONBF, 0);
+		setvbuf(stderr, nullptr, _IONBF, 0);
+	}
+}
+
+#else
+
+namespace
+{
+	void redirect(bool console)
+	{
+	}
+}
+
+#endif
+
 int main(int argc, char** argv)
 {
-    plum::clearLog();
     try
     {
         plum::Config config("plum.cfg");
         auto silent = config.get<bool>("silent", false);
+		auto console = config.get<bool>("console", false);
+
+		redirect(console);
 
         plum::Engine engine;
         plum::Timer timer(engine);
@@ -57,14 +100,3 @@ int main(int argc, char** argv)
 
     return 0;
 }
-
-
-#ifdef _WIN32
-#include <windows.h>
-
-int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
-{
-    return main(__argc, __argv);
-}
-
-#endif

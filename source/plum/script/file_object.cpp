@@ -36,6 +36,11 @@ namespace plum
             return script::wrapped<Self>(L, 1)->tostring(L);
         }
 
+        int pairs(lua_State* L)
+        {
+            return script::wrapped<Self>(L, 1)->pairs(L);
+        }
+
         int close(lua_State* L)
         {
             auto file = script::ptr<File>(L, 1);
@@ -316,6 +321,7 @@ namespace plum
                 {"__index", index},
                 {"__newindex", newindex},
                 {"__tostring", tostring},
+				{"__pairs", pairs},
                 {"close", close},
                 {"readU8", readU8},
                 {"readU16", readU16},

@@ -61,6 +61,11 @@ namespace plum
             return script::wrapped<Self>(L, 1)->tostring(L);
         }
 
+		int pairs(lua_State* L)
+        {
+            return script::wrapped<Self>(L, 1)->pairs(L);
+        }
+
         int restoreClipRegion(lua_State* L)
         {
             auto canvas = script::ptr<Self>(L, 1);
@@ -93,7 +98,7 @@ namespace plum
             auto canvas = script::ptr<Self>(L, 1);
             auto x = script::get<int>(L, 2);
             auto y = script::get<int>(L, 3);
-            auto color = Color(script::get<int>(L, 4, Color::White));
+            auto color = Color(script::get<int>(L, 4));
             auto mode = BlendMode(script::get<int>(L, 5, BlendPreserve));
 
             switch(mode)
@@ -142,7 +147,7 @@ namespace plum
             auto y = script::get<int>(L, 3);
             auto x2 = script::get<int>(L, 4);
             auto y2 = script::get<int>(L, 5);
-            auto color = Color(script::get<int>(L, 6, Color::White));
+            auto color = Color(script::get<int>(L, 6));
             auto mode = BlendMode(script::get<int>(L, 7, BlendPreserve));
 
             switch(mode)
@@ -163,7 +168,7 @@ namespace plum
             auto y = script::get<int>(L, 3);
             auto x2 = script::get<int>(L, 4);
             auto y2 = script::get<int>(L, 5);
-            auto color = Color(script::get<int>(L, 6, Color::White));
+            auto color = Color(script::get<int>(L, 6));
             auto mode = BlendMode(script::get<int>(L, 7, BlendPreserve));
 
             switch(mode)
@@ -184,7 +189,7 @@ namespace plum
             auto y = script::get<int>(L, 3);
             auto x2 = script::get<int>(L, 4);
             auto y2 = script::get<int>(L, 5);
-            auto color = Color(script::get<int>(L, 6, Color::White));
+            auto color = Color(script::get<int>(L, 6));
             auto mode = BlendMode(script::get<int>(L, 7, BlendPreserve));
 
             switch(mode)
@@ -205,7 +210,7 @@ namespace plum
             auto cy = script::get<int>(L, 3);
             auto xRadius = script::get<int>(L, 4);
             auto yRadius = script::get<int>(L, 5);
-            auto color = Color(script::get<int>(L, 6, Color::White));
+            auto color = Color(script::get<int>(L, 6));
             auto mode = BlendMode(script::get<int>(L, 7, BlendPreserve));
 
             switch(mode)
@@ -226,7 +231,7 @@ namespace plum
             auto cy = script::get<int>(L, 3);
             auto xRadius = script::get<int>(L, 4);
             auto yRadius = script::get<int>(L, 5);
-            auto color = Color(script::get<int>(L, 6, Color::White));
+            auto color = Color(script::get<int>(L, 6));
             auto mode = BlendMode(script::get<int>(L, 7, BlendPreserve));
 
             switch(mode)
@@ -484,6 +489,7 @@ namespace plum
                 {"__index", index},
                 {"__newindex", newindex},
                 {"__tostring", tostring},
+				{"__pairs", pairs},
                 {"restoreClipRegion", restoreClipRegion},
                 {"setClipRegion", setClipRegion},
                 {"getPixel", getPixel},

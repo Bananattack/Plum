@@ -7,7 +7,7 @@ namespace plum
     {
         template<> const char* meta<Axis>()
         {
-            return "plum.Input";
+            return "plum.Axis";
         }
 
         namespace
@@ -28,18 +28,11 @@ namespace plum
             lua_setfield(L, -2, "__index");
             // Put the members into the metatable.
             const luaL_Reg functions[] = {
-                {"__index", [](lua_State* L)
-                {
-                    return script::wrapped<Axis>(L, 1)->index(L);
-                }},
-                {"__newindex", [](lua_State* L)
-                {
-                    return script::wrapped<Axis>(L, 1)->newindex(L);
-                }},
-                {"__tostring", [](lua_State* L)
-                {
-                    return script::wrapped<Axis>(L, 1)->tostring(L);
-                }},
+                {"__gc", [](lua_State* L) { return script::wrapped<Axis>(L, 1)->gc(L); }},
+                {"__index", [](lua_State* L) { return script::wrapped<Axis>(L, 1)->index(L); }},
+                {"__newindex", [](lua_State* L) { return script::wrapped<Axis>(L, 1)->newindex(L); }},
+                {"__tostring", [](lua_State* L) { return script::wrapped<Axis>(L, 1)->tostring(L); }},
+				{"__pairs", [](lua_State* L) { return script::wrapped<Axis>(L, 1)->pairs(L); }},
                 {"get_value", [](lua_State* L)
                 {
                     auto axis = script::ptr<Axis>(L, 1);

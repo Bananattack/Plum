@@ -21,22 +21,11 @@ namespace plum
 
             // Put the members into the metatable.
             const luaL_Reg functions[] = {
-                {"__gc", [](lua_State* L)
-                {
-                    return script::wrapped<Tilemap>(L, 1)->gc(L);
-                }},
-                {"__index", [](lua_State* L)
-                {
-                    return script::wrapped<Tilemap>(L, 1)->index(L);
-                }},
-                {"__newindex", [](lua_State* L)
-                {
-                    return script::wrapped<Tilemap>(L, 1)->newindex(L);
-                }},
-                {"__tostring", [](lua_State* L)
-                {
-                    return script::wrapped<Tilemap>(L, 1)->tostring(L);
-                }},
+                {"__gc", [](lua_State* L) { return script::wrapped<Tilemap>(L, 1)->gc(L); }},
+                {"__index", [](lua_State* L) { return script::wrapped<Tilemap>(L, 1)->index(L); }},
+                {"__newindex", [](lua_State* L) { return script::wrapped<Tilemap>(L, 1)->newindex(L); }},
+                {"__tostring", [](lua_State* L) { return script::wrapped<Tilemap>(L, 1)->tostring(L); }},
+				{"__pairs", [](lua_State* L) { return script::wrapped<Tilemap>(L, 1)->pairs(L); }},
                 {"get_width", [](lua_State* L)
                 {
                     auto m = script::ptr<Tilemap>(L, 1);

@@ -20,22 +20,11 @@ namespace plum
 
             // Put the members into the metatable.
             const luaL_Reg functions[] = {
-                {"__gc", [](lua_State* L)
-                {
-                    return script::wrapped<Sprite>(L, 1)->gc(L);
-                }},
-                {"__index", [](lua_State* L)
-                {
-                    return script::wrapped<Sprite>(L, 1)->index(L);
-                }},
-                {"__newindex", [](lua_State* L)
-                {
-                    return script::wrapped<Sprite>(L, 1)->newindex(L);
-                }},
-                {"__tostring", [](lua_State* L)
-                {
-                    return script::wrapped<Sprite>(L, 1)->tostring(L);
-                }},
+				{"__gc", [](lua_State* L) { return script::wrapped<Sprite>(L, 1)->gc(L); }},
+                {"__index", [](lua_State* L) { return script::wrapped<Sprite>(L, 1)->index(L); }},
+                {"__newindex", [](lua_State* L) { return script::wrapped<Sprite>(L, 1)->newindex(L); }},
+                {"__tostring", [](lua_State* L) { return script::wrapped<Sprite>(L, 1)->tostring(L); }},
+				{"__pairs", [](lua_State* L) { return script::wrapped<Sprite>(L, 1)->pairs(L); }},
                 {"clear", [](lua_State* L)
                 {
                     auto sprite = script::ptr<Sprite>(L, 1);

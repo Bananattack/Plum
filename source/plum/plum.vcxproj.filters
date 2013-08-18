@@ -81,9 +81,6 @@
     <ClCompile Include="core\input.cpp">
       <Filter>Source Files\core</Filter>
     </ClCompile>
-    <ClCompile Include="core\log.cpp">
-      <Filter>Source Files\core</Filter>
-    </ClCompile>
     <ClCompile Include="core\tilemap.cpp">
       <Filter>Source Files\core</Filter>
     </ClCompile>
@@ -165,9 +162,6 @@
       <Filter>Header Files\core</Filter>
     </ClInclude>
     <ClInclude Include="core\input.h">
-      <Filter>Header Files\core</Filter>
-    </ClInclude>
-    <ClInclude Include="core\log.h">
       <Filter>Header Files\core</Filter>
     </ClInclude>
     <ClInclude Include="core\tilemap.h">

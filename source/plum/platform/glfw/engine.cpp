@@ -1,7 +1,6 @@
 #include <iostream>
 
 #include "engine.h"
-#include "../../core/log.h"
 
 #ifdef _WIN32
 #include <GLFW/glfw3native.h>
@@ -35,7 +34,6 @@ namespace plum
         if(message.length())
         {
             fprintf(stderr, "Exit Requested: %s", message.c_str());
-            logFormat("Exit Requested: %s", message.c_str());
 #ifdef _WIN32
             MessageBoxA(nullptr, message.c_str(), "Exit Requested", MB_SYSTEMMODAL);
 #endif

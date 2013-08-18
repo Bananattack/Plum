@@ -108,7 +108,6 @@
     <ClCompile Include="core\config.cpp" />
     <ClCompile Include="core\file.cpp" />
     <ClCompile Include="core\input.cpp" />
-    <ClCompile Include="core\log.cpp" />
     <ClCompile Include="core\sheet.cpp" />
     <ClCompile Include="core\sprite.cpp" />
     <ClCompile Include="core\tilemap.cpp" />
@@ -150,7 +149,6 @@
     <ClInclude Include="core\file.h" />
     <ClInclude Include="core\image.h" />
     <ClInclude Include="core\input.h" />
-    <ClInclude Include="core\log.h" />
     <ClInclude Include="core\screen.h" />
     <ClInclude Include="core\sheet.h" />
     <ClInclude Include="core\sprite.h" />

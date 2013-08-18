@@ -29,18 +29,10 @@ namespace plum
             lua_setfield(L, -2, "__index");
             // Put the members into the metatable.
             const luaL_Reg functions[] = {
-                {"__index", [](lua_State* L)
-                {
-                    return script::wrapped<Mouse>(L, 1)->index(L);
-                }},
-                {"__newindex", [](lua_State* L)
-                {
-                    return script::wrapped<Mouse>(L, 1)->newindex(L);
-                }},
-                {"__tostring", [](lua_State* L)
-                {
-                    return script::wrapped<Mouse>(L, 1)->tostring(L);
-                }},
+                {"__index", [](lua_State* L) { return script::wrapped<Mouse>(L, 1)->index(L); }},
+                {"__newindex", [](lua_State* L) { return script::wrapped<Mouse>(L, 1)->newindex(L); }},
+                {"__tostring", [](lua_State* L) { return script::wrapped<Mouse>(L, 1)->tostring(L); }},
+				{"__pairs", [](lua_State* L) { return script::wrapped<Mouse>(L, 1)->pairs(L); }},
                 {"get_x", [](lua_State* L)
                 {
                     auto mouse = script::ptr<Mouse>(L, 1);
