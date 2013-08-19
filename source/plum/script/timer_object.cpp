@@ -73,27 +73,24 @@ namespace plum
                 }},
                 {"get_speed", [](lua_State* L)
                 {
-                    const char* speed = "n";
-                    switch(script::instance(L).timer().getSpeed())
-                    {
-                        case plum::TimerSpeedSlowMotion: speed = "s";
-                        case plum::TimerSpeedFastForward: speed = "f";
-                        default: break;
-                    }
-                    script::push(L, speed);
+                    script::push(L, int(script::instance(L).timer().getSpeed()));
                     return 1;
                 }},
                 {"set_speed", [](lua_State* L)
                 {
-                    const char* speed = script::get<const char*>(L, 2);
-                    auto timerSpeed = plum::TimerSpeedNormal;
-                    switch(speed[0])
-                    {
-                        case 's': timerSpeed = plum::TimerSpeedSlowMotion; break;
-                        case 'f': timerSpeed = plum::TimerSpeedFastForward; break;
-                        default: break;
-                    }
-                    script::instance(L).timer().setSpeed(timerSpeed);
+                    auto speed = plum::TimerSpeed(script::get<int>(L, 2));
+                    script::instance(L).timer().setSpeed(speed);
+                    return 0;
+                }},
+                {"get_maxGap", [](lua_State* L)
+                {
+                    script::push(L, script::instance(L).timer().getMaxDelta());
+                    return 1;
+                }},
+                {"set_maxGap", [](lua_State* L)
+                {
+                    auto delta = script::get<int>(L, 2);
+                    script::instance(L).timer().setMaxDelta(delta);
                     return 0;
                 }},
                 {nullptr, nullptr}

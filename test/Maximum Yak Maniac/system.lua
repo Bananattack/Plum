@@ -147,11 +147,11 @@ function globalInputCheck()
     end
 
     if screen.key.Tilde.pressed then
-        plum.timer.speed = 'f'
+        plum.timer.speed = plum.speed.Fast
     elseif screen.key.LeftShift.pressed then
-        plum.timer.speed = 's'
+        plum.timer.speed = plum.speed.Slow
     else
-        plum.timer.speed = 'n'
+        plum.timer.speed = plum.speed.Normal
     end
 end
 

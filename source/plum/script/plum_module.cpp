@@ -7,6 +7,7 @@
 #include "../core/file.h"
 #include "../core/color.h"
 #include "../core/input.h"
+#include "../core/timer.h"
 #include "../core/screen.h"
 #include "../core/engine.h"
 #include "../core/blending.h"
@@ -208,6 +209,18 @@ namespace plum
             lua_setfield(L, -2, "Current");
             script::push(L, int(FileSeekMode::End));
             lua_setfield(L, -2, "End");
+            lua_pop(L, 1);
+
+            // Create the 'speed' table.
+            lua_newtable(L);
+            lua_pushvalue(L, -1);
+            lua_setfield(L, -3, "speed");
+            script::push(L, int(TimerSpeed::Normal));
+            lua_setfield(L, -2, "Normal");
+            script::push(L, int(TimerSpeed::Fast));
+            lua_setfield(L, -2, "Fast");
+            script::push(L, int(TimerSpeed::Slow));
+            lua_setfield(L, -2, "Slow");
             lua_pop(L, 1);
 
             // Pop and store the library.

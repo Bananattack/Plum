@@ -13,7 +13,7 @@ namespace plum
             Impl(Engine& engine)
                 : engine(engine)
             {
-                speed = TimerSpeedNormal;
+                speed = TimerSpeed::Normal;
                 maxDelta = DefaultMaxDelta;
 
                 unsigned int t = unsigned int(glfwGetTime() * 100);
@@ -46,11 +46,11 @@ namespace plum
                 {
                     switch(speed)
                     {
-                        case TimerSpeedFastForward: delta = currentTick * FastForwardMultiplier - previousTick * FastForwardMultiplier; break;
-                        case TimerSpeedNormal: delta = currentTick - previousTick; break;
-                        case TimerSpeedSlowMotion: delta = currentTick / SlowMotionDivisor - previousTick / SlowMotionDivisor; break;
+                        case TimerSpeed::Fast: delta = currentTick * FastForwardMultiplier - previousTick * FastForwardMultiplier; break;
+                        case TimerSpeed::Normal: delta = currentTick - previousTick; break;
+                        case TimerSpeed::Slow: delta = currentTick / SlowMotionDivisor - previousTick / SlowMotionDivisor; break;
                     }
-                    if(speed != TimerSpeedFastForward)
+                    if(speed != TimerSpeed::Fast)
                     {
                         delta = std::min(maxDelta, delta);
                     }

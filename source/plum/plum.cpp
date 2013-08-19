@@ -15,40 +15,38 @@
 #include <fcntl.h>
 #include <windows.h>
 
-int main(int argc, char** argv);
-int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
-{
-    return main(__argc, __argv);
-}
-
-namespace
-{
-    void redirect(bool console)
+    int main(int argc, char** argv);
+    int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
     {
-        if(console && AllocConsole())
-        {
-            *stdout = *_fdopen(_open_osfhandle((intptr_t) GetStdHandle(STD_OUTPUT_HANDLE), _O_TEXT), "w");
-            *stderr = *_fdopen(_open_osfhandle((intptr_t) GetStdHandle(STD_ERROR_HANDLE), _O_TEXT), "w");
-        }
-        else
-        {
-            freopen("stdout.log", "w", stdout);
-            freopen("stderr.log", "w", stderr);
-        }
-        setvbuf(stdout, nullptr, _IONBF, 0);
-        setvbuf(stderr, nullptr, _IONBF, 0);
+        return main(__argc, __argv);
     }
-}
+
+    namespace
+    {
+        void redirect(bool console)
+        {
+            if(console && AllocConsole())
+            {
+                *stdout = *_fdopen(_open_osfhandle((intptr_t) GetStdHandle(STD_OUTPUT_HANDLE), _O_TEXT), "w");
+                *stderr = *_fdopen(_open_osfhandle((intptr_t) GetStdHandle(STD_ERROR_HANDLE), _O_TEXT), "w");
+            }
+            else
+            {
+                freopen("stdout.log", "w", stdout);
+                freopen("stderr.log", "w", stderr);
+            }
+            setvbuf(stdout, nullptr, _IONBF, 0);
+            setvbuf(stderr, nullptr, _IONBF, 0);
+        }
+    }
 
 #else
-
-namespace
-{
-    void redirect(bool console)
+    namespace
     {
+        void redirect(bool console)
+        {
+        }
     }
-}
-
 #endif
 
 int main(int argc, char** argv)
@@ -66,11 +64,11 @@ int main(int argc, char** argv)
         plum::Audio audio(engine, silent);
 
         auto hook = engine.addUpdateHook([&]() {
-            if(timer.getSpeed() == plum::TimerSpeedFastForward)
+            if(timer.getSpeed() == plum::TimerSpeed::Fast)
             {
                 audio.setPitch(1.0 * plum::Timer::FastForwardMultiplier);
             }
-            else if(timer.getSpeed() == plum::TimerSpeedSlowMotion)
+            else if(timer.getSpeed() == plum::TimerSpeed::Slow)
             {
                 audio.setPitch(1.0 / plum::Timer::SlowMotionDivisor);
             }

@@ -5,11 +5,11 @@
 
 namespace plum
 {
-    enum TimerSpeed
+    enum class TimerSpeed
     {
-        TimerSpeedNormal,
-        TimerSpeedFastForward,
-        TimerSpeedSlowMotion
+        Normal,
+        Fast,
+        Slow
     };
 
     class Engine;
