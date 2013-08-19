@@ -11,6 +11,7 @@ namespace plum
 {
     class Event;
     class Image;
+    class Canvas;
     class Engine;
     class Keyboard;
     class Mouse;
@@ -54,6 +55,8 @@ namespace plum
 
             void clear(Color color);
             void clear(int x, int y, int x2, int y2, Color color);
+
+            void grab(int sx, int sy, int sx2, int sy2, int dx, int dy, Canvas& dest);
 
             class Impl;
             std::shared_ptr<Impl> impl;

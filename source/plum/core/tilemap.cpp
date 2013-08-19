@@ -35,13 +35,13 @@ namespace plum
         }
     }
 
-    unsigned int Tilemap::getTile(int tx, int ty) const
+    unsigned int Tilemap::get(int tx, int ty) const
     {
         if(tx < 0 || tx >= width || ty < 0 || ty >= height) return InvalidTile;
         return data[ty * width + tx];
     }
 
-    void Tilemap::setTile(int tx, int ty, unsigned int tileIndex)
+    void Tilemap::dot(int tx, int ty, unsigned int tileIndex)
     {
         if(tx < 0 || tx >= width || ty < 0 || ty >= height) return;
         data[ty * width + tx] = tileIndex;
@@ -94,7 +94,7 @@ namespace plum
         }
     }
 
-    void Tilemap::solidRect(int tx, int ty, int tx2, int ty2, unsigned int tileIndex)
+    void Tilemap::fillRect(int tx, int ty, int tx2, int ty2, unsigned int tileIndex)
     {
         int i, j;
         if(tx > tx2)

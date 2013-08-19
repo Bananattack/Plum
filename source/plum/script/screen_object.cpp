@@ -1,6 +1,6 @@
-
-#include "../core/screen.h"
 #include "script.h"
+#include "../core/canvas.h"
+#include "../core/screen.h"
 
 namespace plum
 {
@@ -53,6 +53,20 @@ namespace plum
                         Color color = script::get<int>(L, 6);
                         screen->clear(x, y, x2, y2, color);
                     }
+                    return 0;
+                }},
+                {"grab", [](lua_State* L)
+                {
+                    auto screen = script::ptr<Screen>(L, 1);
+                    auto sx = script::get<int>(L, 2);
+                    auto sy = script::get<int>(L, 3);
+                    auto sx2 = script::get<int>(L, 4);
+                    auto sy2 = script::get<int>(L, 5);
+                    auto dx = script::get<int>(L, 6);
+                    auto dy = script::get<int>(L, 7);
+                    auto dest = script::ptr<Canvas>(L, 8);
+
+                    screen->grab(sx, sy, sx2, sy2, dx, dy, *dest);
                     return 0;
                 }},
                 {"get_width", [](lua_State* L)

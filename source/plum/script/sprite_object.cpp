@@ -53,7 +53,7 @@ namespace plum
                 {
                     auto sprite = script::ptr<Sprite>(L, 1);
                     auto index = script::get<int>(L, 2);
-                    sprite->remove(index);
+                    sprite->remove(index - 1);
                     return 0;
                 }},
                 {"get", [](lua_State* L)
@@ -64,7 +64,7 @@ namespace plum
                     int x, y, frame;
                     Transform* transform = new Transform();
 
-                    if(sprite->get(index, x, y, frame, *transform))
+                    if(sprite->get(size_t(index - 1), x, y, frame, *transform))
                     {
                         script::push(L, x);
                         script::push(L, y);
@@ -89,11 +89,11 @@ namespace plum
 
                     if(transform)
                     {
-                        sprite->set(size_t(index), x, y, frame, *transform);
+                        sprite->set(size_t(index - 1), x, y, frame, *transform);
                     }
                     else
                     {
-                        sprite->set(size_t(index), x, y, frame, Transform());
+                        sprite->set(size_t(index - 1), x, y, frame, Transform());
                     }
                     return 0;
                 }},

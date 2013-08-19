@@ -5,6 +5,7 @@
 #include "../../core/input.h"
 #include "../../core/screen.h"
 #include "../../core/image.h"
+#include "../../core/canvas.h"
 #include "../../core/transform.h"
 
 namespace plum
@@ -551,5 +552,25 @@ namespace plum
         glDrawArrays(GL_QUADS, 0, 4);
         glDisableClientState(GL_VERTEX_ARRAY);
         glfwMakeContextCurrent(impl->engine.impl->root);
+    }
+
+    void Screen::grab(int sx, int sy, int sx2, int sy2, int dx, int dy, Canvas& dest)
+    {
+        glfwMakeContextCurrent(impl->window);
+
+        int w = std::abs(sx2 - sx);
+        int h = std::abs(sy2 - sy);
+        sx = std::min(sx, sx2);
+        sy = std::min(sy, sy2);
+
+        int scale = impl->scale;
+        int scw = w * scale;
+        int sch = h * scale;
+
+        Canvas canvas(scw, sch);
+        glReadPixels((impl->trueWidth - (impl->width - sx) * scale) / 2, (impl->trueHeight - (impl->height - sy) * scale) / 2, scw, sch, GL_RGBA, GL_UNSIGNED_BYTE, canvas.getData());
+        canvas.flip(false, true);
+
+        canvas.scaleBlit<BlendMode::Opaque>(dx, dy, w, h, dest);
     }
 }

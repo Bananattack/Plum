@@ -38,12 +38,19 @@ namespace plum
                     script::push(L, m->getHeight());
                     return 1;
                 }},
-                {"getTile", [](lua_State* L)
+                {"clear", [](lua_State* L)
+                {
+                    auto m = script::ptr<Tilemap>(L, 1);
+                    unsigned int tileIndex = script::get<int>(L, 2);
+                    m->clear(tileIndex);
+                    return 0;
+                }},
+                {"get", [](lua_State* L)
                 {
                     auto m = script::ptr<Tilemap>(L, 1);
                     int tx = script::get<int>(L, 2);
                     int ty = script::get<int>(L, 3);
-                    unsigned int t = m->getTile(tx, ty);
+                    unsigned int t = m->get(tx, ty);
 
                     if(t != Tilemap::InvalidTile)
                     {
@@ -56,13 +63,24 @@ namespace plum
                 
                     return 1;
                 }},
-                {"setTile", [](lua_State* L)
+                {"dot", [](lua_State* L)
                 {
                     auto m = script::ptr<Tilemap>(L, 1);
                     int tx = script::get<int>(L, 2);
                     int ty = script::get<int>(L, 3);
                     unsigned int tileIndex = script::get<int>(L, 4);
-                    m->setTile(tx, ty, tileIndex);
+                    m->dot(tx, ty, tileIndex);
+                    return 0;
+                }},
+                {"line", [](lua_State* L)
+                {
+                    auto m = script::ptr<Tilemap>(L, 1);
+                    int tx = script::get<int>(L, 2);
+                    int ty = script::get<int>(L, 3);
+                    int tx2 = script::get<int>(L, 4);
+                    int ty2 = script::get<int>(L, 5);
+                    unsigned int tileIndex = script::get<int>(L, 6);
+                    m->line(tx, ty, tx2, ty2, tileIndex);
                     return 0;
                 }},
                 {"rect", [](lua_State* L)
@@ -76,7 +94,7 @@ namespace plum
                     m->rect(tx, ty, tx2, ty2, tileIndex);
                     return 0;
                 }},
-                {"solidRect", [](lua_State* L)
+                {"fillRect", [](lua_State* L)
                 {
                     auto m = script::ptr<Tilemap>(L, 1);
                     int tx = script::get<int>(L, 2);
@@ -84,7 +102,7 @@ namespace plum
                     int tx2 = script::get<int>(L, 4);
                     int ty2 = script::get<int>(L, 5);
                     unsigned int tileIndex = script::get<int>(L, 6);
-                    m->solidRect(tx, ty, tx2, ty2, tileIndex);
+                    m->fillRect(tx, ty, tx2, ty2, tileIndex);
                     return 0;
                 }},
                 {"stamp", [](lua_State* L)

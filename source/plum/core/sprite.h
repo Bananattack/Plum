@@ -36,7 +36,7 @@ namespace plum
                 Transform transform;
 
                 Part()
-                    : x(0), y(0), frame(0)
+                    : x(-214783648), y(-214783648), frame(0)
                 {
                 }
 

@@ -19,10 +19,10 @@ namespace plum
 
             void clear(unsigned int tileIndex);
 
-            unsigned int getTile(int tx, int ty) const;
-            void setTile(int tx, int ty, unsigned int tileIndex);
+            unsigned int get(int tx, int ty) const;
+            void dot(int tx, int ty, unsigned int tileIndex);
             void rect(int tx, int ty, int tx2, int ty2, unsigned int tileIndex);
-            void solidRect(int tx, int ty, int tx2, int ty2, unsigned int tileIndex);
+            void fillRect(int tx, int ty, int tx2, int ty2, unsigned int tileIndex);
             void line(int tx, int ty, int tx2, int ty2, unsigned int tileIndex);
             void stamp(int tx, int ty, Tilemap* dest);
             void draw(Image& img, const Sheet& sheet, int sourceX, int sourceY, int destX, int destY, int tilesWide, int tilesHigh, Screen& dest);
