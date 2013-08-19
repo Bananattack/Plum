@@ -22,7 +22,7 @@ C++
 * Avoid macros except when absolutely necessary!
 * Prefer `enum` to `const int` declarations when there are several, related integer constants.
 * Actually use handy C++ features, like templates and references!
-* Use C++11 features, like `auto`, lambdas (stateless ones work with C libs), range-based `for` loops, pointer types (`shared_ptr`, `weak_ptr` and `unique_ptr`).
+* Use C++11 features, like `auto`, lambdas (stateless ones work with C libs), range-based `for` loops, pointer types (`std::shared_ptr`, `std::weak_ptr` and `std::unique_ptr`), hash container types (`std::unordered_set`, `std::unordered_map`), `enum class`, etc.
 * Use `const` qualifiers (const methods, pointers, references) often! If you're not mutating particular data, make that fact explicit!
 * Use `unsigned` types whenever negative numbers are not necessary.
 * Use the most appropriate number types: `bool` for booleans, `char` for platform-defined characters, `int` for platform-defined integers, `double` for platform-defined floating point, `size_t` for unsigned sizes, `intN_t`/`uintN_t` types for explicitly-sized integer types, etc.
