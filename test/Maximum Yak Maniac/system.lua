@@ -18,7 +18,7 @@ function init()
     Title = 'Maximum Yak Maniac'
     resource = {
         song = {
-            city = plum.Song('resources/Jiggy.it')
+            city = plum.Channel('resources/Jiggy.it', true)
         };
         sound = {
             blast = {

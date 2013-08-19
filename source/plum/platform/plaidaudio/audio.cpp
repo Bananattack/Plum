@@ -102,17 +102,17 @@ namespace plum
 
     void Channel::setPan(double value)
     {
-        impl->pan = value;
+        impl->pan = std::min(std::max(value, -1.0), 1.0);
     }
 
     void Channel::setPitch(double value)
     {
-        impl->pitch = value;
+        impl->pitch = std::max(value, 0.0);
     }
 
     void Channel::setVolume(double value)
     {
-        impl->volume = value;
+        impl->volume = std::min(std::max(value, 0.0), 1.0);
     }
 
 
@@ -121,7 +121,6 @@ namespace plum
     {
         public:
             plaidgadget::String filename;
-            bool looped;
     };
 
     Sound::Sound()
@@ -132,6 +131,8 @@ namespace plum
     Sound::~Sound()
     {
     }
+
+
 
     class Audio::Impl
     {
@@ -159,8 +160,8 @@ namespace plum
                     const auto& c(*it);
 
                     c->pitchfx->rate(float(c->pitch * pitch));
-                    c->panfx->pan(float((c->pan + pan) / 2));
-                    c->panfx->level(float(c->volume * volume));
+                    c->panfx->left(float(c->volume * sin(std::min(1.0 - c->pan, 1.0) * std::min(1.0 - pan, 1.0) * M_PI_2)));
+                    c->panfx->right(float(c->volume * sin(std::min(1.0 + c->pan, 1.0) * std::min(1.0 + pan, 1.0) * M_PI_2)));
 
                     if((!audio->playing(c->master) || c->looped) && *c->dispose)
                     {
@@ -194,7 +195,7 @@ namespace plum
     {
     }
 
-    void Audio::loadSound(const std::string& filename, bool looped, Sound& sound)
+    void Audio::loadSound(const std::string& filename, Sound& sound)
     {
         if(impl->disabled)
         {
@@ -202,24 +203,23 @@ namespace plum
         }
         plaidgadget::String fn(filename.begin(), filename.end());
         sound.impl->filename = fn;
-        sound.impl->looped = looped;
     }
 
-    void Audio::loadChannel(const Sound& sound, Channel& channel)
+    void Audio::loadChannel(const Sound& sound, bool looped, Channel& channel)
     {
         if(impl->disabled)
         {
             return;
         }
 
-        plaidgadget::Sound stream(impl->audio->stream(sound.impl->filename, sound.impl->looped));
+        plaidgadget::Sound stream(impl->audio->stream(sound.impl->filename, looped));
         if(!stream.null())
         {
             plaidgadget::Ref<plaidgadget::Pitch> pitchfx(new plaidgadget::Pitch(stream));
             plaidgadget::Ref<plaidgadget::Pan> panfx(new plaidgadget::Pan(plaidgadget::Sound(pitchfx)));
             plaidgadget::Sound master = plaidgadget::Sound(panfx);
 
-            channel.impl->looped = sound.impl->looped;
+            channel.impl->looped = looped;
             channel.impl->audio = impl->audio;
             channel.impl->pitchfx = pitchfx;
             channel.impl->panfx = panfx;

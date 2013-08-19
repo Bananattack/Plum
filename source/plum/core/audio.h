@@ -50,8 +50,8 @@ namespace plum
             Audio(Engine& engine, bool disabled);
             ~Audio();
 
-            void loadSound(const std::string& filename, bool looped, Sound& sound);
-            void loadChannel(const Sound& sound, Channel& channel);
+            void loadSound(const std::string& filename, Sound& sound);
+            void loadChannel(const Sound& sound, bool looped, Channel& channel);
 
             double getPan() const;
             double getPitch() const;
