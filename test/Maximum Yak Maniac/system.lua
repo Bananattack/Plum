@@ -136,6 +136,8 @@ function update()
     globalInputCheck()
 end
 
+local doubleClickTimer = 0
+
 function globalInputCheck()
     if screen.close.pressed or screen.key.Escape.pressed then
         plum.exit()
@@ -152,6 +154,15 @@ function globalInputCheck()
         plum.timer.speed = plum.speed.Slow
     else
         plum.timer.speed = plum.speed.Normal
+    end
+
+    if screen.mouse.left.pressed then
+        if doubleClickTimer and doubleClickTimer > plum.timer.time then
+            screen.windowed = not screen.windowed
+        else
+            doubleClickTimer = plum.timer.time + 20
+        end
+        screen.mouse.left.pressed = false
     end
 end
 
