@@ -43,4 +43,5 @@ License
 It frees you to contribute, to create derivative works, to use it in commercial projects, among other things
 without too much thought -- so long as you follow the conditions of the license, which are pretty friendly.
 
-Please read the `license.md` file included in this repository for full details.
+I don't really care that much about what you do with it, I'm giving you something that I worked on, and maybe it's useful.
+Please read the `license.md` file included in this repository for full details though.

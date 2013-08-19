@@ -26,6 +26,18 @@
     (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
     SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+Plum is permissively licensed, and so are all of its dependencies, so you can just use/modify it without too many worries.
+I don't really care that much about what you do with it, I'm giving you something that I worked on, and maybe it's useful.
+Just keep the license in tact, don't claim work that isn't your own, and don't use it to endorse derivative products without permission.
+I am not a lawyer, but I have done my best to ensure that everything here is permissive and doesn't really impose on you if you choose to use this in a project.
+I hope you find Plum handy somehow.
+
+Love,  
+  
+-- Andy
+  
+  
+  
 The following is a list of third-party software used by **Plum**. Please consult their respective licensing terms.
 
 * **GLFW** - [zlib license](http://www.gzip.org/zlib/zlib_license.html) - Used for windowing, timing and input.
