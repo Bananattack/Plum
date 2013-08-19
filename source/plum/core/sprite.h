@@ -22,7 +22,9 @@ namespace plum
             void setCapacity(size_t value);
 
             void add(int x, int y, int frame, const Transform& transform);
-            void update(size_t index, int x, int y, int frame, const Transform& transform);
+            void remove(size_t index);
+            bool get(size_t index, int& x, int& y, int& frame, Transform& transform) const;
+            void set(size_t index, int x, int y, int frame, const Transform& transform);
             void draw(Image& image, const Sheet& sheet, int x, int y, Screen& dest) const;
 
         private:

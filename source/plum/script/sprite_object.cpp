@@ -49,7 +49,36 @@ namespace plum
                     }
                     return 0;
                 }},
-                {"update", [](lua_State* L)
+                {"remove", [](lua_State* L)
+                {
+                    auto sprite = script::ptr<Sprite>(L, 1);
+                    auto index = script::get<int>(L, 2);
+                    sprite->remove(index);
+                    return 0;
+                }},
+                {"get", [](lua_State* L)
+                {
+                    auto sprite = script::ptr<Sprite>(L, 1);
+                    auto index = script::get<int>(L, 2);
+
+                    int x, y, frame;
+                    Transform* transform = new Transform();
+
+                    if(sprite->get(index, x, y, frame, *transform))
+                    {
+                        script::push(L, x);
+                        script::push(L, y);
+                        script::push(L, frame);
+                        script::push(L, transform, LUA_NOREF);
+                        return 1;
+                    }
+                    else
+                    {
+                        delete transform;
+                        return 0;
+                    }
+                }},
+                {"set", [](lua_State* L)
                 {
                     auto sprite = script::ptr<Sprite>(L, 1);
                     auto index = script::get<int>(L, 2);
@@ -60,11 +89,11 @@ namespace plum
 
                     if(transform)
                     {
-                        sprite->update(size_t(index), x, y, frame, *transform);
+                        sprite->set(size_t(index), x, y, frame, *transform);
                     }
                     else
                     {
-                        sprite->update(size_t(index), x, y, frame, Transform());
+                        sprite->set(size_t(index), x, y, frame, Transform());
                     }
                     return 0;
                 }},

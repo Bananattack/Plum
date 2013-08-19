@@ -37,7 +37,29 @@ namespace plum
         parts.push_back(Part(x, y, frame, transform));
     }
 
-    void Sprite::update(size_t index, int x, int y, int frame, const Transform& transform)
+    void Sprite::remove(size_t index)
+    {
+        if(0 <= index && index < parts.size())
+        {
+            parts.erase(parts.begin() + index);
+        }
+    }
+
+    bool Sprite::get(size_t index, int& x, int& y, int& frame, Transform& transform) const
+    {
+        if(0 <= index && index < parts.size())
+        {
+            const Part& p(parts[index]);
+            x = p.x;
+            y = p.y;
+            frame = p.frame;
+            transform = p.transform;
+            return true;
+        }
+        return false;
+    }
+
+    void Sprite::set(size_t index, int x, int y, int frame, const Transform& transform)
     {
         if(0 <= index && index < parts.size())
         {
