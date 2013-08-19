@@ -37,15 +37,15 @@ namespace plum
 
     void Script::run(const std::string& filename)
     {
-        File f(filename.c_str(), FileRead);
+        File f(filename.c_str(), FileOpenMode::Read);
         if(!f.isActive())
         {
             throw std::runtime_error("The script file '" + filename + "' was not found.");
         }
         
-        f.seek(0, SeekEnd);
-        unsigned int length = f.tell();
-        f.seek(0, SeekStart);
+        f.seek(0, FileSeekMode::End);
+        auto length = f.tell();
+        f.seek(0, FileSeekMode::Start);
 
         std::vector<char> buf(length);
         f.readRaw(buf.data(), length);

@@ -11,16 +11,16 @@ do local Self = {}
         
         -- Try to automatically detect the font size based on the border edges.
         local canvas = image.canvas
-        local border = canvas:getPixel(0, 0)
+        local border = canvas:get(0, 0)
         for w = 1, canvas.width - 1 do
-            if canvas:getPixel(w, 1) == border then
+            if canvas:get(w, 1) == border then
                 self.cellWidth = w - 1
                 break
             end
         end
 
         for h = 1, canvas.height - 1 do
-            if canvas:getPixel(1, h) == border then
+            if canvas:get(1, h) == border then
                 self.cellHeight = h - 1
                 break
             end
@@ -52,7 +52,7 @@ do local Self = {}
             local fx = (cell % columns) * (width + 1) + 1
             local fy = math.floor(cell / columns) * (height + 1) + 1
             for y = 0, height - 1 do
-                if select(4, color.channels(canvas:getPixel(fx + column, fy + y))) > 0 then
+                if select(4, color.channels(canvas:get(fx + column, fy + y))) > 0 then
                     return false
                 end
             end

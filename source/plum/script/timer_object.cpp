@@ -6,10 +6,15 @@ namespace plum
 {
     namespace script
     {
+        namespace
+        {
+            const char* const Meta = "plum.Timer";
+        }
+
         void initTimerModule(lua_State* L)
         {
             // Load timer metatable
-            luaL_newmetatable(L, "plum_timer");
+            luaL_newmetatable(L, Meta);
             // Duplicate the metatable on the stack.
             lua_pushvalue(L, -1);
             // metatable.__index = metatable
@@ -36,26 +41,18 @@ namespace plum
                         lua_pushvalue(L, 1);
                         lua_pushvalue(L, 3);
                         lua_call(L, 2, 0);
-                        return 0;
                     }
-                    if(luaL_getmetafield(L, 1, std::string("get_" + fieldName).c_str()))
-                    {
-                        luaL_error(L, "Attempt to modify readonly field '%s' on plum_timer.", fieldName.c_str());
-                        lua_pop(L, 1);
-                        return 0;
-                    }
-                    luaL_error(L, "Attempt to modify unknown field '%s' on plum_timer.", fieldName.c_str());
                     return 0;
                 }},
                 {"__tostring", [](lua_State* L)
                 {
-                    script::push(L, "(plum.timer singleton)");
+                    script::push(L, Meta);
                     return 1;
                 }},
                 {"__pairs", [](lua_State* L)
                 {
                     lua_getglobal(L, "next");
-                    luaL_getmetatable(L, "plum_timer");
+                    luaL_getmetatable(L, Meta);
                     lua_pushnil(L);
                     return 3;
                 }},
@@ -76,34 +73,28 @@ namespace plum
                 }},
                 {"get_speed", [](lua_State* L)
                 {
+                    const char* speed = "n";
                     switch(script::instance(L).timer().getSpeed())
                     {
-                        case plum::TimerSpeedSlowMotion:
-                            script::push(L, "s");
-                            return 1;
-                        case plum::TimerSpeedFastForward:
-                            script::push(L, "f");
-                            return 1;
-                        default:
-                            script::push(L, "n");
-                            return 1;
+                        case plum::TimerSpeedSlowMotion: speed = "s";
+                        case plum::TimerSpeedFastForward: speed = "f";
+                        default: break;
                     }
+                    script::push(L, speed);
+                    return 1;
                 }},
                 {"set_speed", [](lua_State* L)
                 {
                     const char* speed = script::get<const char*>(L, 2);
+                    auto timerSpeed = plum::TimerSpeedNormal;
                     switch(speed[0])
                     {
-                        case 's':
-                            script::instance(L).timer().setSpeed(plum::TimerSpeedSlowMotion);
-                            return 0;
-                        case 'f':
-                            script::instance(L).timer().setSpeed(plum::TimerSpeedFastForward);
-                            return 0;
-                        default:
-                            script::instance(L).timer().setSpeed(plum::TimerSpeedNormal);
-                            return 0;
+                        case 's': timerSpeed = plum::TimerSpeedSlowMotion; break;
+                        case 'f': timerSpeed = plum::TimerSpeedFastForward; break;
+                        default: break;
                     }
+                    script::instance(L).timer().setSpeed(timerSpeed);
+                    return 0;
                 }},
                 {nullptr, nullptr}
             };
@@ -118,7 +109,7 @@ namespace plum
             lua_pushvalue(L, -1);
             lua_setfield(L, -3, "timer");
 
-            luaL_getmetatable(L, "plum_timer");
+            luaL_getmetatable(L, Meta);
             lua_setmetatable(L, -2);
 
             // Pop timer namespace.

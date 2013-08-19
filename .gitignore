@@ -17,6 +17,8 @@ source/portaudio/Release
 source/zlib/Debug
 source/zlib/Release
 plum.log
+stdout.log
+stderr.log
 *.aps
 *.exp
 *.a

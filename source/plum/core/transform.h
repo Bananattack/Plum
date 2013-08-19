@@ -22,7 +22,7 @@ namespace plum
         Transform()
             : mirror(false),
             angle(0.0),
-            mode(BlendPreserve),
+            mode(BlendMode::Preserve),
             tint(Color::White),
             scaleX(1.0),
             scaleY(1.0)

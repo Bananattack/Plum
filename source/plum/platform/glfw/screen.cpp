@@ -115,20 +115,20 @@ namespace plum
         {
             switch(mode)
             {
-                case BlendOpaque:
+                case BlendMode::Opaque:
                     glDisable(GL_BLEND);
                     break;
-                case BlendMerge:
-                case BlendPreserve:
+                case BlendMode::Merge:
+                case BlendMode::Preserve:
                 default:
                     glEnable(GL_BLEND);
                     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                     break;
-                case BlendAdd:
+                case BlendMode::Add:
                     glEnable(GL_BLEND);
                     glBlendFunc(GL_SRC_ALPHA, GL_ONE);
                     break;
-                case BlendSubtract:
+                case BlendMode::Subtract:
                     glDisable(GL_BLEND);
                     break;
             }
@@ -457,7 +457,7 @@ namespace plum
     {
         glfwMakeContextCurrent(impl->window);
         glColor4ub(255, 255, 255, getOpacity());
-        useHardwareBlender(BlendPreserve);
+        useHardwareBlender(BlendMode::Preserve);
         glEnableClientState(GL_VERTEX_ARRAY);
         glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
@@ -475,7 +475,7 @@ namespace plum
     {
         glfwMakeContextCurrent(impl->window);
         glColor4ub(255, 255, 255, getOpacity());
-        useHardwareBlender(BlendPreserve);
+        useHardwareBlender(BlendMode::Preserve);
     }
 
     void Screen::bindTransform(const Transform& transform, int x, int y, int width, int height)
@@ -527,7 +527,7 @@ namespace plum
         uint8_t r, g, b, a;
         color.channels(r, g, b, a);
         glColor4ub(r, g, b, a * getOpacity() / 255);
-        useHardwareBlender(BlendPreserve);
+        useHardwareBlender(BlendMode::Preserve);
         glDisable(GL_TEXTURE_2D);
 
         if(x > x2)

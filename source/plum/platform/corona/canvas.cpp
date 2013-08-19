@@ -34,9 +34,9 @@ namespace
                 plum::FileSeekMode m;
                 switch(mode)
                 {
-                    case BEGIN: m = plum::SeekStart; break;
-                    case CURRENT: m = plum::SeekCurrent; break;
-                    case END: m = plum::SeekEnd; break;
+                    case BEGIN: m = plum::FileSeekMode::Start; break;
+                    case CURRENT: m = plum::FileSeekMode::Current; break;
+                    case END: m = plum::FileSeekMode::End; break;
                     default: return false;
                 }
                 return file->seek(position, m);
@@ -55,7 +55,7 @@ namespace plum
 {
     Canvas Canvas::load(const std::string& filename)
     {
-        std::unique_ptr<corona::File> file(new FileWrapper(new File(filename, FileRead)));
+        std::unique_ptr<corona::File> file(new FileWrapper(new File(filename, FileOpenMode::Read)));
         std::unique_ptr<corona::Image> image(corona::OpenImage(file.get(), corona::PF_R8G8B8A8, corona::FF_AUTODETECT));
         if(!image.get())
         {

@@ -39,7 +39,7 @@ namespace plum
                 : canvas(source.getWidth(), source.getHeight(), align(source.getWidth()), align(source.getHeight()))
             {
                 canvas.clear(0);
-                source.blit<BlendOpaque>(0, 0, canvas);
+                source.blit<BlendMode::Opaque>(0, 0, canvas);
                 canvas.setClipRegion(0, 0, source.getWidth() - 1, source.getHeight() - 1);
 
                 glGenTextures(1, &textureID);

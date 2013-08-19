@@ -8,12 +8,12 @@ namespace plum
 {
     int getOpacity();
 
-    enum ColorChannel
+    enum class ColorChannel
     {
-        RedChannel = 0,
-        GreenChannel = 1,
-        BlueChannel = 2,
-        AlphaChannel = 3
+        Red = 0,
+        Green = 1,
+        Blue = 2,
+        Alpha = 3
     };
 
     class Color
@@ -48,7 +48,7 @@ namespace plum
 
             uint8_t operator[](ColorChannel i) const
             {
-                return (value >> (i << 3)) & 0xFF;
+                return (value >> (uint32_t(i) << 3)) & 0xFF;
             }
 
             Color()
@@ -74,10 +74,10 @@ namespace plum
 
             void channels(uint8_t& r, uint8_t& g, uint8_t& b, uint8_t& a) const
             {
-                r = (*this)[RedChannel];
-                g = (*this)[GreenChannel];
-                b = (*this)[BlueChannel];
-                a = (*this)[AlphaChannel];
+                r = (*this)[ColorChannel::Red];
+                g = (*this)[ColorChannel::Green];
+                b = (*this)[ColorChannel::Blue];
+                a = (*this)[ColorChannel::Alpha];
             }
 
         private:

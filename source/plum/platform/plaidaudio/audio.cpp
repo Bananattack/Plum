@@ -27,7 +27,8 @@ namespace plum
             double pan, pitch, volume;
 
             Impl()
-                : audio(nullptr), master(nullptr), panfx(nullptr), pitchfx(nullptr), looped(false), pan(0.0), pitch(1.0), volume(1.0)
+                : audio(nullptr), master(nullptr), panfx(nullptr), pitchfx(nullptr),
+                dispose(nullptr), looped(false), pan(0.0), pitch(1.0), volume(1.0)
             {
             }
 
@@ -132,18 +133,6 @@ namespace plum
     {
     }
 
-    namespace
-    {
-        // VS2010 doesn't supply std::hash<std::shared_ptr<T>>.
-        template<typename T> struct hash
-        {
-            size_t operator()(const std::shared_ptr<T>& p) const
-            {
-                return std::hash<T*>()(p.get());
-            }
-        };
-    }
-
     class Audio::Impl
     {
         public:
@@ -170,7 +159,7 @@ namespace plum
                     const auto& c(*it);
 
                     c->pitchfx->rate(float(c->pitch * pitch));
-                    // TODO: panning
+                    c->panfx->pan(float((c->pan + pan) / 2));
                     c->panfx->level(float(c->volume * volume));
 
                     if((!audio->playing(c->master) || c->looped) && *c->dispose)
@@ -193,7 +182,7 @@ namespace plum
             double pan, pitch, volume;
 
             std::shared_ptr<plaidgadget::Audio> audio;
-            std::unordered_set<std::shared_ptr<Channel::Impl>, hash<Channel::Impl>> channels;
+            std::unordered_set<std::shared_ptr<Channel::Impl>> channels;
     };
 
     Audio::Audio(Engine& engine, bool disabled)

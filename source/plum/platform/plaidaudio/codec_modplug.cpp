@@ -16,14 +16,14 @@ namespace
                 : loop(loop), finished(true)
             {
                 {
-                    std::unique_ptr<plum::File> file(new plum::File(plaidgadget::ToStdString(fn), plum::FileRead));
+                    std::unique_ptr<plum::File> file(new plum::File(plaidgadget::ToStdString(fn), plum::FileOpenMode::Read));
                     // Get current position.
                     unsigned int pos = file->tell();
                     // Length to read = position of end - current.
                     unsigned int length = 0;
-                    file->seek(pos, plum::SeekEnd);
+                    file->seek(pos, plum::FileSeekMode::End);
                     length = file->tell() - pos;
-                    file->seek(pos, plum::SeekStart);
+                    file->seek(pos, plum::FileSeekMode::Start);
                     // Read fully.
                     std::vector<uint8_t> data(length);
                     file->readRaw(data.data(), data.size());

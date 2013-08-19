@@ -152,7 +152,6 @@ namespace plum
                     lua_pushvalue(L, 1);
                     lua_pushvalue(L, 3);
                     lua_call(L, 2, 0);
-                    return 0;
                 }
                 return 0;
             }

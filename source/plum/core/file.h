@@ -7,18 +7,18 @@
 
 namespace plum
 {
-    enum FileOpenMode
+    enum class FileOpenMode
     {
-        FileRead, // Load from a file. File must exist.
-        FileWrite, // Save to a file. Overwrite existing file, if any.
-        FileAppend, // Add to end of existing file, or create new.
+        Read, // Load from a file. File must exist.
+        Write, // Save to a file. Overwrite existing file, if any.
+        Append, // Add to end of existing file, or create new.
     };
 
-    enum FileSeekMode
+    enum class FileSeekMode
     {
-        SeekStart, // Relative to the start of file.
-        SeekCurrent, // Relative to the current spot in the file.
-        SeekEnd, // Relative to the end of the file.
+        Start, // Relative to the start of file.
+        Current, // Relative to the current spot in the file.
+        End, // Relative to the end of the file.
     };
 
     class File
@@ -30,9 +30,9 @@ namespace plum
             bool isActive() const;
             bool close();
 
-            bool readU8(uint8_t& value);
-            bool readU16(uint16_t& value);
-            bool readU32(uint32_t& value);
+            bool readUnsigned8(uint8_t& value);
+            bool readUnsigned16(uint16_t& value);
+            bool readUnsigned32(uint32_t& value);
             bool readInt8(int8_t& value);
             bool readInt16(int16_t& value);
             bool readInt32(int32_t& value);
@@ -42,9 +42,9 @@ namespace plum
             bool readLine(std::string& value);
             size_t readRaw(void* raw, size_t length);
             
-            bool writeU8(uint8_t value);
-            bool writeU16(uint16_t value);
-            bool writeU32(uint32_t value);
+            bool writeUnsigned8(uint8_t value);
+            bool writeUnsigned16(uint16_t value);
+            bool writeUnsigned32(uint32_t value);
             bool writeInt8(int8_t value);
             bool writeInt16(int16_t value);
             bool writeInt32(int32_t value);
@@ -55,7 +55,9 @@ namespace plum
             size_t writeRaw(const void* raw, size_t length);
 
             bool seek(int position, FileSeekMode mode);
-            int tell();
+            long tell();
+
+            void flush();
 
         private:
             std::FILE* file;

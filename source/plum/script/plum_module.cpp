@@ -4,6 +4,7 @@
 #include <unistd.h>
 #endif
 
+#include "../core/file.h"
 #include "../core/color.h"
 #include "../core/input.h"
 #include "../core/screen.h"
@@ -118,7 +119,6 @@ namespace plum
             lua_newtable(L);
             lua_pushvalue(L, -1);
             lua_setfield(L, -3, "color");
-
             script::push(L, int(Color::White));
             lua_setfield(L, -2, "White");
             script::push(L, int(Color::Red));
@@ -135,7 +135,6 @@ namespace plum
             lua_setfield(L, -2, "Yellow");
             script::push(L, int(Color::Black));
             lua_setfield(L, -2, "Black");
-
             lua_pushcfunction(L, [](lua_State* L)
             {
                 auto r = script::get<int>(L, 1);
@@ -146,7 +145,6 @@ namespace plum
                 return 1;
             });
             lua_setfield(L, -2, "rgb");
-
             lua_pushcfunction(L, [](lua_State* L)
             {
                 auto h = script::get<int>(L, 1);
@@ -157,7 +155,6 @@ namespace plum
                 return 1;
             });
             lua_setfield(L, -2, "hsv");
-
             lua_pushcfunction(L, ([](lua_State* L)
             {
                 uint8_t r, g, b, a;
@@ -169,29 +166,48 @@ namespace plum
                 return 4;
             }));
             lua_setfield(L, -2, "channels");
-
-            // Done with 'color' now.
             lua_pop(L, 1);
 
             // Create the 'blend' table.
             lua_newtable(L);
             lua_pushvalue(L, -1);
             lua_setfield(L, -3, "blend");
-
-            script::push(L, int(BlendOpaque));
+            script::push(L, int(BlendMode::Opaque));
             lua_setfield(L, -2, "Opaque");
-            script::push(L, int(BlendMerge));
+            script::push(L, int(BlendMode::Merge));
             lua_setfield(L, -2, "Merge");
-            script::push(L, int(BlendMerge));
+            script::push(L, int(BlendMode::Merge));
             lua_setfield(L, -2, "Alpha");
-            script::push(L, int(BlendPreserve));
+            script::push(L, int(BlendMode::Preserve));
             lua_setfield(L, -2, "Preserve");
-            script::push(L, int(BlendAdd));
+            script::push(L, int(BlendMode::Add));
             lua_setfield(L, -2, "Add");
-            script::push(L, int(BlendSubtract));
+            script::push(L, int(BlendMode::Subtract));
             lua_setfield(L, -2, "Subtract");
+            lua_pop(L, 1);
 
-            // Done with 'blend' now.
+            // Create the 'open' table.
+            lua_newtable(L);
+            lua_pushvalue(L, -1);
+            lua_setfield(L, -3, "open");
+            script::push(L, int(FileOpenMode::Read));
+            lua_setfield(L, -2, "Read");
+            script::push(L, int(FileOpenMode::Write));
+            lua_setfield(L, -2, "Write");
+            script::push(L, int(FileOpenMode::Append));
+            lua_setfield(L, -2, "Append");
+            lua_pop(L, 1);
+
+            // Create the 'seek' table.
+            lua_newtable(L);
+            lua_pushvalue(L, -1);
+            lua_setfield(L, -3, "seek");
+            script::push(L, int(FileSeekMode::Start));
+            lua_setfield(L, -2, "Start");
+            script::push(L, int(FileSeekMode::Current));
+            lua_setfield(L, -2, "Current");
+            script::push(L, int(FileSeekMode::End));
+            lua_setfield(L, -2, "End");
             lua_pop(L, 1);
 
             // Pop and store the library.

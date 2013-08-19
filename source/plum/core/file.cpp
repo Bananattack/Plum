@@ -8,9 +8,9 @@ namespace plum
         {
             switch(mode)
             {
-                case FileWrite: return "wb";
-                case FileAppend: return "ab";
-                case FileRead: return "rb";
+                case FileOpenMode::Write: return "wb";
+                case FileOpenMode::Append: return "ab";
+                case FileOpenMode::Read: return "rb";
                 default: return "rb";
             }
         }
@@ -19,9 +19,9 @@ namespace plum
         {
             switch(mode)
             {
-                case FileWrite: return true;
-                case FileAppend: return true;
-                case FileRead: return false;
+                case FileOpenMode::Write: return true;
+                case FileOpenMode::Append: return true;
+                case FileOpenMode::Read: return false;
                 default: return false;
             }
         }
@@ -54,7 +54,7 @@ namespace plum
         return false;
     }
 
-    bool File::readU8(uint8_t& value)
+    bool File::readUnsigned8(uint8_t& value)
     {
         if(writing || !isActive())
         {
@@ -63,7 +63,7 @@ namespace plum
         return std::fread(&value, sizeof(uint8_t), 1, file) == 1;
     }
 
-    bool File::readU16(uint16_t& value)
+    bool File::readUnsigned16(uint16_t& value)
     {
         if(writing || !isActive())
         {
@@ -72,7 +72,7 @@ namespace plum
         return std::fread(&value, sizeof(uint16_t), 1, file) == 1;
     }
 
-    bool File::readU32(uint32_t& value)
+    bool File::readUnsigned32(uint32_t& value)
     {
         if(writing || !isActive())
         {
@@ -219,7 +219,7 @@ namespace plum
         return !eof || value.length() > 0;
     }
 
-    bool File::writeU8(uint8_t value)
+    bool File::writeUnsigned8(uint8_t value)
     {
         if(!writing || !isActive())
         {
@@ -229,7 +229,7 @@ namespace plum
         return std::fwrite(&value, sizeof(uint8_t), 1, file) == 1;
     }
 
-    bool File::writeU16(uint16_t value)
+    bool File::writeUnsigned16(uint16_t value)
     {
         if(!writing || !isActive())
         {
@@ -239,7 +239,7 @@ namespace plum
         return std::fwrite(&value, sizeof(uint16_t), 1, file) == 1;
     }
 
-    bool File::writeU32(uint32_t value)
+    bool File::writeUnsigned32(uint32_t value)
     {
         if(!writing || !isActive())
         {
@@ -339,16 +339,24 @@ namespace plum
         int m;
         switch(mode)
         {
-            case SeekStart:   m = SEEK_SET; break;
-            case SeekCurrent: m = SEEK_CUR; break;
-            case SeekEnd:     m = SEEK_END; break;
+            case FileSeekMode::Start:   m = SEEK_SET; break;
+            case FileSeekMode::Current: m = SEEK_CUR; break;
+            case FileSeekMode::End:     m = SEEK_END; break;
             default: return false;
         }
         return std::fseek(file, position, m) != -1;
     }
 
-    int File::tell()
+    long File::tell()
     {
         return isActive() ? std::ftell(file) : -1;
+    }
+
+    void File::flush()
+    {
+        if(isActive())
+        {
+            std::fflush(file);
+        }
     }
 }
