@@ -1,5 +1,4 @@
 #include <cmath>
-#include <GLFW/glfw3.h>
 
 #include "engine.h"
 #include "../../core/input.h"
@@ -29,7 +28,9 @@ namespace plum
                 width(0),
                 height(0),
                 scale(1),
-                opacity(255)
+                opacity(255),
+                vbo(0),
+                mode(BlendMode::Preserve)
             {
                 hook = engine.addUpdateHook([this](){ update(); });
             }
@@ -39,6 +40,10 @@ namespace plum
                 if(window)
                 {
                     glfwDestroyWindow(window);
+                }
+                if(vbo)
+                {
+                    glDeleteBuffers(1, &vbo);
                 }
             }
 
@@ -79,6 +84,10 @@ namespace plum
                 }
 
                 glfwSwapBuffers(window);
+
+                glfwMakeContextCurrent(window);
+                useHardwareBlender(BlendMode::Opaque);
+
                 engine.impl->windowless = false;
             }
 
@@ -108,33 +117,45 @@ namespace plum
             int scale;
             int opacity;
             std::string title;
+
+            GLuint vbo;
+
+            BlendMode mode;
+
+            void useHardwareBlender(BlendMode mode)
+            {
+                if(this->mode != mode)
+                {
+                    switch(mode)
+                    {
+                        case BlendMode::Opaque:
+                            glDisable(GL_BLEND);
+                            break;
+                        case BlendMode::Merge:
+                        case BlendMode::Preserve:
+                        default:
+                            glEnable(GL_BLEND);
+                            glBlendEquation(GL_FUNC_ADD);
+                            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                            break;
+                        case BlendMode::Add:
+                            glEnable(GL_BLEND);
+                            glBlendEquation(GL_FUNC_ADD);
+                            glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+                            break;
+                        case BlendMode::Subtract:
+                            glEnable(GL_BLEND);
+                            glBlendEquation(GL_FUNC_SUBTRACT);
+                            glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+                            break;
+                    }
+                    this->mode = mode;
+                }
+            }
     };
 
     namespace
     {
-        void useHardwareBlender(BlendMode mode)
-        {
-            switch(mode)
-            {
-                case BlendMode::Opaque:
-                    glDisable(GL_BLEND);
-                    break;
-                case BlendMode::Merge:
-                case BlendMode::Preserve:
-                default:
-                    glEnable(GL_BLEND);
-                    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-                    break;
-                case BlendMode::Add:
-                    glEnable(GL_BLEND);
-                    glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-                    break;
-                case BlendMode::Subtract:
-                    glDisable(GL_BLEND);
-                    break;
-            }
-        }
-
         void dispatch(GLFWwindow* window, const Event& event)
         {
             auto impl = (Screen::Impl*) glfwGetWindowUserPointer(window);
@@ -229,6 +250,11 @@ namespace plum
     Mouse& Screen::mouse()
     {
         return impl->mouse;
+    }
+
+    Engine& Screen::engine()
+    {
+        return impl->engine;
     }
 
     std::shared_ptr<Screen::EventHook> Screen::Impl::addEventHook(const EventHook& hook)
@@ -418,13 +444,29 @@ namespace plum
         scale = std::max(std::min(trueWidth / width, trueHeight / height), 1);
 
         glfwMakeContextCurrent(window);
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glEnable(GL_TEXTURE_2D);
 
-        glMatrixMode(GL_PROJECTION);
-        glLoadIdentity();
-        glOrtho(0, width, height, 0, -1, 1);
+        if(!vbo)
+        {
+            glGenBuffers(1, &vbo);
+        }
+
+        glUseProgram(engine.impl->program);
+        {
+            float left = 0;
+            float right = width;
+            float bottom = height;
+            float top = 0;
+            float near = -1;
+            float far = 1;
+
+            GLfloat ortho[16] = {
+                2 / (right - left), 0.f, 0.f, 0.f,
+                0.f, 2 / (top - bottom), 0.f, 0.f,
+                0.f, 0.f, -2 / (far - near), 0.f,
+                -(right + left) / (right - left), -(top + bottom) / (top - bottom), -(far + near) / (far - near), 1.f
+            };
+            glUniformMatrix4fv(engine.impl->projectionUniform, 1, GL_FALSE, ortho); 
+        }
 
         glClearColor(0.0, 0.0, 0.0, 1.0);
         glClear(GL_COLOR_BUFFER_BIT);
@@ -436,9 +478,6 @@ namespace plum
 
         glScissor((trueWidth - width * scale) / 2, (trueHeight - height * scale) / 2, width * scale, height * scale);
         glEnable(GL_SCISSOR_TEST);
-
-        glMatrixMode(GL_MODELVIEW);
-        glLoadIdentity();
 
         this->trueWidth = trueWidth;
         this->trueHeight = trueHeight;
@@ -457,53 +496,42 @@ namespace plum
     void Screen::bindImage(Image& image)
     {
         glfwMakeContextCurrent(impl->window);
-        glColor4ub(255, 255, 255, getOpacity());
-        useHardwareBlender(BlendMode::Preserve);
-        glEnableClientState(GL_VERTEX_ARRAY);
-        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-
-        glEnable(GL_TEXTURE_2D);
+        glUniform1f(impl->engine.impl->hasImageUniform, 1.f);
         image.bindRaw();
     }
 
     void Screen::unbindImage()
     {
-        glDisableClientState(GL_VERTEX_ARRAY);
-        glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+        glUniform1f(impl->engine.impl->hasImageUniform, 0.f);
     }
 
-    void Screen::bindTransform()
+    void Screen::applyTransform()
     {
         glfwMakeContextCurrent(impl->window);
-        glColor4ub(255, 255, 255, getOpacity());
-        useHardwareBlender(BlendMode::Preserve);
+
+        auto& e(impl->engine.impl);
+        glUniform2f(e->originUniform, 0.f, 0.f);
+        glUniform2f(e->pivotUniform, 0.f, 0.f);
+        glUniform2f(e->scaleUniform, 1.f, 1.f);
+        glUniform1f(e->angleUniform, 0.f);
+        glUniform4ui(e->colorUniform, 255, 255, 255, getOpacity());
+        impl->useHardwareBlender(BlendMode::Preserve);
     }
 
-    void Screen::bindTransform(const Transform& transform, int x, int y, int width, int height)
+    void Screen::applyTransform(const Transform& transform, int x, int y, int width, int height)
     {
         glfwMakeContextCurrent(impl->window);
 
         uint8_t r, g, b, a;
         transform.tint.channels(r, g, b, a);
-        glColor4ub(r, g, b, a * getOpacity() / 255);
-        useHardwareBlender(transform.mode);
 
-        glPushMatrix();
-        glTranslated(x, y, 0.0);
-        glTranslated(width / 2, height / 2, 0.0);
-        glScaled(transform.scaleX * (1 - transform.mirror * 2), transform.scaleY, 0.0);
-        glRotated(transform.angle, 0.0, 0.0, 1.0);
-        glTranslated(-width / 2, -height / 2, 0.0);
-        impl->transformBound = true;
-    }
-
-    void Screen::unbindTransform()
-    {
-        if(impl->transformBound)
-        {
-            glPopMatrix();
-            impl->transformBound = false;
-        }
+        auto& e(impl->engine.impl);
+        glUniform2f(e->originUniform, x, y);
+        glUniform2f(e->pivotUniform, width / 2, height / 2);
+        glUniform2f(e->scaleUniform, transform.scaleX * (1 - transform.mirror * 2), transform.scaleY);
+        glUniform1f(e->angleUniform, transform.angle * M_PI / 180);
+        glUniform4ui(e->colorUniform, r, g, b, a * getOpacity() / 255);
+        impl->useHardwareBlender(transform.mode);
     }
 
     void Screen::clear(Color color)
@@ -512,6 +540,7 @@ namespace plum
         color.channels(r, g, b, a);
         if(a * getOpacity() / 255 == 255)
         {
+            glfwMakeContextCurrent(impl->window);
             glClearColor(r / 255.0f, g / 255.0f, b / 255.0f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT);
         }
@@ -523,13 +552,12 @@ namespace plum
 
     void Screen::clear(int x, int y, int x2, int y2, Color color)
     {
-        glfwMakeContextCurrent(impl->window);
+        applyTransform();
 
+        auto& e(impl->engine.impl);
         uint8_t r, g, b, a;
         color.channels(r, g, b, a);
-        glColor4ub(r, g, b, a * getOpacity() / 255);
-        useHardwareBlender(BlendMode::Preserve);
-        glDisable(GL_TEXTURE_2D);
+        glUniform4ui(e->colorUniform, r, g, b, a * getOpacity() / 255);
 
         if(x > x2)
         {
@@ -540,18 +568,23 @@ namespace plum
             std::swap(y, y2);
         }
 
-        const GLdouble vertexArray[] = {
-            x - 0.5, y - 0.5,
-            x2 + 0.5, y - 0.5,
-            x2 + 0.5, y2 + 0.5,
-            x - 0.5, y2 + 0.5,
+        const GLfloat vertices[] = {
+            x - 0.5f, y - 0.5f, 0.f, 0.f,
+            x2 + 0.5f, y - 0.5f, 0.f, 0.f,
+            x2 + 0.5f, y2 + 0.5f, 0.f, 0.f,
+            x2 + 0.5f, y2 + 0.5f, 0.f, 0.f,
+            x - 0.5f, y2 + 0.5f, 0.f, 0.f,
+            x - 0.5f, y - 0.5f, 0.f, 0.f,
         };
 
-        glEnableClientState(GL_VERTEX_ARRAY);
-        glVertexPointer(2, GL_DOUBLE, 0, vertexArray);
-        glDrawArrays(GL_QUADS, 0, 4);
-        glDisableClientState(GL_VERTEX_ARRAY);
-        glfwMakeContextCurrent(impl->engine.impl->root);
+        glBindTexture(GL_TEXTURE_2D, 0);
+        glBindBuffer(GL_ARRAY_BUFFER, impl->vbo);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STREAM_DRAW);
+        glEnableVertexAttribArray(e->xyAttribute);
+        glEnableVertexAttribArray(e->uvAttribute);
+        glVertexAttribPointer(e->xyAttribute, 2, GL_FLOAT, false, 4 * sizeof(float), (void*) 0);
+        glVertexAttribPointer(e->uvAttribute, 2, GL_FLOAT, false, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+        glDrawArrays(GL_TRIANGLES, 0, 6);
     }
 
     void Screen::grab(int sx, int sy, int sx2, int sy2, int dx, int dy, Canvas& dest)

@@ -1,9 +1,9 @@
 #include <memory>
 
-#include <GLFW/glfw3.h>
-
+#include "engine.h"
 #include "../../core/image.h"
 #include "../../core/sheet.h"
+#include "../../core/screen.h"
 #include "../../core/transform.h"
 
 namespace plum
@@ -42,34 +42,30 @@ namespace plum
                 source.blit<BlendMode::Opaque>(0, 0, canvas);
                 canvas.setClipRegion(0, 0, source.getWidth() - 1, source.getHeight() - 1);
 
-                glGenTextures(1, &textureID);
-                bind();
+                glGenTextures(1, &texture);
+                glActiveTexture(GL_TEXTURE0);
+                glBindTexture(GL_TEXTURE_2D, texture);
 
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
                 glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8,
                     canvas.getTrueWidth(), canvas.getTrueHeight(),
                     0, GL_RGBA, GL_UNSIGNED_BYTE, canvas.getData());
+
+                glGenBuffers(1, &vbo);
             }
 
             ~Impl()
             {
-                glDeleteTextures(1, &textureID);
+                glDeleteTextures(1, &texture);
+                glDeleteBuffers(1, &vbo);
             }
 
-
-            void bind()
-            {
-                glBindTexture(GL_TEXTURE_2D, textureID); 
-            }
-
-            // A backend software canvas that this image's raw texture copies.
-            // Useful if the textures need to be refreshed later.
+            GLuint texture;
+            GLuint vbo;
             Canvas canvas;
-            // The GL texture ID
-            unsigned int textureID;
     };
 
     Image::Image(const Canvas& source)
@@ -93,7 +89,7 @@ namespace plum
 
     void Image::refresh()
     {
-        impl->bind();
+        glBindTexture(GL_TEXTURE_2D, impl->texture);
         glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0,
             impl->canvas.getTrueWidth(), impl->canvas.getTrueHeight(),
             GL_RGBA, GL_UNSIGNED_BYTE, impl->canvas.getData());
@@ -102,71 +98,67 @@ namespace plum
     void Image::draw(int x, int y, Screen& dest)
     {
         dest.bindImage(*this);
-        dest.bindTransform();
-        drawRaw(x, y);
-        dest.unbindTransform();
+        dest.applyTransform();
+        drawRaw(x, y, dest);
         dest.unbindImage();
     }
 
     void Image::draw(int x, int y, const Transform& transform, Screen& dest)
     {
         dest.bindImage(*this);
-        dest.bindTransform(transform, x, y, impl->canvas.getWidth(), impl->canvas.getHeight());
-        drawRaw(0, 0);
-        dest.unbindTransform();
+        dest.applyTransform(transform, x, y, impl->canvas.getWidth(), impl->canvas.getHeight());
+        drawRaw(0, 0, dest);
         dest.unbindImage();
     }
 
     void Image::drawFrame(const Sheet& sheet, int f, int x, int y, Screen& dest)
     {
         dest.bindImage(*this);
-        dest.bindTransform();
-        drawFrameRaw(sheet, f, x, y);
-        dest.unbindTransform();
+        dest.applyTransform();
+        drawFrameRaw(sheet, f, x, y, dest);
         dest.unbindImage();
     }
 
     void Image::drawFrame(const Sheet& sheet, int f, int x, int y, const Transform& transform, Screen& dest)
     {
         dest.bindImage(*this);
-        dest.bindTransform(transform, x, y, sheet.getWidth(), sheet.getHeight());
-        drawFrameRaw(sheet, f, 0, 0);
-        dest.unbindTransform();
+        dest.applyTransform(transform, x, y, sheet.getWidth(), sheet.getHeight());
+        drawFrameRaw(sheet, f, 0, 0, dest);
         dest.unbindImage();
     }
 
     void Image::bindRaw()
     {
-        impl->bind();
+        glBindTexture(GL_TEXTURE_2D, impl->texture);
     }
 
-    void Image::drawRaw(int x, int y)
+    void Image::drawRaw(int x, int y, Screen& dest)
     {
-        double regionS = 0;
-        double regionT = 0;
-        double regionS2 = double(impl->canvas.getWidth()) / impl->canvas.getTrueWidth();
-        double regionT2 = double(impl->canvas.getHeight()) / impl->canvas.getTrueHeight();
+        float regionS = 0;
+        float regionT = 0;
+        float regionS2 = float(impl->canvas.getWidth()) / impl->canvas.getTrueWidth();
+        float regionT2 = float(impl->canvas.getHeight()) / impl->canvas.getTrueHeight();
 
-        const GLdouble vertexArray[] = {
-            x, y,
-            x, y + impl->canvas.getHeight(),
-            x + impl->canvas.getWidth(), y + impl->canvas.getHeight(),
-            x + impl->canvas.getWidth(), y,
+        const GLfloat vertices[] = {
+            x, y, regionS, regionT,
+            x, y + impl->canvas.getHeight(), regionS, regionT2,
+            x + impl->canvas.getWidth(), y + impl->canvas.getHeight(), regionS2, regionT2,
+            x + impl->canvas.getWidth(), y + impl->canvas.getHeight(), regionS2, regionT2,
+            x + impl->canvas.getWidth(), y, regionS2, regionT,
+            x, y, regionS, regionT,
         };
 
-        const GLdouble textureArray[] = {
-            regionS, regionT,
-            regionS, regionT2,
-            regionS2, regionT2,
-            regionS2, regionT,
-        };
-
-        glVertexPointer(2, GL_DOUBLE, 0, vertexArray);
-        glTexCoordPointer(2, GL_DOUBLE, 0, textureArray);
-        glDrawArrays(GL_QUADS, 0, 4);
+        auto& e(dest.engine().impl);
+        glBindBuffer(GL_ARRAY_BUFFER, impl->vbo);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STREAM_DRAW);
+        glVertexAttribPointer(e->xyAttribute, 2, GL_FLOAT, false, 4 * sizeof(float), (void*) 0);
+        glVertexAttribPointer(e->uvAttribute, 2, GL_FLOAT, false, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+        glEnableVertexAttribArray(e->xyAttribute);
+        glEnableVertexAttribArray(e->uvAttribute);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
     }
 
-    void Image::drawFrameRaw(const Sheet& sheet, int f, int x, int y)
+    void Image::drawFrameRaw(const Sheet& sheet, int f, int x, int y, Screen& dest)
     {
         int sourceX, sourceY;
 
@@ -175,27 +167,27 @@ namespace plum
             return;
         }
 
-        double regionS = (double(sourceX)) / impl->canvas.getTrueWidth();
-        double regionT = (double(sourceY)) / impl->canvas.getTrueHeight();
-        double regionS2 = (double(sourceX + sheet.getWidth())) / impl->canvas.getTrueWidth();
-        double regionT2 = (double(sourceY + sheet.getHeight())) / impl->canvas.getTrueHeight();
+        float regionS = (float(sourceX)) / impl->canvas.getTrueWidth();
+        float regionT = (float(sourceY)) / impl->canvas.getTrueHeight();
+        float regionS2 = (float(sourceX + sheet.getWidth())) / impl->canvas.getTrueWidth();
+        float regionT2 = (float(sourceY + sheet.getHeight())) / impl->canvas.getTrueHeight();
 
-        const GLdouble vertexArray[] = {
-            x, y,
-            x, y + sheet.getHeight(),
-            x + sheet.getWidth(), y + sheet.getHeight(),
-            x + sheet.getWidth(), y,
+        const GLfloat vertices[] = {
+            x, y, regionS, regionT,
+            x, y + sheet.getHeight(), regionS, regionT2,
+            x + sheet.getWidth(), y + sheet.getHeight(), regionS2, regionT2,
+            x + sheet.getWidth(), y + sheet.getHeight(), regionS2, regionT2,
+            x + sheet.getWidth(), y, regionS2, regionT,
+            x, y, regionS, regionT,
         };
 
-        const GLdouble textureArray[] = {
-            regionS, regionT,
-            regionS, regionT2,
-            regionS2, regionT2,
-            regionS2, regionT,
-        };
-
-        glVertexPointer(2, GL_DOUBLE, 0, vertexArray);
-        glTexCoordPointer(2, GL_DOUBLE, 0, textureArray);
-        glDrawArrays(GL_QUADS, 0, 4);
+        auto& e(dest.engine().impl);
+        glBindBuffer(GL_ARRAY_BUFFER, impl->vbo);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STREAM_DRAW);
+        glVertexAttribPointer(e->xyAttribute, 2, GL_FLOAT, false, 4 * sizeof(float), (void*) 0);
+        glVertexAttribPointer(e->uvAttribute, 2, GL_FLOAT, false, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+        glEnableVertexAttribArray(e->xyAttribute);
+        glEnableVertexAttribArray(e->uvAttribute);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
     }
 }

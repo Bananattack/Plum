@@ -73,9 +73,8 @@ namespace plum
 
         for(const auto& part : parts)
         {
-            dest.bindTransform(part.transform, part.x + x, part.y + y, sheet.getWidth(), sheet.getHeight());
-            image.drawFrameRaw(sheet, part.frame, 0, 0);
-            dest.unbindTransform();
+            dest.applyTransform(part.transform, part.x + x, part.y + y, sheet.getWidth(), sheet.getHeight());
+            image.drawFrameRaw(sheet, part.frame, 0, 0, dest);
         }
 
         dest.unbindImage();

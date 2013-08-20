@@ -399,7 +399,7 @@ namespace plum
         int i, j;
 
         dest.bindImage(img);
-        dest.bindTransform();
+        dest.applyTransform();
         for(i = 0; i < tilesHigh; ++i)
         {
             for(j = 0; j < tilesWide; ++j)
@@ -407,10 +407,10 @@ namespace plum
                 img.drawFrameRaw(sheet,
                     data[(tileY + i) * width + (tileX + j)],
                     j * sheet.getWidth() + xofs + destX,
-                    i * sheet.getHeight() + yofs + destY);
+                    i * sheet.getHeight() + yofs + destY,
+                    dest);
             }
         }
-        dest.unbindTransform();
         dest.unbindImage();
     }
 }

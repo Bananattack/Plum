@@ -1,6 +1,7 @@
 #ifndef PLUM_GLFW_ENGINE_H
 #define PLUM_GLFW_ENGINE_H
 
+#include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <vector>
 
@@ -119,6 +120,12 @@ namespace plum
         public:
             WeakList<std::function<void()>> updateHooks;
             GLFWwindow* root;
+            GLuint program;
+            GLuint fragmentShader;
+            GLuint vertexShader;
+            GLint projectionUniform, originUniform, pivotUniform, scaleUniform, angleUniform, colorUniform, hasImageUniform;
+            GLint xyAttribute, uvAttribute;
+
             bool windowless;
 
             Impl();

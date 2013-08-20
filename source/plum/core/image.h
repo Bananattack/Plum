@@ -29,8 +29,8 @@ namespace plum
             void drawFrame(const Sheet& sheet, int f, int x, int y, const Transform& transform, Screen& dest);
 
             void bindRaw();
-            void drawRaw(int x, int y);
-            void drawFrameRaw(const Sheet& sheet, int f, int x, int y);
+            void drawRaw(int x, int y, Screen& dest);
+            void drawFrameRaw(const Sheet& sheet, int f, int x, int y, Screen& dest);
 
             class Impl;
             std::shared_ptr<Impl> impl;

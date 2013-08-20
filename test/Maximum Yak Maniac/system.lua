@@ -189,7 +189,6 @@ function intro()
 
     while not screen.key.Enter.pressed do
         screen:clear(0, 0, screen.width, screen.height, plum.color.rgb(20 + math.sin(math.rad(plum.timer.time) / 3) * 20, 0, 20 + math.cos(math.rad(plum.timer.time) / 3) * 20))
-        
 
         if playerCount == 1 then
             screen.opacity = 0
@@ -248,7 +247,7 @@ function intro()
         screen.opacity = 255
 
         resource.font.plain:printCenter(screen.width / 2, screen.height - 10 - resource.font.plain.cellHeight, "by Andrew G. Crowell (Music by mad)", screen)
-        
+
         plum.refresh()
         globalInputCheck()
     end

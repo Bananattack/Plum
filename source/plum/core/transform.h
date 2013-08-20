@@ -12,7 +12,7 @@ namespace plum
         bool mirror;
         // Angle of rotation. Defaults to 0.
         double angle;
-        // Blending mode. Defaults to Unspecified (inherit global).
+        // Blending mode.
         BlendMode mode;
         // Image tint. Defaults to White.
         Color tint;

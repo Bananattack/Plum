@@ -43,15 +43,14 @@ namespace plum
             Input& closeButton();
             Keyboard& keyboard();
             Mouse& mouse();
+            Engine& engine();
             std::shared_ptr<EventHook> addEventHook(const EventHook& hook);
             void setResolution(int width, int height, int scale, bool win);
 
             void bindImage(Image& image);
             void unbindImage();
-
-            void bindTransform();
-            void bindTransform(const Transform& transform, int x, int y, int width, int height);
-            void unbindTransform();
+            void applyTransform();
+            void applyTransform(const Transform& transform, int x, int y, int width, int height);
 
             void clear(Color color);
             void clear(int x, int y, int x2, int y2, Color color);

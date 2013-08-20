@@ -25,8 +25,8 @@ namespace plum
             void fillRect(int tx, int ty, int tx2, int ty2, unsigned int tileIndex);
             void line(int tx, int ty, int tx2, int ty2, unsigned int tileIndex);
             void stamp(int tx, int ty, Tilemap* dest);
-            void draw(Image& img, const Sheet& sheet, int sourceX, int sourceY, int destX, int destY, int tilesWide, int tilesHigh, Screen& dest);
 
+            void draw(Image& img, const Sheet& sheet, int sourceX, int sourceY, int destX, int destY, int tilesWide, int tilesHigh, Screen& dest);
         private:
             int width, height;
             unsigned int* data;
