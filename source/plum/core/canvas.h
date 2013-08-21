@@ -26,6 +26,7 @@ namespace plum
                 clipY(0),
                 clipX2(0),
                 clipY2(0),
+                modified(false),
                 data(nullptr)
             {
             }
@@ -40,6 +41,7 @@ namespace plum
                 clipY(0),
                 clipX2(width - 1),
                 clipY2(height - 1),
+                modified(true),
                 data(new Color[width * height])
             {
                 clear(Color::Black);
@@ -55,6 +57,7 @@ namespace plum
                 clipY(0),
                 clipX2(width - 1),
                 clipY2(height - 1),
+                modified(true),
                 data(new Color[trueWidth * trueHeight])
             {
                 clear(Color::Black);
@@ -70,6 +73,7 @@ namespace plum
                 clipY(other.clipY),
                 clipX2(other.clipX2),
                 clipY2(other.clipY2),
+                modified(other.modified),
                 data(new Color[other.trueWidth * other.trueHeight])
             {
                 std::copy(other.data, other.data + other.trueWidth * other.trueHeight, data);
@@ -85,6 +89,7 @@ namespace plum
                 clipY(other.clipY),
                 clipX2(other.clipX2),
                 clipY2(other.clipY2),
+                modified(other.modified),
                 data(other.data)
             {
                 other.data = nullptr;
@@ -119,7 +124,13 @@ namespace plum
                 std::swap(clipY, other.clipY);
                 std::swap(clipX2, other.clipX2);
                 std::swap(clipY2, other.clipY2);
+                std::swap(modified, other.modified);
                 std::swap(data, other.data);
+            }
+
+            bool getModified() const
+            {
+                return modified;
             }
 
             int getWidth() const
@@ -165,6 +176,11 @@ namespace plum
                 opacity = value;
             }
 
+            void setModified(bool value)
+            {
+                modified = value;
+            }
+
             void restoreClipRegion()
             {
                 clipX = 0;
@@ -201,12 +217,14 @@ namespace plum
             void clear(Color color)
             {
                 if(!data) return;
+                modified = true;
                 std::fill(data, data + trueWidth * trueHeight, color);
             }
 
             void replaceColor(Color find, Color replacement)
             {
                 if(!data) return;
+                modified = true;
                 std::replace(data, data + trueWidth * trueHeight, find, replacement);
             }
 
@@ -215,6 +233,7 @@ namespace plum
                 if(!data) return;
                 if(horizontal)
                 {
+                    modified = true;
                     for(int x = 0; x < width / 2; ++x)
                     {
                         for(int y = 0; y < height; ++y)
@@ -225,6 +244,7 @@ namespace plum
                 }
                 if(vertical)
                 {
+                    modified = true;
                     for(int x = 0; x < width; ++x)
                     {
                         for(int y = 0; y < height / 2; ++y)
@@ -239,6 +259,7 @@ namespace plum
             {
                 if(data && x >= clipX && x <= clipX2 && y >= clipY && y <= clipY2)
                 {
+                    modified = true;
                     blend<Blend>(color, data[y * trueWidth + x], opacity);
                 }                
             }
@@ -337,6 +358,9 @@ namespace plum
                 {
                     return;
                 }
+
+                modified = true;
+
                 // A single pixel
                 if(x == x2 && y == y2)
                 {
@@ -454,6 +478,9 @@ namespace plum
                 {
                     return;
                 }
+
+                modified = true;
+
                 // Keep rectangle inside clipping regions
                 if(x < clipX)
                 {
@@ -503,6 +530,9 @@ namespace plum
                 {
                     return;
                 }
+
+                modified = true;
+
                 // Keep rectangle inside clipping regions
                 if(x < clipX)
                 {
@@ -530,9 +560,6 @@ namespace plum
                 }
             }
 
-            template<BlendMode Blend> void horizontalGradientRect(int x, int y, int x2, int y2, Color color, Color color2);
-            template<BlendMode Blend> void verticalGradientRect(int x, int y, int x2, int y2, Color color, Color color2);
-
             // Algorithm based off this paper:
             // "A Fast Bresenham Type Algorithm For Drawing Ellipses"
             // by John Kennedy
@@ -556,6 +583,8 @@ namespace plum
                 ellipseError = 0;
                 stoppingX = b * xRadius;
                 stoppingY = 0;
+
+                modified = true;
 
                 // First set of points, y' > -1
                 while(stoppingX >= stoppingY)
@@ -701,6 +730,8 @@ namespace plum
                 stoppingX = b * xRadius;
                 stoppingY = 0;
 
+                modified = true;
+
                 // First set of points, y' > -1
                 while(stoppingX >= stoppingY)
                 {
@@ -806,6 +837,9 @@ namespace plum
                 {
                     return;
                 }
+
+                dest.modified = true;
+
                 // Keep rectangle inside clipping regions
                 if(x < dest.clipX)
                 {
@@ -923,6 +957,9 @@ namespace plum
                 {
                     sourceY2 -= dy2 - dest.clipY2;
                 }
+
+                dest.modified = true;
+
                 // Draw the scaled image, pixel for pixel
                 for(i = sourceY; i <= sourceY2; ++i)
                 {
@@ -954,6 +991,8 @@ namespace plum
                 int cosCenterX, sinCenterX;
                 int cosCenterY, sinCenterY;
                 int a;
+
+                dest.modified = true;
 
                 // I like angles in degrees better when calling this.
                 // So now let's convert this to work all nice-like with C++'s math which is radians.
@@ -1053,6 +1092,7 @@ namespace plum
 
             int clipX, clipY;
             int clipX2, clipY2;
+            bool modified;
 
             Color* data;
     };

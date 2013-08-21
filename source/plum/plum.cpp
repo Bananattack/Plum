@@ -25,6 +25,7 @@
     {
         void redirect(bool console)
         {
+#ifndef _DEBUG
             if(console && AllocConsole())
             {
                 *stdout = *_fdopen(_open_osfhandle((intptr_t) GetStdHandle(STD_OUTPUT_HANDLE), _O_TEXT), "w");
@@ -35,6 +36,7 @@
                 freopen("stdout.log", "w", stdout);
                 freopen("stderr.log", "w", stderr);
             }
+#endif
             setvbuf(stdout, nullptr, _IONBF, 0);
             setvbuf(stderr, nullptr, _IONBF, 0);
         }

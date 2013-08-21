@@ -116,6 +116,7 @@
     <ClCompile Include="platform\glfw\image.cpp" />
     <ClCompile Include="platform\glfw\input.cpp" />
     <ClCompile Include="platform\glfw\screen.cpp" />
+    <ClCompile Include="platform\glfw\tilemap.cpp" />
     <ClCompile Include="platform\glfw\timer.cpp" />
     <ClCompile Include="platform\plaidaudio\audio.cpp" />
     <ClCompile Include="platform\plaidaudio\codec_modplug.cpp" />

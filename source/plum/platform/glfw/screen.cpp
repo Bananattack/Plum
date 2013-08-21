@@ -9,6 +9,11 @@
 
 namespace plum
 {
+    namespace
+    {
+        const size_t VertexBufferSize = 6 * 4;
+    }
+
     class Screen::Impl
     {
         public:
@@ -448,13 +453,15 @@ namespace plum
         if(!vbo)
         {
             glGenBuffers(1, &vbo);
+            glBindBuffer(GL_ARRAY_BUFFER, vbo);
+            glBufferData(GL_ARRAY_BUFFER, VertexBufferSize * sizeof(float), nullptr, GL_DYNAMIC_DRAW);
         }
 
         glUseProgram(engine.impl->program);
         {
             float left = 0;
-            float right = width;
-            float bottom = height;
+            float right = float(width);
+            float bottom = float(height);
             float top = 0;
             float near = -1;
             float far = 1;
@@ -526,10 +533,10 @@ namespace plum
         transform.tint.channels(r, g, b, a);
 
         auto& e(impl->engine.impl);
-        glUniform2f(e->originUniform, x, y);
-        glUniform2f(e->pivotUniform, width / 2, height / 2);
-        glUniform2f(e->scaleUniform, transform.scaleX * (1 - transform.mirror * 2), transform.scaleY);
-        glUniform1f(e->angleUniform, transform.angle * M_PI / 180);
+        glUniform2f(e->originUniform, float(x), float(y));
+        glUniform2f(e->pivotUniform, float(width) / 2, float(height) / 2);
+        glUniform2f(e->scaleUniform, float(transform.scaleX * (1 - transform.mirror * 2)), float(transform.scaleY));
+        glUniform1f(e->angleUniform, float(transform.angle * M_PI / 180));
         glUniform4ui(e->colorUniform, r, g, b, a * getOpacity() / 255);
         impl->useHardwareBlender(transform.mode);
     }
@@ -568,7 +575,7 @@ namespace plum
             std::swap(y, y2);
         }
 
-        const GLfloat vertices[] = {
+        const GLfloat vertices[VertexBufferSize] = {
             x - 0.5f, y - 0.5f, 0.f, 0.f,
             x2 + 0.5f, y - 0.5f, 0.f, 0.f,
             x2 + 0.5f, y2 + 0.5f, 0.f, 0.f,
@@ -579,11 +586,11 @@ namespace plum
 
         glBindTexture(GL_TEXTURE_2D, 0);
         glBindBuffer(GL_ARRAY_BUFFER, impl->vbo);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STREAM_DRAW);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
         glEnableVertexAttribArray(e->xyAttribute);
         glEnableVertexAttribArray(e->uvAttribute);
-        glVertexAttribPointer(e->xyAttribute, 2, GL_FLOAT, false, 4 * sizeof(float), (void*) 0);
-        glVertexAttribPointer(e->uvAttribute, 2, GL_FLOAT, false, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+        glVertexAttribPointer(e->xyAttribute, 2, GL_FLOAT, false, 4 * sizeof(GLfloat), (void*) 0);
+        glVertexAttribPointer(e->uvAttribute, 2, GL_FLOAT, false, 4 * sizeof(GLfloat), (void*)(2 * sizeof(float)));
         glDrawArrays(GL_TRIANGLES, 0, 6);
     }
 

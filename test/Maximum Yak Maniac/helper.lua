@@ -17,10 +17,8 @@ function createSpriteFrame(img, replace, color)
     local right = plum.Image(img.canvas)
     
     left.canvas:replaceColor(PlayerOneColor, color)
-    left:refresh()
     right.canvas:replaceColor(PlayerOneColor, color)
     right.canvas:flip(true, false)
-    right:refresh()
     
     return {
         left = left;
@@ -32,7 +30,6 @@ end
 function createFlipped(img)
     local result = plum.Image(img.canvas)
     result.canvas:flip(true, false)
-    result:refresh()
     return result
 end
 

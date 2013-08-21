@@ -11,7 +11,6 @@ do local Self = {}
 
         local r, g, b = plum.color.channels(color)
         self.texture.canvas:replaceColor(plum.color.Black, plum.color.rgb(r + 10, g + 10, b + 10))
-        self.texture:refresh()
         return self
     end
 

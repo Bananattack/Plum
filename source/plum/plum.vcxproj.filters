@@ -147,6 +147,9 @@
     <ClCompile Include="script\axis_object.cpp">
       <Filter>Source Files\script</Filter>
     </ClCompile>
+    <ClCompile Include="platform\glfw\tilemap.cpp">
+      <Filter>Source Files\platform\glfw</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">

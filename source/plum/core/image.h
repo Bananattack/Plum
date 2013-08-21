@@ -21,7 +21,6 @@ namespace plum
 
             Canvas& canvas();
             const Canvas& canvas() const;
-            void refresh();
 
             void draw(int x, int y, Screen& dest);
             void draw(int x, int y, const Transform& transform, Screen& dest);

@@ -6,6 +6,7 @@ namespace plum
     class Sheet
     {
         public:
+            Sheet();
             Sheet(int width, int height, int columns, int rows);
             ~Sheet();
 

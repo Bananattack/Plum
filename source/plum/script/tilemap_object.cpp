@@ -1,5 +1,6 @@
 
 #include "../core/tilemap.h"
+#include "../core/transform.h"
 #include "script.h"
 
 namespace plum
@@ -119,15 +120,19 @@ namespace plum
                     auto m = script::ptr<Tilemap>(L, 1);
                     auto img = script::ptr<Image>(L, 2);
                     auto spr = script::ptr<Sheet>(L, 3);
-                    int worldX = script::get<int>(L, 4);
-                    int worldY = script::get<int>(L, 5);
-                    int destX = script::get<int>(L, 6);
-                    int destY = script::get<int>(L, 7);
-                    int tilesWide = script::get<int>(L, 8);
-                    int tilesHigh = script::get<int>(L, 9);
-                    auto screen = script::ptr<Screen>(L, 10);
+                    auto x = script::get<int>(L, 4);
+                    auto y = script::get<int>(L, 5);
+                    auto transform = script::is<nullptr_t>(L, 7) ? nullptr : script::ptr<Transform>(L, 6);
+                    auto screen = script::is<nullptr_t>(L, 7) ? script::ptr<Screen>(L, 6) : script::ptr<Screen>(L, 7);
 
-                    m->draw(*img, *spr, worldX, worldY, destX, destY, tilesWide, tilesHigh, *screen);
+                    if(transform)
+                    {
+                        m->draw(*img, *spr, x, y, *transform, *screen);
+                    }
+                    else
+                    {
+                        m->draw(*img, *spr, x, y, Transform(), *screen);
+                    }
                     return 0;
                 }},
                 {nullptr, nullptr}

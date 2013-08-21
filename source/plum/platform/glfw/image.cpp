@@ -29,6 +29,8 @@ namespace plum
                 return num;
             }
         }
+
+        const size_t VertexBufferSize = 6 * 4;
     }
 
 
@@ -55,6 +57,8 @@ namespace plum
                     0, GL_RGBA, GL_UNSIGNED_BYTE, canvas.getData());
 
                 glGenBuffers(1, &vbo);
+                glBindBuffer(GL_ARRAY_BUFFER, vbo);
+                glBufferData(GL_ARRAY_BUFFER, VertexBufferSize * sizeof(GLfloat), nullptr, GL_DYNAMIC_DRAW);
             }
 
             ~Impl()
@@ -85,14 +89,6 @@ namespace plum
     const Canvas& Image::canvas() const
     {
         return impl->canvas;
-    }
-
-    void Image::refresh()
-    {
-        glBindTexture(GL_TEXTURE_2D, impl->texture);
-        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0,
-            impl->canvas.getTrueWidth(), impl->canvas.getTrueHeight(),
-            GL_RGBA, GL_UNSIGNED_BYTE, impl->canvas.getData());
     }
 
     void Image::draw(int x, int y, Screen& dest)
@@ -130,29 +126,38 @@ namespace plum
     void Image::bindRaw()
     {
         glBindTexture(GL_TEXTURE_2D, impl->texture);
+        if(impl->canvas.getModified())
+        {
+            glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0,
+                impl->canvas.getTrueWidth(), impl->canvas.getTrueHeight(),
+                GL_RGBA, GL_UNSIGNED_BYTE, impl->canvas.getData());
+            impl->canvas.setModified(false);
+        }
     }
 
     void Image::drawRaw(int x, int y, Screen& dest)
     {
-        float regionS = 0;
-        float regionT = 0;
-        float regionS2 = float(impl->canvas.getWidth()) / impl->canvas.getTrueWidth();
-        float regionT2 = float(impl->canvas.getHeight()) / impl->canvas.getTrueHeight();
+        float fx = float(x);
+        float fy = float(y);
+        float u = 0;
+        float v = 0;
+        float u2 = float(impl->canvas.getWidth()) / impl->canvas.getTrueWidth();
+        float v2 = float(impl->canvas.getHeight()) / impl->canvas.getTrueHeight();
 
-        const GLfloat vertices[] = {
-            x, y, regionS, regionT,
-            x, y + impl->canvas.getHeight(), regionS, regionT2,
-            x + impl->canvas.getWidth(), y + impl->canvas.getHeight(), regionS2, regionT2,
-            x + impl->canvas.getWidth(), y + impl->canvas.getHeight(), regionS2, regionT2,
-            x + impl->canvas.getWidth(), y, regionS2, regionT,
-            x, y, regionS, regionT,
+        GLfloat vertices[VertexBufferSize] = {
+            fx, fy, u, v,
+            fx, fy + impl->canvas.getHeight(), u, v2,
+            fx + impl->canvas.getWidth(), fy + impl->canvas.getHeight(), u2, v2,
+            fx + impl->canvas.getWidth(), fy + impl->canvas.getHeight(), u2, v2,
+            fx + impl->canvas.getWidth(), fy, u2, v,
+            fx, fy, u, v,
         };
 
         auto& e(dest.engine().impl);
         glBindBuffer(GL_ARRAY_BUFFER, impl->vbo);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STREAM_DRAW);
-        glVertexAttribPointer(e->xyAttribute, 2, GL_FLOAT, false, 4 * sizeof(float), (void*) 0);
-        glVertexAttribPointer(e->uvAttribute, 2, GL_FLOAT, false, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
+        glVertexAttribPointer(e->xyAttribute, 2, GL_FLOAT, false, 4 * sizeof(GLfloat), (void*) 0);
+        glVertexAttribPointer(e->uvAttribute, 2, GL_FLOAT, false, 4 * sizeof(GLfloat), (void*)(2 * sizeof(float)));
         glEnableVertexAttribArray(e->xyAttribute);
         glEnableVertexAttribArray(e->uvAttribute);
         glDrawArrays(GL_TRIANGLES, 0, 6);
@@ -167,25 +172,27 @@ namespace plum
             return;
         }
 
-        float regionS = (float(sourceX)) / impl->canvas.getTrueWidth();
-        float regionT = (float(sourceY)) / impl->canvas.getTrueHeight();
-        float regionS2 = (float(sourceX + sheet.getWidth())) / impl->canvas.getTrueWidth();
-        float regionT2 = (float(sourceY + sheet.getHeight())) / impl->canvas.getTrueHeight();
+        float fx = float(x);
+        float fy = float(y);
+        float u = float(sourceX) / impl->canvas.getTrueWidth();
+        float v = float(sourceY) / impl->canvas.getTrueHeight();
+        float u2 = float(sourceX + sheet.getWidth()) / impl->canvas.getTrueWidth();
+        float v2 = float(sourceY + sheet.getHeight()) / impl->canvas.getTrueHeight();
 
-        const GLfloat vertices[] = {
-            x, y, regionS, regionT,
-            x, y + sheet.getHeight(), regionS, regionT2,
-            x + sheet.getWidth(), y + sheet.getHeight(), regionS2, regionT2,
-            x + sheet.getWidth(), y + sheet.getHeight(), regionS2, regionT2,
-            x + sheet.getWidth(), y, regionS2, regionT,
-            x, y, regionS, regionT,
+        const GLfloat vertices[VertexBufferSize] = {
+            fx, fy, u, v,
+            fx, fy + sheet.getHeight(), u, v2,
+            fx + sheet.getWidth(), fy + sheet.getHeight(), u2, v2,
+            fx + sheet.getWidth(), fy + sheet.getHeight(), u2, v2,
+            fx + sheet.getWidth(), fy, u2, v,
+            fx, fy, u, v,
         };
 
         auto& e(dest.engine().impl);
         glBindBuffer(GL_ARRAY_BUFFER, impl->vbo);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STREAM_DRAW);
-        glVertexAttribPointer(e->xyAttribute, 2, GL_FLOAT, false, 4 * sizeof(float), (void*) 0);
-        glVertexAttribPointer(e->uvAttribute, 2, GL_FLOAT, false, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
+        glVertexAttribPointer(e->xyAttribute, 2, GL_FLOAT, false, 4 * sizeof(GLfloat), (void*) 0);
+        glVertexAttribPointer(e->uvAttribute, 2, GL_FLOAT, false, 4 * sizeof(GLfloat), (void*)(2 * sizeof(float)));
         glEnableVertexAttribArray(e->xyAttribute);
         glEnableVertexAttribArray(e->uvAttribute);
         glDrawArrays(GL_TRIANGLES, 0, 6);

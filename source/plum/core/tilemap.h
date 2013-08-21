@@ -1,11 +1,14 @@
 #ifndef PLUM_TILEMAP_H
 #define PLUM_TILEMAP_H
 
+#include <memory>
+
 namespace plum
 {
     class Sheet;
     class Image;
     class Screen;
+    struct Transform;
     class Tilemap
     {
         public:
@@ -26,8 +29,12 @@ namespace plum
             void line(int tx, int ty, int tx2, int ty2, unsigned int tileIndex);
             void stamp(int tx, int ty, Tilemap* dest);
 
-            void draw(Image& img, const Sheet& sheet, int sourceX, int sourceY, int destX, int destY, int tilesWide, int tilesHigh, Screen& dest);
+            void draw(Image& img, const Sheet& sheet, int x, int y, const Transform& transform, Screen& dest);
+
+            class Impl;
+            std::shared_ptr<Impl> impl;
         private:
+            bool modified;
             int width, height;
             unsigned int* data;
     };

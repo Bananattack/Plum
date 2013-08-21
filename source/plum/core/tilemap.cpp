@@ -1,22 +1,7 @@
-#include "image.h"
-#include "sheet.h"
 #include "tilemap.h"
 
 namespace plum
 {
-    Tilemap::Tilemap(int width, int height)
-    {
-        this->width = width;
-        this->height = height;
-        data = new unsigned int[width * height];
-        clear(0);
-    }
-
-    Tilemap::~Tilemap()
-    {
-        delete data;
-    }
-
     int Tilemap::getWidth() const
     {
         return width;
@@ -29,6 +14,7 @@ namespace plum
 
     void Tilemap::clear(unsigned int tileIndex)
     {
+        modified = true;
         for(int i = 0; i < width * height; ++i)
         {
             data[i] = tileIndex;
@@ -44,6 +30,8 @@ namespace plum
     void Tilemap::dot(int tx, int ty, unsigned int tileIndex)
     {
         if(tx < 0 || tx >= width || ty < 0 || ty >= height) return;
+
+        modified = true;
         data[ty * width + tx] = tileIndex;
     }
 
@@ -63,6 +51,9 @@ namespace plum
         {
             return;
         }
+
+        modified = true;
+
         // Keep rectangle inside region
         if(tx < 0)
         {
@@ -110,6 +101,9 @@ namespace plum
         {
             return;
         }
+
+        modified = true;
+
         // Keep rectangle inside region
         if(tx < 0)
         {
@@ -229,6 +223,9 @@ namespace plum
         {
             return;
         }
+
+        modified = true;
+
         // A single pixel
         if(tx == tx2 && ty == ty2)
         {
@@ -342,6 +339,9 @@ namespace plum
         {
             return;
         }
+
+        modified = true;
+
         // Keep rectangle inside dest region
         if(tx < 0)
         {
@@ -367,50 +367,5 @@ namespace plum
                 dest->data[(i + ty) * dest->width + (j + tx)] = data[i * width + j];
             }
         }
-    }
-
-    void Tilemap::draw(Image& img, const Sheet& sheet, int sourceX, int sourceY, int destX, int destY, int tilesWide, int tilesHigh, Screen& dest)
-    {
-        if(tilesWide < 0 || tilesHigh < 0) return;
-
-        int xofs = -(sourceX % sheet.getWidth());
-        int yofs = -(sourceY % sheet.getHeight());
-        int tileX = sourceX / sheet.getWidth();
-        int tileY = sourceY / sheet.getHeight();
-
-        // Clip the tile region to make sure things don't crash.
-        if(tileX < 0)
-        {
-            tileX = 0;
-        }
-        if(tileY < 0)
-        {
-            tileY = 0;
-        }
-        if(tileX + tilesWide > width)
-        {
-            tilesWide = width - tileX;
-        }
-        if(tileY + tilesHigh > height)
-        {
-            tilesHigh = height - tileY;
-        }
-
-        int i, j;
-
-        dest.bindImage(img);
-        dest.applyTransform();
-        for(i = 0; i < tilesHigh; ++i)
-        {
-            for(j = 0; j < tilesWide; ++j)
-            {
-                img.drawFrameRaw(sheet,
-                    data[(tileY + i) * width + (tileX + j)],
-                    j * sheet.getWidth() + xofs + destX,
-                    i * sheet.getHeight() + yofs + destY,
-                    dest);
-            }
-        }
-        dest.unbindImage();
     }
 }

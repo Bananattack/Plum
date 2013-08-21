@@ -7,7 +7,6 @@ do local Self = {}
         self.frame.canvas:replaceColor(plum.color.White, self.color)
         local r, g, b = plum.color.channels(self.color)
         self.frame.canvas:replaceColor(plum.color.Blue, plum.color.rgb(r - 50, g - 50, b - 50))
-        self.frame:refresh()
         
         self.hitbox = { width = 64, height = 64 }
 

@@ -2,6 +2,11 @@
 
 namespace plum
 {
+    Sheet::Sheet()
+        : width(0), height(0), padding(false), columns(0), rows(0)
+    {
+    }
+
     Sheet::Sheet(int width, int height, int columns, int rows)
         : width(width),
         height(height),

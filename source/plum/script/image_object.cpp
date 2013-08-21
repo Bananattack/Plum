@@ -68,13 +68,6 @@ namespace plum
 
                     return 0;
                 }},
-                {"refresh", [](lua_State* L)
-                {
-                    auto img = script::ptr<Image>(L, 1);
-                    img->refresh();
-
-                    return 1;
-                }},
                 {"get_width", [](lua_State* L)
                 {
                     auto img = script::ptr<Image>(L, 1);
