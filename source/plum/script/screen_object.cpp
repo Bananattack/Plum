@@ -55,6 +55,33 @@ namespace plum
                     }
                     return 0;
                 }},
+                {"getClipRegion", [](lua_State* L)
+                {
+                    auto screen = script::ptr<Screen>(L, 1);
+                    int x, y, x2, y2;
+                    screen->getClipRegion(x, y, x2, y2);
+                    script::push(L, x);
+                    script::push(L, y);
+                    script::push(L, x2);
+                    script::push(L, y2);
+                    return 4;
+                }},
+                {"restoreClipRegion", [](lua_State* L)
+                {
+                    auto screen = script::ptr<Screen>(L, 1);
+                    screen->restoreClipRegion();
+                    return 0;
+                }},
+                {"setClipRegion", [](lua_State* L)
+                {
+                    auto screen = script::ptr<Screen>(L, 1);
+                    auto x = script::get<int>(L, 2);
+                    auto y = script::get<int>(L, 3);
+                    auto x2 = script::get<int>(L, 4);
+                    auto y2 = script::get<int>(L, 5);
+                    screen->setClipRegion(x, y, x2, y2);
+                    return 0;
+                }},
                 {"grab", [](lua_State* L)
                 {
                     auto screen = script::ptr<Screen>(L, 1);

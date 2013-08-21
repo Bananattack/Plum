@@ -30,8 +30,9 @@ namespace plum
                 previousWindowedY(0),
                 previousWindowedWidth(0),
                 previousWindowedHeight(0),
-                width(0),
-                height(0),
+                width(0), height(0),
+                left(0), bottom(0),
+                clipX(0), clipY(0), clipX2(0), clipY2(0),
                 scale(1),
                 opacity(255),
                 vbo(0),
@@ -119,6 +120,8 @@ namespace plum
             int previousWindowedX, previousWindowedY;
             int previousWindowedWidth, previousWindowedHeight;
             int width, height;
+            int left, bottom;
+            int clipX, clipY, clipX2, clipY2;
             int scale;
             int opacity;
             std::string title;
@@ -221,6 +224,14 @@ namespace plum
         return impl->title;
     }
 
+    void Screen::getClipRegion(int& x, int& y, int& x2, int& y2) const
+    {
+        x = impl->clipX;
+        y = impl->clipY;
+        x2 = impl->clipX2;
+        y2 = impl->clipY2;
+    }
+
     void Screen::setDefaultClose(bool value)
     {
         impl->defaultClose = value;
@@ -240,6 +251,28 @@ namespace plum
     {
         impl->title = value;
         glfwSetWindowTitle(impl->window, value.c_str());
+    }
+
+    void Screen::restoreClipRegion()
+    {
+        setClipRegion(0, 0, impl->width - 1, impl->height - 1);
+    }
+
+    void Screen::setClipRegion(int x, int y, int x2, int y2)
+    {
+        if(x > x2)
+        {
+            std::swap(x, x2);
+        }
+        if(y > y2)
+        {
+            std::swap(y, y2);
+        }
+        impl->clipX = std::min(std::max(0, x), impl->width - 1);
+        impl->clipY = std::min(std::max(0, y), impl->height - 1);
+        impl->clipX2 = std::min(std::max(0, x2), impl->width - 1);
+        impl->clipY2 = std::min(std::max(0, y2), impl->height - 1);
+        glScissor(impl->left + impl->clipX * impl->scale, impl->bottom + (impl->height - 1 - impl->clipY2) * impl->scale, (impl->clipX2 - impl->clipX + 1) * impl->scale, (impl->clipY2 - impl->clipY + 1) * impl->scale);
     }
 
     Input& Screen::closeButton()
@@ -475,16 +508,16 @@ namespace plum
             glUniformMatrix4fv(engine.impl->projectionUniform, 1, GL_FALSE, ortho); 
         }
 
-        glClearColor(0.0, 0.0, 0.0, 1.0);
-        glClear(GL_COLOR_BUFFER_BIT);
-
-        glViewport((trueWidth - width * scale) / 2, (trueHeight - height * scale) / 2, width * scale, height * scale);
+        left = (trueWidth - width * scale) / 2;
+        bottom = (trueHeight - height * scale) / 2;
+        glViewport(left, bottom, width * scale, height * scale);
         glLineWidth(float(scale));
 
-        glDisable(GL_DEPTH_TEST);
-
-        glScissor((trueWidth - width * scale) / 2, (trueHeight - height * scale) / 2, width * scale, height * scale);
+        glScissor(left + clipX * scale, bottom + (height - 1 - clipY2) * scale, (clipX2 - clipX + 1) * scale, (clipY2 - clipY + 1) * scale);
         glEnable(GL_SCISSOR_TEST);
+        glDisable(GL_DEPTH_TEST);
+        glClearColor(0.0, 0.0, 0.0, 1.0);
+        glClear(GL_COLOR_BUFFER_BIT);
 
         this->trueWidth = trueWidth;
         this->trueHeight = trueHeight;
@@ -496,6 +529,8 @@ namespace plum
         impl->width = width;
         impl->height = height;
         impl->scale = scale;
+        impl->clipX2 = width - 1;
+        impl->clipY2 = height - 1;
 
         impl->resize(width * scale, height * scale, win);
     }
@@ -598,17 +633,20 @@ namespace plum
     {
         glfwMakeContextCurrent(impl->window);
 
-        int w = std::abs(sx2 - sx);
-        int h = std::abs(sy2 - sy);
-        sx = std::min(sx, sx2);
-        sy = std::min(sy, sy2);
+        int x = std::min(std::max(0, std::min(sx, sx2)), impl->width - 1);
+        int y = std::min(std::max(0, std::min(sy, sy2)), impl->height - 1);
+        int x2 = std::min(std::max(0, std::max(sx, sx2)), impl->width - 1);
+        int y2 = std::min(std::max(0, std::max(sy, sy2)), impl->height - 1);
+
+        int w = x2 - x + 1;
+        int h = y2 - y + 1;
 
         int scale = impl->scale;
         int scw = w * scale;
         int sch = h * scale;
 
         Canvas canvas(scw, sch);
-        glReadPixels((impl->trueWidth - (impl->width - sx) * scale) / 2, (impl->trueHeight - (impl->height - sy) * scale) / 2, scw, sch, GL_RGBA, GL_UNSIGNED_BYTE, canvas.getData());
+        glReadPixels(impl->left + x * impl->scale, impl->bottom + (impl->height - 1 - y2) * impl->scale, scw, sch, GL_RGBA, GL_UNSIGNED_BYTE, canvas.getData());
         canvas.flip(false, true);
 
         canvas.scaleBlit<BlendMode::Opaque>(dx, dy, w, h, dest);

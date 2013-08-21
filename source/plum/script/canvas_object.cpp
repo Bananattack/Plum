@@ -25,6 +25,17 @@ namespace plum
                 {"__newindex", [](lua_State* L) { return script::wrapped<Canvas>(L, 1)->newindex(L); }},
                 {"__tostring", [](lua_State* L) { return script::wrapped<Canvas>(L, 1)->tostring(L); }},
                 {"__pairs", [](lua_State* L) { return script::wrapped<Canvas>(L, 1)->pairs(L); }},
+                {"getClipRegion", [](lua_State* L)
+                {
+                    auto canvas = script::ptr<Canvas>(L, 1);
+                    int x, y, x2, y2;
+                    canvas->getClipRegion(x, y, x2, y2);
+                    script::push(L, x);
+                    script::push(L, y);
+                    script::push(L, x2);
+                    script::push(L, y2);
+                    return 4;
+                }},
                 {"restoreClipRegion", [](lua_State* L)
                 {
                     auto canvas = script::ptr<Canvas>(L, 1);

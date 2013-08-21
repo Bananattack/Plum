@@ -34,11 +34,14 @@ namespace plum
             int getTrueHeight() const;
             int getOpacity() const;
             const std::string& getTitle() const;
+            void getClipRegion(int& x, int& y, int& x2, int& y2) const;
 
             void setDefaultClose(bool value);
             void setWindowed(bool value);
             void setOpacity(int value);
             void setTitle(const std::string& value);
+            void restoreClipRegion();
+            void setClipRegion(int x, int y, int x2, int y2);
 
             Input& closeButton();
             Keyboard& keyboard();
