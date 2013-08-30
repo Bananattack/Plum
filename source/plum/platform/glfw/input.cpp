@@ -270,7 +270,7 @@ namespace plum
                     int count;
                     const float* result = glfwGetJoystickAxes(index, &count);
 
-                    axisCount = std::min((unsigned int) count, AxisMax);
+                    axisCount = std::min((unsigned int) count, (unsigned int) AxisMax);
 
                     for(unsigned int i = 0; i < AxisMax; i++)
                     {
@@ -318,7 +318,7 @@ namespace plum
                     int count;
                     const unsigned char* result = glfwGetJoystickButtons(index, &count);
 
-                    buttonCount = std::min((unsigned int) count, ButtonMax);
+                    buttonCount = std::min((unsigned int) count, (unsigned int) ButtonMax);
 
                     for(unsigned int i = 0; i < ButtonMax; i++)
                     {
@@ -356,9 +356,6 @@ namespace plum
             Input buttons[ButtonMax];
             Axis axes[AxisMax];
     };
-
-    const unsigned int Joystick::ButtonMax;
-    const unsigned int Joystick::AxisMax;
         
     Joystick::Joystick(Engine& engine, unsigned int joystickIndex)
         : impl(new Impl(engine, joystickIndex))

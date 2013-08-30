@@ -8,8 +8,14 @@
 
 namespace plum
 {
+    const char* const VertexCompatHeader =
+        // VERSION 1.2 compatiblity.
+        "#version 120\n"
+        "#define in attribute\n"
+        "#define out varying\n";
+    const char* const VertexCoreHeader =
+        "#version 150\n";
     const char* const VertexShader =
-        "#version 150\n"
         "uniform mat4 projection;\n"
         "uniform vec2 origin;\n"
         "uniform vec2 pivot;\n"
@@ -34,17 +40,24 @@ namespace plum
         "   fragmentUV = uv;\n"
         "}\n";
 
+    const char* const FragmentCompatHeader =
+        // VERSION 1.2 compatiblity.
+        "#version 120\n"
+        "#define in varying\n"
+        "#define outColor gl_FragColor\n"
+        "#define texture texture2D\n";
+    const char* const FragmentCoreHeader =
+        "#version 150\n";
     const char* const FragmentShader =
-        "#version 130\n"
-        "uniform uvec4 color;\n"
+        "uniform vec4 color;\n"
         "uniform sampler2D image;\n"
         "uniform float hasImage;\n"
         "in vec2 fragmentUV;\n"
-        //"out vec4 outColor;\n"
-        "#define outColor gl_FragColor\n"
+        "#ifndef outColor\n"
+        "out vec4 outColor;\n"
+        "#endif\n"
         "void main()\n"
         "{\n"
-        "    vec4 color = vec4(float(color.r) / 255.0, float(color.g) / 255.0, float(color.b) / 255.0, float(color.a) / 255.0);\n"
         "    outColor = hasImage * texture(image, fragmentUV) * color + (1 - hasImage) * color;\n"
         "}\n";
 
@@ -56,6 +69,10 @@ namespace plum
         }
         glfwSetTime(0.0);
 
+        bool core = true;
+        const char* vertexShaderSource[2] = {VertexCoreHeader, VertexShader};
+        const char* fragmentShaderSource[2] = {FragmentCoreHeader, FragmentShader};
+
         glfwDefaultWindowHints();
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
@@ -65,14 +82,29 @@ namespace plum
         root = glfwCreateWindow(1, 1, "", nullptr, nullptr);
         if(!root)
         {
-            quit("Failed to initialize graphics context.");
+            fprintf(stderr, "* Failed to create a OpenGL 3.2 context, falling back on 2.1...\n\n");
+
+            glfwDefaultWindowHints();
+            glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
+            glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+            glfwWindowHint(GLFW_VISIBLE, GL_FALSE);
+            root = glfwCreateWindow(1, 1, "", nullptr, nullptr);
+
+            vertexShaderSource[0] = VertexCompatHeader;
+            fragmentShaderSource[0] = FragmentCompatHeader;
+            core = false;
+
+            if(!root)
+            {
+                quit("Failed to initialize graphics context.");
+            }
         }
 
         glfwMakeContextCurrent(root);
         glewInit();
 
         vertexShader = glCreateShader(GL_VERTEX_SHADER);
-        glShaderSource(vertexShader, 1, (const char**) &VertexShader, nullptr);
+        glShaderSource(vertexShader, 2, vertexShaderSource, nullptr);
         glCompileShader(vertexShader);
         {
             GLint status;
@@ -87,7 +119,7 @@ namespace plum
         }
 
         fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-        glShaderSource(fragmentShader, 1, (const char**) &FragmentShader, nullptr);
+        glShaderSource(fragmentShader, 2, fragmentShaderSource, nullptr);
         glCompileShader(fragmentShader);
         {
             GLint status;
@@ -104,7 +136,10 @@ namespace plum
         program = glCreateProgram();
         glAttachShader(program, vertexShader);
         glAttachShader(program, fragmentShader);
-        //glBindFragDataLocation(fragmentShader, 0, "outColor");
+        if(core)
+        {
+            glBindFragDataLocation(fragmentShader, 0, "outColor");
+        }
         glLinkProgram(program);
         {
             GLint status;

@@ -556,7 +556,7 @@ namespace plum
         glUniform2f(e->pivotUniform, 0.f, 0.f);
         glUniform2f(e->scaleUniform, 1.f, 1.f);
         glUniform1f(e->angleUniform, 0.f);
-        //glUniform4ui(e->colorUniform, 255, 255, 255, getOpacity());
+        glUniform4f(e->colorUniform, 1.f, 1.f, 1.f, getOpacity() / 255.f);
         impl->useHardwareBlender(BlendMode::Preserve);
     }
 
@@ -572,7 +572,7 @@ namespace plum
         glUniform2f(e->pivotUniform, float(width) / 2, float(height) / 2);
         glUniform2f(e->scaleUniform, float(transform.scaleX * (1 - transform.mirror * 2)), float(transform.scaleY));
         glUniform1f(e->angleUniform, float(transform.angle * M_PI / 180));
-        //glUniform4ui(e->colorUniform, r, g, b, a * getOpacity() / 255);
+        glUniform4f(e->colorUniform, float(r) / 255.f, float(g) / 255.f, float(b) / 255.f, (float(a * getOpacity()) / 255.f) / 255.f);
         impl->useHardwareBlender(transform.mode);
     }
 
@@ -599,7 +599,7 @@ namespace plum
         auto& e(impl->engine.impl);
         uint8_t r, g, b, a;
         color.channels(r, g, b, a);
-        //glUniform4ui(e->colorUniform, r, g, b, a * getOpacity() / 255);
+        glUniform4f(e->colorUniform, float(r) / 255.f, float(g) / 255.f, float(b) / 255.f, (float(a * getOpacity()) / 255.f) / 255.f);
 
         if(x > x2)
         {

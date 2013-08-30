@@ -183,8 +183,11 @@ namespace plum
     class Joystick
     {
         public:
-            static const unsigned int ButtonMax = 32;
-            static const unsigned int AxisMax = 8;
+            enum
+            {
+                ButtonMax = 32,
+                AxisMax = 8
+            };
 
             Joystick(Engine& engine, unsigned int joystickIndex);
             ~Joystick();
