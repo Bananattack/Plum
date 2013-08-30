@@ -122,8 +122,8 @@ namespace plum
                     auto spr = script::ptr<Sheet>(L, 3);
                     auto x = script::get<int>(L, 4);
                     auto y = script::get<int>(L, 5);
-                    auto transform = script::is<nullptr_t>(L, 7) ? nullptr : script::ptr<Transform>(L, 6);
-                    auto screen = script::is<nullptr_t>(L, 7) ? script::ptr<Screen>(L, 6) : script::ptr<Screen>(L, 7);
+                    auto transform = script::is<std::nullptr_t>(L, 7) ? nullptr : script::ptr<Transform>(L, 6);
+                    auto screen = script::is<std::nullptr_t>(L, 7) ? script::ptr<Screen>(L, 6) : script::ptr<Screen>(L, 7);
 
                     if(transform)
                     {

@@ -1,4 +1,5 @@
 #include <functional>
+#include <cstring>
 
 #include "engine.h"
 #include "../../core/screen.h"
@@ -191,6 +192,7 @@ namespace plum
             case EventMouseScroll:
                 scroll += event.mouse.scroll.dy;
                 break;
+            default: break;
         }
     }
 
@@ -248,7 +250,7 @@ namespace plum
                 active(false), axisCount(0), buttonCount(0)
             {
                 hook = engine.addUpdateHook([this](){ update(); });
-                memset(lastButtonState, 0, sizeof(lastButtonState));
+                std::memset(lastButtonState, 0, sizeof(lastButtonState));
                 update();
             }
 
@@ -355,6 +357,9 @@ namespace plum
             Axis axes[AxisMax];
     };
 
+    const unsigned int Joystick::ButtonMax;
+    const unsigned int Joystick::AxisMax;
+        
     Joystick::Joystick(Engine& engine, unsigned int joystickIndex)
         : impl(new Impl(engine, joystickIndex))
     {

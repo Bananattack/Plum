@@ -4,6 +4,7 @@
 #include <string>
 #include <cstdio>
 #include <cstdint>
+#include <cstring>
 
 namespace plum
 {

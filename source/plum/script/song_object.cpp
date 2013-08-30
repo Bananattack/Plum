@@ -28,17 +28,17 @@ namespace plum
                 {"play", [](lua_State* L)
                 {
                     auto chan = script::ptr<Channel>(L, 1);
-                    if(!script::is<nullptr_t>(L, 2))
+                    if(!script::is<std::nullptr_t>(L, 2))
                     {
                         auto volume = script::get<double>(L, 2);
                         chan->setVolume(volume);
                     }
-                    if(!script::is<nullptr_t>(L, 3))
+                    if(!script::is<std::nullptr_t>(L, 3))
                     {
                         auto pan = script::get<double>(L, 3);
                         chan->setPan(pan);
                     }
-                    if(!script::is<nullptr_t>(L, 4))
+                    if(!script::is<std::nullptr_t>(L, 4))
                     {
                         auto pitch = script::get<double>(L, 4);
                         chan->setPitch(pitch);

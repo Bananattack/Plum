@@ -16,7 +16,7 @@ namespace plum
                 speed = TimerSpeed::Normal;
                 maxDelta = DefaultMaxDelta;
 
-                unsigned int t = unsigned int(glfwGetTime() * 100);
+                unsigned int t = (unsigned int)(glfwGetTime() * 100);
                 currentTick = t;
                 previousTick = t;
                 previousSecond = t;
@@ -35,7 +35,7 @@ namespace plum
             void update()
             {
                 ++frames;
-                currentTick = unsigned int(glfwGetTime() * 100);
+                currentTick = (unsigned int)(glfwGetTime() * 100);
                 if(currentTick - previousSecond > 99)
                 {
                     fps = frames;

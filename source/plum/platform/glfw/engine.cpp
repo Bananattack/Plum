@@ -35,12 +35,13 @@ namespace plum
         "}\n";
 
     const char* const FragmentShader =
-        "#version 150\n"
+        "#version 130\n"
         "uniform uvec4 color;\n"
         "uniform sampler2D image;\n"
         "uniform float hasImage;\n"
         "in vec2 fragmentUV;\n"
-        "out vec4 outColor;\n"
+        //"out vec4 outColor;\n"
+        "#define outColor gl_FragColor\n"
         "void main()\n"
         "{\n"
         "    vec4 color = vec4(float(color.r) / 255.0, float(color.g) / 255.0, float(color.b) / 255.0, float(color.a) / 255.0);\n"
@@ -64,7 +65,7 @@ namespace plum
         root = glfwCreateWindow(1, 1, "", nullptr, nullptr);
         if(!root)
         {
-            quit("Failed to create OpenGL 3.2 context.");
+            quit("Failed to initialize graphics context.");
         }
 
         glfwMakeContextCurrent(root);
@@ -103,7 +104,7 @@ namespace plum
         program = glCreateProgram();
         glAttachShader(program, vertexShader);
         glAttachShader(program, fragmentShader);
-        glBindFragDataLocation(fragmentShader, 0, "outColor");
+        //glBindFragDataLocation(fragmentShader, 0, "outColor");
         glLinkProgram(program);
         {
             GLint status;

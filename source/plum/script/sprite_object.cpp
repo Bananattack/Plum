@@ -37,7 +37,7 @@ namespace plum
                     auto x = script::get<int>(L, 2);
                     auto y = script::get<int>(L, 3);
                     auto frame = script::get<int>(L, 4);
-                    auto transform = script::is<nullptr_t>(L, 5) ? nullptr : script::ptr<Transform>(L, 5);
+                    auto transform = script::is<std::nullptr_t>(L, 5) ? nullptr : script::ptr<Transform>(L, 5);
 
                     if(transform)
                     {
@@ -85,7 +85,7 @@ namespace plum
                     auto x = script::get<int>(L, 3);
                     auto y = script::get<int>(L, 4);
                     auto frame = script::get<int>(L, 5);
-                    auto transform = script::is<nullptr_t>(L, 6) ? nullptr : script::ptr<Transform>(L, 6);
+                    auto transform = script::is<std::nullptr_t>(L, 6) ? nullptr : script::ptr<Transform>(L, 6);
 
                     if(transform)
                     {

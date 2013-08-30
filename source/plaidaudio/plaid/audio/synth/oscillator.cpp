@@ -4,6 +4,7 @@
 #define PI 3.141592654f
 #endif
 
+#include <cmath>
 #include "../synth.h"
 
 

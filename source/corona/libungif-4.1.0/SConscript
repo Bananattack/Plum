@@ -1,9 +1,0 @@
-libungif = {
-    'files': [
-        'dgif_lib.c',
-        'gif_err.c',
-        'gifalloc.c',
-    ]
-}
-
-Return('libungif')

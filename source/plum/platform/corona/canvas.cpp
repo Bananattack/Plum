@@ -1,5 +1,6 @@
 #include <cstdlib>
 #include <memory>
+#include <stdexcept>
 #include <corona.h>
 #include "../../core/file.h"
 #include "../../core/canvas.h"

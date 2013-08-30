@@ -71,6 +71,11 @@ namespace plum
     {
         Script& instance(lua_State* L);
 
+        template<typename T> const char* meta();
+        template<typename T> T get(lua_State* L, int index);
+        template<typename T> T get(lua_State* L, int index, T fallback);
+        template<typename T> T push(lua_State* L, T value);
+
         template<typename T> struct Wrapper
         {
             T* data;
@@ -171,11 +176,6 @@ namespace plum
             }
         };
 
-        template<typename T> const char* meta();
-        template<typename T> T get(lua_State* L, int index);
-        template<typename T> T get(lua_State* L, int index, T fallback);
-        template<typename T> T push(lua_State* L, T value);
-
         template<typename T> bool is(lua_State* L, int index)
         {
             bool result = false;
@@ -217,7 +217,7 @@ namespace plum
             return lua_isboolean(L, index) != 0;
         }
 
-        template<> inline bool is<nullptr_t>(lua_State* L, int index)
+        template<> inline bool is<std::nullptr_t>(lua_State* L, int index)
         {
             return lua_isnil(L, index) != 0 || lua_isnone(L, index) != 0;
         }
@@ -343,7 +343,7 @@ namespace plum
             return value;
         }
 
-        template<> inline nullptr_t push<nullptr_t>(lua_State* L, nullptr_t n)
+        template<> inline std::nullptr_t push<std::nullptr_t>(lua_State* L, std::nullptr_t n)
         {
             lua_pushnil(L);
             return n;

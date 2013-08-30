@@ -39,7 +39,7 @@ namespace plum
                 {"clear", [](lua_State* L)
                 {
                     auto screen = script::ptr<Screen>(L, 1);
-                    if(script::is<nullptr_t>(L, 3))
+                    if(script::is<std::nullptr_t>(L, 3))
                     {
                         Color color = script::get<int>(L, 2);
                         screen->clear(color);
