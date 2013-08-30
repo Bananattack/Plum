@@ -37,7 +37,10 @@ Compiling
 - **To compile on Linux (Ubuntu 12.04):**
   - First, acquire the necessary packages:
 
-    sudo apt-get install build-essential mesa-common-dev libglu1-mesa-dev libx11-dev libxxf86vm-dev libxrandr-dev libxi-dev libasound2-dev
+    ```
+  sudo apt-get install build-essential mesa-common-dev libglu1-mesa-dev \
+        libx11-dev libxxf86vm-dev libxrandr-dev libxi-dev libasound2-dev
+    ```
   
   - Next, open a terminal and type `make` at the root of this source tree.
   - If it succeeds, there should be an excutable named "plum" located in the `test/` folder.
