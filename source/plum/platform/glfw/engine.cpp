@@ -175,7 +175,7 @@ namespace plum
     {
         if(message.length())
         {
-            fprintf(stderr, "Exit Requested: %s\n", message.c_str());
+            fprintf(stderr, "\n\n-- Exit Requested:\n%s\n\n", message.c_str());
 #ifdef _WIN32
             MessageBoxA(nullptr, message.c_str(), "Exit Requested", MB_SYSTEMMODAL);
 #endif
