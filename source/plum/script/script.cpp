@@ -37,24 +37,17 @@ namespace plum
 
     void Script::run(const std::string& filename)
     {
-        File f(filename.c_str(), FileOpenMode::Read);
-        if(!f.isActive())
-        {
-            throw std::runtime_error("The script file '" + filename + "' was not found.");
-        }
-        
-        f.seek(0, FileSeekMode::End);
-        auto length = f.tell();
-        f.seek(0, FileSeekMode::Start);
+        lua_getglobal(L, "debug");
+        lua_getfield(L, -1, "traceback");
 
-        std::vector<char> buf(length);
-        f.readRaw(buf.data(), length);
+        lua_getglobal(L, "require");
+        script::push(L, "system");
 
-        std::string scriptname("@" + filename);
-        if(luaL_loadbuffer(L, buf.data(), buf.size(), scriptname.c_str()) || lua_pcall(L, 0, LUA_MULTRET, 0))
+        if(lua_pcall(L, 1, 0, -3))
         {
-            throw std::runtime_error("Error found in script:\r\n" + std::string(lua_tostring(L, -1)));
+            throw std::runtime_error(lua_tostring(L, -1));
         }
+        lua_pop(L, 2);
     }
 
     namespace script

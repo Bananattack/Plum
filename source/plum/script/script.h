@@ -138,25 +138,43 @@ namespace plum
 
             int index(lua_State* L)
             {
-                std::string fieldName(get<const char*>(L, 2));
-                if(luaL_getmetafield(L, 1, std::string("get_" + fieldName).c_str()))
+                if(luaL_getmetafield(L, 1, get<const char*>(L, 2)))
                 {
-                    lua_pushvalue(L, 1);
-                    lua_call(L, 1, 1);
                     return 1;
                 }
-                return luaL_getmetafield(L, 1, fieldName.c_str());
+
+                lua_pushstring(L, "get_");
+                lua_pushvalue(L, 2);
+                lua_concat(L, 2);
+                if(lua_getmetatable(L, 1))
+                {
+                    lua_pushvalue(L, -2);
+                    lua_rawget(L, -2);
+                    if(!lua_isnil(L, -1))
+                    {
+                        lua_pushvalue(L, 1);
+                        lua_call(L, 1, 1);
+                        return 1;
+                    }
+                }
+                return 0;
             }
 
             int newindex(lua_State* L)
             {
-                std::string fieldName(get<const char*>(L, 2));
-                /* L, 3 is the value to set. */
-                if(luaL_getmetafield(L, 1, std::string("set_" + fieldName).c_str()))
+                lua_pushstring(L, "set_");
+                lua_pushvalue(L, 2);
+                lua_concat(L, 2);
+                if(lua_getmetatable(L, 1))
                 {
-                    lua_pushvalue(L, 1);
-                    lua_pushvalue(L, 3);
-                    lua_call(L, 2, 0);
+                    lua_pushvalue(L, -2);
+                    lua_rawget(L, -2);
+                    if(!lua_isnil(L, -1))
+                    {
+                        lua_pushvalue(L, 1);
+                        lua_pushvalue(L, 3);
+                        lua_call(L, 2, 1);
+                    }
                 }
                 return 0;
             }
