@@ -119,11 +119,13 @@ namespace plum
     {
         public:
             WeakList<std::function<void()>> updateHooks;
-            GLFWwindow* root;
+			GLFWwindow* root;
+
+            bool coreProfile, modernPipeline;
             GLuint program;
             GLuint fragmentShader;
             GLuint vertexShader;
-            GLint projectionUniform, originUniform, pivotUniform, scaleUniform, angleUniform, colorUniform, hasImageUniform;
+            GLint projectionUniform, originUniform, pivotUniform, scaleUniform, angleUniform, colorUniform;
             GLint xyAttribute, uvAttribute;
 
             bool windowless;

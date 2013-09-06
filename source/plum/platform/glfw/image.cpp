@@ -46,6 +46,7 @@ namespace plum
 
                 glGenTextures(1, &texture);
                 glActiveTexture(GL_TEXTURE0);
+                glEnable(GL_TEXTURE_2D);
                 glBindTexture(GL_TEXTURE_2D, texture);
 
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -156,10 +157,20 @@ namespace plum
         auto& e(dest.engine().impl);
         glBindBuffer(GL_ARRAY_BUFFER, impl->vbo);
         glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
-        glVertexAttribPointer(e->xyAttribute, 2, GL_FLOAT, false, 4 * sizeof(GLfloat), (void*) 0);
-        glVertexAttribPointer(e->uvAttribute, 2, GL_FLOAT, false, 4 * sizeof(GLfloat), (void*)(2 * sizeof(float)));
-        glEnableVertexAttribArray(e->xyAttribute);
-        glEnableVertexAttribArray(e->uvAttribute);
+        if(e->modernPipeline)
+        {
+            glEnableVertexAttribArray(e->xyAttribute);
+            glEnableVertexAttribArray(e->uvAttribute);
+            glVertexAttribPointer(e->xyAttribute, 2, GL_FLOAT, false, 4 * sizeof(GLfloat), (void*) 0);
+            glVertexAttribPointer(e->uvAttribute, 2, GL_FLOAT, false, 4 * sizeof(GLfloat), (void*)(2 * sizeof(float)));
+        }
+        else
+        {
+            glEnableClientState(GL_VERTEX_ARRAY);
+            glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+            glVertexPointer(2, GL_FLOAT, 4 * sizeof(GLfloat), (void*) 0);
+            glTexCoordPointer(2, GL_FLOAT, 4 * sizeof(GLfloat), (void*)(2 * sizeof(float)));
+        }
         glDrawArrays(GL_TRIANGLES, 0, 6);
     }
 
@@ -191,10 +202,20 @@ namespace plum
         auto& e(dest.engine().impl);
         glBindBuffer(GL_ARRAY_BUFFER, impl->vbo);
         glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
-        glVertexAttribPointer(e->xyAttribute, 2, GL_FLOAT, false, 4 * sizeof(GLfloat), (void*) 0);
-        glVertexAttribPointer(e->uvAttribute, 2, GL_FLOAT, false, 4 * sizeof(GLfloat), (void*)(2 * sizeof(float)));
-        glEnableVertexAttribArray(e->xyAttribute);
-        glEnableVertexAttribArray(e->uvAttribute);
+        if(e->modernPipeline)
+        {
+            glEnableVertexAttribArray(e->xyAttribute);
+            glEnableVertexAttribArray(e->uvAttribute);
+            glVertexAttribPointer(e->xyAttribute, 2, GL_FLOAT, false, 4 * sizeof(GLfloat), (void*) 0);
+            glVertexAttribPointer(e->uvAttribute, 2, GL_FLOAT, false, 4 * sizeof(GLfloat), (void*)(2 * sizeof(float)));
+        }
+        else
+        {
+            glEnableClientState(GL_VERTEX_ARRAY);
+            glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+            glVertexPointer(2, GL_FLOAT, 4 * sizeof(GLfloat), (void*) 0);
+            glTexCoordPointer(2, GL_FLOAT, 4 * sizeof(GLfloat), (void*)(2 * sizeof(float)));
+        }
         glDrawArrays(GL_TRIANGLES, 0, 6);
     }
 }

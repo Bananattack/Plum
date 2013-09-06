@@ -36,6 +36,7 @@ namespace plum
                 scale(1),
                 opacity(255),
                 vbo(0),
+                defaultTexture(0),
                 mode(BlendMode::Preserve)
             {
                 hook = engine.addUpdateHook([this](){ update(); });
@@ -50,6 +51,10 @@ namespace plum
                 if(vbo)
                 {
                     glDeleteBuffers(1, &vbo);
+                }
+                if(defaultTexture)
+                {
+                    glDeleteTextures(1, &defaultTexture);
                 }
             }
 
@@ -127,6 +132,7 @@ namespace plum
             std::string title;
 
             GLuint vbo;
+            GLuint defaultTexture;
 
             BlendMode mode;
 
@@ -489,9 +495,25 @@ namespace plum
             glBindBuffer(GL_ARRAY_BUFFER, vbo);
             glBufferData(GL_ARRAY_BUFFER, VertexBufferSize * sizeof(float), nullptr, GL_DYNAMIC_DRAW);
         }
-
-        glUseProgram(engine.impl->program);
+        if(!defaultTexture)
         {
+            glGenTextures(1, &defaultTexture);
+            glActiveTexture(GL_TEXTURE0);
+            glEnable(GL_TEXTURE_2D);
+            glBindTexture(GL_TEXTURE_2D, defaultTexture);
+
+            Color c = Color::White;
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, &c);
+        }
+
+        if(engine.impl->modernPipeline)
+        {
+            glUseProgram(engine.impl->program);
+
             float left = 0;
             float right = float(width);
             float bottom = float(height);
@@ -506,6 +528,15 @@ namespace plum
                 -(right + left) / (right - left), -(top + bottom) / (top - bottom), -(far + near) / (far - near), 1.f
             };
             glUniformMatrix4fv(engine.impl->projectionUniform, 1, GL_FALSE, ortho); 
+        }
+        else
+        {
+            glMatrixMode(GL_PROJECTION);
+            glLoadIdentity();
+            glOrtho(0, width, height, 0, -1, 1);
+
+            glMatrixMode(GL_MODELVIEW);
+            glLoadIdentity();
         }
 
         left = (trueWidth - width * scale) / 2;
@@ -538,13 +569,12 @@ namespace plum
     void Screen::bindImage(Image& image)
     {
         glfwMakeContextCurrent(impl->window);
-        glUniform1f(impl->engine.impl->hasImageUniform, 1.f);
         image.bindRaw();
     }
 
     void Screen::unbindImage()
     {
-        glUniform1f(impl->engine.impl->hasImageUniform, 0.f);
+        glfwMakeContextCurrent(impl->window);
     }
 
     void Screen::applyTransform()
@@ -552,11 +582,19 @@ namespace plum
         glfwMakeContextCurrent(impl->window);
 
         auto& e(impl->engine.impl);
-        glUniform2f(e->originUniform, 0.f, 0.f);
-        glUniform2f(e->pivotUniform, 0.f, 0.f);
-        glUniform2f(e->scaleUniform, 1.f, 1.f);
-        glUniform1f(e->angleUniform, 0.f);
-        glUniform4f(e->colorUniform, 1.f, 1.f, 1.f, getOpacity() / 255.f);
+        if(e->modernPipeline)
+        {
+            glUniform2f(e->originUniform, 0.f, 0.f);
+            glUniform2f(e->pivotUniform, 0.f, 0.f);
+            glUniform2f(e->scaleUniform, 1.f, 1.f);
+            glUniform1f(e->angleUniform, 0.f);
+            glUniform4f(e->colorUniform, 1.f, 1.f, 1.f, getOpacity() / 255.f);
+        }
+        else
+        {
+            glLoadIdentity();
+            glColor4f(1.f, 1.f, 1.f, getOpacity() / 255.f);
+        }
         impl->useHardwareBlender(BlendMode::Preserve);
     }
 
@@ -568,11 +606,24 @@ namespace plum
         transform.tint.channels(r, g, b, a);
 
         auto& e(impl->engine.impl);
-        glUniform2f(e->originUniform, float(x), float(y));
-        glUniform2f(e->pivotUniform, float(width) / 2, float(height) / 2);
-        glUniform2f(e->scaleUniform, float(transform.scaleX * (1 - transform.mirror * 2)), float(transform.scaleY));
-        glUniform1f(e->angleUniform, float(transform.angle * M_PI / 180));
-        glUniform4f(e->colorUniform, float(r) / 255.f, float(g) / 255.f, float(b) / 255.f, (float(a * getOpacity()) / 255.f) / 255.f);
+        if(e->modernPipeline)
+        {
+            glUniform2f(e->originUniform, float(x), float(y));
+            glUniform2f(e->pivotUniform, float(width) / 2, float(height) / 2);
+            glUniform2f(e->scaleUniform, float(transform.scaleX * (1 - transform.mirror * 2)), float(transform.scaleY));
+            glUniform1f(e->angleUniform, float(transform.angle * M_PI / 180));
+            glUniform4f(e->colorUniform, float(r) / 255.f, float(g) / 255.f, float(b) / 255.f, (float(a * getOpacity()) / 255.f) / 255.f);
+        }
+        else
+        {
+            glLoadIdentity();
+            glTranslated(x, y, 0.0);
+            glTranslated(width / 2, height / 2, 0.0);
+            glScaled(transform.scaleX * (1 - transform.mirror * 2), transform.scaleY, 0.0);
+            glRotated(transform.angle, 0.0, 0.0, 1.0);
+            glTranslated(-width / 2, -height / 2, 0.0);
+            glColor4f(float(r) / 255.f, float(g) / 255.f, float(b) / 255.f, (float(a * getOpacity()) / 255.f) / 255.f);
+        }
         impl->useHardwareBlender(transform.mode);
     }
 
@@ -599,7 +650,14 @@ namespace plum
         auto& e(impl->engine.impl);
         uint8_t r, g, b, a;
         color.channels(r, g, b, a);
-        glUniform4f(e->colorUniform, float(r) / 255.f, float(g) / 255.f, float(b) / 255.f, (float(a * getOpacity()) / 255.f) / 255.f);
+        if(e->modernPipeline)
+        {
+            glUniform4f(e->colorUniform, float(r) / 255.f, float(g) / 255.f, float(b) / 255.f, (float(a * getOpacity()) / 255.f) / 255.f);
+        }
+        else
+        {
+            glColor4f(float(r) / 255.f, float(g) / 255.f, float(b) / 255.f, (float(a * getOpacity()) / 255.f) / 255.f);
+        }
 
         if(x > x2)
         {
@@ -610,22 +668,32 @@ namespace plum
             std::swap(y, y2);
         }
 
-        const GLfloat vertices[VertexBufferSize] = {
+        GLfloat vertices[VertexBufferSize] = {
             x - 0.5f, y - 0.5f, 0.f, 0.f,
-            x2 + 0.5f, y - 0.5f, 0.f, 0.f,
-            x2 + 0.5f, y2 + 0.5f, 0.f, 0.f,
-            x2 + 0.5f, y2 + 0.5f, 0.f, 0.f,
-            x - 0.5f, y2 + 0.5f, 0.f, 0.f,
+            x2 + 0.5f, y - 0.5f, 1.f, 0.f,
+            x2 + 0.5f, y2 + 0.5f, 1.f, 1.f,
+            x2 + 0.5f, y2 + 0.5f, 1.f, 1.f,
+            x - 0.5f, y2 + 0.5f, 0.f, 1.f,
             x - 0.5f, y - 0.5f, 0.f, 0.f,
         };
 
-        glBindTexture(GL_TEXTURE_2D, 0);
+        glBindTexture(GL_TEXTURE_2D, impl->defaultTexture);
         glBindBuffer(GL_ARRAY_BUFFER, impl->vbo);
         glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
-        glEnableVertexAttribArray(e->xyAttribute);
-        glEnableVertexAttribArray(e->uvAttribute);
-        glVertexAttribPointer(e->xyAttribute, 2, GL_FLOAT, false, 4 * sizeof(GLfloat), (void*) 0);
-        glVertexAttribPointer(e->uvAttribute, 2, GL_FLOAT, false, 4 * sizeof(GLfloat), (void*)(2 * sizeof(float)));
+        if(e->modernPipeline)
+        {
+            glEnableVertexAttribArray(e->xyAttribute);
+            glEnableVertexAttribArray(e->uvAttribute);
+            glVertexAttribPointer(e->xyAttribute, 2, GL_FLOAT, false, 4 * sizeof(GLfloat), (void*) 0);
+            glVertexAttribPointer(e->uvAttribute, 2, GL_FLOAT, false, 4 * sizeof(GLfloat), (void*)(2 * sizeof(float)));
+        }
+        else
+        {
+            glEnableClientState(GL_VERTEX_ARRAY);
+            glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+            glVertexPointer(2, GL_FLOAT, 4 * sizeof(GLfloat), (void*) 0);
+            glTexCoordPointer(2, GL_FLOAT, 4 * sizeof(GLfloat), (void*)(2 * sizeof(float)));
+        }
         glDrawArrays(GL_TRIANGLES, 0, 6);
     }
 

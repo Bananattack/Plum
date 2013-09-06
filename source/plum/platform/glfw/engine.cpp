@@ -58,10 +58,11 @@ namespace plum
         "#endif\n"
         "void main()\n"
         "{\n"
-        "    outColor = hasImage * texture(image, fragmentUV) * color + (1 - hasImage) * color;\n"
+        "    outColor = texture(image, fragmentUV) * color;\n"
         "}\n";
 
     Engine::Impl::Impl()
+        : root(nullptr), coreProfile(false), modernPipeline(false)
     {
         if(!glfwInit())
         {
@@ -69,7 +70,8 @@ namespace plum
         }
         glfwSetTime(0.0);
 
-        bool core = true;
+        coreProfile = true;
+        modernPipeline = true;
         const char* vertexShaderSource[2] = {VertexCoreHeader, VertexShader};
         const char* fragmentShaderSource[2] = {FragmentCoreHeader, FragmentShader};
 
@@ -82,7 +84,7 @@ namespace plum
         root = glfwCreateWindow(1, 1, "", nullptr, nullptr);
         if(!root)
         {
-            fprintf(stderr, "* Failed to create a OpenGL 3.2 context, falling back on 2.1...\n\n");
+            fprintf(stderr, "* Failed to create OpenGL 3.2 context, falling back on 2.1...\n");
 
             glfwDefaultWindowHints();
             glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
@@ -92,77 +94,90 @@ namespace plum
 
             vertexShaderSource[0] = VertexCompatHeader;
             fragmentShaderSource[0] = FragmentCompatHeader;
-            core = false;
+            coreProfile = false;
 
             if(!root)
             {
-                quit("Failed to initialize graphics context.");
+                fprintf(stderr, "* Failed to create OpenGL 2.1 context, falling back on legacy pipeline...\n");
+
+                glfwDefaultWindowHints();
+                glfwWindowHint(GLFW_VISIBLE, GL_FALSE);
+                root = glfwCreateWindow(1, 1, "", nullptr, nullptr);
+
+                modernPipeline = false;
+
+                if(!root)
+                {
+                    quit("Failed to initialize graphics context.");
+                }
             }
         }
 
         glfwMakeContextCurrent(root);
         glewInit();
 
-        vertexShader = glCreateShader(GL_VERTEX_SHADER);
-        glShaderSource(vertexShader, 2, vertexShaderSource, nullptr);
-        glCompileShader(vertexShader);
+        if(modernPipeline)
         {
-            GLint status;
-            glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &status);
-            if(!status)
+            vertexShader = glCreateShader(GL_VERTEX_SHADER);
+            glShaderSource(vertexShader, 2, vertexShaderSource, nullptr);
+            glCompileShader(vertexShader);
             {
-                glGetShaderiv(vertexShader, GL_INFO_LOG_LENGTH, &status);
-                std::vector<char> error(status);
-                glGetShaderInfoLog(vertexShader, error.size(), nullptr, error.data());
-                quit(std::string("Error found in vertex shader:\r\n") + error.data());
+                GLint status;
+                glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &status);
+                if (!status)
+                {
+                    glGetShaderiv(vertexShader, GL_INFO_LOG_LENGTH, &status);
+                    std::vector<char> error(status);
+                    glGetShaderInfoLog(vertexShader, error.size(), nullptr, error.data());
+                    quit(std::string("Error found in vertex shader:\r\n") + error.data());
+                }
             }
-        }
 
-        fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-        glShaderSource(fragmentShader, 2, fragmentShaderSource, nullptr);
-        glCompileShader(fragmentShader);
-        {
-            GLint status;
-            glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &status);
-            if(!status)
+            fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+            glShaderSource(fragmentShader, 2, fragmentShaderSource, nullptr);
+            glCompileShader(fragmentShader);
             {
-                glGetShaderiv(fragmentShader, GL_INFO_LOG_LENGTH, &status);
-                std::vector<char> error(status);
-                glGetShaderInfoLog(fragmentShader, error.size(), nullptr, error.data());
-                quit(std::string("Error found in fragment shader:\r\n") + error.data());
+                GLint status;
+                glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &status);
+                if (!status)
+                {
+                    glGetShaderiv(fragmentShader, GL_INFO_LOG_LENGTH, &status);
+                    std::vector<char> error(status);
+                    glGetShaderInfoLog(fragmentShader, error.size(), nullptr, error.data());
+                    quit(std::string("Error found in fragment shader:\r\n") + error.data());
+                }
             }
-        }
 
-        program = glCreateProgram();
-        glAttachShader(program, vertexShader);
-        glAttachShader(program, fragmentShader);
-        if(core)
-        {
-            glBindFragDataLocation(fragmentShader, 0, "outColor");
-        }
-        glLinkProgram(program);
-        {
-            GLint status;
-            glGetProgramiv(program, GL_LINK_STATUS, &status);
-            if(!status)
+            program = glCreateProgram();
+            glAttachShader(program, vertexShader);
+            glAttachShader(program, fragmentShader);
+            if (coreProfile)
             {
-                glGetProgramiv(program, GL_INFO_LOG_LENGTH, &status);
-                std::vector<char> error(status);
-                glGetProgramInfoLog(program, error.size(), nullptr, error.data());
-                quit(std::string("Error found during shader linking:\r\n") + error.data());
+                glBindFragDataLocation(fragmentShader, 0, "outColor");
             }
-        }
-        glUseProgram(program);
+            glLinkProgram(program);
+            {
+                GLint status;
+                glGetProgramiv(program, GL_LINK_STATUS, &status);
+                if (!status)
+                {
+                    glGetProgramiv(program, GL_INFO_LOG_LENGTH, &status);
+                    std::vector<char> error(status);
+                    glGetProgramInfoLog(program, error.size(), nullptr, error.data());
+                    quit(std::string("Error found during shader linking:\r\n") + error.data());
+                }
+            }
+            glUseProgram(program);
 
-        projectionUniform = glGetUniformLocation(program, "projection");
-        originUniform = glGetUniformLocation(program, "origin");
-        pivotUniform = glGetUniformLocation(program, "pivot");
-        scaleUniform = glGetUniformLocation(program, "scale");
-        angleUniform = glGetUniformLocation(program, "angle");
-        colorUniform = glGetUniformLocation(program, "color");
-        hasImageUniform = glGetUniformLocation(program, "hasImage");
-        xyAttribute = glGetAttribLocation(program, "xy");
-        uvAttribute = glGetAttribLocation(program, "uv");
+            projectionUniform = glGetUniformLocation(program, "projection");
+            originUniform = glGetUniformLocation(program, "origin");
+            pivotUniform = glGetUniformLocation(program, "pivot");
+            scaleUniform = glGetUniformLocation(program, "scale");
+            angleUniform = glGetUniformLocation(program, "angle");
+            colorUniform = glGetUniformLocation(program, "color");
+            xyAttribute = glGetAttribLocation(program, "xy");
+            uvAttribute = glGetAttribLocation(program, "uv");
+        }
     }
 
     Engine::Impl::~Impl()
