@@ -61,7 +61,7 @@ int main(int argc, char** argv)
 
         redirect(console);
 
-        plum::Engine engine;
+        plum::Engine engine(config);
         plum::Timer timer(engine);
         plum::Audio audio(engine, silent);
 

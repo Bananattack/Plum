@@ -31,11 +31,12 @@ namespace plum
     };
 
     class Event;
+    class Config;
 
     class Engine
     {
         public:
-            Engine();
+            Engine(Config& config);
             ~Engine();
 
             void refresh();

@@ -130,7 +130,7 @@ namespace plum
 
             bool windowless;
 
-            Impl();
+            Impl(Config& config);
             ~Impl();
 
             void quit(const std::string& message);

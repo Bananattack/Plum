@@ -1,5 +1,6 @@
 #include <iostream>
 
+#include "../../core/config.h"
 #include "engine.h"
 
 #ifdef _WIN32
@@ -61,7 +62,7 @@ namespace plum
         "    outColor = texture(image, fragmentUV) * color;\n"
         "}\n";
 
-    Engine::Impl::Impl()
+    Engine::Impl::Impl(Config& config)
         : root(nullptr), coreProfile(false), modernPipeline(false)
     {
         if(!glfwInit())
@@ -75,22 +76,29 @@ namespace plum
         const char* vertexShaderSource[2] = {VertexCoreHeader, VertexShader};
         const char* fragmentShaderSource[2] = {FragmentCoreHeader, FragmentShader};
 
-        glfwDefaultWindowHints();
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
-        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); 
-        glfwWindowHint(GLFW_VISIBLE, GL_FALSE);
-        root = glfwCreateWindow(1, 1, "", nullptr, nullptr);
-        if(!root)
+        auto legacy = config.get<bool>("legacy", false);
+        if(!legacy)
         {
-            fprintf(stderr, "* Failed to create OpenGL 3.2 context, falling back on 2.1...\n");
-
             glfwDefaultWindowHints();
-            glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
-            glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+            glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+            glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+            glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+            glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); 
             glfwWindowHint(GLFW_VISIBLE, GL_FALSE);
             root = glfwCreateWindow(1, 1, "", nullptr, nullptr);
+        }
+        if(!root)
+        {
+            if(!legacy)
+            {
+                fprintf(stderr, "* Failed to create OpenGL 3.2 context, falling back on 2.1...\n");
+
+                glfwDefaultWindowHints();
+                glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
+                glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+                glfwWindowHint(GLFW_VISIBLE, GL_FALSE);
+                root = glfwCreateWindow(1, 1, "", nullptr, nullptr);
+            }
 
             vertexShaderSource[0] = VertexCompatHeader;
             fragmentShaderSource[0] = FragmentCompatHeader;
@@ -98,7 +106,15 @@ namespace plum
 
             if(!root)
             {
-                fprintf(stderr, "* Failed to create OpenGL 2.1 context, falling back on legacy pipeline...\n");
+                if(!legacy)
+                {
+                    fprintf(stderr, "* Failed to create OpenGL 2.1 context, falling back on legacy pipeline...\n");
+                }
+                else
+                {
+                    fprintf(stderr, "* Forcing legacy rendering...\n");
+                }
+
 
                 glfwDefaultWindowHints();
                 glfwWindowHint(GLFW_VISIBLE, GL_FALSE);
@@ -216,8 +232,8 @@ namespace plum
         }
     }
 
-    Engine::Engine()
-        : impl(new Impl())
+    Engine::Engine(Config& config)
+        : impl(new Impl(config))
     {
     }
 
