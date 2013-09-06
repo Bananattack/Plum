@@ -49,8 +49,9 @@ GLFW_OBJS := $(patsubst %.c, obj/%.o, $(GLFW_C))
 GLFW := obj/libglfw.a
 
 PLAID_INC := source/plaidaudio
-PLAID_CPP := $(wildcard $(PLAID_INC)/**/*.cpp $(PLAID_INC)/**/**/*.cpp $(PLAID_INC)/**/**/**/*.cpp)
-PLAID_H := $(wildcard $(PLAID_INC)/**/*.h $(PLAID_INC)/**/**/*.h $(PLAID_INC)/**/**/**/*.h) $(PLAID_INC)/codec_stb/stb_vorbis.c
+PLAID_SRC := $(PLAID_INC)/plaid
+PLAID_CPP := $(wildcard $(PLAID_SRC)/*.cpp $(PLAID_SRC)/../imp-portaudio/*.cpp $(PLAID_SRC)/**/*.cpp $(PLAID_SRC)/**/**/*.cpp)
+PLAID_H := $(wildcard $(PLAID_SRC)/*.h $(PLAID_SRC)/**/*.h $(PLAID_SRC)/**/**/*.h)
 PLAID_OBJS := $(patsubst %.cpp, obj/%.o, $(PLAID_CPP))
 PLAID := obj/libplaid.a
 
@@ -69,16 +70,18 @@ PORTAUDIO_C_OBJS := $(patsubst %.c, obj/%.o, $(PORTAUDIO_C))
 PORTAUDIO_CPP_OBJS := $(patsubst %.cpp, obj/%.o, $(PORTAUDIO_CPP))
 PORTAUDIO := obj/libportaudio.a
 
-PLUM_CPP := $(wildcard source/plum/**/*.cpp source/plum/platform/**/*.cpp) source/plum/plum.cpp
+PLUM_CPP := $(wildcard source/plum/**/*.cpp source/plum/platform/**/*.cpp $(PLAID_SRC)/../codec_stb/*.cpp) source/plum/plum.cpp
+PLUM_C := $(PLAID_SRC)/../codec_stb/stb_vorbis.c
 PLUM_H := $(wildcard source/plum/**/*.h source/plum/platform/**/*.h)
-PLUM_OBJS := $(patsubst %.cpp, obj/%.o, $(PLUM_CPP))
+PLUM_C_OBJS := $(patsubst %.c, obj/%.o, $(PLUM_C))
+PLUM_CPP_OBJS := $(patsubst %.cpp, obj/%.o, $(PLUM_CPP))
 PLUM_LIBS := lua corona jpeg png zlib ungif glew glfw plaid modplug portaudio
 PLUM_DEPS := $(foreach i, $(PLUM_LIBS), obj/lib$(i).a)
 PLUM := test/plum
 
-CFLAGS += --std=gnu99 -Wall -DPA_USE_ALSA=1 -include pthread.h -include sys/time.h -g
-CXXFLAGS += --std=c++0x -Wall -DPA_USE_ALSA=1 -DHAVE_STDINT_H -DHAVE_SETENV -DHAVE_SINF -g
-LDFLAGS += -Lobj/ $(patsubst %, -l%, $(PLUM_LIBS)) -lm -lasound -lpthread -lXrandr -lXi -lXext -lX11 -lGL -lGLU
+CFLAGS += --std=gnu99 -Wall -DPA_USE_ALSA -DPA_ENABLE_DEBUG_OUTPUT -include pthread.h -include sys/time.h -O3
+CXXFLAGS += --std=c++0x -Wall -DPA_USE_ALSA -DHAVE_STDINT_H -DHAVE_SETENV -DHAVE_SINF -DPA_ENABLE_DEBUG_OUTPUT -O3
+LDFLAGS += -Lobj/ $(patsubst %, -l%, $(PLUM_LIBS)) -lm -lasound -lpthread -lXrandr -lXi -lXext -lXxf86vm -lX11 -lGL -lGLU
 INCLUDES := -I$(LUA_INC) -I$(JPEG_INC) -I$(PNG_INC) -I$(ZLIB_INC) -I$(UNGIF_INC) -I$(CORONA_INC) \
 	-I$(GLEW_INC) -I$(GLFW_INC) -I$(GLFW_INC)/../plum -I$(PLAID_INC) -I$(MODPLUG_INC) -I$(MODPLUG_INC)/libmodplug -I$(PORTAUDIO_INC) -I$(PORTAUDIO_SRC)/common -I$(PORTAUDIO_SRC)/os/unix
 
@@ -92,7 +95,8 @@ endef
 DIRECTORIES := $(call uniq, $(dir \
 	$(LUA_OBJS) $(JPEG_OBJS) $(PNG_OBJS) $(ZLIB_OBJS) $(UNGIF_OBJS) \
 	$(CORONA_OBJS) $(GLEW_OBJS) $(GLFW_OBJS) $(PLAID_OBJS) $(MODPLUG_OBJS) \
-	$(PORTAUDIO_C_OBJS) $(PORTAUDIO_CPP_OBJS) $(PLUM_OBJS) \
+	$(PORTAUDIO_C_OBJS) $(PORTAUDIO_CPP_OBJS) \
+	$(PLUM_C_OBJS) $(PLUM_CPP_OBJS) \
 	))
 
 all: $(DIRECTORIES) $(PLUM)
@@ -146,10 +150,12 @@ $(PORTAUDIO_CPP_OBJS): obj/%.o: %.cpp $(PORTAUDIO_H)
 $(PORTAUDIO): $(PORTAUDIO_C_OBJS) $(PORTAUDIO_CPP_OBJS)
 	$(AR) cr $@ $^	
 
-$(PLUM_OBJS): obj/%.o: %.cpp $(PLUM_H)
+$(PLUM_C_OBJS): obj/%.o: %.c $(PLUM_H)
+	$(CC) $(CFLAGS) -c -o $@ $< $(INCLUDES)
+$(PLUM_CPP_OBJS): obj/%.o: %.cpp $(PLUM_H)
 	$(CXX) $(CXXFLAGS) -c -o $@ $< $(INCLUDES)
-$(PLUM): $(DIRECTORIES) $(PLUM_OBJS) $(PLUM_H) $(PLUM_DEPS)
-	$(CXX) $(CXXFLAGS) $(PLUM_OBJS) $(LDFLAGS) -o $@
+$(PLUM): $(DIRECTORIES) $(PLUM_C_OBJS) $(PLUM_CPP_OBJS) $(PLUM_H) $(PLUM_DEPS)
+	$(CXX) $(CXXFLAGS) $(PLUM_C_OBJS) $(PLUM_CPP_OBJS) $(LDFLAGS) -o $@
 
 define makedir
 $(1):
