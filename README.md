@@ -28,7 +28,7 @@ It supports all the basic needs of a simple 2D game:
 Compiling
 ---------
 
-- **To compile on Windows (Visual Studio 2012 (requires the November 2012 CTP)):**
+- **To compile on Windows (Visual Studio 2013):**
   Open up `Plum.sln`, then hit Build Solution, and everything should work.
   The compiled executable is named "Plum.exe".
   - For release builds, it is located in the `test/` folder.
