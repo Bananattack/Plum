@@ -79,14 +79,14 @@ PORTAUDIO_SRC := source/portaudio/src
 PORTAUDIO_INC := source/portaudio/include
 ifeq ($(UNAME_S),Linux)
 	PORTAUDIO_OS_CPP := $(wildcard $(PORTAUDIO_SRC)/hostapi/alsa/*.cpp)
-	PORTAUDIO_OS_C := $(wildcard $(PORTAUDIO_SRC)/hostapi/alsa/*.cpp)
+	PORTAUDIO_OS_C := $(wildcard $(PORTAUDIO_SRC)/hostapi/alsa/*.c)
 endif
 ifeq ($(UNAME_S),Darwin)
 	PORTAUDIO_OS_CPP := $(wildcard $(PORTAUDIO_SRC)/hostapi/coreaudio/*.cpp)
-	PORTAUDIO_OS_C := $(wildcard $(PORTAUDIO_SRC)/hostapi/coreaudio/*.cpp)
+	PORTAUDIO_OS_C := $(wildcard $(PORTAUDIO_SRC)/hostapi/coreaudio/*.c)
 endif
 PORTAUDIO_CPP := $(wildcard $(PORTAUDIO_SRC)/common/*.cpp $(PORTAUDIO_SRC)/os/unix/*.cpp) $(PORTAUDIO_OS_CPP)
-PORTAUDIO_C := $(wildcard $(PORTAUDIO_SRC)/common/*.c $(PORTAUDIO_SRC)/os/unix/*.c $(PORTAUDIO_SRC)/hostapi/alsa/*.c) $(PORTAUDIO_OS_C)
+PORTAUDIO_C := $(wildcard $(PORTAUDIO_SRC)/common/*.c $(PORTAUDIO_SRC)/os/unix/*.c) $(PORTAUDIO_OS_C)
 PORTAUDIO_H := $(wildcard $(PORTAUDIO_INC)/*.h)
 PORTAUDIO_C_OBJS := $(patsubst %.c, obj/%.o, $(PORTAUDIO_C))
 PORTAUDIO_CPP_OBJS := $(patsubst %.cpp, obj/%.o, $(PORTAUDIO_CPP))
