@@ -4,6 +4,7 @@
 
 #include <iostream>  //TODO remove the sanity check
 #include <cmath>
+#include <algorithm>
 #include <vector>
 
 #include "audio.h"

@@ -3,6 +3,7 @@
 #include <fstream>
 #include <vector>
 #include <deque>
+#include <algorithm>
 #include <iostream>
 
 #include "audio.h"
