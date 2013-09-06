@@ -1,3 +1,5 @@
+UNAME_S := $(shell uname -s)
+
 LUA_INC := source/lua/src
 LUA_C := $(filter-out $(LUA_INC)/lua.c $(LUA_INC)/luac.c, $(wildcard $(LUA_INC)/*.c))
 LUA_H := $(wildcard $(LUA_INC)/*.h)
@@ -43,10 +45,22 @@ GLEW := obj/libglew.a
 
 GLFW_SRC := source/glfw/src
 GLFW_INC := source/glfw/include
-GLFW_C := $(filter-out $(wildcard $(GLFW_SRC)/*_*.c), $(wildcard $(GLFW_SRC)/*.c)) $(wildcard $(GLFW_SRC)/glx_*.c $(GLFW_SRC)/x11_*.c)
+ifeq ($(UNAME_S),Linux)
+	GLFW_OS_C := $(wildcard $(GLFW_SRC)/glx_*.c $(GLFW_SRC)/x11_*.c)
+	GLFW_OS_M :=
+endif
+ifeq ($(UNAME_S),Darwin)
+	GLFW_OS_C := $(wildcard $(GLFW_SRC)/nsgl_*.c $(GLFW_SRC)/cocoa_*.c)
+	GLFW_OS_M := $(wildcard $(GLFW_SRC)/nsgl_*.m $(GLFW_SRC)/cocoa_*.m)	
+endif
+GLFW_C := $(filter-out $(wildcard $(GLFW_SRC)/*_*.c), $(wildcard $(GLFW_SRC)/*.c)) $(GLFW_OS_C)
 GLFW_H := $(wildcard $(GLFW_INC)/*.h)
-GLFW_OBJS := $(patsubst %.c, obj/%.o, $(GLFW_C))
+GLFW_M := $(GLFW_OS_M)
+GLFW_C_OBJS := $(patsubst %.c, obj/%.o, $(GLFW_C))
+GLFW_M_OBJS := $(patsubst %.m, obj/%.o, $(GLFW_M))
 GLFW := obj/libglfw.a
+
+$(info GLFW_OS_M = $(GLFW_OS_M))
 
 PLAID_INC := source/plaidaudio
 PLAID_SRC := $(PLAID_INC)/plaid
@@ -63,8 +77,16 @@ MODPLUG := obj/libmodplug.a
 
 PORTAUDIO_SRC := source/portaudio/src
 PORTAUDIO_INC := source/portaudio/include
-PORTAUDIO_CPP := $(wildcard $(PORTAUDIO_SRC)/common/*.cpp $(PORTAUDIO_SRC)/os/unix/*.cpp $(PORTAUDIO_SRC)/hostapi/alsa/*.cpp)
-PORTAUDIO_C := $(wildcard $(PORTAUDIO_SRC)/common/*.c $(PORTAUDIO_SRC)/os/unix/*.c $(PORTAUDIO_SRC)/hostapi/alsa/*.c)
+ifeq ($(UNAME_S),Linux)
+	PORTAUDIO_OS_CPP := $(wildcard $(PORTAUDIO_SRC)/hostapi/alsa/*.cpp)
+	PORTAUDIO_OS_C := $(wildcard $(PORTAUDIO_SRC)/hostapi/alsa/*.cpp)
+endif
+ifeq ($(UNAME_S),Darwin)
+	PORTAUDIO_OS_CPP := $(wildcard $(PORTAUDIO_SRC)/hostapi/coreaudio/*.cpp)
+	PORTAUDIO_OS_C := $(wildcard $(PORTAUDIO_SRC)/hostapi/coreaudio/*.cpp)
+endif
+PORTAUDIO_CPP := $(wildcard $(PORTAUDIO_SRC)/common/*.cpp $(PORTAUDIO_SRC)/os/unix/*.cpp) $(PORTAUDIO_OS_CPP)
+PORTAUDIO_C := $(wildcard $(PORTAUDIO_SRC)/common/*.c $(PORTAUDIO_SRC)/os/unix/*.c $(PORTAUDIO_SRC)/hostapi/alsa/*.c) $(PORTAUDIO_OS_C)
 PORTAUDIO_H := $(wildcard $(PORTAUDIO_INC)/*.h)
 PORTAUDIO_C_OBJS := $(patsubst %.c, obj/%.o, $(PORTAUDIO_C))
 PORTAUDIO_CPP_OBJS := $(patsubst %.cpp, obj/%.o, $(PORTAUDIO_CPP))
@@ -79,11 +101,22 @@ PLUM_LIBS := lua corona jpeg png zlib ungif glew glfw plaid modplug portaudio
 PLUM_DEPS := $(foreach i, $(PLUM_LIBS), obj/lib$(i).a)
 PLUM := test/plum
 
-CFLAGS += --std=gnu99 -Wall -DPA_USE_ALSA -DPA_ENABLE_DEBUG_OUTPUT -include pthread.h -include sys/time.h -O3
-CXXFLAGS += --std=c++0x -Wall -DPA_USE_ALSA -DHAVE_STDINT_H -DHAVE_SETENV -DHAVE_SINF -DPA_ENABLE_DEBUG_OUTPUT -O3
-LDFLAGS += -Lobj/ $(patsubst %, -l%, $(PLUM_LIBS)) -lm -lasound -lpthread -lXrandr -lXi -lXext -lXxf86vm -lX11 -lGL -lGLU
-INCLUDES := -I$(LUA_INC) -I$(JPEG_INC) -I$(PNG_INC) -I$(ZLIB_INC) -I$(UNGIF_INC) -I$(CORONA_INC) \
-	-I$(GLEW_INC) -I$(GLFW_INC) -I$(GLFW_INC)/../plum -I$(PLAID_INC) -I$(MODPLUG_INC) -I$(MODPLUG_INC)/libmodplug -I$(PORTAUDIO_INC) -I$(PORTAUDIO_SRC)/common -I$(PORTAUDIO_SRC)/os/unix
+ifeq ($(UNAME_S),Linux)
+	CFLAGS += --std=gnu99 -Wall -DPA_USE_ALSA -DPA_ENABLE_DEBUG_OUTPUT -include pthread.h -include sys/time.h -O3
+	CXXFLAGS += --std=c++0x -Wall -DPA_USE_ALSA -DHAVE_STDINT_H -DHAVE_SETENV -DHAVE_SINF -DPA_ENABLE_DEBUG_OUTPUT -O3
+	LDFLAGS += -Lobj/ $(patsubst %, -l%, $(PLUM_LIBS)) -lm -lasound -lpthread -lXrandr -lXi -lXext -lXxf86vm -lX11 -lGL -lGLU
+	INCLUDES := -I$(LUA_INC) -I$(JPEG_INC) -I$(PNG_INC) -I$(ZLIB_INC) -I$(UNGIF_INC) -I$(CORONA_INC) \
+		-I$(GLEW_INC) -I$(GLFW_INC) -I$(GLFW_INC)/../plum -I$(PLAID_INC) -I$(MODPLUG_INC) -I$(MODPLUG_INC)/libmodplug \
+		-I$(PORTAUDIO_INC) -I$(PORTAUDIO_SRC)/common -I$(PORTAUDIO_SRC)/os/unix
+endif
+ifeq ($(UNAME_S),Darwin)
+	CFLAGS += --std=gnu99 -Wall -DPA_USE_COREAUDIO -include pthread.h -include sys/time.h -O3 -fno-common
+	CXXFLAGS += --std=c++0x -Wall -DPA_USE_COREAUDIO -DHAVE_STDINT_H -DHAVE_SETENV -DHAVE_SINF -O3
+	LDFLAGS += -framework Foundation -framework Cocoa -framework OpenGL -framework IOKit -Lobj/ $(patsubst %, -l%, $(PLUM_LIBS)) -lm -lpthread -lobjc
+	INCLUDES := -I$(LUA_INC) -I$(JPEG_INC) -I$(PNG_INC) -I$(ZLIB_INC) -I$(UNGIF_INC) -I$(CORONA_INC) \
+		-I$(GLEW_INC) -I$(GLFW_INC) -I$(GLFW_INC)/../plum -I$(PLAID_INC) -I$(MODPLUG_INC) -I$(MODPLUG_INC)/libmodplug \
+		-I$(PORTAUDIO_INC) -I$(PORTAUDIO_SRC)/common -I$(PORTAUDIO_SRC)/os/unix
+endif
 
 .PHONY: clean all
 
@@ -94,7 +127,8 @@ define uniq
 endef
 DIRECTORIES := $(call uniq, $(dir \
 	$(LUA_OBJS) $(JPEG_OBJS) $(PNG_OBJS) $(ZLIB_OBJS) $(UNGIF_OBJS) \
-	$(CORONA_OBJS) $(GLEW_OBJS) $(GLFW_OBJS) $(PLAID_OBJS) $(MODPLUG_OBJS) \
+	$(CORONA_OBJS) $(GLEW_OBJS) $(PLAID_OBJS) $(MODPLUG_OBJS) \
+	$(GLFW_C_OBJS) $(GLFW_M_OBJS) \
 	$(PORTAUDIO_C_OBJS) $(PORTAUDIO_CPP_OBJS) \
 	$(PLUM_C_OBJS) $(PLUM_CPP_OBJS) \
 	))
@@ -131,9 +165,11 @@ $(GLEW_OBJS): obj/%.o: %.c $(GLEW_H)
 	$(CC) $(CFLAGS) -c -o $@ $< $(INCLUDES)
 $(GLEW): $(GLEW_OBJS)
 	$(AR) cr $@ $^
-$(GLFW_OBJS): obj/%.o: %.c $(GLFW_H)
+$(GLFW_C_OBJS): obj/%.o: %.c $(GLFW_H)
 	$(CC) $(CFLAGS) -c -o $@ $< $(INCLUDES)
-$(GLFW): $(GLFW_OBJS)
+$(GLFW_M_OBJS): obj/%.o: %.m $(GLFW_H)
+	$(CC) $(CFLAGS) -c -o $@ $< $(INCLUDES)
+$(GLFW): $(GLFW_C_OBJS) $(GLFW_M_OBJS)
 	$(AR) cr $@ $^
 $(PLAID_OBJS): obj/%.o: %.cpp $(PLAID_H)
 	$(CXX) $(CXXFLAGS) -c -o $@ $< $(INCLUDES)

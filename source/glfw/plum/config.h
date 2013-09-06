@@ -9,7 +9,9 @@
 #define _GLFW_WGL
 
 #elif __APPLE__
-#error Platform not supported! (yet)
+#define _GLFW_USE_OPENGL
+#define _GLFW_COCOA
+#define _GLFW_NSGL
 
 #elif __linux
 #define _GLFW_USE_OPENGL
