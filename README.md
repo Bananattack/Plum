@@ -29,8 +29,8 @@ Compiling
 ---------
 
 - **To compile on Windows (Visual Studio 2013):**
-  Open up `Plum.sln`, then hit Build Solution, and everything should work.
-  The compiled executable is named "Plum.exe".
+  Open up `plum.sln`, then hit Build Solution, and everything should work.
+  The compiled executable is named "plum.exe".
   - For release builds, it is located in the `test/` folder.
   - For debug builds, it is located in the `Debug/` folder
 - **To compile on Mac OS X:** TODO.
