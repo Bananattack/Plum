@@ -80,6 +80,35 @@ namespace plum
                 a = (*this)[ColorChannel::Alpha];
             }
 
+            void channelsHSV(uint16_t& h, uint8_t& s, uint8_t& v, uint8_t& a) const
+            {
+                uint8_t r = (*this)[ColorChannel::Red];
+                uint8_t g = (*this)[ColorChannel::Green];
+                uint8_t b = (*this)[ColorChannel::Alpha];
+                uint16_t max = std::max(std::max(r, g), b);
+                uint16_t delta = max - std::min(std::min(r, g), b);
+                
+                h = 0;
+                if(delta > 0)
+                {
+                    if(r == max)
+                    {
+                        h = (360 + 60 * (g - b) / delta) % 360;
+                    }
+                    else if(g == max)
+                    {
+                        h = (120 + 60 * (b - r) / delta) % 360;
+                    }
+                    else if(b == max)
+                    {
+                        h = (240 + 60 * (r - g) / delta) % 360;
+                    }
+                }
+                s = max > 0 ? uint8_t(delta * 255 / max) : 0;
+                v = uint8_t(max);
+                a = (*this)[ColorChannel::Alpha];
+            }
+
         private:
             uint32_t value;
     };
@@ -96,7 +125,7 @@ namespace plum
     // Credit goes to Zip for original conversion code.
     inline Color hsv(int hue, int saturation, int value, int alpha = 255)
     {
-        uint32_t h = (hue % 360 + 360) % 360;
+        uint32_t h = (uint32_t(hue) + 360) % 360;
         uint32_t s = std::min(std::max(0, saturation), 255);
         uint32_t v = std::min(std::max(0, value), 255);
         uint32_t a = std::min(std::max(0, alpha), 255);

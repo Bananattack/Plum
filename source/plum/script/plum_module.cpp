@@ -158,13 +158,29 @@ namespace plum
             lua_setfield(L, -2, "hsv");
             lua_pushcfunction(L, ([](lua_State* L)
             {
-                uint8_t r, g, b, a;
-                Color(script::get<int>(L, 1)).channels(r, g, b, a);
-                script::push(L, r);
-                script::push(L, g);
-                script::push(L, b);
-                script::push(L, a);
-                return 4;
+                auto mode = script::get<const char*>(L, 2, "rgb");
+                if(!strncmp(mode, "rgb", 3))
+                {
+                    uint8_t r, g, b, a;
+                    Color(script::get<int>(L, 1)).channels(r, g, b, a);
+                    script::push(L, r);
+                    script::push(L, g);
+                    script::push(L, b);
+                    script::push(L, a);
+                    return 4;
+                }
+                if(!strncmp(mode, "hsv", 3))
+                {
+                    uint16_t h;
+                    uint8_t s, v, a;
+                    Color(script::get<int>(L, 1)).channelsHSV(h, s, v, a);
+                    script::push(L, h);
+                    script::push(L, s);
+                    script::push(L, v);
+                    script::push(L, a);
+                    return 4;
+                }
+                return 0;
             }));
             lua_setfield(L, -2, "channels");
             lua_pop(L, 1);
