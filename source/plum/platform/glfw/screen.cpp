@@ -624,7 +624,7 @@ namespace plum
             glTranslated(-width / 2, -height / 2, 0.0);
             glColor4f(float(r) / 255.f, float(g) / 255.f, float(b) / 255.f, (float(a * getOpacity()) / 255.f) / 255.f);
         }
-        impl->useHardwareBlender(transform.mode);
+        impl->useHardwareBlender(transform.blend);
     }
 
     void Screen::clear(Color color)

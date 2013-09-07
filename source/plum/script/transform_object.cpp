@@ -52,17 +52,17 @@ namespace plum
                     t->angle = value;
                     return 0;
                 }},
-                {"get_mode", [](lua_State* L)
+                {"get_blend", [](lua_State* L)
                 {
                     auto t = script::ptr<Transform>(L, 1);
-                    script::push(L, (int) t->mode);
+                    script::push(L, (int) t->blend);
                     return 1;
                 }},
-                {"set_mode", [](lua_State* L)
+                {"set_blend", [](lua_State* L)
                 {
                     auto t = script::ptr<Transform>(L, 1);
                     auto value = script::get<int>(L, 2);
-                    t->mode = (BlendMode) value;
+                    t->blend = (BlendMode) value;
                     return 0;
                 }},
                 {"get_tint", [](lua_State* L)
