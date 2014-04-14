@@ -1,4 +1,5 @@
 #include <cmath>
+#include <cstdlib>
 #include "tilemap.h"
 
 namespace plum
@@ -270,8 +271,8 @@ namespace plum
         int xaccum, yaccum, xincre, yincre, xreset, yreset, xchange, ychange;
         bool done = false;
 
-        dx = std::abs(tx2 - tx);
-        dy = std::abs(ty2 - ty);
+        dx = std::llabs(tx2 - tx);
+        dy = std::llabs(ty2 - ty);
         cx = tx;
         cy = ty;
         xchange = (tx > tx2) ? -1 : 1;

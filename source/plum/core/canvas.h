@@ -1,6 +1,7 @@
 #ifndef PLUM_CANVAS_H
 #define PLUM_CANVAS_H
 
+#include <cstdlib>
 #include <cmath>
 #include <string>
 #include <vector>
@@ -404,8 +405,8 @@ namespace plum
                 int xaccum, yaccum, xincre, yincre, xreset, yreset, xchange, ychange;
                 bool done = false;
 
-                dx = abs(x2 - x);
-                dy = abs(y2 - y);
+                dx = std::llabs(x2 - x);
+                dy = std::llabs(y2 - y);
                 cx = x;
                 cy = y;
                 xchange = (x > x2) ? -1 : 1;
