@@ -1,8 +1,5 @@
 //========================================================================
-// GLFW - An OpenGL library
-// Platform:    Cocoa
-// API Version: 3.0
-// WWW:         http://www.glfw.org/
+// GLFW 3.0 OS X - www.glfw.org
 //------------------------------------------------------------------------
 // Copyright (c) 2009-2010 Camilla Berglund <elmindreda@elmindreda.org>
 // Copyright (c) 2012 Torsten Walluhn <tw@mad-cad.net>
@@ -113,7 +110,7 @@ static void addJoystickElement(_GLFWjoy* joystick, CFTypeRef elementRef)
         {
             long number;
             CFTypeRef numberRef;
-            _GLFWjoyelement* element = (_GLFWjoyelement*) malloc(sizeof(_GLFWjoyelement));
+            _GLFWjoyelement* element = calloc(1, sizeof(_GLFWjoyelement));
 
             CFArrayAppendValue(elementsArray, element);
 
@@ -427,10 +424,10 @@ void _glfwInitJoysticks(void)
             CFRelease(valueRef);
         }
 
-        joystick->axes = (float*) calloc(CFArrayGetCount(joystick->axisElements),
+        joystick->axes = calloc(CFArrayGetCount(joystick->axisElements),
                                          sizeof(float));
-        joystick->buttons = (unsigned char*) calloc(CFArrayGetCount(joystick->buttonElements) +
-                                                    CFArrayGetCount(joystick->hatElements) * 4, 1);
+        joystick->buttons = calloc(CFArrayGetCount(joystick->buttonElements) +
+                                   CFArrayGetCount(joystick->hatElements) * 4, 1);
 
         joy++;
         if (joy > GLFW_JOYSTICK_LAST)

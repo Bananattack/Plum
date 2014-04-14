@@ -19,6 +19,7 @@ source/zlib/Release
 plum.log
 stdout.log
 stderr.log
+.DS_Store
 *.aps
 *.exp
 *.a

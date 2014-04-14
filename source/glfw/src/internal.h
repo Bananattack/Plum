@@ -1,8 +1,5 @@
 //========================================================================
-// GLFW - An OpenGL library
-// Platform:    Any
-// API version: 3.0
-// WWW:         http://www.glfw.org/
+// GLFW 3.0 - www.glfw.org
 //------------------------------------------------------------------------
 // Copyright (c) 2002-2006 Marcus Geelnard
 // Copyright (c) 2006-2010 Camilla Berglund <elmindreda@elmindreda.org>
@@ -32,7 +29,7 @@
 #define _internal_h_
 
 
-#include "config.h"
+#include "glfw_config.h"
 
 #if defined(_GLFW_USE_OPENGL)
  // This is the default for glfw3.h
@@ -118,6 +115,15 @@ typedef struct _GLFWmonitor     _GLFWmonitor;
     {                                                \
         _glfwInputError(GLFW_NOT_INITIALIZED, NULL); \
         return x;                                    \
+    }
+
+// Swaps the provided pointers
+#define _GLFW_SWAP_POINTERS(x, y) \
+    {                             \
+        void* t;                  \
+        t = x;                    \
+        x = y;                    \
+        y = t;                    \
     }
 
 
@@ -298,7 +304,10 @@ struct _GLFWlibrary
 
     _GLFWmonitor**  monitors;
     int             monitorCount;
-    GLFWmonitorfun  monitorCallback;
+
+    struct {
+        GLFWmonitorfun  monitor;
+    } callbacks;
 
     // This is defined in the window API's platform.h
     _GLFW_PLATFORM_LIBRARY_WINDOW_STATE;
@@ -615,10 +624,10 @@ void _glfwInputKey(_GLFWwindow* window, int key, int scancode, int action, int m
 
 /*! @brief Notifies shared code of a Unicode character input event.
  *  @param[in] window The window that received the event.
- *  @param[in] character The Unicode code point of the input character.
+ *  @param[in] codepoint The Unicode code point of the input character.
  *  @ingroup event
  */
-void _glfwInputChar(_GLFWwindow* window, unsigned int character);
+void _glfwInputChar(_GLFWwindow* window, unsigned int codepoint);
 
 /*! @brief Notifies shared code of a scroll event.
  *  @param[in] window The window that received the event.
@@ -735,11 +744,11 @@ GLboolean _glfwIsValidContext(_GLFWwndconfig* wndconfig);
 
 /*! @ingroup utility
  */
-void _glfwAllocGammaRamp(GLFWgammaramp* ramp, unsigned int size);
+void _glfwAllocGammaArrays(GLFWgammaramp* ramp, unsigned int size);
 
 /*! @ingroup utility
  */
-void _glfwFreeGammaRamp(GLFWgammaramp* ramp);
+void _glfwFreeGammaArrays(GLFWgammaramp* ramp);
 
 /*! @ingroup utility
  */

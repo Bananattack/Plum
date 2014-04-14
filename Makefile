@@ -112,7 +112,7 @@ endif
 ifeq ($(UNAME_S),Darwin)
 	CFLAGS += --std=gnu99 -Wall -DPA_USE_COREAUDIO -include pthread.h -include sys/time.h -O3 -fno-common
 	CXXFLAGS += --std=c++0x -Wall -DPA_USE_COREAUDIO -DHAVE_STDINT_H -DHAVE_SETENV -DHAVE_SINF -O3
-	LDFLAGS += -framework Cocoa -framework OpenGL -framework IOKit -Lobj/ $(patsubst %, -l%, $(PLUM_LIBS)) -lm -lpthread -lobjc
+	LDFLAGS += -framework Cocoa -framework OpenGL -framework IOKit -framework CoreAudio -framework AudioUnit -framework AudioToolbox -framework QuartzCore -Lobj/ $(patsubst %, -l%, $(PLUM_LIBS)) -lm -lpthread -lobjc
 	INCLUDES := -I$(LUA_INC) -I$(JPEG_INC) -I$(PNG_INC) -I$(ZLIB_INC) -I$(UNGIF_INC) -I$(CORONA_INC) \
 		-I$(GLEW_INC) -I$(GLFW_INC) -I$(GLFW_INC)/../plum -I$(PLAID_INC) -I$(MODPLUG_INC) -I$(MODPLUG_INC)/libmodplug \
 		-I$(PORTAUDIO_INC) -I$(PORTAUDIO_SRC)/common -I$(PORTAUDIO_SRC)/os/unix
