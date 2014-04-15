@@ -33,7 +33,10 @@ Compiling
   The compiled executable is named "plum.exe".
   - For release builds, it is located in the `test/` folder.
   - For debug builds, it is located in the `Debug/` folder
-- **To compile on Mac OS X:** TODO.
+- **To compile on Mac OS X:**
+  - Install the command line developer tools, or install Xcode (which also installs them).
+  - Open a terminal and type `make` at the root of this source tree.
+  - If it succeeds, there should be an excutable bundle named "Plum.app" located in the `test/` folder.
 - **To compile on Linux (Ubuntu 12.04):**
   - First, acquire the necessary packages:
 
@@ -44,6 +47,11 @@ Compiling
   
   - Next, open a terminal and type `make` at the root of this source tree.
   - If it succeeds, there should be an excutable named "plum" located in the `test/` folder.
+
+Running
+-------
+
+Once built, feel free to move the Plum executable out of the `test/` folder and place it in another folder that has a `system.lua` script. The **Maximum Yak Maniac** demo under the `test/` folder is one such example. (There might more examples in the future!)
 
 License
 -------
