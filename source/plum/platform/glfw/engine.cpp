@@ -143,6 +143,7 @@ namespace plum
         }
 
         glfwMakeContextCurrent(root);
+        glewExperimental = GL_TRUE;
         glewInit();
 
         if(modernPipeline)

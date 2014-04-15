@@ -35,6 +35,7 @@ namespace plum
                 clipX(0), clipY(0), clipX2(0), clipY2(0),
                 scale(1),
                 opacity(255),
+                vao(0),
                 vbo(0),
                 defaultTexture(0),
                 mode(BlendMode::Preserve)
@@ -48,6 +49,10 @@ namespace plum
                 {
                     glfwDestroyWindow(window);
                 }
+                if(vao)
+                {
+                    glDeleteVertexArrays(1, &vbo);
+                }                
                 if(vbo)
                 {
                     glDeleteBuffers(1, &vbo);
@@ -131,6 +136,7 @@ namespace plum
             int opacity;
             std::string title;
 
+            GLuint vao;
             GLuint vbo;
             GLuint defaultTexture;
 
@@ -500,6 +506,14 @@ namespace plum
 
         glfwMakeContextCurrent(window);
 
+        if(engine.impl->modernPipeline)
+        {
+            if(!vao)
+            {
+                glGenVertexArrays(1, &vao);
+                glBindVertexArray(vao);
+            }
+        }
         if(!vbo)
         {
             glGenBuffers(1, &vbo);
@@ -689,6 +703,10 @@ namespace plum
         };
 
         glBindTexture(GL_TEXTURE_2D, impl->defaultTexture);
+        if(impl->vao)
+        {
+            glBindVertexArray(impl->vao);
+        }  
         glBindBuffer(GL_ARRAY_BUFFER, impl->vbo);
         glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
         if(e->modernPipeline)
