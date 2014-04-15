@@ -33,7 +33,7 @@ Compiling
   The compiled executable is named "plum.exe".
   - For release builds, it is located in the `test/` folder.
   - For debug builds, it is located in the `Debug/` folder
-- **To compile on Mac OS X:**
+- **To compile on Mac OS X (Mac OS X 10.9):**
   - Install the command line developer tools, or install Xcode (which also installs them).
   - Open a terminal and type `make` at the root of this source tree.
   - If it succeeds, there should be an excutable bundle named "Plum.app" located in the `test/` folder.
