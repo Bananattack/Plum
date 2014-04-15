@@ -122,6 +122,7 @@ namespace plum
 			GLFWwindow* root;
 
             bool coreProfile, modernPipeline;
+            int majorVersion, minorVersion;
             GLuint program;
             GLuint fragmentShader;
             GLuint vertexShader;

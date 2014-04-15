@@ -404,6 +404,17 @@ namespace plum
                 h = previousWindowedHeight;
             }
 
+            if(engine.impl->majorVersion != 1 || engine.impl->minorVersion != 0)
+            {
+                glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, engine.impl->majorVersion);
+                glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, engine.impl->minorVersion);
+            }
+            if(engine.impl->modernPipeline)
+            {
+                glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+                glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+            }
+
             auto window = glfwCreateWindow(w, h, title.c_str(), nullptr, engine.impl->root);
             if(!window)
             {

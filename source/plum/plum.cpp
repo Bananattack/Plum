@@ -51,8 +51,36 @@
     }
 #endif
 
+#ifdef __APPLE__
+#include <unistd.h>
+#include <sys/param.h>
+#include <CoreFoundation/CFBundle.h>
+
+    namespace
+    {
+        void changeWorkingDirectory()
+        {
+            CFURLRef applicationURL = CFBundleCopyBundleURL(CFBundleGetMainBundle());
+            CFURLRef parentURL = CFURLCreateCopyDeletingLastPathComponent(0, applicationURL);
+
+            char path[MAXPATHLEN];
+            if(CFURLGetFileSystemRepresentation(parentURL, 1, (UInt8*) path, MAXPATHLEN))
+            {
+                chdir(path);
+            }
+
+            CFRelease(applicationURL);
+            CFRelease(parentURL);
+        }
+    }
+#endif
+
 int main(int argc, char** argv)
 {
+#ifdef __APPLE__
+    changeWorkingDirectory();
+#endif
+
     try
     {
         plum::Config config("plum.cfg");

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>CFBundleDevelopmentRegion</key>
+    <string>English</string>
+    <key>CFBundleDisplayName</key>
+    <string>Plum</string>
+    <key>CFBundleExecutable</key>
+    <string>plum</string>
+    <key>CFBundleIconFile</key>
+    <string>box.icns</string>
+    <key>CFBundleIdentifier</key>
+    <string>vg.make.plum</string>
+    <key>CFBundleInfoDictionaryVersion</key>
+    <string>6.0</string>
+    <key>CFBundleName</key>
+    <string>Plum</string>
+    <key>CFBundlePackageType</key>
+    <string>APPL</string>
+    <key>CFBundleShortVersionString</key>
+    <string>Plum version 1.0</string>
+    <key>CFBundleSignature</key>
+    <string>PLUM</string>
+    <key>CFBundleVersion</key>
+    <string>1.0</string>
+    <key>LSHasLocalizedDisplayName</key>
+    <false/>
+    <key>NSAppleScriptEnabled</key>
+    <false/>
+    <key>NSHighResolutionCapable</key>
+    <true/>
+    <key>NSHumanReadableCopyright</key>
+    <string>Copyright (c) 2012 Andrew G. Crowell (Bananattack)
+All rights reserved. Plum is released under the BSD 3-Clause License.</string>
+    <key>NSPrincipalClass</key>
+    <string>NSApplication</string>
+    <key>NSSupportsAutomaticGraphicsSwitching</key>
+    <false/>
+</dict>
+</plist>

@@ -7,6 +7,11 @@
 #include <GLFW/glfw3native.h>
 #endif
 
+#ifdef __APPLE__
+#include <CoreFoundation/CoreFoundation.h>
+#endif
+
+
 namespace plum
 {
     const char* const VertexCompatHeader =
@@ -63,8 +68,12 @@ namespace plum
         "}\n";
 
     Engine::Impl::Impl(Config& config)
-        : root(nullptr), coreProfile(false), modernPipeline(false)
+        : root(nullptr), coreProfile(false), modernPipeline(false), majorVersion(1), minorVersion(0)
     {
+        glfwSetErrorCallback([](int code, const char* msg){
+            fprintf(stderr, "* GLFW error #%d: %s\n", code, msg);
+        });
+
         if(!glfwInit())
         {
             quit("Failed to initialize glfw.");
@@ -79,9 +88,13 @@ namespace plum
         auto legacy = config.get<bool>("legacy", false);
         if(!legacy)
         {
+            fprintf(stderr, "* Attempting to create OpenGL 3.2 context...\n");
+
             glfwDefaultWindowHints();
-            glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-            glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+            majorVersion = 3;
+            minorVersion = 2;
+            glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, majorVersion);
+            glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, minorVersion);
             glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
             glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); 
             glfwWindowHint(GLFW_VISIBLE, GL_FALSE);
@@ -91,11 +104,11 @@ namespace plum
         {
             if(!legacy)
             {
-                fprintf(stderr, "* Failed to create OpenGL 3.2 context, falling back on 2.1...\n");
-
                 glfwDefaultWindowHints();
-                glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
-                glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+                majorVersion = 2;
+                minorVersion = 1;
+                glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, majorVersion);
+                glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, minorVersion);
                 glfwWindowHint(GLFW_VISIBLE, GL_FALSE);
                 root = glfwCreateWindow(1, 1, "", nullptr, nullptr);
             }
@@ -209,6 +222,11 @@ namespace plum
             fprintf(stderr, "\n\n-- Exit Requested:\n%s\n\n", message.c_str());
 #ifdef _WIN32
             MessageBoxA(nullptr, message.c_str(), "Exit Requested", MB_SYSTEMMODAL);
+#endif
+#ifdef __APPLE__
+            CFStringRef msg = CFStringCreateWithCString(kCFAllocatorDefault, message.c_str(), kCFStringEncodingUTF8);
+            CFUserNotificationDisplayNotice(0, kCFUserNotificationStopAlertLevel, nullptr, nullptr, nullptr, CFSTR("Exit Requested"), msg, CFSTR("OK"));
+            CFRelease(msg);
 #endif
             throw SystemExit(1);
         }

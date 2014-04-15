@@ -100,8 +100,11 @@ PLUM_CPP_OBJS := $(patsubst %.cpp, obj/%.o, $(PLUM_CPP))
 PLUM_LIBS := lua corona jpeg png zlib ungif glew glfw plaid modplug portaudio
 PLUM_DEPS := $(foreach i, $(PLUM_LIBS), obj/lib$(i).a)
 PLUM := test/plum
+PLIST := source/plum/Info.plist
+PKGINFO := source/plum/PkgInfo
 
 ifeq ($(UNAME_S),Linux)
+	APPLICATION := $(PLUM)
 	CFLAGS += --std=gnu99 -Wall -DPA_USE_ALSA -DPA_ENABLE_DEBUG_OUTPUT -include pthread.h -include sys/time.h -O3
 	CXXFLAGS += --std=c++0x -Wall -DPA_USE_ALSA -DHAVE_STDINT_H -DHAVE_SETENV -DHAVE_SINF -DPA_ENABLE_DEBUG_OUTPUT -O3
 	LDFLAGS += -Lobj/ $(patsubst %, -l%, $(PLUM_LIBS)) -lm -lasound -lpthread -lXrandr -lXi -lXext -lXxf86vm -lX11 -lGL -lGLU
@@ -110,6 +113,7 @@ ifeq ($(UNAME_S),Linux)
 		-I$(PORTAUDIO_INC) -I$(PORTAUDIO_SRC)/common -I$(PORTAUDIO_SRC)/os/unix
 endif
 ifeq ($(UNAME_S),Darwin)
+	APPLICATION := test/Plum.app
 	CFLAGS += --std=gnu99 -Wall -DPA_USE_COREAUDIO -include pthread.h -include sys/time.h -O3 -fno-common
 	CXXFLAGS += --std=c++0x -Wall -DPA_USE_COREAUDIO -DHAVE_STDINT_H -DHAVE_SETENV -DHAVE_SINF -O3
 	LDFLAGS += -framework Cocoa -framework OpenGL -framework IOKit -framework CoreAudio -framework AudioUnit -framework AudioToolbox -framework QuartzCore -Lobj/ $(patsubst %, -l%, $(PLUM_LIBS)) -lm -lpthread -lobjc
@@ -133,9 +137,9 @@ DIRECTORIES := $(call uniq, $(dir \
 	$(PLUM_C_OBJS) $(PLUM_CPP_OBJS) \
 	))
 
-all: $(DIRECTORIES) $(PLUM)
+all: $(DIRECTORIES) $(APPLICATION)
 clean:
-	rm -rf obj test/plum
+	rm -rf obj $(PLUM) $(APPLICATION).tmp $(APPLICATION)
 
 $(LUA_OBJS): obj/%.o: %.c $(LUA_H)
 	$(CC) $(CFLAGS) -c -o $@ $< $(INCLUDES)
@@ -192,6 +196,17 @@ $(PLUM_CPP_OBJS): obj/%.o: %.cpp $(PLUM_H)
 	$(CXX) $(CXXFLAGS) -c -o $@ $< $(INCLUDES)
 $(PLUM): $(DIRECTORIES) $(PLUM_C_OBJS) $(PLUM_CPP_OBJS) $(PLUM_H) $(PLUM_DEPS)
 	$(CXX) $(CXXFLAGS) $(PLUM_C_OBJS) $(PLUM_CPP_OBJS) $(LDFLAGS) -o $@
+
+ifeq ($(UNAME_S),Darwin)
+$(APPLICATION): $(PLUM) $(PLIST) $(PKGINFO)
+	mkdir -p $(APPLICATION).tmp/Contents/MacOS
+	mkdir -p $(APPLICATION).tmp/Contents/Resources
+	mv $(PLUM) $(APPLICATION).tmp/Contents/MacOS
+	cp $(PLIST) $(APPLICATION).tmp/Contents
+	cp $(PKGINFO) $(APPLICATION).tmp/Contents
+	rm -rf $(APPLICATION)
+	mv $(APPLICATION).tmp $(APPLICATION)
+endif
 
 define makedir
 $(1):
