@@ -79,7 +79,7 @@
     <ClInclude Include="include\GLFW\glfw3native.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="plum\config.h">
+    <ClInclude Include="plum\glfw_config.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

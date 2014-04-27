@@ -2,6 +2,7 @@
 #define PLUM_CONFIG_H
 
 #include <unordered_map>
+#include <string>
 
 namespace plum
 {

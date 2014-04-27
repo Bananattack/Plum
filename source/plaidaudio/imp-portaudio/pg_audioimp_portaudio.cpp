@@ -36,7 +36,7 @@ namespace plaidgadget
 	{
 	public:
 		AudioImp_PortAudio(Audio &audio, AudioScheduler &scheduler) :
-			AudioImp(audio, scheduler)
+			AudioImp(audio, scheduler), inDev(0), outDev(0)
 		{
 			//Initialize PortAudio
 			PaError err = Pa_Initialize();
@@ -81,7 +81,6 @@ namespace plaidgadget
 			cout << "-------------------------" << endl;
 
 			//Get audio device
-			PaDeviceIndex inDev, outDev;
 			PaHostApiIndex api = -1;
 
 #if 0 //defined(_WIN32) || defined(WIN32)
@@ -133,12 +132,9 @@ namespace plaidgadget
 		#else*/
 
 			//Open stream
-			PaStreamParameters
-				inParam = {inDev, 1, paInt16,
-					Pa_GetDeviceInfo(inDev)->defaultLowInputLatency, NULL},
-				outParam = {outDev, 2, paInt16|paNonInterleaved,
-					Pa_GetDeviceInfo(outDev)->defaultLowOutputLatency, NULL};
-			err = Pa_OpenStream(&stream, &inParam, &outParam, output.rate,
+			PaStreamParameters inParam = {inDev, 1, paInt16, inDev ? Pa_GetDeviceInfo(inDev)->defaultLowInputLatency : 0, nullptr};
+            PaStreamParameters outParam = {outDev, 2, paInt16|paNonInterleaved, outDev ? Pa_GetDeviceInfo(outDev)->defaultLowOutputLatency : 0, nullptr};
+			err = Pa_OpenStream(&stream, inDev ? &inParam : nullptr, outDev ? &outParam : nullptr, output.rate,
 				paFramesPerBufferUnspecified, paNoFlag, &MixAudio, (void*)this);
 			if (err)
 			{
@@ -193,10 +189,9 @@ namespace plaidgadget
 			//Nothin'
 		}
 
-
+        PaDeviceIndex inDev, outDev;
 		AudioFormat output;
 		PaStream *stream;
-
 
 		void mix(const void *_mike, void *_speaker,
 			unsigned long frameCount, const PaStreamCallbackTimeInfo* timeInfo,
@@ -204,13 +199,16 @@ namespace plaidgadget
 		{
 			//Buffers
 			static Sint32 mbuff[24000],
-				obuff[48000], *ochan[4] = {obuff, obuff+24000, NULL, NULL};
+				obuff[48000], *ochan[4] = {obuff, obuff+24000, nullptr, nullptr};
 			Sint16 **speaker = (Sint16**) _speaker;
 
-			//Mike data 32->24 conversion
-			Sint32 *pos = mbuff;
-			for (Sint16 *i=(Sint16*)_mike, *e=i+frameCount; i!=e; ++i)
-				*(pos++) = Sint32(*i << 8);
+            if(inDev != 0)
+            {
+			    //Mike data 32->24 conversion
+			    Sint32 *pos = mbuff;
+			    for (Sint16 *i=(Sint16*)_mike, *e=i+frameCount; i!=e; ++i)
+				    *(pos++) = Sint32(*i << 8);
+            }
 
 			//Render audio
 			//std::cout << "Demand from scheduler: frames x " << frameCount << std::endl;
@@ -219,15 +217,18 @@ namespace plaidgadget
 			//std::cout << "Completed scheduler" << std::endl;
 
 			//Speaker data 24->16 conversion
-			Sint32 samp;
-			for (Uint32 c = 0; c < output.channels; ++c)
-				for (Sint16 *i = speaker[c], *e=i+frameCount; i!=e; ++i)
-			{
-				samp = (ochan[c][(i-speaker[c])]) >> 8;
-				if (samp > +32767) samp = +32767;
-				if (samp < -32767) samp = -32767;
-				*i = samp; // (intptr_t(i)&4)?30000:-30000;
-			}
+            if(outDev != 0)
+            {
+			    Sint32 samp;
+			    for (Uint32 c = 0; c < output.channels; ++c)
+				    for (Sint16 *i = speaker[c], *e=i+frameCount; i!=e; ++i)
+			    {
+				    samp = (ochan[c][(i-speaker[c])]) >> 8;
+				    if (samp > +32767) samp = +32767;
+				    if (samp < -32767) samp = -32767;
+				    *i = samp; // (intptr_t(i)&4)?30000:-30000;
+			    }
+            }
 
 			/*if (Pa_GetStreamTime(stream) > criticalTime)
 				mixReport << " (LATE FOR CAPTURE!)";
